@@ -44,8 +44,8 @@ public class DataSourceValidationLayerFactory implements ValidationLayerFactory 
      * Default Constructor
      * </p>
      */
-    public DataSourceValidationLayerFactory() throws Exception {
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+    public DataSourceValidationLayerFactory() {
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = System
                 .getProperty("org.apache.oodt.cas.filemgr.validation.datasource.jdbc.url");

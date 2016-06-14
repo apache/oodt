@@ -26,21 +26,17 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Vector;
-
-import org.apache.lucene.analysis.standard.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Query;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CasDB {
 
+  public static final int INT = 20;
   URL filemgrUrl;
   XmlRpcFileManagerClient client;
   public Results results;
-
+  private static Logger LOG = Logger.getLogger(CasDB.class.getName());
   private static String freeTextBlock = "__FREE__";
 
   public CasDB() {
@@ -64,10 +60,7 @@ public class CasDB {
   }
 
   public boolean isConnected() {
-    if (filemgrUrl == null) {
-      return false;
-    } else
-      return true;
+    return filemgrUrl != null;
   }
 
   public String[] getAvailableTypes() {
@@ -75,17 +68,10 @@ public class CasDB {
     if (filemgrUrl != null) {
       try {
         Vector<ProductType> v = (Vector<ProductType>) client.getProductTypes();
-        Vector<String> names = new Vector<String>();
         types = new String[v.size()];
 
-        for (int i = 0; i < v.size(); i++)
-          names.add(v.get(i).getName());
-
-        Collections.sort(names);
-        names.toArray(types);
-
       } catch (RepositoryManagerException e) {
-        // e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
 
     } else {
@@ -103,17 +89,10 @@ public class CasDB {
         ProductType pt = client.getProductTypeByName(productTypeName);
         Vector<Element> v = (Vector<Element>) client
             .getElementsByProductType(pt);
-        Vector<String> names = new Vector<String>();
         elements = new String[v.size()];
 
-        for (int i = 0; i < v.size(); i++)
-          names.add(v.get(i).getElementName());
-
-        Collections.sort(names);
-        names.toArray(elements);
-
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     } else {
       elements = new String[1];
@@ -123,12 +102,12 @@ public class CasDB {
   }
 
   public String getElementID(String elementName) {
-    String elementID = new String();
+    String elementID = "";
     Element e;
     try {
       e = client.getElementByName(elementName);
       elementID = e.getElementId();
-    } catch (ValidationLayerException e1) {
+    } catch (ValidationLayerException ignored) {
     }
     return elementID;
   }
@@ -139,14 +118,12 @@ public class CasDB {
     try {
       ProductType type = client.getProductTypeByName(productType);
       Vector<Product> products = (Vector<Product>) client.query(query, type);
-      int maxVal = 20;
-      if (products.size() < maxVal)
+      int maxVal = INT;
+      if (products.size() < maxVal) {
         maxVal = products.size();
+      }
       for (int i = 0; i < maxVal; i++) {
-        Vector<Element> elements = (Vector<Element>) client
-            .getElementsByProductType(type);
         Metadata m = client.getMetadata(products.get(i));
-        Hashtable hash = m.getHashtable();
         results.addProduct(m);
       }
     } catch (Exception e) {
@@ -165,15 +142,12 @@ public class CasDB {
         type = client.getProductTypeByName(productType);
         Vector<Product> products = (Vector<Product>) client
             .getProductsByProductType(type);
-        // for(int i=0;i<products.size();i++){
-        int maxVal = 20;
-        if (products.size() < maxVal)
+        int maxVal = INT;
+        if (products.size() < maxVal) {
           maxVal = products.size();
+        }
         for (int i = 0; i < maxVal; i++) {
-          Vector<Element> elements = (Vector<Element>) client
-              .getElementsByProductType(type);
           Metadata m = client.getMetadata(products.get(i));
-          Hashtable hash = m.getHashtable();
           results.addProduct(m);
         }
       } catch (Exception e) {
@@ -184,18 +158,16 @@ public class CasDB {
 
       QueryBuilder qb = new QueryBuilder(this);
       org.apache.oodt.cas.filemgr.structs.Query casQ = qb.ParseQuery(queryText);
-      ProductType type = null;
+      ProductType type;
       try {
         type = client.getProductTypeByName(productType);
         Vector<Product> products = (Vector<Product>) client.query(casQ, type);
-        int maxVal = 20;
-        if (products.size() < maxVal)
+        int maxVal = INT;
+        if (products.size() < maxVal) {
           maxVal = products.size();
+        }
         for (int i = 0; i < maxVal; i++) {
-          Vector<Element> elements = (Vector<Element>) client
-              .getElementsByProductType(type);
           Metadata m = client.getMetadata(products.get(i));
-          Hashtable hash = m.getHashtable();
           results.addProduct(m);
         }
       } catch (Exception e) {

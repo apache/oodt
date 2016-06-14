@@ -18,27 +18,13 @@
 package org.apache.oodt.pcs.tools;
 
 //JDK imports
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
-//APACHE imports
-import org.apache.xmlrpc.XmlRpcClient;
-
-//OODT imports
-import org.apache.oodt.commons.date.DateUtils;
-import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
-import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
-import org.apache.oodt.pcs.util.FileManagerUtils;
-import org.apache.oodt.pcs.util.ResourceManagerUtils;
-import org.apache.oodt.pcs.util.WorkflowManagerUtils;
+import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.pcs.health.CrawlInfo;
 import org.apache.oodt.pcs.health.CrawlPropertiesFile;
 import org.apache.oodt.pcs.health.CrawlerHealth;
@@ -48,6 +34,22 @@ import org.apache.oodt.pcs.health.PCSDaemonStatus;
 import org.apache.oodt.pcs.health.PCSHealthMonitorMetKeys;
 import org.apache.oodt.pcs.health.PCSHealthMonitorReport;
 import org.apache.oodt.pcs.health.WorkflowStatesFile;
+import org.apache.oodt.pcs.util.FileManagerUtils;
+import org.apache.oodt.pcs.util.ResourceManagerUtils;
+import org.apache.oodt.pcs.util.WorkflowManagerUtils;
+import org.apache.xmlrpc.XmlRpcClient;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//APACHE imports
+//OODT imports
 
 /**
  * 
@@ -58,7 +60,9 @@ import org.apache.oodt.pcs.health.WorkflowStatesFile;
  */
 public final class PCSHealthMonitor implements CoreMetKeys,
     PCSHealthMonitorMetKeys {
-
+  public static final double DOUBLE = 1000.0;
+  public static final double DOUBLE1 = 1000.0;
+  private static Logger LOG = Logger.getLogger(PCSHealthMonitor.class.getName());
   private FileManagerUtils fm;
 
   private WorkflowManagerUtils wm;
@@ -196,10 +200,10 @@ public final class PCSHealthMonitor implements CoreMetKeys,
 
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws InstantiationException {
     String usage = "PCSHealthMonitor <fm url> <wm url> <rm url> <crawler xml file path> <workflow states xml file path>\n";
-    String fmUrlStr = null, wmUrlStr = null, rmUrlStr = null;
-    String crawlerXmlFilePath = null, workflowStateXmlPath = null;
+    String fmUrlStr, wmUrlStr, rmUrlStr;
+    String crawlerXmlFilePath, workflowStateXmlPath;
 
     if (args.length != 5) {
       System.err.println(usage);
@@ -217,7 +221,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     try {
       mon.quickPrintMonitorToConsole();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
   }
 
@@ -259,8 +263,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       List resNodes = rm.safeGetResourceNodes();
 
       if (resNodes != null && resNodes.size() > 0) {
-        for (Iterator i = resNodes.iterator(); i.hasNext();) {
-          ResourceNode node = (ResourceNode) i.next();
+        for (Object resNode : resNodes) {
+          ResourceNode node = (ResourceNode) resNode;
           PCSDaemonStatus batchStatus = new PCSDaemonStatus();
           batchStatus.setDaemonName(BATCH_STUB_DAEMON_NAME);
           batchStatus.setUrlStr(node.getIpAddr().toString());
@@ -289,10 +293,10 @@ public final class PCSHealthMonitor implements CoreMetKeys,
 
       });
 
-      for (Iterator i = crawlers.iterator(); i.hasNext();) {
-        CrawlInfo info = (CrawlInfo) i.next();
+      for (Object crawler : crawlers) {
+        CrawlInfo info = (CrawlInfo) crawler;
         String crawlerUrlStr = "http://" + crawlHost + ":"
-            + info.getCrawlerPort();
+                               + info.getCrawlerPort();
         CrawlerStatus status = new CrawlerStatus();
         status.setInfo(info);
         status.setStatus(printUp(getCrawlerUp(crawlerUrlStr)));
@@ -308,8 +312,9 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   private List getProductHealth() {
     if (getFmUp()) {
       return this.fm.safeGetTopNProducts(TOP_N_PRODUCTS);
-    } else
+    } else {
       return new Vector();
+    }
   }
 
   private List getJobStatusHealth() {
@@ -321,8 +326,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     List states = this.statesFile.getStates();
 
     if (states != null && states.size() > 0) {
-      for (Iterator i = states.iterator(); i.hasNext();) {
-        String state = (String) i.next();
+      for (Object state1 : states) {
+        String state = (String) state1;
         int numPipelines = this.wm.safeGetNumWorkflowInstancesByStatus(state);
         if (numPipelines == -1) {
           numPipelines = 0;
@@ -339,16 +344,16 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private List getIngestHealth() {
-    if (this.crawlProps.getCrawlers() == null) {
+    if (this.crawlProps.getCrawlers().size()==0) {
       return new Vector();
     }
 
     List statuses = new Vector();
 
-    for (Iterator i = this.crawlProps.getCrawlers().iterator(); i.hasNext();) {
-      CrawlInfo info = (CrawlInfo) i.next();
+    for (Object o : this.crawlProps.getCrawlers()) {
+      CrawlInfo info = (CrawlInfo) o;
       String crawlUrlStr = "http://" + this.crawlProps.getCrawlHost() + ":"
-          + info.getCrawlerPort();
+                           + info.getCrawlerPort();
       try {
         CrawlDaemonController controller = new CrawlDaemonController(
             crawlUrlStr);
@@ -356,7 +361,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
         health.setCrawlerName(info.getCrawlerName());
         health.setNumCrawls(controller.getNumCrawls());
         health
-            .setAvgCrawlTime((double) (controller.getAverageCrawlTime() / 1000.0));
+            .setAvgCrawlTime((double) (controller.getAverageCrawlTime() / DOUBLE));
         statuses.add(health);
 
       } catch (Exception e) {
@@ -375,8 +380,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   private void printIngestStatusHealth(PCSHealthMonitorReport report) {
     if (report.getCrawlerHealthStatus() != null
         && report.getCrawlerHealthStatus().size() > 0) {
-      for (Iterator i = report.getCrawlerHealthStatus().iterator(); i.hasNext();) {
-        CrawlerHealth health = (CrawlerHealth) i.next();
+      for (Object o : report.getCrawlerHealthStatus()) {
+        CrawlerHealth health = (CrawlerHealth) o;
         System.out.print(health.getCrawlerName() + ":");
         if (health.getNumCrawls() == CRAWLER_DOWN_INT) {
           System.out.println(" DOWN");
@@ -384,7 +389,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
           System.out.println("");
           System.out.println("Number of Crawls: " + health.getNumCrawls());
           System.out.println("Average Crawl Time (seconds): "
-              + health.getAvgCrawlTime());
+                             + health.getAvgCrawlTime());
           System.out.println("");
         }
 
@@ -396,10 +401,10 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   private void printJobStatusHealth(PCSHealthMonitorReport report) {
     if (report.getJobHealthStatus() != null
         && report.getJobHealthStatus().size() > 0) {
-      for (Iterator i = report.getJobHealthStatus().iterator(); i.hasNext();) {
-        JobHealthStatus status = (JobHealthStatus) i.next();
+      for (Object o : report.getJobHealthStatus()) {
+        JobHealthStatus status = (JobHealthStatus) o;
         System.out.println(status.getNumPipelines() + " pipelines "
-            + status.getStatus());
+                           + status.getStatus());
       }
     }
   }
@@ -408,15 +413,14 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     if (report.getLatestProductsIngested() != null
         && report.getLatestProductsIngested().size() > 0) {
       System.out.println("Latest " + TOP_N_PRODUCTS + " products ingested:");
-      for (Iterator i = report.getLatestProductsIngested().iterator(); i
-          .hasNext();) {
-        Product p = (Product) i.next();
+      for (Object o : report.getLatestProductsIngested()) {
+        Product p = (Product) o;
         p.setProductType(fm.safeGetProductTypeById(p.getProductType()
-            .getProductTypeId()));
+                                                    .getProductTypeId()));
         p.setProductReferences(fm.safeGetProductReferences(p));
         Metadata prodMet = fm.safeGetMetadata(p);
         System.out.println(fm.getFilePath(p) + " at: "
-            + prodMet.getMetadata("CAS." + PRODUCT_RECEVIED_TIME));
+                           + prodMet.getMetadata("CAS." + PRODUCT_RECEVIED_TIME));
       }
 
     }
@@ -425,10 +429,10 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   private void printBatchStubs(PCSHealthMonitorReport report) {
     if (report.getBatchStubStatus() != null
         && report.getBatchStubStatus().size() > 0) {
-      for (Iterator i = report.getBatchStubStatus().iterator(); i.hasNext();) {
-        PCSDaemonStatus batchStatus = (PCSDaemonStatus) i.next();
+      for (Object o : report.getBatchStubStatus()) {
+        PCSDaemonStatus batchStatus = (PCSDaemonStatus) o;
         System.out.println("> " + batchStatus.getDaemonName() + ": ["
-            + batchStatus.getUrlStr() + "]: " + batchStatus.getStatus());
+                           + batchStatus.getUrlStr() + "]: " + batchStatus.getStatus());
       }
 
     }
@@ -440,17 +444,17 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       List crawlers = this.crawlProps.getCrawlers();
       String biggestString = getBiggestString(crawlers);
 
-      for (Iterator i = report.getCrawlerStatus().iterator(); i.hasNext();) {
-        CrawlerStatus status = (CrawlerStatus) i.next();
+      for (Object o : report.getCrawlerStatus()) {
+        CrawlerStatus status = (CrawlerStatus) o;
         String crawlerUrlStr = "http://" + status.getCrawlHost() + ":"
-            + status.getInfo().getCrawlerPort();
+                               + status.getInfo().getCrawlerPort();
         System.out.println(getStrPadding(status.getInfo().getCrawlerName(),
             biggestString)
-            + status.getInfo().getCrawlerName()
-            + ": ["
-            + crawlerUrlStr
-            + "]: "
-            + status.getStatus());
+                           + status.getInfo().getCrawlerName()
+                           + ": ["
+                           + crawlerUrlStr
+                           + "]: "
+                           + status.getStatus());
       }
 
     }
@@ -473,30 +477,30 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       });
 
       String biggestString = getBiggestString(crawlers);
-      for (Iterator i = crawlers.iterator(); i.hasNext();) {
-        CrawlInfo info = (CrawlInfo) i.next();
+      for (Object crawler : crawlers) {
+        CrawlInfo info = (CrawlInfo) crawler;
         String crawlerUrlStr = "http://" + crawlHost + ":"
-            + info.getCrawlerPort();
+                               + info.getCrawlerPort();
         System.out.println(getStrPadding(info.getCrawlerName(), biggestString)
-            + info.getCrawlerName() + ": [" + crawlerUrlStr + "]: "
-            + printUp(getCrawlerUp(crawlerUrlStr)));
+                           + info.getCrawlerName() + ": [" + crawlerUrlStr + "]: "
+                           + printUp(getCrawlerUp(crawlerUrlStr)));
       }
     }
 
   }
 
   private void quickPrintBatchStubs() {
-    List resNodes = null;
+    List resNodes;
 
     if (getRmUp()) {
       // only print if the resource manager is up
       resNodes = rm.safeGetResourceNodes();
 
       if (resNodes != null && resNodes.size() > 0) {
-        for (Iterator i = resNodes.iterator(); i.hasNext();) {
-          ResourceNode node = (ResourceNode) i.next();
+        for (Object resNode : resNodes) {
+          ResourceNode node = (ResourceNode) resNode;
           System.out.println("> " + BATCH_STUB_DAEMON_NAME + ": ["
-              + node.getIpAddr() + "]: " + printUp(getBatchStubUp(node)));
+                             + node.getIpAddr() + "]: " + printUp(getBatchStubUp(node)));
         }
       }
     }
@@ -510,8 +514,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     List states = this.statesFile.getStates();
 
     if (states != null && states.size() > 0) {
-      for (Iterator i = states.iterator(); i.hasNext();) {
-        String state = (String) i.next();
+      for (Object state1 : states) {
+        String state = (String) state1;
         int numPipelines = this.wm.safeGetNumWorkflowInstancesByStatus(state);
         if (numPipelines == -1) {
           numPipelines = 0;
@@ -529,14 +533,14 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       List prods = this.fm.safeGetTopNProducts(TOP_N_PRODUCTS);
 
       if (prods != null && prods.size() > 0) {
-        for (Iterator i = prods.iterator(); i.hasNext();) {
-          Product p = (Product) i.next();
+        for (Object prod : prods) {
+          Product p = (Product) prod;
           p.setProductType(fm.safeGetProductTypeById(p.getProductType()
-              .getProductTypeId()));
+                                                      .getProductTypeId()));
           p.setProductReferences(fm.safeGetProductReferences(p));
           Metadata prodMet = fm.safeGetMetadata(p);
           System.out.println(fm.getFilePath(p) + " at: "
-              + prodMet.getMetadata("CAS." + PRODUCT_RECEVIED_TIME));
+                             + prodMet.getMetadata("CAS." + PRODUCT_RECEVIED_TIME));
         }
       }
 
@@ -544,21 +548,21 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private void quickPrintIngestStatusHealth() {
-    if (this.crawlProps.getCrawlers() == null) {
+    if (this.crawlProps.getCrawlers().size()==0) {
       return;
     }
 
-    for (Iterator i = this.crawlProps.getCrawlers().iterator(); i.hasNext();) {
-      CrawlInfo info = (CrawlInfo) i.next();
+    for (Object o : this.crawlProps.getCrawlers()) {
+      CrawlInfo info = (CrawlInfo) o;
       String crawlUrlStr = "http://" + this.crawlProps.getCrawlHost() + ":"
-          + info.getCrawlerPort();
+                           + info.getCrawlerPort();
       try {
         CrawlDaemonController controller = new CrawlDaemonController(
             crawlUrlStr);
         System.out.println(info.getCrawlerName() + ":");
         System.out.println("Number of Crawls: " + controller.getNumCrawls());
         System.out.println("Average Crawl Time (seconds): "
-            + (double) (controller.getAverageCrawlTime() / 1000.0));
+                           + (double) (controller.getAverageCrawlTime() / DOUBLE1));
         System.out.println("");
 
       } catch (Exception e) {
@@ -572,8 +576,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     int biggestStrSz = Integer.MIN_VALUE;
     String biggestStr = null;
 
-    for (Iterator i = crawlInfos.iterator(); i.hasNext();) {
-      CrawlInfo info = (CrawlInfo) i.next();
+    for (Object crawlInfo : crawlInfos) {
+      CrawlInfo info = (CrawlInfo) crawlInfo;
       String crawlInfoName = info.getCrawlerName();
       if (crawlInfoName.length() > biggestStrSz) {
         biggestStr = crawlInfoName;
@@ -589,7 +593,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     int sizeCompareStr = compareString.length();
 
     int diff = Math.abs(sizeInitStr - sizeCompareStr);
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (int i = 0; i < diff; i++) {
       buf.append(" ");
     }
@@ -602,15 +606,14 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     Vector argList = new Vector();
 
     try {
-      return ((Boolean) client.execute("batchstub.isAlive", argList))
-          .booleanValue();
+      return (Boolean) client.execute("batchstub.isAlive", argList);
     } catch (Exception e) {
       return false;
     }
   }
 
   private boolean getCrawlerUp(String crawlUrlStr) {
-    CrawlDaemonController controller = null;
+    CrawlDaemonController controller;
 
     try {
       controller = new CrawlDaemonController(crawlUrlStr);
@@ -621,7 +624,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private boolean getFmUp() {
-    return fm.getFmgrClient() != null ? fm.getFmgrClient().isAlive() : false;
+    return fm.getFmgrClient() != null && fm.getFmgrClient().isAlive();
   }
 
   private boolean getWmUp() {

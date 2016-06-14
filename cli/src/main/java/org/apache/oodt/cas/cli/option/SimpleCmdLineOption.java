@@ -171,8 +171,9 @@ public class SimpleCmdLineOption implements CmdLineOption {
          SimpleCmdLineOption compareObj = (SimpleCmdLineOption) obj;
          return compareObj.shortOption.equals(this.shortOption)
                || compareObj.longOption.equals(this.longOption);
-      } else
+      } else {
          return false;
+      }
    }
 
    @Override

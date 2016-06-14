@@ -18,6 +18,17 @@
 package org.apache.oodt.cas.workflow.tools;
 
 //JDK imports
+import org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
+import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.commons.date.DateUtils;
+import org.apache.xmlrpc.XmlRpcException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
@@ -25,12 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
-import org.apache.oodt.commons.date.DateUtils;
 
 /**
  * 
@@ -61,7 +66,7 @@ public class InstanceRepoCleaner {
   public InstanceRepoCleaner() {
   }
 
-  public InstanceRepoCleaner(String wmUrlStr) throws Exception {
+  public InstanceRepoCleaner(String wmUrlStr) throws MalformedURLException {
     this.wm = new XmlRpcWorkflowManagerClient(new URL(wmUrlStr));
   }
 
@@ -69,7 +74,7 @@ public class InstanceRepoCleaner {
     this.rep = new LuceneWorkflowInstanceRepository(idxPath, 1000);
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException, InstanceRepositoryException, XmlRpcException {
     String usage = "InstanceRepoCleaner [options]\n"
         + "<workflow manager url>\n" + "--idxPath <path>\n";
     if (args.length != 1 && args.length != 2) {
@@ -77,7 +82,7 @@ public class InstanceRepoCleaner {
       System.exit(1);
     }
 
-    InstanceRepoCleaner clean = null;
+    InstanceRepoCleaner clean;
     if (args.length == 1) {
       String wmUrlStr = args[0];
       clean = new InstanceRepoCleaner(wmUrlStr);
@@ -89,7 +94,7 @@ public class InstanceRepoCleaner {
     clean.cleanRepository();
   }
 
-  public void cleanRepository() throws Exception {
+  public void cleanRepository() throws XmlRpcException, IOException, InstanceRepositoryException {
     WorkflowInstancePage page = wm != null ? wm.getFirstPage() : rep
         .getFirstPage();
     while (page != null && page.getPageWorkflows() != null
@@ -115,9 +120,8 @@ public class InstanceRepoCleaner {
           LOG.log(Level.INFO, "Existing status: [" + inst.getStatus()
               + "]: setting to [" + WorkflowStatus.FINISHED + "]");
           inst.setEndDateTimeIsoStr(endDateTimeIsoStr);
-          if (inst.getStartDateTimeIsoStr() == null
-              || (inst.getStartDateTimeIsoStr() != null && inst
-                  .getStartDateTimeIsoStr().equals(""))) {
+          if (inst.getStartDateTimeIsoStr() == null || (inst
+                                                            .getStartDateTimeIsoStr().equals(""))) {
             inst.setStartDateTimeIsoStr(endDateTimeIsoStr);
           }
           inst.setStatus(WorkflowStatus.FINISHED);

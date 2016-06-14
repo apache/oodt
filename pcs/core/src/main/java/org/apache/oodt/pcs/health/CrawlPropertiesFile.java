@@ -25,7 +25,6 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //JDK imports
 import java.io.FileInputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -68,8 +67,8 @@ public class CrawlPropertiesFile implements CrawlerPropertiesMetKeys {
 
     Map scalars = crawlInfo.getScalars();
     List crawlers = new Vector(scalars.keySet().size());
-    for (Iterator i = scalars.keySet().iterator(); i.hasNext();) {
-      String crawlerName = (String) i.next();
+    for (Object o : scalars.keySet()) {
+      String crawlerName = (String) o;
       String crawlerPort = crawlInfo.getScalar(crawlerName).getValue();
       CrawlInfo info = new CrawlInfo(crawlerName, crawlerPort);
       crawlers.add(info);

@@ -42,5 +42,5 @@ public interface Retriever {
 	 * @param productID Product ID.
 	 * @throws ProductException if an error occurs.
 	 */
-	void close(String productID) throws ProductException;
+	void close(String productID);
 }

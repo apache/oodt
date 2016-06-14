@@ -19,15 +19,14 @@
 package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
+
 import java.io.File;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
-import org.apache.oodt.cas.metadata.preconditions.ExistanceCheckComparator;
-import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
 
 /**
  * Precondition class that checks on the last modification time of a product, 
@@ -58,13 +57,13 @@ public class LastModifiedCheckComparator extends PreConditionComparator<Boolean>
 		// reject this product
 		if (deltaInSecs>maxAgeInSeconds) {
 			LOG.log(Level.FINEST, "Product: "+product.getAbsolutePath()+" fails 'Last Modified' check: "+new Date(lastModTime));
-			return new Boolean(false).compareTo(compareItem);
+			return Boolean.FALSE.compareTo(compareItem);
 			
 		// accept this product
 		} else {
 			LOG.log(Level.FINEST, "Product: "+product.getAbsolutePath()+" passes 'Last Modified' check: "+new Date(lastModTime));
-			return new Boolean(true).compareTo(compareItem);
-			
+			return Boolean.TRUE.compareTo(compareItem);
+
 		}
 		
 	}

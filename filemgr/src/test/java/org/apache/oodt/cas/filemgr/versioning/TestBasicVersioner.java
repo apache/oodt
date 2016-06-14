@@ -75,7 +75,7 @@ public class TestBasicVersioner extends TestCase {
 		List refs = new Vector();
 		try {
       URL url = this.getClass().getResource("/test.txt");
-      String refname = new File(url.getFile()).toURL().toExternalForm().toString();
+      String refname = new File(url.getFile()).toURL().toExternalForm();
 			refs.add(refname);
 		} catch (MalformedURLException e) {
 			fail(e.getMessage());

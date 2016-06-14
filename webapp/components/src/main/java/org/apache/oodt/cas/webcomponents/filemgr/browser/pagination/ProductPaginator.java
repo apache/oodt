@@ -17,14 +17,8 @@
 
 package org.apache.oodt.cas.webcomponents.filemgr.browser.pagination;
 
-//JDK imports
-import java.io.Serializable;
-import java.util.List;
-import java.util.Vector;
-
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.webcomponents.filemgr.browser.types.TypeBrowser;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
@@ -35,6 +29,14 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+
+//JDK imports
+import java.io.Serializable;
+import java.util.List;
+import java.util.Vector;
+
+
+
 
 /**
  * 

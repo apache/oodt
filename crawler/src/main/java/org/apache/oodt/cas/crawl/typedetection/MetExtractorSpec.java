@@ -19,12 +19,11 @@
 package org.apache.oodt.cas.crawl.typedetection;
 
 // OODT imports
-import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author mattmann
@@ -92,8 +91,9 @@ public class MetExtractorSpec {
             ClassNotFoundException, MetExtractionException {
         this.metExtractor = (MetExtractor) Class.forName(extractorClassName)
                 .newInstance();
-        if (this.configFile != null)
+        if (this.configFile != null) {
             this.metExtractor.setConfigFile(this.configFile);
+        }
     }
 
     /**
@@ -104,8 +104,9 @@ public class MetExtractorSpec {
     public void setExtractorConfigFile(String extractorConfigFile)
             throws MetExtractionException {
         this.configFile = extractorConfigFile;
-        if (this.configFile != null && this.metExtractor != null)
+        if (this.configFile != null && this.metExtractor != null) {
             this.metExtractor.setConfigFile(this.configFile);
+        }
     }
 
     /**
@@ -118,12 +119,8 @@ public class MetExtractorSpec {
     }
 
     /**
-     * @param preconditionsFile
+     * @param preCondComparatorIds
      *            The extractor preconditions file
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws FileNotFoundException
      */
     public void setPreConditionComparatorIds(List<String> preCondComparatorIds) {
         this.preCondComparatorIds = preCondComparatorIds;

@@ -208,5 +208,5 @@ public class TestGetPrevPageCliAction extends TestCase {
          pp.setPageProducts(Lists.newArrayList(p4));
          return pp;
       }
-   };
+   }
 }

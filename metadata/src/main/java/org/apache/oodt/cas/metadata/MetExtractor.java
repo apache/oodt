@@ -51,7 +51,7 @@ public interface MetExtractor {
      * @throws MetExtractionException
      *             If any error occurs.
      */
-    public Metadata extractMetadata(File f) throws MetExtractionException;
+    Metadata extractMetadata(File f) throws MetExtractionException;
 
     /**
      * Extracts {@link Metadata} from a given <code>/path/to/some/file</code>.
@@ -62,7 +62,7 @@ public interface MetExtractor {
      * @throws MetExtractionException
      *             If any error occurs.
      */
-    public Metadata extractMetadata(String filePath)
+    Metadata extractMetadata(String filePath)
             throws MetExtractionException;
 
     /**
@@ -75,7 +75,7 @@ public interface MetExtractor {
      * @throws MetExtractionException
      *             If any error occurs.
      */
-    public Metadata extractMetadata(URL fileUrl) throws MetExtractionException;
+    Metadata extractMetadata(URL fileUrl) throws MetExtractionException;
 
     /**
      * Sets the config file for this MetExtractor to the specified {@link File}
@@ -85,7 +85,7 @@ public interface MetExtractor {
      *            The config file for this MetExtractor.
      * @throws MetExtractionException
      */
-    public void setConfigFile(File f) throws MetExtractionException;
+    void setConfigFile(File f) throws MetExtractionException;
 
     /**
      * Sets the config file for this MetExtractor to the specified {@link File}
@@ -95,7 +95,7 @@ public interface MetExtractor {
      *            The config file path for this MetExtractor.
      * @throws MetExtractionException
      */
-    public void setConfigFile(String filePath) throws MetExtractionException;
+    void setConfigFile(String filePath) throws MetExtractionException;
 
     /**
      * Sets the MetExtractorConfig for the MetExtractor
@@ -103,7 +103,7 @@ public interface MetExtractor {
      * @param config
      *            The MetExtractorConfig
      */
-    public void setConfigFile(MetExtractorConfig config);
+    void setConfigFile(MetExtractorConfig config);
 
     /**
      * Extracts {@link Metadata} from the given {@link File} using the specified
@@ -118,7 +118,7 @@ public interface MetExtractor {
      * @throws MetExtractionException
      *             If any error occurs.
      */
-    public Metadata extractMetadata(File f, File configFile)
+    Metadata extractMetadata(File f, File configFile)
             throws MetExtractionException;
 
     /**
@@ -134,7 +134,7 @@ public interface MetExtractor {
      * @throws MetExtractionException
      *             If any error occurs.
      */
-    public Metadata extractMetadata(File f, String configFilePath)
+    Metadata extractMetadata(File f, String configFilePath)
             throws MetExtractionException;
 
     /**
@@ -150,7 +150,7 @@ public interface MetExtractor {
      * @throws MetExtractionException
      *             If any error occurs
      */
-    public Metadata extractMetadata(File f, MetExtractorConfig config)
+    Metadata extractMetadata(File f, MetExtractorConfig config)
             throws MetExtractionException;
 
     /**
@@ -166,6 +166,6 @@ public interface MetExtractor {
      * @throws MetExtractionException
      *             If any error occurs
      */
-    public Metadata extractMetadata(URL fileUrl, MetExtractorConfig config)
+    Metadata extractMetadata(URL fileUrl, MetExtractorConfig config)
             throws MetExtractionException;
 }

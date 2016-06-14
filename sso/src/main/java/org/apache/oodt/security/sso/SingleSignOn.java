@@ -37,14 +37,14 @@ public interface SingleSignOn {
    * 
    * @return A string representation of the current SSO username.
    */
-  public String getCurrentUsername();
+  String getCurrentUsername();
 
   /**
    * Returns <code>true</code> when the user is logged in, or false otherwise.
    * 
    * @return True if the user is logged in, false otherwise.
    */
-  public boolean isLoggedIn();
+  boolean isLoggedIn();
 
   /**
    * Logs the user with the provided <code>username</code> and
@@ -56,12 +56,12 @@ public interface SingleSignOn {
    *          The password credentials.
    * @return True if the login was successful, false otherwise.
    */
-  public boolean login(String username, String password);
+  boolean login(String username, String password);
 
   /**
    * Logs the current SSO user out of her session.
    */
-  public void logout();
+  void logout();
 
   /**
    * Should provide information (true or false) as to whether the last
@@ -69,7 +69,7 @@ public interface SingleSignOn {
    * 
    * @return True if the last authentication was successful, false otherwise.
    */
-  public boolean getLastConnectionStatus();
+  boolean getLastConnectionStatus();
 
   /**
    * Obtains a user's groups from the security principal that this SSO object
@@ -80,6 +80,6 @@ public interface SingleSignOn {
    * @return A {@link List} of string group names obtained from the security
    *         principal.
    **/
-  public List<String> retrieveGroupsForUser(String username);
+  List<String> retrieveGroupsForUser(String username);
 
 }

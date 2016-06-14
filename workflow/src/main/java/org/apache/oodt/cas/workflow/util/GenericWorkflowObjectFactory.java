@@ -39,7 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
 import java.util.Vector;
-import java.util.Iterator;
 
 /**
  * Generic Workflow object construction utilities.
@@ -120,25 +119,25 @@ public final class GenericWorkflowObjectFactory {
 
 	public static WorkflowInstanceRepository getWorkflowInstanceRepositoryFromClassName(
 			String serviceFactory) {
-		WorkflowInstanceRepositoryFactory factory = null;
-		Class clazz = null;
+		WorkflowInstanceRepositoryFactory factory;
+		Class clazz;
 
 		try {
 			clazz = Class.forName(serviceFactory);
 			factory = (WorkflowInstanceRepositoryFactory) clazz.newInstance();
 			return factory.createInstanceRepository();
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			LOG.log(Level.WARNING, "ClassNotFoundException when "
 					+ "loading workflow instance repository factory class "
 					+ serviceFactory + " Message: " + e.getMessage());
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			LOG.log(Level.WARNING, "InstantiationException when "
 					+ "loading workflow instance repository factory class "
 					+ serviceFactory + " Message: " + e.getMessage());
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			LOG.log(Level.WARNING, "IllegalAccessException when loading "
 					+ "workflow instance repository factory class "
 					+ serviceFactory + " Message: " + e.getMessage());
@@ -163,7 +162,7 @@ public final class GenericWorkflowObjectFactory {
 	public static WorkflowTaskInstance getTaskObjectFromClassName(String className) {
 
 		if (className != null) {
-			WorkflowTaskInstance taskInstance = null;
+			WorkflowTaskInstance taskInstance;
 
 			try {
 				Class workflowTaskClass = Class.forName(className);
@@ -172,25 +171,26 @@ public final class GenericWorkflowObjectFactory {
 				return taskInstance;
 
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING,
 						"ClassNotFound, Unable to locate task class: "
 								+ className + ": cannot instantiate!");
 				return null;
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING, "Unable to instantiate task class: "
 						+ className + ": Reason: " + e.getMessage() + " !");
 				return null;
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING,
 						"IllegalAccessException when instantiating task class: "
 								+ className + ": cannot instantiate!");
 				return null;
 			}
-		} else
-			return null;
+		} else {
+		  return null;
+		}
 	}
 
   /**
@@ -209,7 +209,7 @@ public final class GenericWorkflowObjectFactory {
   public static WorkflowTaskInstance getTaskObjectFromInnerClassName(Class<?> enclosingInstance, String className) {
 
     if (className != null) {
-      WorkflowTaskInstance taskInstance = null;
+      WorkflowTaskInstance taskInstance;
 
       try {
         Class workflowTaskClass = Class.forName(className);
@@ -219,39 +219,40 @@ public final class GenericWorkflowObjectFactory {
         return taskInstance;
 
       } catch (ClassNotFoundException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING,
             "ClassNotFound, Unable to locate task class: "
                 + className + ": cannot instantiate!");
         return null;
       } catch (InstantiationException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, "Unable to instantiate task class: "
             + className + ": Reason: " + e.getMessage() + " !");
         return null;
       } catch (IllegalAccessException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING,
             "IllegalAccessException when instantiating task class: "
                 + className + ": cannot instantiate!");
         return null;
       }
       catch (NoSuchMethodException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING,
             "NoSuchMethodException when instantiating task class: "
                 + className + ": cannot instantiate!");
         return null;
       }
       catch (InvocationTargetException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING,
             "InvocationTargetException when instantiating task class: "
                 + className + ": cannot instantiate!");
         return null;
       }
-    } else
-      return null;
+    } else {
+	  return null;
+	}
   }
 
 	/**
@@ -269,7 +270,7 @@ public final class GenericWorkflowObjectFactory {
 	public static WorkflowConditionInstance getConditionObjectFromClassName(
 			String className) {
 		if (className != null) {
-			WorkflowConditionInstance conditionInstance = null;
+			WorkflowConditionInstance conditionInstance;
 
 			try {
 				Class workflowConditionClass = Class.forName(className);
@@ -277,25 +278,26 @@ public final class GenericWorkflowObjectFactory {
 						.newInstance();
 				return conditionInstance;
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING, "Unable to locate condition class: "
 						+ className + ": cannot instantiate!");
 				return null;
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING,
 						"Unable to instantiate condition class: " + className
 								+ ": Reason: " + e.getMessage() + " !");
 				return null;
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING,
 						"IllegalAccessException when instantiating condition class: "
 								+ className + ": cannot instantiate!");
 				return null;
 			}
-		} else
-			return null;
+		} else {
+		  return null;
+		}
 	}
 
 	/**
@@ -312,7 +314,7 @@ public final class GenericWorkflowObjectFactory {
 	 */
 	public static Workflow getWorkflowObjectFromClassName(String className){
 		if (className != null) {
-			Workflow workflow = null;
+			Workflow workflow;
 
 			try {
 				Class workflowClass = Class.forName(className);
@@ -320,25 +322,26 @@ public final class GenericWorkflowObjectFactory {
 						.newInstance();
 				return workflow;
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING, "Unable to locate workflow class: "
 						+ className + ": cannot instantiate!");
 				return null;
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING,
 						"Unable to instantiate workflow class: " + className
 								+ ": Reason: " + e.getMessage() + " !");
 				return null;
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 				LOG.log(Level.WARNING,
 						"IllegalAccessException when instantiating workflow class: "
 								+ className + ": cannot instantiate!");
 				return null;
 			}
-		} else
-			return null;
+		} else {
+		  return null;
+		}
 	}
 	
 	public static PrioritySorter getPrioritySorterFromClassName(String className){
@@ -348,39 +351,43 @@ public final class GenericWorkflowObjectFactory {
 	      return sorterClass.newInstance();
 	    }
 	    catch (ClassNotFoundException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, "Unable to locate workflow prioritizer class: "
             + className + ": cannot instantiate!");
         return null;
       } catch (InstantiationException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING,
             "Unable to instantiate workflow prioritizer class: " + className
                 + ": Reason: " + e.getMessage() + " !");
         return null;
       } catch (IllegalAccessException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING,
             "IllegalAccessException when instantiating workflow prioritizer class: "
                 + className + ": cannot instantiate!");
         return null;
       }
 	  }
-	  else return null;
+	  else {
+		return null;
+	  }
 	}
 
 	public static List copyWorkflows(List workflows){
 		if(workflows != null){
 			List newWorkflows = new Vector(workflows.size());
-			for(Iterator i = workflows.iterator(); i.hasNext(); ){
-				Workflow w = (Workflow)i.next();
-				Workflow newWorkflow = copyWorkflow(w);
-				newWorkflows.add(newWorkflow);
-			}
+		  for (Object workflow : workflows) {
+			Workflow w = (Workflow) workflow;
+			Workflow newWorkflow = copyWorkflow(w);
+			newWorkflows.add(newWorkflow);
+		  }
 
 			return newWorkflows;
 		}
-		else return null;
+		else {
+		  return null;
+		}
 	}
 
 	/**
@@ -393,7 +400,7 @@ public final class GenericWorkflowObjectFactory {
 	 * @return A copy of the specified Workflow.
 	 */
 	public static Workflow copyWorkflow(Workflow w){
-		Workflow newWorkflow = null;
+		Workflow newWorkflow;
 
 
 		newWorkflow = getWorkflowObjectFromClassName(w.getClass().getName());
@@ -420,15 +427,17 @@ public final class GenericWorkflowObjectFactory {
 
 			List newTaskList = new Vector(taskList.size());
 
-			for(Iterator i = taskList.iterator(); i.hasNext(); ){
-				WorkflowTask t = (WorkflowTask)i.next();
-				WorkflowTask newTask = copyTask(t);
-				newTaskList.add(newTask);
-			}
+		  for (Object aTaskList : taskList) {
+			WorkflowTask t = (WorkflowTask) aTaskList;
+			WorkflowTask newTask = copyTask(t);
+			newTaskList.add(newTask);
+		  }
 
 			return newTaskList;
 		}
-		else return null;
+		else {
+		  return null;
+		}
 	}
 
 	public static WorkflowTask copyTask(WorkflowTask t){
@@ -454,15 +463,17 @@ public final class GenericWorkflowObjectFactory {
 		if(conditionList != null){
 			List newConditionList = new Vector(conditionList.size());
 
-			for(Iterator i = conditionList.iterator(); i.hasNext(); ){
-				WorkflowCondition c = (WorkflowCondition)i.next();
-				WorkflowCondition newCondition = copyCondition(c);
-				newConditionList.add(newCondition);
-			}
+		  for (Object aConditionList : conditionList) {
+			WorkflowCondition c = (WorkflowCondition) aConditionList;
+			WorkflowCondition newCondition = copyCondition(c);
+			newConditionList.add(newCondition);
+		  }
 
 			return newConditionList;
 		}
-		else return null;
+		else {
+		  return null;
+		}
 	}
 
 	public static WorkflowCondition copyCondition(WorkflowCondition c){

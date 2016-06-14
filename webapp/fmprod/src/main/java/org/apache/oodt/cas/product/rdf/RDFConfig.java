@@ -18,10 +18,8 @@
 
 package org.apache.oodt.cas.product.rdf;
 
-//JDK imports
-import org.apache.oodt.cas.filemgr.structs.ProductType;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 /**
@@ -52,11 +50,11 @@ public class RDFConfig {
    * Default constructor.
    */
   public RDFConfig() {
-    this.nsMap = new HashMap<String, String>();
-    this.rewriteMap = new HashMap<String, String>();
-    this.resLinkMap = new HashMap<String, String>();
-    this.keyNsMap = new HashMap<String, String>();
-    this.typesNsMap = new HashMap<String, String>();
+    this.nsMap = new ConcurrentHashMap<String, String>();
+    this.rewriteMap = new ConcurrentHashMap<String, String>();
+    this.resLinkMap = new ConcurrentHashMap<String, String>();
+    this.keyNsMap = new ConcurrentHashMap<String, String>();
+    this.typesNsMap = new ConcurrentHashMap<String, String>();
     this.defaultKeyNs = null;
     this.defaultTypeNs = null;
   }
@@ -177,25 +175,27 @@ public class RDFConfig {
   public String getKeyNs(String key) {
     if (this.keyNsMap != null && this.keyNsMap.containsKey(key)) {
       return this.keyNsMap.get(key);
-    } else
+    } else {
       return this.getDefaultKeyNs();
+    }
   }
 
   /**
    * Convenience method. First checks to see if there is a declared type
-   * namespace for this {@link ProductType}, otherwise, returns
+   * namespace for this {@link org.apache.oodt.cas.filemgr.structs.ProductType}, otherwise, returns
    * {@link #getDefaultTypeNs()}.
    * 
    * @param type
-   *          The {@link ProductType#getName()} to find the namespace for.
+   *          The {@link org.apache.oodt.cas.filemgr.structs.ProductType#getName()} to find the namespace for.
    * @return Either the type's declared namespace, or
    *         {@link #getDefaultTypeNs()}.
    */
   public String getTypeNs(String type) {
     if (this.typesNsMap != null && this.typesNsMap.containsKey(type)) {
       return this.typesNsMap.get(type);
-    } else
+    } else {
       return this.getDefaultTypeNs();
+    }
   }
 
 }

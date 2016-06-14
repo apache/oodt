@@ -44,7 +44,6 @@ public class Trace extends Panel {
 
   /**
    * @param id
-   * @param model
    */
   public Trace(String id, String fmUrlStr, boolean listNotCat,
       List<String> excludeList, Product product) {

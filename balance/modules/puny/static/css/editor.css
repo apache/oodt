@@ -276,7 +276,7 @@ margin: 0 auto;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   line-height: 1.8em;
   margin: 1em 0 0.4em;
-  padding: 0.5em; /* I don't really like mixing pct & em hereÉ */
+  padding: 0.5em; /* I don't really like mixing pct & em hereï¿½ */
   width: 100%;
   height: 20em;
 }
@@ -292,7 +292,7 @@ margin: 0 auto;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
   height: 35px;
-  margin: 0px 5px;
+  margin: 0 5px;
   padding: 0.4em 1em;
 
   text-shadow: 0 1px 0 #fff;

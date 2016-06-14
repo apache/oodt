@@ -27,6 +27,7 @@ package org.apache.oodt.cas.catalog.mapping;
 public class LuceneIngestMapperFactory implements
 		IngestMapperFactory {
 
+  @Override
 	public IngestMapper createMapper() {
 		return new LuceneIngestMapper();
 	}

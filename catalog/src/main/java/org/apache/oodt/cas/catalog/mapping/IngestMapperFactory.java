@@ -26,6 +26,6 @@ package org.apache.oodt.cas.catalog.mapping;
  */
 public interface IngestMapperFactory {
 
-	public IngestMapper createMapper();
+	IngestMapper createMapper();
 	
 }

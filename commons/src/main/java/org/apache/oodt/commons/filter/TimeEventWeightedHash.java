@@ -63,8 +63,9 @@ public class TimeEventWeightedHash {
 	  TimeEventWeightedHash hash = new TimeEventWeightedHash();
 	  hash.epsilon = epsilon;
       events = TimeEvent.getTimeOrderedEvents(events);
-      for (TimeEvent event : events)
-    	  hash.addEvent(event);
+      for (TimeEvent event : events) {
+          hash.addEvent(event);
+      }
       return hash;
   }
   
@@ -84,8 +85,9 @@ public class TimeEventWeightedHash {
       MyLinkedHashSet<TimeEventNode> parentNodes = this.findParents(newEvent);
       MyLinkedHashSet<TimeEventNode> childrenNodes = this.findChildren(newEvent, parentNodes);
       
-      if (childrenNodes.size() == 0)
+      if (childrenNodes.size() == 0) {
           leafNodes.add(newEventNode);
+      }
       
       newEventNode.addParents(parentNodes);
       newEventNode.addChildren(childrenNodes);
@@ -111,8 +113,9 @@ public class TimeEventWeightedHash {
               }
           }
           //if all children where not possible parents, then curPPN must be parent
-          if (!ppnListChanged)
+          if (!ppnListChanged) {
               parentNodes.add(curPPN);
+          }
           
           //get next curPPN
           possibleParentNodes.remove(curPPN);
@@ -155,8 +158,9 @@ public class TimeEventWeightedHash {
       for (TimeEventNode ten : this.leafNodes) {
          if (ten.getPathWeight() > max.getPathWeight() 
                  || (ten.getPathWeight() == max.getPathWeight() 
-                         && ten.getPathPriorityWeight() > max.getPathPriorityWeight()))
+                         && ten.getPathPriorityWeight() > max.getPathPriorityWeight())) {
              max = ten;
+         }
       }
       WeightedNode root = new WeightedNode(max.getTimeEvent());
       TimeEventNode curTEN = max.greatestWieghtedParent;
@@ -181,9 +185,10 @@ public class TimeEventWeightedHash {
       
       @Override
       public boolean add(E ten) {
-          boolean wasAdded = false;
-          if (wasAdded = super.add(ten))
+          boolean wasAdded;
+          if (wasAdded = super.add(ten)) {
               listSet.add(ten);
+          }
           return wasAdded;
       }
       
@@ -191,8 +196,9 @@ public class TimeEventWeightedHash {
       public boolean addAll(Collection<? extends E> collection) {
           boolean setChanged = false;
           for (E ten : collection) {
-              if (this.add(ten))
+              if (this.add(ten)) {
                   setChanged = true;
+              }
           }
           return setChanged;
       }
@@ -202,25 +208,28 @@ public class TimeEventWeightedHash {
           if (super.remove(ten)) {
               this.listSet.remove(ten);
               return true;
-          }else 
+          }else {
               return false;
+          }
       }
       
       @Override
       public boolean removeAll(Collection<?> collection) {
           boolean setChanged = false;
           for (Object obj : collection) {
-              if (this.remove(obj))
+              if (this.remove(obj)) {
                   setChanged = true;
+              }
           }
           return setChanged;  
       }
       
       public E get(int index) {
-          if (this.listSet.size() > index)
+          if (this.listSet.size() > index) {
               return this.listSet.get(index);
-          else 
+          } else {
               return null;
+          }
       }
       
       public List<E> getList() {
@@ -246,19 +255,21 @@ public class TimeEventWeightedHash {
       }
       
       public long getPathWeight() {
-          if (this.greatestWieghtedParent != null)
+          if (this.greatestWieghtedParent != null) {
               return te.getDuration()
-                      + this.greatestWieghtedParent.getPathWeight();
-          else
+                     + this.greatestWieghtedParent.getPathWeight();
+          } else {
               return te.getDuration();
+          }
       }
 
       public double getPathPriorityWeight() {
-          if (this.greatestWieghtedParent != null)
+          if (this.greatestWieghtedParent != null) {
               return te.getPriority()
-                      + this.greatestWieghtedParent.getPathPriorityWeight();
-          else
+                     + this.greatestWieghtedParent.getPathPriorityWeight();
+          } else {
               return te.getPriority();
+          }
       }
 
       public TimeEvent getTimeEvent() {
@@ -288,8 +299,9 @@ public class TimeEventWeightedHash {
               long pPaW = parent.getPathWeight();
               double gwpPiW = child.greatestWieghtedParent.getPathPriorityWeight();
               double pPiW = parent.getPathPriorityWeight();
-              if (pPaW > gwpPaW || (pPaW == gwpPaW && pPiW > gwpPiW))                    
+              if (pPaW > gwpPaW || (pPaW == gwpPaW && pPiW > gwpPiW)) {
                   child.greatestWieghtedParent = parent;
+              }
           }
       }
       
@@ -298,13 +310,15 @@ public class TimeEventWeightedHash {
       }
 
       public void addChildren(Collection<TimeEventNode> children) {
-          for (TimeEventNode child : children)
+          for (TimeEventNode child : children) {
               this.addChild(child);
+          }
       }
       
       public void addParents(Collection<TimeEventNode> parents) {
-          for (TimeEventNode parent : parents)
+          for (TimeEventNode parent : parents) {
               this.addParent(parent);
+          }
       }
 
       public MyLinkedHashSet<TimeEventNode> getChildren() {
@@ -319,8 +333,9 @@ public class TimeEventWeightedHash {
           if (obj instanceof TimeEventNode) {
               TimeEventNode ten = (TimeEventNode) obj;
               return this.te.equals(ten.te);
-          } else
+          } else {
               return false;
+          }
       }
 
       public String toString() {
@@ -344,8 +359,9 @@ public class TimeEventWeightedHash {
 
       private void setChild(WeightedNode child) {
           this.child = child;
-          if (child != null)
+          if (child != null) {
               this.pathWeight = this.te.getDuration() + child.getPathWeight();
+          }
       }
 
       public TimeEvent getTimeEvent() {
@@ -368,7 +384,7 @@ public class TimeEventWeightedHash {
   }
 
   public String toString() {
-      StringBuffer sb = new StringBuffer("");
+      StringBuilder sb = new StringBuilder("");
       LinkedList<TimeEventNode> printNodes = new LinkedList<TimeEventNode>();
       printNodes.add(this.root);
       sb.append(printNodes(printNodes, "-", 0));
@@ -380,10 +396,38 @@ public class TimeEventWeightedHash {
       StringBuffer output = new StringBuffer("");
       for (TimeEventNode node : list) {
           output.append(spacer);
-          output.append(node.te + " -- " + (curPathWeight + node.te.getDuration()) + "\n");
+          output.append(node.te).append(" -- ").append(curPathWeight + node.te.getDuration()).append("\n");
           output.append(printNodes(node.getChildren().getList(), " " + spacer, curPathWeight + node.te.getDuration()));
       }
       return output;
   }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TimeEventWeightedHash that = (TimeEventWeightedHash) o;
+
+        if (epsilon != that.epsilon) {
+            return false;
+        }
+        if (root != null ? !root.equals(that.root) : that.root != null) {
+            return false;
+        }
+        return !(leafNodes != null ? !leafNodes.equals(that.leafNodes) : that.leafNodes != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = root != null ? root.hashCode() : 0;
+        result = 31 * result + (int) (epsilon ^ (epsilon >>> 32));
+        result = 31 * result + (leafNodes != null ? leafNodes.hashCode() : 0);
+        return result;
+    }
 }

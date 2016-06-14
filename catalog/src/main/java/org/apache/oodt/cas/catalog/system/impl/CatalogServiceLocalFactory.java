@@ -17,18 +17,19 @@
 package org.apache.oodt.cas.catalog.system.impl;
 
 //JDK imports
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.catalog.mapping.IngestMapperFactory;
 import org.apache.oodt.cas.catalog.repository.CatalogRepositoryFactory;
 import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 import org.apache.oodt.cas.catalog.system.CatalogServiceFactory;
 
-//Spring imports
 import org.springframework.beans.factory.annotation.Required;
+
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
+//Spring imports
 
 //OODT imports
 
@@ -42,7 +43,8 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class CatalogServiceLocalFactory implements CatalogServiceFactory {
 
-	private static Logger LOG = Logger.getLogger(CatalogServiceLocalFactory.class.getName());
+  public static final int INT = 200;
+  private static Logger LOG = Logger.getLogger(CatalogServiceLocalFactory.class.getName());
 	
 	protected CatalogRepositoryFactory catalogRepositoryFactory = null;
 	protected IngestMapperFactory ingestMapperFactory  = null;
@@ -53,7 +55,7 @@ public class CatalogServiceLocalFactory implements CatalogServiceFactory {
 	protected boolean oneCatalogFailsAllFail = false;
 	protected boolean simplifyQueries = false;
 	protected boolean disableIntersectingCrossCatalogQueries = false;
-	protected int crossCatalogResultSortingThreshold = 200;
+	protected int crossCatalogResultSortingThreshold = INT;
 	
 	public CatalogServiceLocalFactory() {} 
 	

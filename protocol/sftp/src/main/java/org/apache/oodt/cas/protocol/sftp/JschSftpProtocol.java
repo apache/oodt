@@ -46,6 +46,7 @@ import java.util.Vector;
  */
 public class JschSftpProtocol implements Protocol {
 
+  public static final int PORT = 22;
   private Session session;
 
   private ChannelSftp sftpChannel;
@@ -57,7 +58,7 @@ public class JschSftpProtocol implements Protocol {
   private static final JSch jsch = new JSch();
 
   public JschSftpProtocol() {
-  	this(22);
+  	this(PORT);
   }
  
   public JschSftpProtocol(int port) {

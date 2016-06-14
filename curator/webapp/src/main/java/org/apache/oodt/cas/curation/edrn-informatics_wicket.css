@@ -1,0 +1,421 @@
+@CHARSET "UTF-8";
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+html, body {
+    padding:0;
+    margin:0 auto;
+    background:transparent url(../../images/bg-body.gif) repeat-x scroll 0 0;
+    background-color:#fff;
+    font-family:"Lucida Grande","Arial","Helvetica","Verdana","sans-serif";
+    font-size:14px;
+}
+
+/**
+ * DIV.NCIBANNER
+ * This is the red National Cancer Institute header bar
+ */
+div#ncibanner {
+    background:#a90101 none repeat; 
+    position:relative;
+}
+div#ncibanner-inner {
+    width:974px;
+    margin:0 auto;
+    position:relative;  
+}
+div.#ncibanner-inner a {
+    display:inline; 
+}
+div#dcplogo {
+    width:974px;
+    margin:auto;    
+}
+h2.ncilogo, h2.nihlogo, h2.cdglogo, h2.dcplogo {
+    border-bottom:0 none;
+    display:block;
+    float:left; 
+    margin:0;
+    padding:0;
+    position:relative;
+    text-indent:-9999px;
+}
+
+h2.ncilogo {
+    background:transparent url(../../images/l-nci.gif) no-repeat scroll 0 0;
+    height:43px;
+    width:278px;
+}
+h2.cdglogo {
+    background:transparent url(../../images/l-cdg.gif) no-repeat scroll 0 0;
+    float:right;
+    height:43px;
+    width:90px;
+}
+h2.nihlogo {
+    background:transparent url(../../images/l-nih.gif) no-repeat scroll 0 0;
+    float:right;
+    height:43px;
+    width:173px;
+}
+h2.dcplogo {
+    background:transparent url(../../images/l-dcp.gif) no-repeat scroll 0 0;
+    float:right;
+    height:23px;
+    margin:-45px -12px 16px;
+    width:164px;
+}
+
+div#page, div#footer {
+    width:974px;    
+    margin:0 auto;
+    position:relative;
+}
+
+/**
+ * DIV.EDRNINFORMATICS
+ * This is the header that preceeds application content. 
+ */
+div#edrninformatics {
+    position:relative;
+    margin:auto;
+    width:974px;
+}
+
+/**
+ * DIV.CAS-HEADER
+ * This is the header that precedes application content. 
+ */
+div#edrninformatics.cas-header {
+    background:url(../../images/blackfade-syncd.jpg) scroll 0 0 repeat-x;
+}
+div#edrninformatics.cas-header div.menu {
+    padding-top:50px;   
+}
+
+/**
+ * DIV.CAS-LOGO-LEFT
+ * This is the NCI/EDRN logo div which lives inside DIV.EDRNINFORMATICS.
+ */
+div#edrnlogo.cas-logo-left {
+    background:url(../../images/nci-small.jpg) scroll -2px 1px no-repeat;
+    font-size:14px;
+}
+/**
+ * DIV.CAS-LOGO-RIGHT
+ * This is the double-helix graphic
+ */
+div#edrn-dna.cas-logo-right {
+    background:url(../../images/edrn_dna-bigger.jpg) scroll left top no-repeat;
+}
+
+
+/**
+ * DIV.EDRNLOGO
+ * This is the NCI/EDRN logo div which lives inside DIV.EDRNINFORMATICS.
+ */
+div#edrnlogo {
+    height:68px;
+    width:974px;
+    margin:0 auto;
+}
+img#edrnlogo-logo {
+    width:64px;
+    margin-top:-20px;
+    padding:3px;
+    margin-right:5px;
+    vertical-align:top;
+    float:left;
+    border:solid 0 #955;
+}
+div#edrnlogo h1.header-title {
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    padding-top:25px;
+    padding-bottom:15px;
+    margin-top:15px;
+    line-height:16px;
+    text-align:left;
+    width:974px;
+    font-size:31px;
+    font-weight:bold;
+    border:none;
+}
+div#edrnlogo h2 {
+    color:#222222;
+    font-size:12px;
+    font-style:italic;
+    font-weight:normal;
+    margin:-10px auto 16px;
+}
+div#edrnlogo h2.header-title {
+    padding:auto;
+    margin:-10px auto 16px auto;
+    font-size:12px;
+    font-weight:normal;
+    font-style:italic;
+    color:#222;
+    border:none;
+}
+
+div#edrnlogo span.smaller {
+    font-size:85%;
+    color:#bbb; 
+}
+/**
+ * DIV.EDRN-DNA
+ * This is the double-helix graphic
+ */
+div#edrn-dna {
+    position:absolute;
+    top:0;
+    right:0;
+    height:67px;
+    width:290px;
+    background:url(../../images/edrn_dna-bigger.jpg) scroll left top no-repeat;
+}
+
+
+/**
+ * H2.APP-TITLE
+ * This is the title for the application. It lives on the right-hand side
+ * of DIV.EDRNINFORMATICS.
+ */
+h2.app-title {
+    position:absolute;
+    top:0;
+    right:0;
+    background-color:transparent;
+    margin:0;
+    padding:5px;
+    padding-right:0;
+    color:#722;
+    font-weight:normal;
+    font-size:13px;
+    font-weight:bold;
+    letter-spacing:0.00em;
+    text-transform:uppercase;
+    z-index:100;
+}
+
+/**
+ * DIV.ERROR
+ * This provides a red 'error' box suitable for displaying error
+ * messages.
+ */
+div.error {
+    background-color:#fcc;
+    padding:5px;
+    margin-right:15px;
+    border:solid 1px #f44;
+}
+
+/**
+ * DIV.SUCCESS
+ * This provides a green 'success' box suitable for displaying
+ * successful messages.
+ */
+div.success  {
+    padding:5px;
+    border:solid 1px green;
+    background-color:#cfc;  
+    margin-right:10px;
+}
+
+/**
+ * DIV.USERDETAILS
+ * This provides information about the login-status of the user.
+ * It should live within div#edrninformatics
+ */
+div.userdetails {
+    position:relative;
+    text-align:right;
+    width:974px;
+    margin:auto;
+    color:#111;
+    font-size:11px;
+}
+div.userdetails a {
+    text-decoration:underline;
+    color:#444; 
+}
+
+/**
+ Overrides required to enable user details to not be overlayed
+ on top of container for the staging/fm area
+**/
+div.container{
+    top:11px;
+}
+
+/** 
+ * DIV#BREADCRUMBS
+ * This provides the area for breadcrumbs navigation links
+ */
+ 
+div#breadcrumbs.cas-breadcrumbs a {
+    color:#333;
+}
+
+div#breadcrumbs {
+    position:relative;
+    margin-top:2px;
+    padding:4px;
+    padding-right:5px;
+    padding-left:5px;
+    border-top:solid 0 #700003;
+    border-bottom:solid 1px #700003;
+    padding-bottom:5px;
+    background-color:#fff;  
+    color:#333;
+    font-size:85%;
+}
+div#breadcrumbs ul {
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+div#breadcrumbs ul li {
+    display:inline;
+}
+
+div#breadcrumbs ul li a {
+    color:#222;
+    font-weight:normal;
+    text-decoration:underline;  
+}
+
+/**
+ * DIV#FOOTER
+ * This provides the standard page footer with links to NCI,NIH,USAGOV
+ * and enterprise-wide informational links (privacy policy, etc).
+ */
+div#footer {
+    font-size:90%;
+    color:#666;
+    text-align:center;
+    margin-top:35px;
+    border-top:solid 1px #ddd;
+    padding-top:15px;
+    padding-bottom:8px;
+}
+div#footer img {
+    border:none;
+    padding-left:2px;
+    margin-left:5px;    
+}
+
+/**
+ * HEADERS (H1,H2,H3,......)
+ */
+h2.title {
+    background-color:#555;
+    padding:5px;
+    margin:0;
+    color:#fff;
+    border-top:solid 2px #900;
+    border-bottom:solid 1px #300;
+    font-weight:normal;
+    font-size:15px;
+}
+
+h2.title a {
+    color:#89b; 
+    font-weight:normal;
+    text-decoration:none;
+}
+
+h2.title a:hover {
+    text-decoration:underline;
+    font-weight:normal; 
+}
+
+h4 {
+    border-bottom:dotted 1px #888;
+}
+
+
+/**
+ * LOGIN FORM
+ */
+form#login-form {
+    border:solid 0 #f66;
+    background-color:#fff;
+    margin:5px;
+    padding:3px;
+    text-align:center;
+}
+form#login-form h3 {
+    color:#333;
+    margin-top:0;
+    border-bottom:dotted 0 #444;
+        
+}
+form#login-form input[type=text], form#login-form input[type=password] {
+    border:solid 1px #888;
+    padding:3px;
+    width:150px;
+}
+form#login-form table {
+    color:#333;
+    margin:5px;
+    margin-top:0;
+    border:solid 1px #ccc;
+    width:242px;
+}
+form#login-form input[type=submit] {
+    padding:3px;
+}
+
+/**
+ * .CLR
+ * This is a utility which serves to reset things after a 
+ * series of floated elements
+ */
+.clr {
+    clear:both;
+}
+
+div.infoContent {
+    padding:5px;    
+}
+
+div#infoNoMetadataExtractorDefined {
+    position:absolute;
+    border:solid 1px #ccc;
+    top:28px;
+    right:-2px;
+    z-index:1000;
+    width:60%;  
+    line-height:18px;
+}
+
+div.info {
+    font-size:13px;
+    background-color:#acf;
+    font-family:arial,sans-serif;
+    color:#345; 
+    display:none;   
+}
+div.info input[type=button] {
+    padding:2px;
+    margin:5px 0;
+}
+
+#centered{
+    width:50%; 
+    margin-left:15%; 
+    margin-right:15%;
+}

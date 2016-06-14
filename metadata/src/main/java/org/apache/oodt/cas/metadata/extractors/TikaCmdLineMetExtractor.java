@@ -18,19 +18,21 @@
 package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.tika.Tika;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //Apache imports
-import org.apache.commons.lang.StringEscapeUtils;
-
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.tika.Tika;
 
 /**
  * @author rverma
@@ -114,7 +116,7 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
             return met;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.severe(e.getMessage());
             throw new MetExtractionException(e.getMessage());
         }

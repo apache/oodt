@@ -16,54 +16,6 @@
  */
 package org.apache.oodt.cas.pge.util;
 
-//OODT static imports
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ARGS_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.CMD_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.CREATE_BEFORE_EXEC_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.CUSTOM_METADATA_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.DIR_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.DIR_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.DYN_INPUT_FILES_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ENV_REPLACE_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ENV_REPLACE_NO_RECUR_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.EXE_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILE_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILE_STAGING_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILE_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILES_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FORCE_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.IMPORT_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEYREF_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEY_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEY_GEN_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.METADATA_KEY_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.METADATA_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.MET_FILE_WRITER_CLASS_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAME_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAMING_EXPR_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAMESPACE_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.OUTPUT_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.PATH_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.RENAMING_CONV_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.REGEX_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.SHELL_TYPE_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.SPLIT_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.STAGE_FILES_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.VAL_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.WORKFLOW_MET_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.WRITER_CLASS_ATTR;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER_URL;
-
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.QueryUtils;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
@@ -73,17 +25,26 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pge.config.DynamicConfigFile;
 import org.apache.oodt.cas.pge.config.OutputDir;
 import org.apache.oodt.cas.pge.config.RegExprOutputFiles;
+import org.apache.oodt.cas.pge.exceptions.PGEException;
 import org.apache.oodt.commons.xml.XMLUtils;
 
-//DOM imports
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-//Google imports
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.*;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER_URL;
+
 
 /**
  * Help class with method for parsing XMLFilePgeConfigBuilder config XML file.
@@ -104,7 +65,7 @@ public class XmlHelper {
 	}
 
 	public static List<Pair<String, String>> getImports(Element elem,
-			Metadata metadata) throws Exception {
+			Metadata metadata) throws PGEException {
 		List<Pair<String, String>> imports = Lists.newArrayList();
 		NodeList nodeList = elem.getElementsByTagName(IMPORT_TAG);
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -117,7 +78,7 @@ public class XmlHelper {
 	}
 
 	public static String getNamespace(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		String namespace = elem.getAttribute(NAMESPACE_ATTR);
 		if (!Strings.isNullOrEmpty(namespace)) {
 			return fillIn(namespace, metadata, false);
@@ -127,7 +88,7 @@ public class XmlHelper {
 	}
 
 	public static String getFile(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		String file = elem.getAttribute(FILE_ATTR);
 		if (!Strings.isNullOrEmpty(file)) {
 			return fillIn(file, metadata, false);
@@ -137,14 +98,14 @@ public class XmlHelper {
 	}
 
 	public static Element getCustomMetadataElement(Element root)
-			throws Exception {
+		throws PGEException {
 		NodeList nodes = root.getElementsByTagName(CUSTOM_METADATA_TAG);
 		if (nodes.getLength() == 0) {
 			return null;
 		} else if (nodes.getLength() == 1) {
 			return (Element) nodes.item(0);
 		} else {
-			throw new Exception("Found more than one '" + CUSTOM_METADATA_TAG
+			throw new PGEException("Found more than one '" + CUSTOM_METADATA_TAG
 					+ "' element");
 		}
 	}
@@ -160,7 +121,7 @@ public class XmlHelper {
 	}
 
 	public static String getMetadataKey(Element metElem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		String key = metElem.getAttribute(KEY_ATTR);
 
 		// no key attr, so check for key_gen attr.
@@ -170,7 +131,7 @@ public class XmlHelper {
 
 		// if still no key value, then fail.
 		if (Strings.isNullOrEmpty(key)) {
-			throw new Exception("Must specify either metadata attr '"
+			throw new PGEException("Must specify either metadata attr '"
 					+ KEY_ATTR + "' or '" + KEY_GEN_ATTR + "'");
 		}
 
@@ -178,8 +139,7 @@ public class XmlHelper {
 		return key;
 	}
 
-	public static boolean isEnvReplaceNoRecur(Element elem, Metadata metadata)
-			throws Exception {
+	public static boolean isEnvReplaceNoRecur(Element elem, Metadata metadata) {
 		String isEnvReplaceNoRecur = elem
 				.getAttribute(ENV_REPLACE_NO_RECUR_ATTR);
 		if (Strings.isNullOrEmpty(isEnvReplaceNoRecur)) {
@@ -189,8 +149,7 @@ public class XmlHelper {
 		}
 	}
 
-	public static boolean isEnvReplace(Element elem, Metadata metadata)
-			throws Exception {
+	public static boolean isEnvReplace(Element elem, Metadata metadata) {
 		String isEnvReplace = elem.getAttribute(ENV_REPLACE_ATTR);
 		if (Strings.isNullOrEmpty(isEnvReplace)) {
 			return true;
@@ -200,13 +159,13 @@ public class XmlHelper {
 	}
 
 	public static boolean isMultiValue(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		return Boolean.parseBoolean(fillIn(elem.getAttribute(SPLIT_ATTR),
 				metadata));
 	}
 
 	public static List<String> getMetadataValues(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		List<String> values = Lists.newArrayList();
 
 		// Read val attr.
@@ -252,7 +211,7 @@ public class XmlHelper {
 	}
 
 	public static String getMetadataKeyRef(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		String keyRef = elem.getAttribute(KEYREF_ATTR);
 		if (!Strings.isNullOrEmpty(keyRef)) {
 
@@ -270,23 +229,23 @@ public class XmlHelper {
 	}
 
 	public static boolean isWorkflowMetKey(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		return Boolean.parseBoolean(fillIn(
 				elem.getAttribute(WORKFLOW_MET_ATTR), metadata, false));
 	}
 
 	public static String getPath(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		return fillIn(elem.getAttribute(PATH_ATTR), metadata, false);
 	}
 
 	public static String getWriter(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		return fillIn(elem.getAttribute(WRITER_CLASS_ATTR), metadata, false);
 	}
 
 	public static List<String> getArgs(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		List<String> args = Lists.newArrayList();
 		for (String arg : Splitter.on(",").split(elem.getAttribute(ARGS_ATTR))) {
 			args.add(fillIn(arg, metadata, false));
@@ -299,7 +258,7 @@ public class XmlHelper {
 	}
 
 	public static List<DynamicConfigFile> getDynamicConfigFiles(Element elem,
-			Metadata metadata) throws Exception {
+			Metadata metadata) throws PGEException {
 		List<DynamicConfigFile> dynamicConfigFiles = Lists.newArrayList();
 		NodeList nodeList = elem.getElementsByTagName(DYN_INPUT_FILES_TAG);
 
@@ -315,16 +274,16 @@ public class XmlHelper {
 				String writer = getWriter(fileElem, metadata);
 				List<String> args = getArgs(fileElem, metadata);
 				dynamicConfigFiles.add(new DynamicConfigFile(path, writer, args
-						.toArray(new String[0])));
+					.toArray(new String[args.size()])));
 			}
 		}
 		return dynamicConfigFiles;
 	}
 
-	public static Element getExe(Element elem) throws Exception {
+	public static Element getExe(Element elem) throws PGEException {
 		NodeList nodeList = elem.getElementsByTagName(EXE_TAG);
 		if (nodeList.getLength() > 1) {
-			throw new Exception("Can only specify '" + EXE_TAG + "' once!");
+			throw new PGEException("Can only specify '" + EXE_TAG + "' once!");
 		} else if (nodeList.getLength() == 1) {
 			return (Element) nodeList.item(0);
 		} else {
@@ -333,17 +292,17 @@ public class XmlHelper {
 	}
 
 	public static String getDir(Element elem, Metadata metadata)
-			throws MalformedURLException, Exception {
+		throws PGEException {
 		return fillIn(elem.getAttribute(DIR_ATTR), metadata);
 	}
 
 	public static String getShellType(Element elem, Metadata metadata)
-			throws MalformedURLException, Exception {
+		throws PGEException {
 		return fillIn(elem.getAttribute(SHELL_TYPE_ATTR), metadata);
 	}
 
 	public static List<String> getExeCmds(Element elem, Metadata metadata)
-			throws MalformedURLException, DOMException, Exception {
+		throws PGEException {
 		List<String> exeCmds = Lists.newArrayList();
 		NodeList nodeList = elem.getElementsByTagName(CMD_TAG);
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -359,10 +318,10 @@ public class XmlHelper {
 		return exeCmds;
 	}
 
-	public static Element getFileStaging(Element elem) throws Exception {
+	public static Element getFileStaging(Element elem) throws PGEException {
 		NodeList nodeList = elem.getElementsByTagName(FILE_STAGING_TAG);
 		if (nodeList.getLength() > 1) {
-			throw new Exception("Can only specify '" + FILE_STAGING_TAG
+			throw new PGEException("Can only specify '" + FILE_STAGING_TAG
 					+ "' once!");
 		} else if (nodeList.getLength() == 1) {
 			return (Element) nodeList.item(0);
@@ -372,18 +331,18 @@ public class XmlHelper {
 	}
 
 	public static boolean isForceStage(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		return Boolean.parseBoolean(fillIn(elem.getAttribute(FORCE_ATTR),
 				metadata));
 	}
 
 	public static String getFileStagingMetadataKey(Element elem,
-			Metadata metadata) throws Exception {
+			Metadata metadata) throws PGEException {
 		return fillIn(elem.getAttribute(METADATA_KEY_ATTR), metadata);
 	}
 
 	public static List<String> getStageFilesMetKeys(Element elem,
-			Metadata metadata) throws Exception {
+			Metadata metadata) throws PGEException {
 		List<String> metKeys = Lists.newArrayList();
 		NodeList nodeList = elem.getElementsByTagName(STAGE_FILES_TAG);
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -393,10 +352,10 @@ public class XmlHelper {
 		return metKeys;
 	}
 
-	public static Element getOutput(Element elem) throws Exception {
+	public static Element getOutput(Element elem) throws PGEException {
 		NodeList nodeList = elem.getElementsByTagName(OUTPUT_TAG);
 		if (nodeList.getLength() > 1) {
-			throw new Exception("Can only specify '" + OUTPUT_TAG + "' once!");
+			throw new PGEException("Can only specify '" + OUTPUT_TAG + "' once!");
 		} else if (nodeList.getLength() == 1) {
 			return (Element) nodeList.item(0);
 		} else {
@@ -405,13 +364,13 @@ public class XmlHelper {
 	}
 
 	public static boolean isCreateBeforeExe(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		return Boolean.parseBoolean(fillIn(
 				elem.getAttribute(CREATE_BEFORE_EXEC_ATTR), metadata));
 	}
 
 	public static List<OutputDir> getOuputDirs(Element elem, Metadata metadata)
-			throws Exception {
+		throws PGEException {
 		List<OutputDir> outputDirs = Lists.newArrayList();
 		NodeList nodeList = elem.getElementsByTagName(DIR_TAG);
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -427,7 +386,7 @@ public class XmlHelper {
 	}
 
 	public static void getRegExpOutputFiles(Element elem, Metadata metadata,
-			OutputDir outputDir) throws Exception {
+			OutputDir outputDir) throws PGEException {
 		NodeList fileList = elem.getElementsByTagName(FILES_TAG);
 		for (int j = 0; j < fileList.getLength(); j++) {
 			Element fileElement = (Element) fileList.item(j);
@@ -476,29 +435,30 @@ public class XmlHelper {
 	}
 
 	public static String fillIn(String value, Metadata inputMetadata)
-			throws Exception {
+		throws PGEException {
 		return fillIn(value, inputMetadata, true);
 	}
 
 	public static String fillIn(String value, Metadata inputMetadata,
-			boolean envReplaceRecur) throws Exception {
+			boolean envReplaceRecur) throws PGEException {
 		try {
 			while ((value = PathUtils
 					.doDynamicReplacement(value, inputMetadata)).contains("[")
-					&& envReplaceRecur)
-				;
+					&& envReplaceRecur) {
+			}
 			if (value.toUpperCase().matches(
-					"^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$"))
-				value = QueryUtils
-						.getQueryResultsAsString(new XmlRpcFileManagerClient(
-								new URL(inputMetadata
-										.getMetadata(QUERY_FILE_MANAGER_URL
-												.getName())))
-								.complexQuery(SqlParser
-										.parseSqlQueryMethod(value)));
+					"^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$")) {
+			  value = QueryUtils
+				  .getQueryResultsAsString(new XmlRpcFileManagerClient(
+					  new URL(inputMetadata
+						  .getMetadata(QUERY_FILE_MANAGER_URL
+							  .getName())))
+					  .complexQuery(SqlParser
+						  .parseSqlQueryMethod(value)));
+			}
 			return value;
 		} catch (Exception e) {
-			throw new Exception("Failed to parse value: " + value, e);
+			throw new PGEException("Failed to parse value: " + value, e);
 		}
 	}
 }

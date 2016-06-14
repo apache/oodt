@@ -15,8 +15,6 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
 import org.w3c.dom.*;
 
 /** A documentable object.

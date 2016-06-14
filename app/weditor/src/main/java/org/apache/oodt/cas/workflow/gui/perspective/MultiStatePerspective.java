@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.workflow.gui.perspective;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +40,7 @@ public abstract class MultiStatePerspective extends Perspective {
 
   private static final long serialVersionUID = -6410768713084872977L;
 
-  private final Map<String, ViewState> states = new HashMap<String, ViewState>();
+  private final Map<String, ViewState> states = new ConcurrentHashMap<String, ViewState>();
 
   private Mode mode;
 
@@ -82,8 +82,9 @@ public abstract class MultiStatePerspective extends Perspective {
 
   public void setMode(Mode mode) {
     this.mode = mode;
-    for (ViewState state : states.values())
+    for (ViewState state : states.values()) {
       state.setMode(mode);
+    }
     this.refresh();
   }
 

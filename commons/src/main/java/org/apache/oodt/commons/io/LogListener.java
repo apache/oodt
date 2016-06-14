@@ -15,8 +15,6 @@
 
 package org.apache.oodt.commons.io;
 
-import java.util.EventObject;
-
 /** Listener for logging events.
  *
  * Objects of classes that implement this interface are notified when messages are logged
@@ -33,7 +31,7 @@ public interface LogListener extends java.beans.PropertyChangeListener {
 	 * 
 	 * <ul>
 	 *   <li>The timestamp of the message, from {@link LogEvent#getTimestamp}.</li>
-	 *   <li>The source of the message, from {@link EventObject#getSource}, which is always
+	 *   <li>The source of the message, from {@link java.util.EventObject#getSource}, which is always
 	 *     a {@link String}.</li>
 	 *   <li>The category of the message, from {@link LogEvent#getCategory}.</li>
 	 *   <li>The message text, from {@link LogEvent#getMessage}.</li>
@@ -50,7 +48,7 @@ public interface LogListener extends java.beans.PropertyChangeListener {
 	 * <ul>
 	 *   <li>The name of the stream, from {@link LogEvent#getStream}.</li>
 	 *   <li>The time the stream got started, from {@link LogEvent#getTimestamp}</li>
-	 *   <li>The source of the new stream start, from {@link EventObject#getSource} (always a {@link String}).</li>
+	 *   <li>The source of the new stream start, from {@link java.util.EventObject#getSource} (always a {@link String}).</li>
 	 * </ul>
 	 *
 	 * @param event The logging event.
@@ -60,7 +58,7 @@ public interface LogListener extends java.beans.PropertyChangeListener {
 	/** A stream was stopped.
 	 *
 	 * The <var>event</var> contains the detail of the stream stop, which is the name
-	 * of the stream, from {@link LogEvent#getStream} or {@link EventObject#getSource}
+	 * of the stream, from {@link LogEvent#getStream} or {@link java.util.EventObject#getSource}
 	 * (always a {@link String}).
 	 *
 	 * @param event The logging event.

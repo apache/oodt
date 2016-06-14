@@ -18,13 +18,8 @@
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import java.io.Serializable;
-import java.util.List;
-import java.util.Vector;
-
-import javax.servlet.ServletContext;
-
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
 import org.apache.oodt.cas.webcomponents.workflow.instance.WorkflowInstancesViewer;
 import org.apache.oodt.pcs.opsui.config.ConfigPage;
@@ -32,13 +27,20 @@ import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.oodt.pcs.webcomponents.trace.Trace;
 
 //Wicket imports
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
+import org.apache.wicket.*;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
+import org.apache.wicket.util.file.File;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 
 /**
  * 
@@ -51,6 +53,8 @@ import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 public class OpsuiApp extends WebApplication implements Serializable {
 
   private static final long serialVersionUID = 1403288657369282259L;
+  
+  private static final Logger LOG = Logger.getLogger(OpsuiApp.class.getName());
 
   public OpsuiApp() {
     MixedParamUrlCodingStrategy types = new MixedParamUrlCodingStrategy(
@@ -83,6 +87,9 @@ public class OpsuiApp extends WebApplication implements Serializable {
     MixedParamUrlCodingStrategy configPageMount = new MixedParamUrlCodingStrategy("config", 
         ConfigPage.class, new String [] {"tab"});
 
+    MixedParamUrlCodingStrategy curateMount = new MixedParamUrlCodingStrategy("curate", 
+        WorkbenchPage.class, new String[]{});
+    
     mount(pcsStatus);
     mount(types);
     mount(typeBrowser);
@@ -93,6 +100,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
     mount(workflowsPageMount);
     mount(workflowInstsPageMount);
     mount(configPageMount);
+    mount(curateMount);
   }
 
   /*
@@ -105,7 +113,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
     try {
       return (Class<? extends Page>) Class.forName(getHomePageClass());
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return HomePage.class;
     }
   }
@@ -183,9 +191,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
         "org.apache.oodt.pcs.trace.excludeList").split(",");
     List<String> excludes = new Vector<String>();
 
-    for (String type : types) {
-      excludes.add(type);
-    }
+    Collections.addAll(excludes, types);
 
     return excludes;
 
@@ -252,7 +258,24 @@ public class OpsuiApp extends WebApplication implements Serializable {
     
     mountSharedResource("/images/tab_bottom.gif", new ResourceReference(ConfigPage.class, 
         "tab_bottom.gif").getSharedResourceKey());
+    
+    
+    Set<String> benchResources = Workbench.getImageFiles();
+    doImageMounts(benchResources, Workbench.class);
 
+  }
+  
+  private void doImageMounts(Set<String> resources, Class<?> clazz) {
+    if (resources != null) {
+      for (String resource : resources) {
+        String resName = new File(resource).getName();
+        String resPath = "/images/" + resName;
+        LOG.log(Level.INFO, "Mounting: [" + resPath + "] origName: [" + resName
+            + "]: resource: [" + resource + "]");
+        mountSharedResource(resPath,
+            new ResourceReference(clazz, resName).getSharedResourceKey());
+      }
+    }
   }
 
 }

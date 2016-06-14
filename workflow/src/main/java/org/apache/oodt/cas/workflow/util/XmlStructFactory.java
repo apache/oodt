@@ -17,26 +17,29 @@
 
 package org.apache.oodt.cas.workflow.util;
 
-//JDK imports
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.HashMap;
-import java.util.logging.Logger;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.commons.exceptions.CommonsException;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Logger;
+
 
 /**
  * * A class for constructing Workflow Manager objects from XML {@link Node}s
@@ -64,15 +67,15 @@ public final class XmlStructFactory {
    * @param node
    *          The XML node to construct the Workflow from.
    * @param tasks
-   *          The {@link HashMap} of existing {@link WorkflowTask}s.
+   *          The {@link Map} of existing {@link WorkflowTask}s.
    * 
    * @param conditions
-   *          The {@link HashMap} of existing {@link WorkflowCondition}s.
+   *          The {@link Map} of existing {@link WorkflowCondition}s.
    * 
    * @return A new {@link Workflow} created from the XML node.
    */
-  public static Workflow getWorkflow(Node node, HashMap tasks,
-      HashMap conditions) {
+  public static Workflow getWorkflow(Node node, Map tasks,
+                                     Map conditions) {
     Element workflowRoot = (Element) node;
 
     String id = workflowRoot.getAttribute("id");
@@ -85,10 +88,12 @@ public final class XmlStructFactory {
     Element taskElem = getFirstElement("tasks", workflowRoot);
     Element conditionsElem = getFirstElement("conditions", workflowRoot);
 
-    if (taskElem != null)
+    if (taskElem != null) {
       workflow.setTasks(getTasks(taskElem, tasks));
-    if (conditionsElem != null)
+    }
+    if (conditionsElem != null) {
       workflow.setConditions(getConditions(conditionsElem, conditions));
+    }
 
     return workflow;
   }
@@ -96,17 +101,17 @@ public final class XmlStructFactory {
   /**
    * <p>
    * Constructs a new {@link WorkflowTask} from the given XML node and
-   * {@link HashMap} of {@link WorkflowCondition}s.
+   * {@link Map} of {@link WorkflowCondition}s.
    * </p>
    * 
    * @param node
    *          The XML node to construct the {@link WorkflowTask} from.
    * @param conditions
-   *          The {@link HashMap} of {@link WorkflowCondition}s to use when
+   *          The {@link Map} of {@link WorkflowCondition}s to use when
    *          constructing the WorkflowTask.
    * @return A new {@link WorkflowTask} created from the given XML node.
    */
-  public static WorkflowTask getWorkflowTask(Node node, HashMap conditions) {
+  public static WorkflowTask getWorkflowTask(Node node, Map conditions) {
     Element taskNode = (Element) node;
 
     String taskClassName = taskNode.getAttribute("class");
@@ -211,17 +216,13 @@ public final class XmlStructFactory {
 
     NodeList configProperties = configNode.getElementsByTagName("property");
 
-    if (configProperties == null) {
-      return null;
-    }
 
     Properties properties = new Properties();
     for (int i = 0; i < configProperties.getLength(); i++) {
       Element propElem = (Element) configProperties.item(i);
       String value = propElem.getAttribute("value");
 
-      boolean doReplace = Boolean.valueOf(propElem.getAttribute("envReplace"))
-          .booleanValue();
+      boolean doReplace = Boolean.valueOf(propElem.getAttribute("envReplace"));
       if (doReplace) {
         value = PathUtils.replaceEnvVariables(value);
       }
@@ -232,7 +233,7 @@ public final class XmlStructFactory {
   }
 
   public static Metadata getConfigurationAsMetadata(Node configNode)
-      throws Exception {
+      throws ParseException, CommonsException, CasMetadataException {
     Metadata curMetadata = new Metadata();
     NodeList curGrandChildren = configNode.getChildNodes();
     for (int k = 0; k < curGrandChildren.getLength(); k++) {
@@ -242,20 +243,22 @@ public final class XmlStructFactory {
         String envReplace = property.getAttribute("envReplace");
         String name = property.getAttribute("name");
         String value = property.getAttribute("value");
-        if (Boolean.parseBoolean(envReplace))
+        if (Boolean.parseBoolean(envReplace)) {
           value = PathUtils.doDynamicReplacement(value);
+        }
         List<String> values = new Vector<String>();
-        if (delim.length() > 0)
+        if (delim.length() > 0) {
           values.addAll(Arrays.asList(value.split("\\" + delim)));
-        else
+        } else {
           values.add(value);
+        }
         curMetadata.replaceMetadata(name, values);
       }
     }
     return curMetadata;
   }
 
-  private static List<WorkflowTask> getTasks(Element rootNode, HashMap tasks) {
+  private static List<WorkflowTask> getTasks(Element rootNode, Map tasks) {
     NodeList taskList = rootNode.getElementsByTagName("task");
     List<WorkflowTask> workflowTasks = null;
 
@@ -287,7 +290,7 @@ public final class XmlStructFactory {
   }
 
   private static List<WorkflowCondition> getConditions(Element rootNode,
-      HashMap conditions) {
+                                                       Map conditions) {
     List<WorkflowCondition> conditionList = new Vector<WorkflowCondition>();
     NodeList conditionNodes = rootNode.getElementsByTagName("condition");
 
@@ -320,17 +323,19 @@ public final class XmlStructFactory {
 
   private static Element getFirstElement(String name, Element root) {
     NodeList list = root.getElementsByTagName(name);
-    if (list != null) {
+    if (list.getLength()>0) {
       return (Element) list.item(0);
-    } else
+    } else {
       return null;
+    }
   }
 
   private static String getSimpleElementText(Element node) {
     if (node.getChildNodes().item(0) instanceof Text) {
       return node.getChildNodes().item(0).getNodeValue();
-    } else
+    } else {
       return null;
+    }
   }
 
   private static String getElementText(String elemName, Element root) {

@@ -48,7 +48,7 @@ public interface Scheduler extends Runnable{
   * @throws SchedulerException If there was any error scheduling
   * the given {@link JobSpec}.
 	 */
-	public boolean schedule(JobSpec spec) throws SchedulerException;
+    boolean schedule(JobSpec spec) throws SchedulerException;
 
 
  /**
@@ -58,21 +58,21 @@ public interface Scheduler extends Runnable{
   * @return The {@link ResourceNode} best suited to handle this {@link JobSpec}
   * @throws SchedulerException If any error occurs.
   */
- public ResourceNode nodeAvailable(JobSpec spec) throws SchedulerException;
+ ResourceNode nodeAvailable(JobSpec spec) throws SchedulerException;
 
  /**
   * 
   * @return The underlying {@link Monitor} used by this
   * Scheduler.
   */
- public Monitor getMonitor();
+ Monitor getMonitor();
  
  /**
   * 
   * @return The underlying {@link Batchmgr} used by this
   * Scheduler.
   */
- public Batchmgr getBatchmgr();
+ Batchmgr getBatchmgr();
  
  
  /**
@@ -80,13 +80,13 @@ public interface Scheduler extends Runnable{
   * @return The underlying {@link JobQueue} used by this
   * Scheduler.
   */
- public JobQueue getJobQueue();
+ JobQueue getJobQueue();
 
  /**
   * 
   * @return The underlying {@link QueueManager} used by this
   * Scheduler.
   */
- public QueueManager getQueueManager();
+ QueueManager getQueueManager();
  
 }

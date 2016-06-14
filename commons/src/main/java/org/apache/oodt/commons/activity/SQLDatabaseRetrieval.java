@@ -23,7 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -159,10 +158,14 @@ public class SQLDatabaseRetrieval implements Retrieval {
       }
       finally {
          try {
-            if (stmt != null) stmt.close();
-            if (conn != null) conn.close();
+            if (stmt != null) {
+               stmt.close();
+            }
+            if (conn != null) {
+               conn.close();
+            }
          }
-         catch (SQLException e) {}
+         catch (SQLException ignored) {}
       }
    }
 
@@ -192,13 +195,15 @@ public class SQLDatabaseRetrieval implements Retrieval {
       try {
          SQLDatabaseRetrieval retrieval = new SQLDatabaseRetrieval();
          List activities = retrieval.retrieve();
-         for (Iterator i = activities.iterator(); i.hasNext();) {
-            StoredActivity activity = (StoredActivity) i.next();
+         for (Object activity1 : activities) {
+            StoredActivity activity = (StoredActivity) activity1;
             System.out.println("Activity: " + activity.getActivityID());
             List incidents = activity.getIncidents();
-            for (Iterator j = incidents.iterator(); j.hasNext();) {
-               StoredIncident incident = (StoredIncident) j.next();
-               System.out.println("   Incident: " + incident.getClassName() + ", " + incident.getOccurTime() + ", " + incident.getDetail());
+            for (Object incident1 : incidents) {
+               StoredIncident incident = (StoredIncident) incident1;
+               System.out.println(
+                   "   Incident: " + incident.getClassName() + ", " + incident.getOccurTime() + ", " + incident
+                       .getDetail());
             }
          }
          System.exit(0);

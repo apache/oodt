@@ -52,24 +52,29 @@ public class DaemonInfo {
             DataFilesInfo dfi) throws ParseException {
         this.runOnReboot = runOnReboot;
         if (firstRunDateTimeString != null
-                && !firstRunDateTimeString.equals(""))
-            this.firstRunDateTime = utcFormat.parse(firstRunDateTimeString);
-        else
-            this.firstRunDateTime = new Date();
-        if (period != null && !period.equals(""))
-            this.timeIntervalInMilliseconds = Long.parseLong(period.substring(
-                    0, period.length() - 1))
-                    * this.getMillisecondsInMetric((period.charAt(period
-                            .length() - 1) + "").toLowerCase());
-        else
-            this.timeIntervalInMilliseconds = -1;
-        if (epsilon != null && !epsilon.equals(""))
-            this.epsilonInMilliseconds = Long.parseLong(epsilon.substring(0,
-                    epsilon.length() - 1))
-                    * this.getMillisecondsInMetric((epsilon.charAt(epsilon
-                            .length() - 1) + "").toLowerCase());
-        else
-            this.epsilonInMilliseconds = -1;
+                && !firstRunDateTimeString.equals("")) {
+          this.firstRunDateTime = utcFormat.parse(firstRunDateTimeString);
+        } else {
+          this.firstRunDateTime = new Date();
+        }
+        if (period != null && !period.equals("")) {
+          this.timeIntervalInMilliseconds = Long.parseLong(period.substring(
+              0, period.length() - 1))
+                                            * this.getMillisecondsInMetric((period.charAt(period
+                                                                                              .length() - 1) + "")
+              .toLowerCase());
+        } else {
+          this.timeIntervalInMilliseconds = -1;
+        }
+        if (epsilon != null && !epsilon.equals("")) {
+          this.epsilonInMilliseconds = Long.parseLong(epsilon.substring(0,
+              epsilon.length() - 1))
+                                       * this.getMillisecondsInMetric((epsilon.charAt(epsilon
+                                                                                          .length() - 1) + "")
+              .toLowerCase());
+        } else {
+          this.epsilonInMilliseconds = -1;
+        }
         this.pfi = pfi;
         this.dfi = dfi;
     }

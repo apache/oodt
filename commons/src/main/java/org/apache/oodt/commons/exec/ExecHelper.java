@@ -19,10 +19,13 @@
 package org.apache.oodt.commons.exec;
 
 //JDK imports
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -39,6 +42,8 @@ import java.io.Reader;
  * 
  */
 public final class ExecHelper {
+  public static final int INT = 1024;
+  private static Logger LOG = Logger.getLogger(ExecHelper.class.getName());
 
     /**
      * Executes the specified command and arguments in a separate process, and
@@ -294,8 +299,9 @@ public final class ExecHelper {
      */
     public static ExecHelper execUsingShell(String command, String charset)
             throws IOException {
-        if (command == null)
-            throw new NullPointerException();
+        if (command == null) {
+          throw new NullPointerException();
+        }
         String[] cmdarray;
         String os = System.getProperty("os.name");
         if (os.equals("Windows 95") || os.equals("Windows 98")
@@ -329,8 +335,8 @@ public final class ExecHelper {
      */
     private ExecHelper(Process process, String charset) throws IOException {
     	try {
-	        StringBuffer output = new StringBuffer();
-	        StringBuffer error = new StringBuffer();
+	        StringBuilder output = new StringBuilder();
+	        StringBuilder error = new StringBuilder();
 	
 	        Reader stdout;
 	        Reader stderr;
@@ -344,7 +350,7 @@ public final class ExecHelper {
 	            stdout = new InputStreamReader(process.getInputStream(), charset);
 	            stderr = new InputStreamReader(process.getErrorStream(), charset);
 	        }
-	        char[] buffer = new char[1024];
+	        char[] buffer = new char[INT];
 	
 	        boolean done = false;
 	        boolean stdoutclosed = false;
@@ -397,18 +403,18 @@ public final class ExecHelper {
 	        this.output = output.toString();
 	        this.error = error.toString();
     	}catch (Exception e) {
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
     		throw new IOException("Process exec failed : " + e.getMessage());
     	}finally {
             try {
             	process.getErrorStream().close();
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
             try {
                	process.getInputStream().close();
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
             try {
             	process.getOutputStream().close();
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
     	}
     }
 

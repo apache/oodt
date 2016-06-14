@@ -110,12 +110,12 @@
 	  source file, <code>ConstantHandler.java</code>:
 	</p>
 
-	<source>import java.util.HashMap;
+	<source>import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import jpl.eda.product.QueryHandler;
 public class ConstantHandler
   implements QueryHandler {
-  private static final Map CONSTANTS = new HashMap();
+  private static final Map CONSTANTS = new ConcurrentHashMap();
   static {
     CONSTANTS.put("pi",    "3.14159265...");
     CONSTANTS.put("e",     "2.7182818285...");
@@ -423,7 +423,7 @@ public class ConstantHandler
 	<code>ConstantHandler.java</code>:</p>
 
 	<source>import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -435,7 +435,7 @@ import jpl.eda.xmlquery.XMLQuery;
 
 public class ConstantHandler
   implements QueryHandler {
-  private static final Map CONSTANTS = new HashMap();
+  private static final Map CONSTANTS = new ConcurrentHashMap();
   static {
     CONSTANTS.put("pi",    "3.14159265...");
     CONSTANTS.put("e",     "2.7182818285...");

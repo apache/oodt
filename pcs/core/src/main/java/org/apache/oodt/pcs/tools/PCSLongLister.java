@@ -28,8 +28,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -56,7 +56,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
     fm = new FileManagerUtils(fmUrlStr);
     try {
       this.conf = new ListingConf(new File(confFile));
-    } catch (Exception e) {
+    } catch (FileNotFoundException e) {
       throw new InstantiationException(e.getMessage());
     }
   }
@@ -64,13 +64,13 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   public void doList(List prodNames) {
     if (prodNames != null && prodNames.size() > 0) {
       System.out.println(getToolHeader());
-      for (Iterator i = prodNames.iterator(); i.hasNext();) {
-        String prodName = (String) i.next();
+      for (Object prodName1 : prodNames) {
+        String prodName = (String) prodName1;
         // check to see if the product name has a "/" in it
         // (this is true in the case of someone using */* from
         // a shell): if it does, we'll consider the prodName a
         // path, and we'll clean it using new File(prodName).getName()
-        if (prodName.indexOf("/") != -1) {
+        if (prodName.contains("/")) {
           // clean the prodName
           prodName = new File(prodName).getName();
         }
@@ -88,7 +88,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
 
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws InstantiationException {
     String usage = "PCSLongLister <conf file> <fmurl> [files]";
     List fileList;
 
@@ -116,7 +116,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   }
 
   private String getToolHeader() {
-    StringBuffer header = new StringBuffer();
+    StringBuilder header = new StringBuilder();
     for (String colName : this.conf.getHeaderColKeys()) {
       header.append(this.conf.getHeaderColDisplayName(colName));
       header.append("\t");
@@ -125,7 +125,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   }
 
   private void outputListingLine(Metadata met, String prodName) {
-    StringBuffer output = new StringBuffer();
+    StringBuilder output = new StringBuilder();
     for (String colNameKey : this.conf.getHeaderColKeys()) {
       if (!this.conf.isCollectionField(colNameKey)) {
         output.append(met.getMetadata(colNameKey));
@@ -140,13 +140,13 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   }
 
   private static String outputOrBlank(List items) {
-    if (items == null || (items != null && items.size() == 0)) {
+    if (items == null || (items.size() == 0)) {
       return "N/A";
     }
 
-    StringBuffer buf = new StringBuffer();
-    for (Iterator i = items.iterator(); i.hasNext();) {
-      String item = (String) i.next();
+    StringBuilder buf = new StringBuilder();
+    for (Object item1 : items) {
+      String item = (String) item1;
       buf.append(item);
       buf.append(",");
     }
@@ -181,14 +181,15 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
       // if you find one tag, then set foundTag = true, and we
       // break
       if (products != null && products.size() > 0) {
-        for (Iterator i = products.iterator(); i.hasNext();) {
-          Product prod = (Product) i.next();
+        for (Object product : products) {
+          Product prod = (Product) product;
           Metadata prodMet = fm.safeGetMetadata(prod);
 
           if (prodMet.containsKey(tagType)) {
             // got one, done
-            if (!foundTag)
+            if (!foundTag) {
               foundTag = true;
+            }
             if (!tags.contains(prodMet.getMetadata(tagType))) {
               tags.add(prodMet.getMetadata(tagType));
             }

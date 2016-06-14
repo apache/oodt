@@ -48,7 +48,7 @@ public class ScienceDataCatalogFactory implements CatalogFactory {
 
   public ScienceDataCatalogFactory() {
 
-    String jdbcUrl = null, user = null, pass = null, driver = null;
+    String jdbcUrl, user, pass, driver;
 
     jdbcUrl = PathUtils.replaceEnvVariables(System
         .getProperty("org.apache.cas.filemgr.catalog.science.jdbc.url"));

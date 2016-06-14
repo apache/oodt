@@ -25,7 +25,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import org.apache.oodt.commons.io.NullOutputStream;
 import org.apache.oodt.commons.util.XML;
-import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

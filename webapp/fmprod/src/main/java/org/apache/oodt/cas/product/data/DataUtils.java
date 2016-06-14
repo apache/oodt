@@ -19,6 +19,14 @@
 package org.apache.oodt.cas.product.data;
 
 //JDK imports
+
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.product.exceptions.CasProductException;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,18 +37,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
 
 /**
  * 
@@ -61,9 +63,10 @@ public final class DataUtils implements DataDeliveryKeys {
     }
 
   };
+  public static final int INT = 512;
 
   public static String createDatasetZipFile(ProductType type,
-      String workingDirPath) throws Exception {
+      String workingDirPath) throws IOException, CasProductException {
     String datasetZipFileName = type.getName() + ".zip";
     workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
     String datasetZipFilePath = workingDirPath + datasetZipFileName;
@@ -86,7 +89,7 @@ public final class DataUtils implements DataDeliveryKeys {
     File[] productZipFiles = new File(workingDirPath).listFiles(ZIP_FILTER);
     if (productZipFiles == null || productZipFiles.length == 0)
     {
-      throw new Exception("No product zip files to include in dataset: ["
+      throw new CasProductException("No product zip files to include in dataset: ["
           + type.getName() + "]");
     }
 
@@ -94,20 +97,19 @@ public final class DataUtils implements DataDeliveryKeys {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
         datasetZipFilePath));
 
-    for (int i = 0; i < productZipFiles.length; i++) {
-      String filename = productZipFiles[i].getName();
-      FileInputStream in = new FileInputStream(productZipFiles[i]
+    for (File productZipFile : productZipFiles) {
+      String filename = productZipFile.getName();
+      FileInputStream in = new FileInputStream(productZipFile
           .getAbsoluteFile());
       addZipEntryFromStream(in, out, filename);
       in.close();
-      
-      if (!productZipFiles[i].delete()) {
+
+      if (!productZipFile.delete()) {
         LOG.log(Level.WARNING, "Unable to remove tempoary product zip file: ["
-            + productZipFiles[i].getAbsolutePath() + "]");
-      }
-      else{
+                               + productZipFile.getAbsolutePath() + "]");
+      } else {
         LOG.log(Level.INFO, "Deleting original product zip file: ["
-            + productZipFiles[i].getAbsolutePath() + "]");
+                            + productZipFile.getAbsolutePath() + "]");
       }
     }
 
@@ -123,7 +125,7 @@ public final class DataUtils implements DataDeliveryKeys {
   }
 
   public static String createProductZipFile(Product product, Metadata metadata,
-      String workingDirPath) throws Exception {
+      String workingDirPath) throws IOException {
     String productZipFileName = product.getProductName() + ".zip";
     workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
     String productZipFilePath = workingDirPath + productZipFileName;
@@ -138,15 +140,13 @@ public final class DataUtils implements DataDeliveryKeys {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
         productZipFilePath));
 
-    for (Iterator i = product.getProductReferences().iterator(); i.hasNext();) {
-      Reference r = (Reference) i.next();
-
+    for (Reference r : product.getProductReferences()) {
       try {
         File prodFile = new File(new URI(r.getDataStoreReference()));
         if (prodFile.isDirectory()) {
-            LOG.log(Level.WARNING, "Data store reference is a directory. Not adding directory to the zip file: ["
-                    + r.getDataStoreReference() + "]");
-            continue;
+          LOG.log(Level.WARNING, "Data store reference is a directory. Not adding directory to the zip file: ["
+                                 + r.getDataStoreReference() + "]");
+          continue;
         }
         String filename = prodFile.getName();
         FileInputStream in = new FileInputStream(prodFile.getAbsoluteFile());
@@ -154,7 +154,7 @@ public final class DataUtils implements DataDeliveryKeys {
         in.close();
       } catch (URISyntaxException e) {
         LOG.log(Level.WARNING, "Unable to get filename from uri: ["
-            + r.getDataStoreReference() + "]");
+                               + r.getDataStoreReference() + "]");
       }
 
     }
@@ -179,33 +179,34 @@ public final class DataUtils implements DataDeliveryKeys {
    */
   public static String guessTypeFromName(String name) {
     name = name.toLowerCase();
-    if (name.endsWith(".jpg") || name.endsWith(".jpeg"))
+    if (name.endsWith(".jpg") || name.endsWith(".jpeg")) {
       return "image/jpeg";
-    else if (name.endsWith(".png"))
+    } else if (name.endsWith(".png")) {
       return "image/png";
-    else if (name.endsWith(".gif"))
+    } else if (name.endsWith(".gif")) {
       return "image/gif";
-    else if (name.endsWith(".doc"))
+    } else if (name.endsWith(".doc")) {
       return "application/msword";
-    else if (name.endsWith(".pdf"))
+    } else if (name.endsWith(".pdf")) {
       return "application/pdf";
-    else if (name.endsWith(".rtf"))
+    } else if (name.endsWith(".rtf")) {
       return "application/rtf";
-    else if (name.endsWith(".xls"))
+    } else if (name.endsWith(".xls")) {
       return "application/vnd.ms-excel";
-    else if (name.endsWith(".ppt"))
+    } else if (name.endsWith(".ppt")) {
       return "application/vnd.ms-powerpoint";
-    else if (name.endsWith(".html") || name.endsWith(".htm"))
+    } else if (name.endsWith(".html") || name.endsWith(".htm")) {
       return "text/html";
-    else if (name.endsWith(".xml"))
+    } else if (name.endsWith(".xml")) {
       return "text/xml";
-    else if (name.endsWith(".txt"))
+    } else if (name.endsWith(".txt")) {
       return "text/plain";
+    }
     return "application/octet-stream";
   }
 
   private static void addMetFileToProductZip(Metadata productMet,
-      String metFileBaseName, ZipOutputStream out) throws Exception {
+      String metFileBaseName, ZipOutputStream out) throws IOException {
 
     // get the product metadata, and add its met file to the stream
     ByteArrayOutputStream metOut = new ByteArrayOutputStream();
@@ -218,7 +219,7 @@ public final class DataUtils implements DataDeliveryKeys {
 
   private static void addZipEntryFromStream(InputStream is, ZipOutputStream os,
       String filename) throws IOException {
-    byte[] buf = new byte[512];
+    byte[] buf = new byte[INT];
     os.putNextEntry(new ZipEntry(filename));
 
     int len;

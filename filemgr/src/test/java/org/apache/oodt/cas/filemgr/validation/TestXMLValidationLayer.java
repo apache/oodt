@@ -31,7 +31,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -191,12 +190,12 @@ public class TestXMLValidationLayer extends TestCase {
         // try and find one of them
         // find produuct received time
         boolean hasReceivedTime = false;
-        for (Iterator i = elementList.iterator(); i.hasNext();) {
-            Element element = (Element) i.next();
-            if (element.getElementName().equals("CAS.ProductReceivedTime")) {
-                hasReceivedTime = true;
-            }
+      for (Object anElementList : elementList) {
+        Element element = (Element) anElementList;
+        if (element.getElementName().equals("CAS.ProductReceivedTime")) {
+          hasReceivedTime = true;
         }
+      }
 
         if (!hasReceivedTime) {
             fail("Didn't load the CAS.ProductReceivedTime element!");
@@ -272,8 +271,8 @@ public class TestXMLValidationLayer extends TestCase {
     File[] delFiles = startDirFile.listFiles();
 
     if (delFiles != null && delFiles.length > 0) {
-      for (int i = 0; i < delFiles.length; i++) {
-        delFiles[i].delete();
+      for (File delFile : delFiles) {
+        delFile.delete();
       }
     }
 

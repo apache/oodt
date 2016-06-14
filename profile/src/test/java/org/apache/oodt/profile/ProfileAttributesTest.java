@@ -129,11 +129,11 @@ public class ProfileAttributesTest extends TestCase {
 			} else if ("profParentId".equals(name)) {
 				assertEquals("parent", XML.text(child));
 			} else if ("profChildId".equals(name)) {
-				; // ignore, list serialization tested in XMLTest
+			  // ignore, list serialization tested in XMLTest
 			} else if ("profRegAuthority".equals(name)) {
 				assertEquals("regAuthority", XML.text(child));
 			} else if ("profRevisionNote".equals(name)) {
-				; // ignore, list serialization tested in XMLTest
+			  // ignore, list serialization tested in XMLTest
 			} else fail("Unknown node \"" + name + "\" in XML result");
 		}
 		ProfileAttributes p = new ProfileAttributes(root);

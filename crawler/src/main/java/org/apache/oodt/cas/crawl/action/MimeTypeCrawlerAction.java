@@ -17,24 +17,23 @@
 package org.apache.oodt.cas.crawl.action;
 
 //OODT static imports
-import static org.apache.oodt.cas.crawl.AutoDetectProductCrawler.MIME_TYPES_HIERARCHY;
-
-//Apache imports
 import org.apache.commons.lang.Validate;
-
-//OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.springframework.beans.factory.annotation.Required;
 
-//JDK imports
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import static org.apache.oodt.cas.crawl.AutoDetectProductCrawler.MIME_TYPES_HIERARCHY;
+
+//Apache imports
+//OODT imports
+//JDK imports
 //Spring imports
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Calls a {@link CrawlerAction} if this {@link File} matches the specified set
@@ -52,11 +51,11 @@ public class MimeTypeCrawlerAction extends CrawlerAction {
          throws CrawlerActionException {
       List<String> mimeTypeHierarchy = productMetadata
             .getAllMetadata(MIME_TYPES_HIERARCHY);
-      if (mimeTypeHierarchy == null)
+      if (mimeTypeHierarchy == null) {
          mimeTypeHierarchy = new Vector<String>();
-      if (mimeTypes == null
-            || (mimeTypes != null && !Collections.disjoint(mimeTypes,
-                  mimeTypeHierarchy))) {
+      }
+      if (mimeTypes == null || (!Collections.disjoint(mimeTypes,
+          mimeTypeHierarchy))) {
          return this.actionToCall.performAction(product, productMetadata);
       } else {
          LOG.log(Level.INFO, "Skipping action (id = " + this.getId()
@@ -88,7 +87,7 @@ public class MimeTypeCrawlerAction extends CrawlerAction {
       return mimeTypes;
    }
 
-   public void setMimeTypes(List<String> mimeTypes) {
+   public void asetMimeTypes(List<String> mimeTypes) {
       this.mimeTypes = mimeTypes;
    }
 }

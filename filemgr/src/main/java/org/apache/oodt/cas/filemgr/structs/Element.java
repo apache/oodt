@@ -20,8 +20,6 @@ package org.apache.oodt.cas.filemgr.structs;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
-
 /**
  * @author mattmann
  * @author starchmd

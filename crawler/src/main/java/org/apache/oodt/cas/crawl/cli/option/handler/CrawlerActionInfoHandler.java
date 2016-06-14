@@ -50,9 +50,10 @@ public class CrawlerActionInfoHandler extends BeanInfoHandler {
         ps.println("    Id: " + ca.getId());
         ps.println("    Description: " + ca.getDescription());
         ps.println("    Phases: " + ca.getPhases());
-        if (ca instanceof MimeTypeCrawlerAction)
-            ps.println("    MimeTypes: " 
-                    + ((MimeTypeCrawlerAction) ca).getMimeTypes());
+        if (ca instanceof MimeTypeCrawlerAction) {
+          ps.println("    MimeTypes: "
+                     + ((MimeTypeCrawlerAction) ca).getMimeTypes());
+        }
         ps.println();
     }
     ps.close();      

@@ -29,5 +29,5 @@ public interface WorkflowEngineFactory {
     *
     * @return An implementation of the {@link WorkflowEngine} interface
     */
-   public WorkflowEngine createWorkflowEngine();
+   WorkflowEngine createWorkflowEngine();
 }

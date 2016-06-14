@@ -52,7 +52,7 @@ public class SendEventCliAction extends WorkflowCliAction {
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to send event '" + eventName
                + "' to url '" + getUrl() + "' with metadata '"
-               + metadata.getHashtable() + "' : " + e.getMessage(), e);
+               + metadata.getMap() + "' : " + e.getMessage(), e);
       }
    }
 

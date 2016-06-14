@@ -34,7 +34,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -55,7 +54,7 @@ public class DeleteProduct {
     private static final Logger LOG = Logger.getLogger(DeleteProduct.class.getName());
 
     /* our File Manager client */
-    private static XmlRpcFileManagerClient client = null;
+    private XmlRpcFileManagerClient client = null;
 
     /* whether or not we should commit our deletions */
     private boolean commit = true;
@@ -110,18 +109,19 @@ public class DeleteProduct {
         DeleteProduct remover = new DeleteProduct(fileManagerUrl, commitChanges);
         if (readFromStdIn) {
             List prodIds = readProdIdsFromStdin();
-            for (Iterator i = prodIds.iterator(); i.hasNext();) {
-                String prodId = (String) i.next();
+            for (Object prodId1 : prodIds) {
+                String prodId = (String) prodId1;
                 remover.remove(prodId);
             }
-        } else
+        } else {
             remover.remove(productId);
+        }
 
     }
 
     private static List readProdIdsFromStdin() {
         List prodIds = new Vector();
-        BufferedReader br = null;
+        BufferedReader br;
 
         br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -135,14 +135,11 @@ public class DeleteProduct {
             LOG.log(Level.WARNING, "Error reading prod id: line: [" + line
                     + "]: Message: " + e.getMessage(), e);
         } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (Exception ignore) {
-                }
-
-                br = null;
+            try {
+                br.close();
+            } catch (Exception ignore) {
             }
+
         }
 
         return prodIds;
@@ -177,28 +174,28 @@ public class DeleteProduct {
                             + e.getMessage());
         }
 
-        for (int i = 0; i < refs.size(); i++) {
-            Reference ref = (Reference) refs.get(i);
+        for (Object ref1 : refs) {
+            Reference ref = (Reference) ref1;
 
             if (commit) {
                 try {
                     client.removeFile(new File(new URI(ref
-                            .getDataStoreReference())).getAbsolutePath());
+                        .getDataStoreReference())).getAbsolutePath());
                 } catch (DataTransferException e) {
                     LOG.log(Level.WARNING, "Unable to delete reference : ["
-                            + ref.getDataStoreReference() + "] for product : ["
-                            + productId + "] from file manager : ["
-                            + client.getFileManagerUrl() + "]: Message: "
-                            + e.getMessage());
+                                           + ref.getDataStoreReference() + "] for product : ["
+                                           + productId + "] from file manager : ["
+                                           + client.getFileManagerUrl() + "]: Message: "
+                                           + e.getMessage());
                 } catch (URISyntaxException e) {
                     LOG.log(Level.WARNING,
-                            "uri syntax exception getting file absolute path from URI: ["
-                                    + ref.getDataStoreReference()
-                                    + "]: Message: " + e.getMessage());
+                        "uri syntax exception getting file absolute path from URI: ["
+                        + ref.getDataStoreReference()
+                        + "]: Message: " + e.getMessage());
                 }
             } else {
                 LOG.log(Level.INFO, "Delete file: ["
-                        + ref.getDataStoreReference() + "]");
+                                    + ref.getDataStoreReference() + "]");
             }
 
         }

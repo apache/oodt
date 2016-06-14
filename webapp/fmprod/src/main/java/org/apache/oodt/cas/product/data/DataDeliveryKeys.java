@@ -26,12 +26,12 @@ package org.apache.oodt.cas.product.data;
  */
 public interface DataDeliveryKeys {
 
-  public static final String FORMAT_ZIP = "application/x-zip";
+  String FORMAT_ZIP = "application/x-zip";
 
-  public static final String CONTENT_TYPE_HDR = "Content-Type";
+  String CONTENT_TYPE_HDR = "Content-Type";
 
-  public static final String CONTENT_LENGTH_HDR = "Content-Length";
+  String CONTENT_LENGTH_HDR = "Content-Length";
 
-  public static final String CONTENT_DISPOSITION_HDR = "Content-Disposition";
+  String CONTENT_DISPOSITION_HDR = "Content-Disposition";
   
 }

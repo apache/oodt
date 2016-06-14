@@ -18,6 +18,8 @@
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 
 /**
  * 
@@ -42,6 +43,7 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
  */
 public class HighestFIFOPrioritySorter implements PrioritySorter {
 
+  public static final double DOUBLE = 1000.0;
   private int secondsBetweenBoosts;
   private double boostAmount;
   private double boostCap;
@@ -72,28 +74,28 @@ public class HighestFIFOPrioritySorter implements PrioritySorter {
   }
 
   private Double calculatePriority(WorkflowProcessor processorStub) {
-    double aliveTime = 0.0;
+    double aliveTime;
 
     try {
       aliveTime = (double) (System.currentTimeMillis() - processorStub
           .getWorkflowInstance().getCreationDate().getTime());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Unable to compute aliveTime for computing FIFO priority: Reason: ["
               + e.getMessage() + "]");
       aliveTime = 0.0;
     }
 
-    double boostPercentage = aliveTime / 1000.0
+    double boostPercentage = aliveTime / DOUBLE
         / (double) this.secondsBetweenBoosts;
     return Math.max(
         processorStub.getWorkflowInstance().getPriority().getValue(),
         Math.min(
             this.boostCap,
-            Double.valueOf(processorStub.getWorkflowInstance().getPriority()
-                .getValue()
-                + (boostPercentage * this.boostAmount))));
+            processorStub.getWorkflowInstance().getPriority()
+                         .getValue()
+            + (boostPercentage * this.boostAmount)));
   }
 
 }

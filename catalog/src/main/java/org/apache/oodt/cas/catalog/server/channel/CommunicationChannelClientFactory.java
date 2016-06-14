@@ -26,10 +26,10 @@ package org.apache.oodt.cas.catalog.server.channel;
  */
 public interface CommunicationChannelClientFactory {
 
-	public CommunicationChannelClient createCommunicationChannelClient();
+	CommunicationChannelClient createCommunicationChannelClient();
 	
-	public void setServerUrl(String url);
+	void setServerUrl(String url);
 	
-	public String getServerUrl();
+	String getServerUrl();
 	
 }

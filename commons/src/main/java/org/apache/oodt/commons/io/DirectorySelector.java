@@ -16,7 +16,6 @@ package org.apache.oodt.commons.io;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,9 +94,11 @@ public class DirectorySelector {
     	
     	// recursion over sub-directories
     	File[] subdirs = dir.listFiles( directoryFilter );
-        for (File subdir : subdirs) {
-        	traverseDir(subdir, subDirs);
-        }
+	  if(subdirs!=null) {
+		for (File subdir : subdirs) {
+		  traverseDir(subdir, subDirs);
+		}
+	  }
     	
     }
 

@@ -75,7 +75,7 @@ public class WorkflowTask {
   /**
    * 
    * This constructor is now deprecated in Apache OODT 0.4, in favor of
-   * {@link #WorkflowTask(String, String, WorkflowTaskConfiguration, List, List, String, int)}
+   *
    * that explicitly specifies pre- and post- {@link WorkflowCondition}s. As
    * used, this method will set the pre-conditions via the passed in
    * {@link List} of {@link WorkflowCondition}s only.

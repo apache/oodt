@@ -18,18 +18,20 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
+
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
+
+import org.junit.Ignore;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
 /**
  * 
@@ -39,6 +41,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceExcep
  * @version $Revision$
  * 
  */
+@Ignore
 public class SimpleTester implements WorkflowTaskInstance {
 
   private static final Logger LOG = Logger.getLogger(SimpleTester.class
@@ -76,7 +79,6 @@ public class SimpleTester implements WorkflowTaskInstance {
           pw.close();
         } catch (Exception ignore) {
         }
-        pw = null;
       }
     }
 

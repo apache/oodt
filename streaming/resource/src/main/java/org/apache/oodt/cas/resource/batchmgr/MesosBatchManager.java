@@ -16,7 +16,7 @@
  */
 package org.apache.oodt.cas.resource.batchmgr;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -38,7 +38,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.MesosFrameworkException;
  */
 public class MesosBatchManager implements Batchmgr {
 
-    Map<String,TaskID> map = new HashMap<String,TaskID>();
+    Map<String,TaskID> map = new ConcurrentHashMap<String,TaskID>();
     SchedulerDriver driver;
     JobRepository repo;
     Monitor mon;

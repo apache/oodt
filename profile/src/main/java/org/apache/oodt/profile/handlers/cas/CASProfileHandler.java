@@ -19,16 +19,16 @@
 package org.apache.oodt.profile.handlers.cas;
 
 //CAS imports
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.*;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.profile.handlers.ProfileHandler;
 import org.apache.oodt.profile.handlers.cas.util.ProfileUtils;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
 
-//JDK imports
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -36,12 +36,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JDK imports
 //OODT imports
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.ProfileException;
-import org.apache.oodt.profile.handlers.ProfileHandler;
-import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * @author mattmann
@@ -103,8 +99,8 @@ public class CASProfileHandler implements ProfileHandler {
         List profs = new Vector();
 
         if (productTypeFilter != null && productTypeFilter.size() > 0) {
-            for (Iterator i = productTypeFilter.iterator(); i.hasNext();) {
-                ProductType type = (ProductType) i.next();
+            for (Object aProductTypeFilter : productTypeFilter) {
+                ProductType type = (ProductType) aProductTypeFilter;
                 Query cQuery = convertQuery(query);
 
                 profs.addAll(queryAndBuildProfiles(type, cQuery));
@@ -138,7 +134,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             types = fmClient.getProductTypes();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return types;
@@ -150,7 +146,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             products = fmClient.getProductsByProductType(type);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return products;
@@ -162,7 +158,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             type = fmClient.getProductTypeByName(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return type;
@@ -174,7 +170,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             met = fmClient.getMetadata(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return met;
@@ -186,7 +182,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             references = fmClient.getProductReferences(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return references;
@@ -198,7 +194,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             elem = fmClient.getElementByName(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return elem;
@@ -212,16 +208,9 @@ public class CASProfileHandler implements ProfileHandler {
             // split the string on ","
             String[] typeNames = productTypeNames.split(",");
 
-            if (typeNames != null) {
-                for (int i = 0; i < typeNames.length; i++) {
-                    ProductType type = safeGetProductTypeByName(typeNames[i]);
-                    typeFilter.add(type);
-                }
-            } else {
-                LOG.log(Level.WARNING,
-                        "Unable to parse comma delimited type string: ["
-                                + productTypeNames + "]: using all types");
-                typeFilter = safeGetProductTypes();
+            for (String typeName : typeNames) {
+                ProductType type = safeGetProductTypeByName(typeName);
+                typeFilter.add(type);
             }
         }
 
@@ -269,21 +258,21 @@ public class CASProfileHandler implements ProfileHandler {
     private List queryAndBuildProfiles(ProductType type, Query query) {
         List profiles = new Vector();
 
-        List products = null;
+        List products;
 
         try {
             products = fmClient.query(query, type);
 
             if (products != null && products.size() > 0) {
-                for (Iterator i = products.iterator(); i.hasNext();) {
-                    Product p = (Product) i.next();
+                for (Object product : products) {
+                    Product p = (Product) product;
                     p.setProductReferences(safeGetProductReferences(p));
                     Metadata met = safeGetMetadata(p);
                     try {
                         profiles.add(ProfileUtils.buildProfile(p, met,
-                                dataDelivBaseUrlStr));
+                            dataDelivBaseUrlStr));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                     }
 
                 }

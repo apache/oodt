@@ -34,12 +34,13 @@ import org.springframework.beans.factory.annotation.Required;
  * <p>
  */
 public class CatalogServiceClientFactory implements CatalogServiceFactory {
-	
-	protected CommunicationChannelClientFactory communicationChannelClientFactory;
+
+  public static final int INT = 500;
+  protected CommunicationChannelClientFactory communicationChannelClientFactory;
 	protected int autoPagerSize;
 	
 	public CatalogServiceClientFactory() {
-		this.autoPagerSize = 500;
+		this.autoPagerSize = INT;
 	}
 	
 	public CatalogServiceClient createCatalogService() {
@@ -53,8 +54,9 @@ public class CatalogServiceClientFactory implements CatalogServiceFactory {
 	
 	@Required
 	public void setAutoPagerSize(int autoPagerSize) {
-		if (autoPagerSize > 0)
-			this.autoPagerSize = autoPagerSize;
+		if (autoPagerSize > 0) {
+		  this.autoPagerSize = autoPagerSize;
+		}
 	}
 	
 	public String getServerUrl() {

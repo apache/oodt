@@ -18,22 +18,12 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import org.apache.oodt.commons.Configuration;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.oodt.commons.util.Documentable;
 import org.apache.oodt.commons.util.XML;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -41,10 +31,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A profile.
@@ -53,14 +49,15 @@ import java.io.OutputStreamWriter;
  *
  * @author Kelly
  */
-public class Profile implements Serializable, Cloneable, Comparable, Documentable {
-        /** Serial version unique ID. */
+public class Profile implements Serializable, Cloneable, Comparable<Object>, Documentable {
+  /** Serial version unique ID. */
         static final long serialVersionUID = -3936851809184360591L;
 
 	/** The formal public identifier of the profiles DTD. */
 	public static final String PROFILES_DTD_FPI = "-//JPL//DTD Profile 1.1//EN";
+  public static final int INT = 512;
 
-	/** The system identifier of the profiles DTD. */
+  /** The system identifier of the profiles DTD. */
 	public static String PROFILES_DTD_URL = "http://oodt.jpl.nasa.gov/grid-profile/dtd/prof.dtd";
 
 	/**
@@ -70,21 +67,25 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 * @param factory Factory for creation of profile-related objects.
 	 * @return A list of profiles.
 	 */
-	public static List createProfiles(Element root, ObjectFactory factory) {
-		List profiles = new ArrayList();
+	public static List<Profile> createProfiles(Element root, ObjectFactory factory) {
+		List<Profile> profiles = new ArrayList<Profile>();
 		if ("profile".equals(root.getNodeName()))
 			// The root is a <profile>, so add the single profile to the list.
-			profiles.add(factory.createProfile((Element) root));
-		else if ("profiles".equals(root.getNodeName())) {
+		{
+		  profiles.add(factory.createProfile((Element) root));
+		} else if ("profiles".equals(root.getNodeName())) {
 			// The root is a <profiles>, so add each <profile> to the list.
 			NodeList children = root.getChildNodes();
 			for (int i = 0; i < children.getLength(); ++i) {
 				Node node = children.item(i);
-				if ("profile".equals(node.getNodeName()))
-					profiles.add(factory.createProfile((Element) node));
+				if ("profile".equals(node.getNodeName())) {
+				  profiles.add(factory.createProfile((Element) node));
+				}
 			}
-		} else throw new IllegalArgumentException("Expected a <profiles> or <profile> top level element but got "
-			+ root.getNodeName());
+		} else {
+		  throw new IllegalArgumentException("Expected a <profiles> or <profile> top level element but got "
+											 + root.getNodeName());
+		}
 		return profiles;
 	}
 
@@ -99,7 +100,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 * @param root Either a &lt;profiles&gt; or a &lt;profile&gt; element.
 	 * @return A list of profiles.
 	 */
-	public static List createProfiles(Element root) {
+	public static List<Profile> createProfiles(Element root) {
 		return createProfiles(root, new DefaultFactory());
 	}
 
@@ -147,17 +148,18 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 * @param root The &lt;profile&gt; element.
 	 */
 	public Profile(Node root, ObjectFactory factory) {
-		if (!root.getNodeName().equals("profile"))
-			throw new IllegalArgumentException("Construct a Profile from a <profile> element, not a <"
-				+ root.getNodeName() + ">");
+		if (!root.getNodeName().equals("profile")) {
+		  throw new IllegalArgumentException("Construct a Profile from a <profile> element, not a <"
+											 + root.getNodeName() + ">");
+		}
 		NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node node = children.item(i);
-			if ("profAttributes".equals(node.getNodeName()))
-				profAttr = factory.createProfileAttributes((Element) node);
-			else if ("resAttributes".equals(node.getNodeName()))
-				resAttr = factory.createResourceAttributes(this, (Element) node);
-			else if ("profElement".equals(node.getNodeName())) {
+			if ("profAttributes".equals(node.getNodeName())) {
+			  profAttr = factory.createProfileAttributes((Element) node);
+			} else if ("resAttributes".equals(node.getNodeName())) {
+			  resAttr = factory.createResourceAttributes(this, (Element) node);
+			} else if ("profElement".equals(node.getNodeName())) {
 				ProfileElement element = ProfileElement.createProfileElement((Element) node, this, factory);
 				elements.put(element.getName(), element);
 			}
@@ -173,7 +175,9 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	public Profile(ProfileAttributes profAttr, ResourceAttributes resAttr) {
 		this.profAttr = profAttr;
 		this.resAttr = resAttr;
-		if (this.resAttr != null) this.resAttr.profile = this;
+		if (this.resAttr != null) {
+		  this.resAttr.profile = this;
+		}
 	}
 
 	public int hashCode() {
@@ -181,8 +185,12 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof Profile)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof Profile)) {
+		  return false;
+		}
 		Profile obj = (Profile) rhs;
 		return profAttr.equals(obj.profAttr);
 	}
@@ -203,7 +211,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 		Object clone = null;
 		try {
 			clone = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return clone;
 	}
 
@@ -251,7 +259,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 *
 	 * @return The profile elements.
 	 */
-	public Map getProfileElements() {
+	public Map<String, ProfileElement> getProfileElements() {
 		return elements;
 	}
 
@@ -271,10 +279,9 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	public void addToModel(Model model) {
 		Resource resource = model.createResource(getURI().toString());
 		resAttr.addToModel(model, resource, profAttr);
-		for (Iterator i = elements.values().iterator(); i.hasNext();) {
-			ProfileElement e = (ProfileElement) i.next();
-			e.addToModel(model, resource, profAttr);
-		}
+	  for (ProfileElement e : elements.values()) {
+		e.addToModel(model, resource, profAttr);
+	  }
 	}
 
 	/**
@@ -311,8 +318,11 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 		Element profile = doc.createElement("profile");
 		profile.appendChild(profAttr.toXML(doc));
 		profile.appendChild(resAttr.toXML(doc));
-		if (withElements) for (Iterator i = elements.values().iterator(); i.hasNext();)
-			profile.appendChild(((ProfileElement) i.next()).toXML(doc));
+		if (withElements) {
+		  for (ProfileElement profileElement : elements.values()) {
+			profile.appendChild((profileElement).toXML(doc));
+		  }
+		}
 		return profile;
 	}
 
@@ -342,8 +352,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 */
 	static Document createDocument(String root) {
 		DocumentType docType = XML.getDOMImplementation().createDocumentType(root, PROFILES_DTD_FPI, PROFILES_DTD_URL);
-		Document doc = XML.getDOMImplementation().createDocument(/*namespaceURI*/null, root, docType);
-		return doc;
+	  return XML.getDOMImplementation().createDocument(/*namespaceURI*/null, root, docType);
 	}
 
 	/** My profile attributes. */
@@ -356,7 +365,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 *
 	 * This mapping is from element name (a {@link String}) to {@link ProfileElement}.
 	 */
-	protected Map elements = new HashMap();
+	protected Map<String, ProfileElement> elements = new ConcurrentHashMap<String, ProfileElement>();
 
 	/**
 	 * Try to parse an XML profile in a file in its XML vocabulary.  If successful,
@@ -372,12 +381,13 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 			System.err.println("Usage: <profile.xml>");
 			System.exit(1);
 		}
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(argv[0]));
-		char[] buf = new char[512];
+		char[] buf = new char[INT];
 		int num;
-		while ((num = reader.read(buf)) != -1)
-			b.append(buf, 0, num);
+		while ((num = reader.read(buf)) != -1) {
+		  b.append(buf, 0, num);
+		}
 		reader.close();
 		Profile p = new Profile(b.toString());
 

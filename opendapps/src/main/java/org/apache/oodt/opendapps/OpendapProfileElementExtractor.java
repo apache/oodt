@@ -16,6 +16,12 @@
  */
 package org.apache.oodt.opendapps;
 
+//OODT imports
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.profile.EnumeratedProfileElement;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.RangedProfileElement;
+
 //JDK imports
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -28,13 +34,6 @@ import opendap.dap.AttributeTable;
 import opendap.dap.DAS;
 import opendap.dap.NoSuchAttributeException;
 
-//OODT imports
-import org.apache.oodt.opendapps.config.OpendapConfig;
-import org.apache.oodt.profile.EnumeratedProfileElement;
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.ProfileElement;
-import org.apache.oodt.profile.RangedProfileElement;
-
 import static org.apache.oodt.opendapps.DapNames.*;
 
 /**
@@ -44,7 +43,7 @@ import static org.apache.oodt.opendapps.DapNames.*;
  * different types of objects. The class looks at the {@link OpendapConfig} and
  * then tries to stuff what's in each &lt;var&gt; into
  * {@link RangedProfileElement} or {@link EnumeratedProfileElement}. The class
- * is designed with extensibility in mind in case new {@link ProfileElement}
+ * is designed with extensibility in mind in case new {@link org.apache.oodt.profile.ProfileElement}
  * types are created in the future.
  * 
  */
@@ -63,16 +62,22 @@ public class OpendapProfileElementExtractor {
       Profile profile, DAS das) throws NoSuchAttributeException {
     RangedProfileElement elem = new RangedProfileElement(profile);
     elem.setName(elemName);
-    AttributeTable attTable = null;
+    AttributeTable attTable;
     try {
       attTable = das.getAttributeTable(varname);
       
       // make variable names case insensitive
-      if(attTable == null) attTable = das.getAttributeTable(varname.toLowerCase());
-      if(attTable == null) attTable = das.getAttributeTable(varname.toUpperCase());
-      if(attTable == null) throw new NoSuchAttributeException("Att table for ["+varname+"] is null!");
+      if(attTable == null) {
+        attTable = das.getAttributeTable(varname.toLowerCase());
+      }
+      if(attTable == null) {
+        attTable = das.getAttributeTable(varname.toUpperCase());
+      }
+      if(attTable == null) {
+        throw new NoSuchAttributeException("Att table for [" + varname + "] is null!");
+      }
     } catch (NoSuchAttributeException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error extracting attribute table for element: ["
           + elemName + "]: Message: " + e.getMessage());
       throw e;
@@ -86,12 +91,12 @@ public class OpendapProfileElementExtractor {
       Attribute attr = attTable.getAttribute(attrName);
      
       if (!attr.isContainer()) {
-      	 Enumeration attrValues = null;
+      	 Enumeration attrValues;
         
         	try {
             attrValues = attr.getValues();
           } catch (NoSuchAttributeException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Attempt to resolve attribute: [" + attrName
                 + "] failed: Message: " + e.getMessage());
             continue;
@@ -119,13 +124,14 @@ public class OpendapProfileElementExtractor {
     return elem;
   }
 
+  @SuppressWarnings("unchecked")
   public EnumeratedProfileElement extractEnumeratedProfileElement(String elemName, String varname,
       Profile profile, DAS das)
       throws NoSuchAttributeException {
     EnumeratedProfileElement elem = new EnumeratedProfileElement(profile);
     elem.setName(elemName);
 
-    AttributeTable attTable = null;
+    AttributeTable attTable;
     try {
       attTable = das.getAttributeTable(elemName);
     } catch (NoSuchAttributeException e) {
@@ -139,7 +145,7 @@ public class OpendapProfileElementExtractor {
     while (attributeNames.hasMoreElements()) {
       String attrName = (String) attributeNames.nextElement();
       Attribute attr = attTable.getAttribute(attrName);
-      Enumeration attrValues = null;
+      Enumeration attrValues;
       try {
         attrValues = attr.getValues();
       } catch (NoSuchAttributeException e) {

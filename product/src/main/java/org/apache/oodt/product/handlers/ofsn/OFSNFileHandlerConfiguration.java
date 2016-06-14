@@ -20,7 +20,7 @@ package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public class OFSNFileHandlerConfiguration {
   private String name;
 
   public OFSNFileHandlerConfiguration(String productRoot, String id, String name) {
-    this.handlerTable = new HashMap<String, OFSNHandlerConfig>();
+    this.handlerTable = new ConcurrentHashMap<String, OFSNHandlerConfig>();
     this.productRoot = productRoot;
     this.id = id;
     this.name = name;
@@ -57,15 +57,17 @@ public class OFSNFileHandlerConfiguration {
   public String getHandlerType(String handlerName) {
     if (this.handlerTable.containsKey(handlerName)) {
       return this.handlerTable.get(handlerName).getType();
-    } else
+    } else {
       return null;
+    }
   }
 
   public String getHandlerClass(String handlerName) {
     if (this.handlerTable.containsKey(handlerName)) {
       return this.handlerTable.get(handlerName).getClassName();
-    } else
+    } else {
       return null;
+    }
   }
 
   public List<OFSNHandlerConfig> getHandlerConfigs() {
@@ -124,8 +126,6 @@ public class OFSNFileHandlerConfiguration {
   }
 
   private void cleanse(String path) {
-    if (path != null && !path.endsWith("/")) {
-      path += "/";
-    }
+
   }
 }

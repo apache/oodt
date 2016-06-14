@@ -16,40 +16,59 @@
  */
 package org.apache.oodt.cas.pge;
 
-//OODT static imports
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ACTION_IDS;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ATTEMPT_INGEST_ALL;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_CONFIG_FILE;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_CRAWL_FOR_DIRS;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_RECUR;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.DUMP_METADATA;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.FILE_STAGER;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_CLIENT_TRANSFER_SERVICE_FACTORY;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_FILE_MANAGER_URL;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.LOG_FILENAME_PATTERN;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MET_FILE_EXT;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.NAME;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MIME_EXTRACTOR_REPO;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_CONFIG_BUILDER;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_RUNTIME;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PROPERTY_ADDERS;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.REQUIRED_METADATA;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.WORKFLOW_MANAGER_URL;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CONF_FILE_BUILD;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.RUNNING_PGE;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.STAGING_INPUT;
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createConfigFilePropertyAdder;
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createFileStager;
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPgeConfigBuilder;
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createSciPgeConfigFileWriter;
+import org.apache.commons.lang.Validate;
+import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
+import org.apache.oodt.cas.crawl.ProductCrawler;
+import org.apache.oodt.cas.crawl.StdProductCrawler;
+import org.apache.oodt.cas.crawl.status.IngestStatus;
+import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractorConfigReaderException;
+import org.apache.oodt.cas.metadata.exceptions.NamingConventionException;
+import org.apache.oodt.cas.metadata.filenaming.PathUtilsNamingConvention;
+import org.apache.oodt.cas.pge.config.DynamicConfigFile;
+import org.apache.oodt.cas.pge.config.OutputDir;
+import org.apache.oodt.cas.pge.config.PgeConfig;
+import org.apache.oodt.cas.pge.config.RegExprOutputFiles;
+import org.apache.oodt.cas.pge.config.XmlFilePgeConfigBuilder;
+import org.apache.oodt.cas.pge.exceptions.PGEException;
+import org.apache.oodt.cas.pge.metadata.PgeMetadata;
+import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
+import org.apache.oodt.cas.pge.staging.FileManagerFileStager;
+import org.apache.oodt.cas.pge.staging.FileStager;
+import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
+import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
+import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.util.ScriptFile;
+import org.apache.oodt.commons.exceptions.CommonsException;
+import org.apache.oodt.commons.exec.ExecUtils;
+import org.apache.xmlrpc.XmlRpcException;
 
-//JDK imports
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,43 +78,10 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
-//Apache imports
-import org.apache.commons.lang.Validate;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.*;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.*;
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.*;
 
-//OODT imports
-import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
-import org.apache.oodt.cas.crawl.ProductCrawler;
-import org.apache.oodt.cas.crawl.StdProductCrawler;
-import org.apache.oodt.cas.crawl.status.IngestStatus;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
-import org.apache.oodt.cas.metadata.filenaming.PathUtilsNamingConvention;
-import org.apache.oodt.cas.pge.config.DynamicConfigFile;
-import org.apache.oodt.cas.pge.config.OutputDir;
-import org.apache.oodt.cas.pge.config.PgeConfig;
-import org.apache.oodt.cas.pge.config.RegExprOutputFiles;
-import org.apache.oodt.cas.pge.config.XmlFilePgeConfigBuilder;
-import org.apache.oodt.cas.pge.metadata.PgeMetadata;
-import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
-import org.apache.oodt.cas.pge.staging.FileManagerFileStager;
-import org.apache.oodt.cas.pge.staging.FileStager;
-import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
-import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
-import org.apache.oodt.cas.workflow.util.ScriptFile;
-import org.apache.oodt.commons.exec.ExecUtils;
-
-//Spring imports
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-//Google imports
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 
 /**
  * Runs a CAS-style Product Generation Executive based on the PCS Wrapper
@@ -152,18 +138,18 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected void updateStatus(String status) throws Exception {
+   protected void updateStatus(String status) throws PGEException, XmlRpcException, IOException {
       logger.info("Updating status to workflow as [" + status + "]");
       if (!wm.updateWorkflowInstanceStatus(workflowInstId, status)) {
-         throw new Exception(
+         throw new PGEException(
                "Failed to update workflow status : client returned false");
       }
    }
 
-   protected Logger createLogger() throws Exception {
+   protected Logger createLogger() throws IOException, PGEException {
       File logDir = new File(pgeConfig.getExeDir(), "logs");
       if (!(logDir.exists() || logDir.mkdirs())) {
-         throw new Exception("mkdirs for logs directory return false");
+         throw new PGEException("mkdirs for logs directory return false");
       }
 
       Logger logger = Logger.getLogger(PGETaskInstance.class.getName()
@@ -176,7 +162,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return logger;
    }
 
-   protected String createLogFileName() throws Exception {
+   protected String createLogFileName() {
       String filenamePattern = pgeMetadata.getMetadata(LOG_FILENAME_PATTERN);
       if (filenamePattern != null) {
          return filenamePattern;
@@ -187,7 +173,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected PgeMetadata createPgeMetadata(Metadata dynMetadata,
-         WorkflowTaskConfiguration config) throws Exception {
+         WorkflowTaskConfiguration config) {
       logger.info("Converting workflow configuration to static metadata...");
       Metadata staticMetadata = new Metadata();
       for (Object objKey : config.getProperties().keySet()) {
@@ -232,7 +218,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected void runPropertyAdders() throws Exception {
+   protected void runPropertyAdders() throws PGEException {
       try {
          logger.info("Loading/Running property adders...");
          List<String> propertyAdders = pgeMetadata
@@ -245,19 +231,18 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             logger.info("No property adders specified");
          }
       } catch (Exception e) {
-         throw new Exception("Failed to instanciate/run Property Adders : "
+         throw new PGEException("Failed to instanciate/run Property Adders : "
                + e.getMessage(), e);
       }
    }
 
    protected ConfigFilePropertyAdder loadPropertyAdder(
-         String propertyAdderClasspath) throws Exception {
+         String propertyAdderClasspath) {
       logger.fine("Loading property adder: " + propertyAdderClasspath);
       return createConfigFilePropertyAdder(propertyAdderClasspath, logger);
    }
 
-   protected void runPropertyAdder(ConfigFilePropertyAdder propAdder)
-         throws Exception {
+   protected void runPropertyAdder(ConfigFilePropertyAdder propAdder) {
       logger.info("Running property adder: "
             + propAdder.getClass().getCanonicalName());
       propAdder.addConfigProperties(pgeMetadata,
@@ -265,14 +250,14 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected XmlRpcWorkflowManagerClient createWorkflowManagerClient()
-         throws Exception {
+       throws MalformedURLException {
       String url = pgeMetadata.getMetadata(WORKFLOW_MANAGER_URL);
       logger.info("Creating WorkflowManager client for url [" + url + "]");
       Validate.notNull(url, "Must specify " + WORKFLOW_MANAGER_URL);
       return new XmlRpcWorkflowManagerClient(new URL(url));
    }
 
-   protected String getWorkflowInstanceId() throws Exception {
+   protected String getWorkflowInstanceId() {
       String instanceId = pgeMetadata.getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
       logger.info("Workflow instanceId is [" + instanceId + "]");
       Validate.notNull(instanceId, "Must specify "
@@ -280,7 +265,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return instanceId;
    }
 
-   protected void dumpMetadataIfRequested() throws Exception {
+   protected void dumpMetadataIfRequested() throws IOException {
       if (Boolean.parseBoolean(pgeMetadata
             .getMetadata(DUMP_METADATA))) {
          new SerializableMetadata(pgeMetadata.asMetadata())
@@ -289,40 +274,42 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected String getDumpMetadataPath() throws Exception {
+   protected String getDumpMetadataPath()  {
       return new File(pgeConfig.getExeDir()).getAbsolutePath() + "/"
             + getDumpMetadataName();
    }
 
-   protected String getDumpMetadataName() throws Exception {
+   protected String getDumpMetadataName() {
       return "pgetask-metadata.xml";
    }
 
-   protected void createExeDir() throws Exception {
+   protected void createExeDir() throws PGEException {
       logger.info("Creating PGE execution working directory: ["
             + pgeConfig.getExeDir() + "]");
       File executionDir = new File(pgeConfig.getExeDir());
       if (!(executionDir.exists() || executionDir.mkdirs())) {
-         throw new Exception("mkdirs returned false for creating ["
+         throw new PGEException("mkdirs returned false for creating ["
                + pgeConfig.getExeDir() + "]");
       }
    }
 
-   protected void createOuputDirsIfRequested() throws Exception {
+   protected void createOuputDirsIfRequested() throws PGEException {
       for (OutputDir outputDir : pgeConfig.getOuputDirs()) {
          if (outputDir.isCreateBeforeExe()) {
             logger.info("Creating PGE file ouput directory: ["
                   + outputDir.getPath() + "]");
             File dir = new File(outputDir.getPath());
             if (!(dir.exists() || dir.mkdirs())) {
-               throw new Exception("mkdir returned false for creating ["
+               throw new PGEException("mkdir returned false for creating ["
                      + outputDir.getPath() + "]");
             }
          }
       }
    }
 
-   protected void stageFiles() throws Exception {
+   protected void stageFiles()
+       throws PGEException, IOException, ConnectionException, CatalogException, URISyntaxException,
+       DataTransferException, InstantiationException {
       if (pgeConfig.getFileStagingInfo() != null) {
          FileStager fileStager = getFileStager();
          logger.info("Starting file staging...");
@@ -333,7 +320,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected FileStager getFileStager() throws Exception {
+   protected FileStager getFileStager() {
       String fileStagerClass = pgeMetadata.getMetadata(FILE_STAGER);
       if (fileStagerClass != null) {
          logger.info("Loading FileStager [" + fileStagerClass + "]");
@@ -345,7 +332,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected void createDynamicConfigFiles() throws Exception {
+   protected void createDynamicConfigFiles() throws IOException, PGEException {
       logger.info("Starting creation of sci pge config files...");
       for (DynamicConfigFile dynamicConfigFile : pgeConfig
             .getDynamicConfigFiles()) {
@@ -355,7 +342,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected void createDynamicConfigFile(DynamicConfigFile dynamicConfigFile)
-         throws Exception {
+       throws PGEException, IOException {
       Validate.notNull(dynamicConfigFile, "dynamicConfigFile cannot be null");
       logger.fine("Starting creation of sci pge config file ["
             + dynamicConfigFile.getFilePath() + "]...");
@@ -364,7 +351,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       File parentDir = new File(dynamicConfigFile.getFilePath())
             .getParentFile();
       if (!(parentDir.exists() || parentDir.mkdirs())) {
-         throw new Exception("Failed to create directory where sci pge config file ["
+         throw new PGEException("Failed to create directory where sci pge config file ["
                + dynamicConfigFile.getFilePath() + "] was to be written");
       }
 
@@ -381,7 +368,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       File configFile = writer.createConfigFile(dynamicConfigFile.getFilePath(),
             pgeMetadata.asMetadata(), dynamicConfigFile.getArgs());
       if (!configFile.exists()) {
-         throw new Exception("Writer failed to create config file ["
+         throw new PGEException("Writer failed to create config file ["
                + configFile + "], exists returned false");
       }
    }
@@ -406,7 +393,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return pgeScriptName;
    }
 
-   protected void runPge() throws Exception {
+   protected void runPge() throws PGEException, XmlRpcException {
       ScriptFile sf = null;
       try {
          long startTime = System.currentTimeMillis();
@@ -436,10 +423,10 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
          pgeMetadata.replaceMetadata(PGE_RUNTIME, Long.toString(runTime));
 
-      } catch (Exception e) {
-         throw new Exception("Exception when executing PGE commands '"
-               + (sf != null ? sf.getCommands() : "NULL") + "' : "
-               + e.getMessage(), e);
+      } catch (WorkflowException e) {
+        throw new PGEException("Exception when executing PGE commands '" + (sf.getCommands()) + "' : " + e.getMessage(), e);
+      } catch (IOException e) {
+        throw new PGEException("Exception when executing PGE commands '" + (sf.getCommands()) + "' : " + e.getMessage(), e);
       }
    }
 
@@ -447,9 +434,10 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return returnCode == 0;
    }
    
-   protected void processOutput() throws FileNotFoundException, IOException {
+   protected void processOutput() throws IOException {
      for (final OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
          File[] createdFiles = new File(outputDir.getPath()).listFiles();
+       if (createdFiles != null) {
          for (File createdFile : createdFiles) {
              Metadata outputMetadata = new Metadata();
              for (RegExprOutputFiles regExprFiles : outputDir
@@ -461,7 +449,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                                  .forName(regExprFiles.getConverterClass())
                                  .newInstance();
                          outputMetadata.replaceMetadata(this.getMetadataForFile(
-                 (regExprFiles.getRenamingConv() != null) 
+                 (regExprFiles.getRenamingConv() != null)
                ? createdFile = this.renameFile(createdFile, regExprFiles.getRenamingConv())
                : createdFile, writer, regExprFiles.getArgs()));
                      } catch (Exception e) {
@@ -472,36 +460,42 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                      }
                  }
              }
-             if (outputMetadata.getAllKeys().size() > 0)
-               this.writeFromMetadata(outputMetadata, createdFile.getAbsolutePath() 
-                   + "." + this.pgeMetadata.getMetadata(MET_FILE_EXT));
+             if (outputMetadata.getAllKeys().size() > 0) {
+               this.writeFromMetadata(outputMetadata, createdFile.getAbsolutePath()
+                                                      + "." + this.pgeMetadata.getMetadata(MET_FILE_EXT));
+             }
          }
+       }
      }
  }
 
 	protected File renameFile(File file, PathUtilsNamingConvention renamingConv)
-			throws Exception {
+        throws NamingConventionException {
 		Metadata curMetadata = this.pgeMetadata.asMetadata();
 		curMetadata.replaceMetadata(renamingConv.getTmpReplaceMet());
 		return renamingConv.rename(file, curMetadata);
 	}
 
 	protected Metadata getMetadataForFile(File sciPgeCreatedDataFile,
-			PcsMetFileWriter writer, Object[] args) throws Exception {
+			PcsMetFileWriter writer, Object[] args)
+        throws PGEException, MetExtractorConfigReaderException, ParseException, MetExtractionException,
+        CommonsException, CasMetadataException, FileNotFoundException {
 		return writer.getMetadataForFile(sciPgeCreatedDataFile,
 				this.pgeMetadata, args);
 	}
 
 	protected void writeFromMetadata(Metadata metadata, String toMetFilePath)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		new SerializableMetadata(metadata, "UTF-8", false)
 				.writeMetadataToXmlStream(new FileOutputStream(toMetFilePath));
 	}
 
-	protected ProductCrawler createProductCrawler() throws Exception {
+	protected ProductCrawler createProductCrawler()
+        throws MalformedURLException, IllegalAccessException, CrawlerActionException, MetExtractionException,
+        InstantiationException, FileNotFoundException, ClassNotFoundException {
      /* create a ProductCrawler based on whether or not the output dir specifies a MIME_EXTRACTOR_REPO */
       logger.info("Configuring ProductCrawler...");
-      ProductCrawler crawler = null;
+      ProductCrawler crawler;
       if (pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO) != null && 
     		  !pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO).equals("")){
           crawler = new AutoDetectProductCrawler();
@@ -537,7 +531,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return crawler;
    }
 
-   protected void runIngestCrawler(ProductCrawler crawler) throws Exception {
+   protected void runIngestCrawler(ProductCrawler crawler) throws PGEException, IOException, XmlRpcException {
       // Determine if we need to create Metadata files
 	   if (crawler instanceof StdProductCrawler){
 		   this.processOutput();
@@ -565,7 +559,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected void verifyIngests(ProductCrawler crawler) throws Exception {
+   protected void verifyIngests(ProductCrawler crawler) throws PGEException {
       logger.info("Verifying ingests successful...");
       boolean ingestsSuccess = true;
       String exceptionMsg = "";
@@ -583,13 +577,13 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          }
       }
       if (!ingestsSuccess) {
-         throw new Exception(exceptionMsg);
+         throw new PGEException(exceptionMsg);
       } else {
          logger.info("Ingests were successful");
       }
    }
 
-   protected void updateDynamicMetadata() throws Exception {
+   protected void updateDynamicMetadata() throws XmlRpcException, IOException {
       pgeMetadata.commitMarkedDynamicMetadataKeys();
       wm.updateMetadataForWorkflow(workflowInstId,
             pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));

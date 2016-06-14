@@ -168,7 +168,7 @@ public class RssConfiguration
     for (RssTag tag : tagList)
     {
       String tagName = tag.getName();
-      if (tagName.indexOf(" ") != -1) {
+      if (tagName.contains(" ")) {
         tagName = StringUtils.join(WordUtils.capitalizeFully(tagName).split(
             " "));
       }

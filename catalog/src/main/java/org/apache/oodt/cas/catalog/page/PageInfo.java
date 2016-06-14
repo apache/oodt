@@ -31,10 +31,11 @@ public class PageInfo {
 
 	public PageInfo(int pageSize, int pageNum) {
 		this.pageSize = pageSize;
-		if (pageNum < 1)
-			this.pageNum = 1;
-		else
-			this.pageNum = pageNum;
+		if (pageNum < 1) {
+		  this.pageNum = 1;
+		} else {
+		  this.pageNum = pageNum;
+		}
 	}
 
 	public int getPageSize() {

@@ -23,7 +23,7 @@ import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 
 //JDK imports
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -47,7 +47,7 @@ public class PropFilesInfo {
 
     private LinkedList<RegExpAndParser> patterns;
 
-    private HashMap<File, Parser> fileToParserMap;
+    private ConcurrentHashMap<File, Parser> fileToParserMap;
 
     private DownloadInfo di;
 
@@ -57,15 +57,16 @@ public class PropFilesInfo {
     }
 
     public void setDownloadInfo(DownloadInfo di,
-            HashMap<File, Parser> fileToParserMap) {
+            ConcurrentHashMap<File, Parser> fileToParserMap) {
         this.di = di;
         this.fileToParserMap = fileToParserMap;
     }
 
     public LinkedList<File> getDownloadInfoPropFiles() {
         LinkedList<File> returnList = new LinkedList<File>();
-        for (Entry<File, Parser> entry : this.fileToParserMap.entrySet())
+        for (Entry<File, Parser> entry : this.fileToParserMap.entrySet()) {
             returnList.add(entry.getKey());
+        }
         return returnList;
     }
 
@@ -81,15 +82,17 @@ public class PropFilesInfo {
     public Parser getParserForFile(File propFile) {
         Parser parser = this.fileToParserMap == null ? null
                 : this.fileToParserMap.get(propFile);
-        if (parser == null)
+        if (parser == null) {
             parser = this.getParserForFilename(propFile.getName());
+        }
         return parser;
     }
 
     public Parser getParserForFilename(String propFilename) {
         for (RegExpAndParser pattern : patterns) {
-            if (pattern.isAcceptedByPattern(propFilename))
+            if (pattern.isAcceptedByPattern(propFilename)) {
                 return pattern.getParser();
+            }
         }
         return null;
     }

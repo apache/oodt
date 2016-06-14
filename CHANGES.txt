@@ -1,9 +1,122 @@
 Apache OODT Change Log
 ======================
-Release 0.10 - Current Development
+Release 0.12 - 02/10/2016
+
+* OODT-781 Add missing XMLRPC endpoint for remove hashtable. (magicaltrout)
+
+* OODT-923 Fix start script for solr deployments (magicaltrout)
+
+* OODT-924 Fix missing timestamp metadata field in returned data from solr (magicaltrout)
+
+* OODT-992 Fix incorrect product count for solr backed store (magicaltrout)
+
+Release 0.11 - 12/29/2015
+
+* OODT-918 - Created a prerequisite workflow condition for DRAT (Karanjeet
+  Singh via mattmann)
+
+* OODT-913 Multiple metadata values not written out into product-types.xml (luca)
+
+* ODT-862 Include the Workflow ID as part of the standard metadata (luca)
+ 
+* OODT-885 RegEx Precondition Comparator for DRAT --exclude feature (Karanjeet
+  Singh via mattmann)
+
+* OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
+  they both delete the cas.xxxx.pid file when stopped using the 'stop'
+  command. (mallder)
+
+* OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (lewismc, mattmann)
+
+* OODT-882 Merge dependency update into master (magicaltrout)
+
+* OODT-887 Prevent DNS resolution on URL Lookup (magicaltrout)
+
+* OODT-888 Replace += with StringBuilders to improve performance (magicaltrout)
+
+* OODT-889 Fix TopN with Type (magicaltrout)
+
+* OODT-891 Add clover placeholder(waiting on license from Atlassian) (magicaltrout)
+
+* OODT-892 Tidy up null assignments (magicaltrout)
+
+* OODT-755 Fix error message in FM client when ingestion fails  - code quality from sonar (magicaltrout)
+
+* OODT-894 Remove inefficient constructors - code quality from sonar (magicaltrout)
+
+* OODT-909 create more explicit exceptions - code quality from sonar (magicaltrout)
+
+* OODT-907 remove never queries collections - code quality from sonar (magicaltrout)
+
+* OODT-906 remove redundant assignments - code quality from sonar (magicaltrout)
+
+* OODT-904 remove redundant throws - code quality from sonar (magicaltrout)
+
+* OODT-903 simplify flows - code quality from sonar (magicaltrout)
+
+* OODT-902 remove redundant modifiers from enums - code quality from sonar (magicaltrout)
+
+* OODT-901 resolve javadoc issues - code quality from sonar (magicaltrout)
+
+* OODT-900 remove boxing/unboxing etc in code - code quality from sonar (magicaltrout)
+
+* OODT-899 remove redundant local variables - code quality from sonar (magicaltrout)
+
+* OODT-898 remove redundant finals - code quality from sonar (magicaltrout)
+
+* OODT-897 remove module dependencies - code quality from sonar (magicaltrout)
+
+* OODT-896 remove interface modifers - code quality from sonar (magicaltrout) 
+
+* OODT-895 remove redundant measure unit - code quality from sonar (magicaltrout)
+
+* OODT-894 tidy up inefficient constructors - code quality from sonar (magicaltrout)
+
+* OODT-912 replace print stacttraces with log output - code quality from sonar (magicaltrout)
+Release 0.10 - 08/30/2015
+
+* OODT-871 Issues with OODT 0.10 RC#1 (lewismc, mattmann)
+
+* OODT-246 Give user the ability to print a detailed report on what jobs in 
+  the Resource Manager are running on what nodes (Gabe Resneck, mattmann)
+
+* OODT-245 List results from the Resource Manager client should be sorted 
+  alphabetically (Gabe Resneck via mattmann)
+
+* OODT-248 Give user the ability to print a detailed report on the load, capacity 
+  and queues of all nodes in the Resource Manager (Gabe Resneck, mattmann)
+
+* OODT-247 Resource Manager client should allow users to see what jobs are 
+  currently in the queue (Gabe Resneck, mattmann)
+
+* OODT-244 Allow the Resource Manager scheduler to cycle on a non-integer 
+  number of seconds (Gabe Resneck via mattmann)
+
+* OODT-864 Upgrade to Tika 1.10 (mattmann,tpalsulich)
+
+* OODT-686 AddProductTypeCliAction should prompt for ProductTypeId (rverma, mattmann)
+
+* OODT-302 Add support in the xmlquery package to handle HTTP Redirection (Michael Cayanan via mattmann)
+
+* OODT-303 Add support in the Grid Package to throw an HTTP Servlet Response (Michael Cayanan via mattmann)
+
+* OODT-480 Balance: default view not found (Nesbert Hidalgo via mattmann)
+
+* OODT-598 XMLQuery DIS-style query parser needs to treat "#" as a word character (kelly via mattmann)
+
+* OODT-870 Integrate Curator into OPSUI (mattmann)
+
+* OODT-842 create restful version of cas curator services (mattmann)
+
+* OODT-838 Separate RESTful Servers and Clients (Michael Starch, mattmann)
+
+* OODT-824 Port the Curator to Apache Wicket (mattmann)
+
+* OODT-861 Workflow Manager client will print the list of task ids for a given workflow, if requested (luca)
 
 * OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
 
+* OODT-781 Fix removal of files from the LocalDataTransferer (magicaltrout)
 
 Release 0.9 - 05/31/2015
 

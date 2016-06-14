@@ -20,7 +20,6 @@ package org.apache.oodt.xmlquery;
 
 import java.util.List;
 import java.util.StringTokenizer;
-import org.apache.oodt.product.Retriever;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -93,9 +92,10 @@ public class LargeResult extends Result {
 		Object value = null;
 		InputStream in = null;
 		try {
-			if (size > Integer.MAX_VALUE)
-				throw new IllegalStateException("Cannot use getValue() for this product, result is too large; "
-					+ "use LargeResult.getInputStream instead");
+			if (size > Integer.MAX_VALUE) {
+			  throw new IllegalStateException("Cannot use getValue() for this product, result is too large; "
+											  + "use LargeResult.getInputStream instead");
+			}
 			int sizeToRead = (int) size;
 			byte[] buf = new byte[sizeToRead];
 			int index = 0;
@@ -104,7 +104,9 @@ public class LargeResult extends Result {
 			while ((num = in.read(buf, index, sizeToRead)) != -1) {
 				index += num;
 				sizeToRead -= num;
-				if (sizeToRead == 0) break;
+				if (sizeToRead == 0) {
+				  break;
+				}
 			}
 
 			// OK, this sucks.  Sucks sucks sucks.  Look, getValue is not to
@@ -118,9 +120,12 @@ public class LargeResult extends Result {
 		} catch (IOException ex) {
 			throw new IllegalStateException("Unexpected IOException: " + ex.getMessage());
 		} finally {
-			if (in != null) try {
+			if (in != null) {
+			  try {
 				in.close();
-			} catch (IOException ignore) {}
+			  } catch (IOException ignore) {
+			  }
+			}
 		}
 		return value;
 	}
@@ -149,10 +154,11 @@ public class LargeResult extends Result {
 	 * @return The MIME type.
 	 */
 	private static String transformMimeType(Result result) {
-		if ("application/vnd.jpl.large-product".equals(result.mimeType))
-			return (String) result.value;
-		else
-			return result.mimeType + " 0";
+		if ("application/vnd.jpl.large-product".equals(result.mimeType)) {
+		  return (String) result.value;
+		} else {
+		  return result.mimeType + " 0";
+		}
 	}
 
 	/** Serial version unique ID. */

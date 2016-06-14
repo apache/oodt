@@ -19,14 +19,18 @@
 package org.apache.oodt.cas.workflow.util;
 
 //JDK imports
+
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Vector;
-import java.util.Iterator;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -39,7 +43,7 @@ import java.io.OutputStreamWriter;
  * 
  */
 public class ScriptFile {
-
+    private static Logger LOG = Logger.getLogger(ScriptFile.class.getName());
     private String commandShell = null;
 
     private List commands = null;
@@ -93,19 +97,19 @@ public class ScriptFile {
     }
 
     public String toString() {
-        String rStr = "";
+        StringBuilder rStr = new StringBuilder();
 
-        rStr += "#!" + commandShell + "\n";
+        rStr.append("#!").append(commandShell).append("\n");
 
-        for (Iterator i = commands.iterator(); i.hasNext();) {
-            String cmd = (String) i.next();
-            rStr += cmd + "\n";
+        for (Object command : commands) {
+            String cmd = (String) command;
+            rStr.append(cmd).append("\n");
         }
 
-        return rStr;
+        return rStr.toString();
     }
 
-    public void writeScriptFile(String filePath) throws Exception {
+    public void writeScriptFile(String filePath) throws WorkflowException {
         PrintWriter pw = null;
 
         try {
@@ -113,12 +117,11 @@ public class ScriptFile {
                     new File(filePath))));
             pw.println(toString());
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception("Error writing script file!: " + e.getMessage());
+            LOG.log(Level.SEVERE, e.getMessage());
+            throw new WorkflowException("Error writing script file!: " + e.getMessage());
         } finally {
             try {
                 pw.close();
-                pw = null;
             } catch (Exception ignore) {
             }
 

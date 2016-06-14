@@ -17,22 +17,16 @@
 
 package org.apache.oodt.cas.product.jaxrs.resources;
 
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.metadata.Metadata;
+import javax.xml.bind.annotation.*;
 
 /**
- * A JAX-RS resource representing a dataset - a set of {@link Product products}
+ * A JAX-RS resource representing a dataset - a set of {@link org.apache.oodt.cas.filemgr.structs.Product products}
  * maintained by the file manager.
  * @author rlaidlaw
  * @version $Revision$

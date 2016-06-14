@@ -20,7 +20,7 @@ package org.apache.oodt.cas.resource.jobrepo;
 
 //JDK imports
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 //OODT imports
 import org.apache.oodt.commons.util.DateConvert;
@@ -33,17 +33,17 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
  * @version $Revision$
  * 
  * An implementation of a {@link JobRepository} that uses an internal
- * {@link HashMap} for persisting its {@link JobSpec}s.
+ * {@link ConcurrentHashMap} for persisting its {@link JobSpec}s.
  */
 public class MemoryJobRepository implements JobRepository {
 
   /*
    * our storage for {@link JobSpec}s. A map of job id to {@link JobSpec}.
    */
-  private HashMap jobMap = null;
+  private ConcurrentHashMap jobMap = null;
 
   public MemoryJobRepository() {
-    jobMap = new HashMap();
+    jobMap = new ConcurrentHashMap();
   }
 
   /*
@@ -59,8 +59,9 @@ public class MemoryJobRepository implements JobRepository {
       spec.getJob().setId(jobId);
       jobMap.put(jobId, spec);
       return jobId;
-    } else
+    } else {
       throw new JobRepositoryException("Exception persisting job: job is null!");
+    }
   }
 
   /*

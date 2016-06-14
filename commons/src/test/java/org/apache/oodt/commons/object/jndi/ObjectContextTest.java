@@ -24,7 +24,7 @@ import javax.naming.Binding;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import org.apache.oodt.commons.object.jndi.ObjectContext;
+
 import junit.framework.TestCase;
 
 /**
@@ -54,9 +54,9 @@ public class ObjectContextTest extends TestCase {
 		aliases.save(out, "Temporary properties");
 		out.close();
 
-		a1 = new TestContext("urn:a");
-		a2 = new TestContext("urn:a");
-		b = new TestContext("urn:b");
+		a1 = new TContext("urn:a");
+		a2 = new TContext("urn:a");
+		b = new TContext("urn:b");
 
 		oldValue = System.getProperty("org.apache.oodt.commons.object.jndi.aliases");
 		System.setProperty("org.apache.oodt.commons.object.jndi.aliases", aliasFile.toString());
@@ -87,13 +87,13 @@ public class ObjectContextTest extends TestCase {
 		try {
 			context.lookup("urn:a:x");
 			fail("Found nonexistent object");
-		} catch (NamingException ex) {}
+		} catch (NamingException ignored) {}
 
 		// Test binding names that don't match any delegate's namespace prefix.
 		try {
 			context.bind("urn:c:x", this);
 			fail("Bound nonconforming name");
-		} catch (NamingException ex) {}
+		} catch (NamingException ignored) {}
 
 		// Test binding and retrieval
 		context.bind("urn:a:x", this);					       // Bind something
@@ -113,7 +113,7 @@ public class ObjectContextTest extends TestCase {
 		try {
 			context.bind("urn:a:x", "");
 			fail("Able to bind an already-bound name");
-		} catch (NamingException ex) {}
+		} catch (NamingException ignored) {}
 
 		// Test rebinding a bound name
 		context.rebind("urn:a:x", context);				       // Bind to a different object
@@ -127,7 +127,7 @@ public class ObjectContextTest extends TestCase {
 		try {
 			context.lookup("urn:a:x");				       // Look it up
 			fail("Found object under old name");
-		} catch (NamingException ex) {}
+		} catch (NamingException ignored) {}
 		assertSame(context, context.lookup("urn:a:y"));			       // Just the name has changed
 		assertTrue(a1.bindings.keySet().contains("urn:a:y"));		       // The new name is in a1
 		assertTrue(!a1.bindings.keySet().contains("urn:a:x"));		       // But not the old
@@ -178,19 +178,19 @@ public class ObjectContextTest extends TestCase {
 		try {
 			context.lookup("urn:a:y");				       // Look it up
 			fail("Found unbound object");
-		} catch (NamingException ex) {}
+		} catch (NamingException ignored) {}
 		assertTrue(a1.bindings.isEmpty());				       // It's not in a1...
 		assertTrue(a2.bindings.isEmpty());				       // ...nor in a2
 	}
 
 	/** First delegate context for "urn:a" namespace. */
-	private TestContext a1;
+	private TContext a1;
 
 	/** Second delegate context for "urn:a" namespace. */
-	private TestContext a2;
+	private TContext a2;
 
 	/** Delegate context for "urn:b" namespace. */
-	private TestContext b;
+	private TContext b;
 
 	/** Test subject: the object context. */
 	private ObjectContext context;

@@ -18,7 +18,6 @@
 package org.apache.oodt.xmlps.structs;
 
 //JDK imports
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -41,11 +40,10 @@ public class CDERow {
     }
 
     public String toString() {
-        StringBuffer rStr = new StringBuffer();
+        StringBuilder rStr = new StringBuilder();
         if (vals != null && vals.size() > 0) {
-            for (Iterator<CDEValue> i = vals.iterator(); i.hasNext();) {
-                CDEValue v = i.next();
-                rStr.append(v.getVal() + COL_SEPARATOR);
+            for (CDEValue v : vals) {
+                rStr.append(v.getVal()).append(COL_SEPARATOR);
             }
 
             rStr.deleteCharAt(rStr.length() - 1);

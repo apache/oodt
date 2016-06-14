@@ -55,21 +55,22 @@ public class RestfulProductQueryServlet extends ProductQueryServlet {
 		
 		// if DIS-style parameters are found, default to standard processing
 		if (req.getParameter("xmlq") !=null || req.getParameter("q")!=null) {
-			XMLQuery xmlQuery = super.getQuery(req, res);
-			return xmlQuery;
+		  return super.getQuery(req, res);
 			
 		// combine all HTTP (name, value) pairs into XML query string with logical AND
 		} else {
 			
-			StringBuffer q = new StringBuffer("");
+			StringBuilder q = new StringBuilder("");
 			Enumeration<String> parameterNames = req.getParameterNames();
 			while (parameterNames.hasMoreElements()) {
 				String paramName = parameterNames.nextElement();
 				String[] paramValues = req.getParameterValues(paramName);
-				for (int i = 0; i < paramValues.length; i++) {
-					if (q.length()>0) q.append(" AND ");
-					q.append(paramName+" EQ "+paramValues[i]);
+			  for (String paramValue : paramValues) {
+				if (q.length() > 0) {
+				  q.append(" AND ");
 				}
+				q.append(paramName).append(" EQ ").append(paramValue);
+			  }
 			}
 			
 			// build XMLQuery object from HTTP parameters

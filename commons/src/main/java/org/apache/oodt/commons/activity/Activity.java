@@ -17,12 +17,13 @@
 
 package org.apache.oodt.commons.activity;
 
+import org.apache.oodt.commons.net.Net;
+
 import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Random;
-import org.apache.oodt.commons.net.Net;
 
 /**
  * An activity is an occurrence of some active action.  It has a unique ID in the
@@ -33,7 +34,11 @@ import org.apache.oodt.commons.net.Net;
  * @version $Revision: 1.2 $
  */
 public abstract class Activity {
-	/**
+
+  public static final int INT = 32;
+  public static final int INT1 = 0xff;
+
+  /**
 	 * Creates a new {@link Activity} instance.
 	 *
 	 */
@@ -47,7 +52,9 @@ public abstract class Activity {
 	 * @param id New ID.
 	 */
 	public void setID(String id) {
-		if (id == null) throw new IllegalArgumentException("ID required");
+		if (id == null) {
+		  throw new IllegalArgumentException("ID required");
+		}
 		this.id = id;
 	}
 
@@ -65,7 +72,9 @@ public abstract class Activity {
 	 * further incidents may be logged after calling this method.
 	 */
 	public synchronized void stop() {
-		if (!started) return;
+		if (!started) {
+		  return;
+		}
 		this.started = false;
 		log(new ActivityStopped());
 	}
@@ -98,16 +107,15 @@ public abstract class Activity {
 			InetAddress addr = Net.getLocalHost();	                       // Get the local host's IP address
 			long nextNum = ++counter;				       // Get the next 64 bit number
 			Date date = new Date();					       // Get the current time
-			byte[] bytes = new byte[32];				       // Make space for 32 random bytes
+			byte[] bytes = new byte[INT];				       // Make space for 32 random bytes
 			RANDOM.nextBytes(bytes);				       // Fill in 32 random bytes
-			StringBuffer input = new StringBuffer();		       // Make space to put the 1st 3 components...
-			input.append(addr).append(nextNum).append(date);	       // ...together and put 'em together
-			MessageDigest messageDigest = MessageDigest.getInstance("MD5");// Prepare to take a hash
-			messageDigest.update(input.toString().getBytes());	       // Add the 1st 3 components
+		  MessageDigest messageDigest = MessageDigest.getInstance("MD5");// Prepare to take a hash
+			messageDigest.update((String.valueOf(addr) + nextNum + date).getBytes());	       // Add the 1st 3 components
 			byte[] sig = messageDigest.digest(bytes);		       // And add the random bytes
-			StringBuffer output = new StringBuffer();		       // Make space to store the hash as a string
-			for (int i = 0; i < sig.length; ++i)			       // For each byte in the hash
-				output.append(Integer.toHexString(((int)sig[i])&0xff));// Store it as a hex value
+			StringBuilder output = new StringBuilder();		       // Make space to store the hash as a string
+		  for (byte aSig : sig) {
+			output.append(Integer.toHexString(((int) aSig) & INT1));// Store it as a hex value
+		  }
 			return output.toString();				       // And return the string
 		} catch (NoSuchAlgorithmException ex) {
 			throw new IllegalStateException("MD5 algorithm not available");

@@ -19,18 +19,15 @@ package org.apache.oodt.cas.filemgr.util;
 
 //CAS imports
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.Product; //for javadoc
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 
-//JDK imports
-import java.util.List; //for javadoc
 
 /**
  * @author mattmann
  * @version $Revision$
  * 
  * <p>
- * An interface for pagination of {@link Product} {@link List}s..
+ * An interface for pagination of {@link org.apache.oodt.cas.filemgr.structs.Product} {@link java.util.List}s..
  * </p>
  * 
  */
@@ -41,7 +38,7 @@ public interface Pagination {
      *            The ProductType to obtain the first {@link ProductPage} for.
      * @return The first page of products for a particular {@link ProductType}.
      */
-    public ProductPage getFirstPage(ProductType type);
+    ProductPage getFirstPage(ProductType type);
 
     /**
      * 
@@ -49,7 +46,7 @@ public interface Pagination {
      *            The ProductType to obtain the last {@link ProductPage} for.
      * @return The last page of products for a particular {@link ProductType}.
      */
-    public ProductPage getLastProductPage(ProductType type);
+    ProductPage getLastProductPage(ProductType type);
 
     /**
      * 
@@ -62,7 +59,7 @@ public interface Pagination {
      * @return The next page in the ProductType product list, given the
      *         currentPage.
      */
-    public ProductPage getNextPage(ProductType type, ProductPage currentPage);
+    ProductPage getNextPage(ProductType type, ProductPage currentPage);
 
     /**
      * 
@@ -75,5 +72,5 @@ public interface Pagination {
      * @return The previous page in the ProductType product list, given the
      *         currentPage.
      */
-    public ProductPage getPrevPage(ProductType type, ProductPage currentPage);
+    ProductPage getPrevPage(ProductType type, ProductPage currentPage);
 }

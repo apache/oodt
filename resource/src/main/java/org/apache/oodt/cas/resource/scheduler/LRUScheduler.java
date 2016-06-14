@@ -19,7 +19,6 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 //JDKimports
-import java.lang.Integer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,6 +49,7 @@ public class LRUScheduler implements Scheduler {
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(LRUScheduler.class
             .getName());
+    public static final double DOUBLE = 1000.0;
 
     private LRUQueueManager queueManager;
     
@@ -63,7 +63,7 @@ public class LRUScheduler implements Scheduler {
     private JobQueue myJobQueue;
 
     /* our wait time between checking the queue */
-    private int waitTime = -1;
+    private double waitTime = -1;
 
     public LRUScheduler(Monitor m, Batchmgr b, JobQueue q, LRUQueueManager qm) {
 
@@ -74,7 +74,7 @@ public class LRUScheduler implements Scheduler {
 
         String waitStr = System.getProperty(
                 "org.apache.oodt.cas.resource.scheduler.wait.seconds", "20");
-        waitTime = Integer.parseInt(waitStr);
+        waitTime = Double.parseDouble(waitStr);
     }
 
     /*
@@ -86,11 +86,12 @@ public class LRUScheduler implements Scheduler {
         for (;;) {
 
             try {
-                Thread.currentThread().sleep((long) waitTime * 1000);
+            	long sleepTime = (long)(waitTime * DOUBLE);
+                Thread.currentThread().sleep(sleepTime);
             } catch (Exception ignore) {}
 
             if (!myJobQueue.isEmpty()) {
-                JobSpec exec = null;
+                JobSpec exec;
 
                 try {
                     exec = myJobQueue.getNextJob();
@@ -129,7 +130,7 @@ public class LRUScheduler implements Scheduler {
     public synchronized boolean schedule(JobSpec spec)
             throws SchedulerException {
         String queueName = spec.getJob().getQueueName();
-        int load = spec.getJob().getLoadValue().intValue();
+        int load = spec.getJob().getLoadValue();
 
         ResourceNode node = nodeAvailable(spec);
 
@@ -221,10 +222,10 @@ public class LRUScheduler implements Scheduler {
             throws SchedulerException {
         try {
 	    	String queueName = spec.getJob().getQueueName();
-	        int load = spec.getJob().getLoadValue().intValue();
+	        int load = spec.getJob().getLoadValue();
 	
 	        for (String nodeId : queueManager.getNodes(queueName)) {
-	            int nodeLoad = -1;
+	            int nodeLoad;
 	            ResourceNode resNode = null;
 	
 	            try {
@@ -233,7 +234,7 @@ public class LRUScheduler implements Scheduler {
 	            } catch (MonitorException e) {
 	                LOG
 	                        .log(Level.WARNING, "Exception getting load on "
-	                                + "node: [" + resNode.getNodeId()
+	                                + "node: [" + (resNode != null ? resNode.getNodeId() : null)
 	                                + "]: Message: " + e.getMessage());
 	                throw new SchedulerException(e.getMessage());
 	            }

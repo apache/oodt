@@ -48,7 +48,7 @@ public interface OFSNListHandler {
    * @throws ProductException
    *           If any error occurs performing the listing on the server side.
    */
-  public File[] getListing(String ofsn) throws ProductException;
+  File[] getListing(String ofsn) throws ProductException;
 
   /**
    * Configures this handler with the provided configuration stored in a
@@ -57,5 +57,5 @@ public interface OFSNListHandler {
    * @param conf
    *          The configuration for this list handler.
    */
-  public void configure(Properties conf);
+  void configure(Properties conf);
 }

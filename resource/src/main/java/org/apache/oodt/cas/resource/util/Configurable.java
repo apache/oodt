@@ -38,6 +38,6 @@ public interface Configurable {
    * @param props
    *          Properties to use to configure the Object.
    */
-  public void configure(Properties props);
+  void configure(Properties props);
 
 }

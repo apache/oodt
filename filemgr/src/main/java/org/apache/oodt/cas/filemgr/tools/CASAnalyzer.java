@@ -17,18 +17,15 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
+
+//Lucene imports
+import org.apache.lucene.analysis.*;
+import org.apache.lucene.analysis.standard.StandardFilter;
+
 //JDK imports
 import java.io.Reader;
 import java.util.Set;
 
-//Lucene imports
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.StopAnalyzer;
-import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.WhitespaceTokenizer;
-import org.apache.lucene.analysis.standard.StandardFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 /**
  * 
@@ -60,7 +57,7 @@ public class CASAnalyzer extends Analyzer {
     }
 
     /**
-     * Constructs a {@link StandardTokenizer} filtered by a {@link
+     * Constructs a {@link org.apache.lucene.analysis.standard.StandardTokenizer} filtered by a {@link
      * StandardFilter}, a {@link LowerCaseFilter} and a {@link StopFilter}.
      */
     public TokenStream tokenStream(String fieldName, Reader reader) {

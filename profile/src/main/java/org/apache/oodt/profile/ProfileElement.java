@@ -18,15 +18,16 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.oodt.commons.util.Documentable;
 import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
@@ -42,7 +43,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Kelly
  */
-public abstract class ProfileElement implements Serializable, Cloneable, Comparable, Documentable {
+public abstract class ProfileElement implements Serializable, Cloneable, Comparable<Object>, Documentable {
 	/**
 	 * Create a profile element from the given XML node.
 	 *
@@ -56,7 +57,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		String desc = null;
 		String type = null;
 		String unit = null;
-		List synonyms = new ArrayList();
+		List<String> synonyms = new ArrayList<String>();
 		boolean obligation = false;
 		int maxOccurrence = 0;
 		String comments = null;
@@ -65,44 +66,48 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		String min = "0.0", max = "0.0";
 		boolean gotMin = false;
 		boolean gotMax = false;
-		List values = new ArrayList();
+		List<String> values = new ArrayList<String>();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node node = children.item(i);
-			if ("elemId".equals(node.getNodeName()))
-				id = XML.unwrappedText(node);
-			else if ("elemName".equals(node.getNodeName()))
-				name = XML.unwrappedText(node);
-			else if ("elemDesc".equals(node.getNodeName()))
-				desc = XML.unwrappedText(node);
-			else if ("elemType".equals(node.getNodeName()))
-				type = XML.unwrappedText(node);
-			else if ("elemUnit".equals(node.getNodeName()))
-				unit = XML.unwrappedText(node);
-			else if ("elemEnumFlag".equals(node.getNodeName()))
-				ranged = "F".equals(XML.unwrappedText(node));
-			else if ("elemSynonym".equals(node.getNodeName()))
-				synonyms.add(XML.unwrappedText(node));
-			else if ("elemObligation".equals(node.getNodeName())) {
+			if ("elemId".equals(node.getNodeName())) {
+			  id = XML.unwrappedText(node);
+			} else if ("elemName".equals(node.getNodeName())) {
+			  name = XML.unwrappedText(node);
+			} else if ("elemDesc".equals(node.getNodeName())) {
+			  desc = XML.unwrappedText(node);
+			} else if ("elemType".equals(node.getNodeName())) {
+			  type = XML.unwrappedText(node);
+			} else if ("elemUnit".equals(node.getNodeName())) {
+			  unit = XML.unwrappedText(node);
+			} else if ("elemEnumFlag".equals(node.getNodeName())) {
+			  ranged = "F".equals(XML.unwrappedText(node));
+			} else if ("elemSynonym".equals(node.getNodeName())) {
+			  synonyms.add(XML.unwrappedText(node));
+			} else if ("elemObligation".equals(node.getNodeName())) {
 				String value = XML.unwrappedText(node);
 				obligation = "Required".equals(value) || "T".equals(value);
-			} else if ("elemMaxOccurrence".equals(node.getNodeName()))
-				try {
-					maxOccurrence = Integer.parseInt(XML.unwrappedText(node));
-				} catch (NumberFormatException ignore) {}
-			else if ("elemComment".equals(node.getNodeName()))
-				comments = XML.unwrappedText(node);
-			else if ("elemValue".equals(node.getNodeName())) {
+			} else if ("elemMaxOccurrence".equals(node.getNodeName())) {
+			  try {
+				maxOccurrence = Integer.parseInt(XML.unwrappedText(node));
+			  } catch (NumberFormatException ignore) {
+			  }
+			} else if ("elemComment".equals(node.getNodeName())) {
+			  comments = XML.unwrappedText(node);
+			} else if ("elemValue".equals(node.getNodeName())) {
 				values.add(text(node));
-			} else if ("elemMinValue".equals(node.getNodeName()))
-				try {
-					min = XML.unwrappedText(node);
-					gotMin = true;
-				} catch (NumberFormatException ignore) {}
-			else if ("elemMaxValue".equals(node.getNodeName()))
-				try {
-					max = XML.unwrappedText(node);
-					gotMax = true;
-				} catch (NumberFormatException ignore) {}
+			} else if ("elemMinValue".equals(node.getNodeName())) {
+			  try {
+				min = XML.unwrappedText(node);
+				gotMin = true;
+			  } catch (NumberFormatException ignore) {
+			  }
+			} else if ("elemMaxValue".equals(node.getNodeName())) {
+			  try {
+				max = XML.unwrappedText(node);
+				gotMax = true;
+			  } catch (NumberFormatException ignore) {
+			  }
+			}
 		}
 		if (ranged) {
 			if (gotMin && gotMax) {
@@ -111,9 +116,10 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 			}
 			return factory.createUnspecifiedProfileElement(profile, name, id, desc, type, unit, synonyms, obligation,
 				maxOccurrence, comments);
-		} else
-			return factory.createEnumeratedProfileElement(profile, name, id, desc, type, unit, synonyms, obligation,
-				maxOccurrence, comments, values);
+		} else {
+		  return factory.createEnumeratedProfileElement(profile, name, id, desc, type, unit, synonyms, obligation,
+			  maxOccurrence, comments, values);
+		}
 	}
 
 	/**
@@ -121,7 +127,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 */
 	protected ProfileElement(Profile profile) {
 		this.profile = profile;
-		synonyms = new ArrayList();
+		synonyms = new ArrayList<Object>();
 	}
 
 	/**
@@ -138,7 +144,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param maxOccurrence Maximum number of occurrences of this element.
 	 * @param comments Any comments about this element.
 	 */
-	protected ProfileElement(Profile profile, String name, String id, String desc, String type, String unit, List synonyms,
+	protected ProfileElement(Profile profile, String name, String id, String desc, String type, String unit, List<?> synonyms,
 		boolean obligation, int maxOccurrence, String comments) {
 		this.profile = profile;
 		this.name = name;
@@ -157,8 +163,12 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof ProfileElement)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof ProfileElement)) {
+		  return false;
+		}
 		ProfileElement obj = (ProfileElement) rhs;
 		return profile.equals(obj.profile) && name.equals(obj.name);
 	}
@@ -171,16 +181,18 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		Object obj = null;
 		try {
 			obj = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return obj;
 	}
 
 	public int compareTo(Object rhs) {
 		ProfileElement obj = (ProfileElement) rhs;
-		if (profile.compareTo(obj.profile) < 0)
-			return -1;
-		if (profile.compareTo(obj.profile) == 0)
-			return name.compareTo(obj.name);
+		if (profile.compareTo(obj.profile) < 0) {
+		  return -1;
+		}
+		if (profile.compareTo(obj.profile) == 0) {
+		  return name.compareTo(obj.name);
+		}
 		return 1;
 	}
 
@@ -414,12 +426,16 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		XML.addNonNull(profElement, "elemType", type);
 		XML.addNonNull(profElement, "elemUnit", unit);
 		XML.add(profElement, "elemEnumFlag", isEnumerated()? "T" : "F");
-		if (withValues) addValues(profElement);
+		if (withValues) {
+		  addValues(profElement);
+		}
 		XML.add(profElement, "elemSynonym", synonyms);
-		if (isObligatory())
-			XML.add(profElement, "elemObligation","Required");
-		if (getMaxOccurrence() >= 0)
-			XML.add(profElement, "elemMaxOccurrence", String.valueOf(getMaxOccurrence()));
+		if (isObligatory()) {
+		  XML.add(profElement, "elemObligation", "Required");
+		}
+		if (getMaxOccurrence() >= 0) {
+		  XML.add(profElement, "elemMaxOccurrence", String.valueOf(getMaxOccurrence()));
+		}
 		XML.add(profElement, "elemComment", comments);
 		return profElement;
 	}
@@ -496,7 +512,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	protected String unit;
 
 	/** My synonyms. */
-	protected List synonyms;
+	protected List<?> synonyms;
 
 	/** My obligation. */
 	protected boolean obligation;
@@ -522,12 +538,12 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param elements Profile elements.
 	 * @return Profiles that own those elements.
 	 */
-	public static Set profiles(Set elements) {
-		Set rc = new HashSet();
-		for (Iterator i = elements.iterator(); i.hasNext();) {
-			ProfileElement element = (ProfileElement) i.next();
-			rc.add(element.getProfile());
-		}
+	public static Set<Profile> profiles(Set<?> elements) {
+		Set<Profile> rc = new HashSet<Profile>();
+	  for (Object element1 : elements) {
+		ProfileElement element = (ProfileElement) element1;
+		rc.add(element.getProfile());
+	  }
 		return rc;
 	}
 
@@ -539,13 +555,14 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param elements Profile elements.
 	 * @return Members of <var>elements</var> that are owned by members of <var>profiles</var>.
 	 */
-	public static Set elements(Set profiles, Set elements) {
-		Set rc = new HashSet();
-		for (Iterator i = elements.iterator(); i.hasNext();) {
-			ProfileElement element = (ProfileElement) i.next();
-			if (profiles.contains(element.getProfile()))
-				rc.add(element);
+	public static Set<ProfileElement> elements(Set<?> profiles, Set<?> elements) {
+		Set<ProfileElement> rc = new HashSet<ProfileElement>();
+	  for (Object element1 : elements) {
+		ProfileElement element = (ProfileElement) element1;
+		if (profiles.contains(element.getProfile())) {
+		  rc.add(element);
 		}
+	  }
 		return rc;
 	}
 
@@ -561,8 +578,9 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 			return;
 		}
 		NodeList children = node.getChildNodes();
-		for (int i = 0; i < children.getLength(); ++i)
-			text0(b, children.item(i));
+		for (int i = 0; i < children.getLength(); ++i) {
+		  text0(b, children.item(i));
+		}
 	}
 }
 

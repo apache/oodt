@@ -29,6 +29,7 @@ import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -59,10 +60,10 @@ public class CmdLineIngester extends StdIngester {
 
     /**
      * @param args
-     * @throws IngestException
-     * @throws MalformedURLException
+     * @throws org.apache.oodt.cas.filemgr.structs.exceptions.IngestException
+     * @throws java.net.MalformedURLException
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, IngestException {
         String usage = CmdLineIngester.class.getName()
                 + " --url <filemgr url> [options]\n"
                 + "[--extractor <met extractor class name> <met conf file path>|"
@@ -104,7 +105,7 @@ public class CmdLineIngester extends StdIngester {
         }
 
         CmdLineIngester ingester = new CmdLineIngester(transferServiceFactory);
-        MetExtractor extractor = null;
+        MetExtractor extractor;
         if (readFromStdin) {
             List<String> prods = readProdFilesFromStdin();
             extractor = GenericMetadataObjectFactory
@@ -112,7 +113,7 @@ public class CmdLineIngester extends StdIngester {
             ingester.ingest(new URL(fmUrlStr), prods, extractor, new File(
                     metConfFilePath));
         } else {
-            String productID = null;
+            String productID;
             if (metFilePath != null) {
                 productID = ingester.ingest(new URL(fmUrlStr), new File(
                         filePath), new SerializableMetadata(
@@ -131,7 +132,7 @@ public class CmdLineIngester extends StdIngester {
 
     private static List<String> readProdFilesFromStdin() {
         List<String> prodFiles = new Vector<String>();
-        BufferedReader br = null;
+        BufferedReader br;
 
         br = new BufferedReader(new InputStreamReader(System.in));
 

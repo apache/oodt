@@ -18,19 +18,18 @@
 package org.apache.oodt.opendapps;
 
 //JDK imports
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.opendapps.config.OpendapConfig;
 import org.apache.oodt.opendapps.extractors.MetadataExtractor;
 import org.apache.oodt.opendapps.extractors.ThreddsMetadataExtractor;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import thredds.catalog.InvAccess;
 import thredds.catalog.InvCatalogRef;
@@ -57,7 +56,7 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
 
   public DatasetCrawler(String datasetURL, OpendapConfig conf) {
     this.datasetURL = datasetURL.endsWith("/") ? datasetURL : datasetURL + "/";
-    this.datasetMet = new HashMap<String, Metadata>();
+    this.datasetMet = new ConcurrentHashMap<String, Metadata>();
     this.conf = conf;
   }
 
@@ -81,18 +80,16 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
    */
   public void getDataset(InvDataset dd, Object context) {
   	String url = this.datasetURL + dd.getCatalogUrl().split("#")[1];
-    String id = dd.getID();    
+
     LOG.log(Level.FINE, url + " is the computed access URL for this dataset");
     // look for an OpenDAP access URL, only extract metadata if it is found
     List<InvAccess> datasets = dd.getAccess();
     if (dd.getAccess() != null && dd.getAccess().size() > 0) {
-      Iterator<InvAccess> sets = datasets.iterator();
-      while (sets.hasNext()) {
-        InvAccess single = sets.next();
+      for (InvAccess single : datasets) {
         InvService service = single.getService();
         // note: select the OpenDAP access URL based on THREDDS service type
-        if (service.getServiceType()==ServiceType.OPENDAP) {
-          LOG.log(Level.FINE, "Found OpenDAP access URL: "+ single.getUrlPath());
+        if (service.getServiceType() == ServiceType.OPENDAP) {
+          LOG.log(Level.FINE, "Found OpenDAP access URL: " + single.getUrlPath());
           String opendapurl = this.datasetURL + single.getUrlPath();
           // extract metadata from THREDDS catalog
           MetadataExtractor extractor = new ThreddsMetadataExtractor(dd);
@@ -108,9 +105,9 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
   }
 
   /**
-   * Gets the set of String {@link URL}s crawled.
+   * Gets the set of String {@link java.net.URL}s crawled.
    * 
-   * @return A {@link List} of {@link String} representations of {@link URL}s.
+   * @return A {@link List} of {@link String} representations of {@link java.net.URL}s.
    */
   public List<String> getURLs() {
     return this.urls;

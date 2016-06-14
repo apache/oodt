@@ -44,7 +44,9 @@ public class Base64DecodingInputStream extends FilterInputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public int read() throws IOException {
-		if (in == null) throw new IOException("Can't read from a closed stream");
+		if (in == null) {
+		  throw new IOException("Can't read from a closed stream");
+		}
 
 		// If we've used up the decoded data buffer, read 4 more bytes and decode 'em.
 		if (buffer == null || index == buffer.length) {
@@ -56,8 +58,11 @@ public class Base64DecodingInputStream extends FilterInputStream {
 			while (toRead > 0) {
 				actuallyGot = in.read(streamBuf, atIndex, toRead);
 				if (actuallyGot == -1) {
-					if (firstRead) return -1;
-					else break;
+					if (firstRead) {
+					  return -1;
+					} else {
+					  break;
+					}
 				}
 				firstRead = false;
 				atIndex += actuallyGot;
@@ -85,23 +90,35 @@ public class Base64DecodingInputStream extends FilterInputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public int read(byte[] b, int offset, int length) throws IOException {
-		if (b == null) throw new IllegalArgumentException("Can't read data into a null array");
-		if (offset < 0 || offset >= b.length)
-			throw new IndexOutOfBoundsException("Can't read data into an array with indexes 0.." + (b.length-1)
-				+ " at index " + offset);
-		if (length < 0) throw new IllegalArgumentException("Can't read a negative amount of data");
-		if (offset + length > b.length)
-			throw new IndexOutOfBoundsException("Can't read data past the right edge of an array");
-		if (in == null) throw new IOException("Can't read from a closed stream");
+		if (b == null) {
+		  throw new IllegalArgumentException("Can't read data into a null array");
+		}
+		if (offset < 0 || offset >= b.length) {
+		  throw new IndexOutOfBoundsException("Can't read data into an array with indexes 0.." + (b.length - 1)
+											  + " at index " + offset);
+		}
+		if (length < 0) {
+		  throw new IllegalArgumentException("Can't read a negative amount of data");
+		}
+		if (offset + length > b.length) {
+		  throw new IndexOutOfBoundsException("Can't read data past the right edge of an array");
+		}
+		if (in == null) {
+		  throw new IOException("Can't read from a closed stream");
+		}
 
 		int c = read();
-		if (c == -1) return -1;
+		if (c == -1) {
+		  return -1;
+		}
 		b[offset] = (byte) c;
 		int i = 1;
 		try {
 			for (; i < length; ++i) {
 				c = read();
-				if (c == -1) break;
+				if (c == -1) {
+				  break;
+				}
 				b[offset + i] = (byte) c;
 			}
 		} catch (IOException ignore) {}
@@ -117,10 +134,14 @@ public class Base64DecodingInputStream extends FilterInputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public long skip(long n) throws IOException {
-		if (in == null) throw new IOException("Can't skip past data on a closed stream");
+		if (in == null) {
+		  throw new IOException("Can't skip past data on a closed stream");
+		}
 		int actuallySkipped = 0;
 		while (n > 0) {
-			if (read() == -1) return actuallySkipped;
+			if (read() == -1) {
+			  return actuallySkipped;
+			}
 			--n;
 			++actuallySkipped;
 		}
@@ -134,9 +155,12 @@ public class Base64DecodingInputStream extends FilterInputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public int available() throws IOException {
-		if (in == null) throw new IOException("Can't see how many bytes are available on a closed stream");
-		if (buffer != null && index < buffer.length)
-			return buffer.length - index;
+		if (in == null) {
+		  throw new IOException("Can't see how many bytes are available on a closed stream");
+		}
+		if (buffer != null && index < buffer.length) {
+		  return buffer.length - index;
+		}
 		return in.available() >= 4? 1 : 0;
 	}
 
@@ -145,7 +169,9 @@ public class Base64DecodingInputStream extends FilterInputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void close() throws IOException {
-		if (in == null) throw new IOException("Can't close a closed stream");
+		if (in == null) {
+		  throw new IOException("Can't close a closed stream");
+		}
 		in.close();
 		in = null;
 		buffer = null;

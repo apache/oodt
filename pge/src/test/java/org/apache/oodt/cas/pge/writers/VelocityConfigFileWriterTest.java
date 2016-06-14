@@ -17,15 +17,14 @@
 
 package org.apache.oodt.cas.pge.writers;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.pge.writers.VelocityConfigFileWriter;
-import org.apache.oodt.cas.pge.writers.VelocityMetadata;
 
 import junit.framework.TestCase;
 
@@ -45,7 +44,7 @@ public class VelocityConfigFileWriterTest extends TestCase {
     try {
       vcfw.generateFile(config.toString(), metadata, LOG, url.getFile());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
     String output = FileUtils.readFileToString(config);

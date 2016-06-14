@@ -17,23 +17,21 @@
 
 package org.apache.oodt.opendapps;
 
-//OPeNDAP imports
-import opendap.dap.DAS;
 
 /**
  * 
- * A set of named constants for extracting information from OPeNDAP {@link DAS}
+ * A set of named constants for extracting information from OPeNDAP {@link opendap.dap.DAS}
  * profiles.
  * 
  */
 public interface DapNames {
 
-  public static final String ACTUAL_RANGE = "actual_range";
+  String ACTUAL_RANGE = "actual_range";
 
-  public static final String UNITS = "units";
+  String UNITS = "units";
 
-  public static final String START = "start";
+  String START = "start";
 
-  public static final String END = "end";
+  String END = "end";
 
 }

@@ -98,8 +98,9 @@ public class UlimitProperty {
     public int getIntValue() {
         if (isUnlimited()) {
             return -1;
-        } else
+        } else {
             return Integer.parseInt(this.value);
+        }
     }
 
 }

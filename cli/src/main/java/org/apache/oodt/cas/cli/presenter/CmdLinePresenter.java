@@ -23,13 +23,13 @@ package org.apache.oodt.cas.cli.presenter;
  */
 public interface CmdLinePresenter {
 
-   public void presentOptionHelp(String optionHelpMessage);
+   void presentOptionHelp(String optionHelpMessage);
 
-   public void presentActionHelp(String actionHelpMessage);
+   void presentActionHelp(String actionHelpMessage);
 
-   public void presentActionsHelp(String actionsHelpMessage);
+   void presentActionsHelp(String actionsHelpMessage);
 
-   public void presentErrorMessage(String errorMessage);
+   void presentErrorMessage(String errorMessage);
 
-   public void presentActionMessage(String actionMessage);
+   void presentActionMessage(String actionMessage);
 }

@@ -23,8 +23,8 @@ package org.apache.oodt.xmlps.util;
  */
 public interface XMLQueryKeys {
     
-    public static final String ROLE_LITERAL = "LITERAL";
+    String ROLE_LITERAL = "LITERAL";
     
-    public static final String ROLE_ELEMNAME = "elemName";
+    String ROLE_ELEMNAME = "elemName";
 
 }

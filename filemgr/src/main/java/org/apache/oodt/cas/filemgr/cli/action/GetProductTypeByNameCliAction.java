@@ -20,12 +20,11 @@ package org.apache.oodt.cas.filemgr.cli.action;
 import org.apache.commons.lang.Validate;
 
 //OODT imports
-import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 
 /**
- * A {@link CmdLineAction} which gets a {@link ProductType} by name.
+ * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which gets a {@link ProductType} by name.
  * 
  * @author bfoster (Brian Foster)
  */

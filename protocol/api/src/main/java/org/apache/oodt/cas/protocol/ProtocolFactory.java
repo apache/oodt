@@ -24,8 +24,8 @@ package org.apache.oodt.cas.protocol;
  */
 public interface ProtocolFactory {
 
-    public Protocol newInstance();
+    Protocol newInstance();
 
-    public String getSchema();
+    String getSchema();
     
 }

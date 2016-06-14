@@ -18,15 +18,22 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //JDK imports
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 
-//Junit imports
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
+
 
 /**
  * 
@@ -36,7 +43,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  */
-public class TestPackagedWorkflowRepository extends TestCase {
+public class TestPackagedWorkflowRepository {
+
+  private static Logger LOG = Logger.getLogger(TestPackagedWorkflowRepository.class.getName());
 
   private PackagedWorkflowRepository repo;
 
@@ -46,6 +55,7 @@ public class TestPackagedWorkflowRepository extends TestCase {
   /**
    * @since OODT-205
    */
+  @Test
   public void testWorkflowConditions(){
     Workflow w = null;
     try{
@@ -62,6 +72,7 @@ public class TestPackagedWorkflowRepository extends TestCase {
     assertEquals(w.getConditions().size(), 3);
   }
 
+  @Test
   public void testDetectOuterLevelWorkflows() {
     assertNotNull(this.repo);
     List<Workflow> workflows = null;
@@ -81,6 +92,7 @@ public class TestPackagedWorkflowRepository extends TestCase {
     assertTrue(foundGranuleMaps);
   }
 
+  @Test
   public void testDetectInnerWorkflows() {
     assertNotNull(this.repo);
     List<String> events = null;
@@ -118,13 +130,14 @@ public class TestPackagedWorkflowRepository extends TestCase {
   /**
    * @since OODT-207
    */
+  @Test
   public void testGetConditionTimeout(){
     WorkflowCondition cond = null;
     try{
       cond = this.repo.getWorkflowConditionById("urn:npp:MOA_IASI_L1C_Daily");
     }
     catch(Exception e){
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
     
@@ -135,13 +148,14 @@ public class TestPackagedWorkflowRepository extends TestCase {
   /**
    * @since OODT-208
    */
+  @Test
   public void testGetOptional(){
     WorkflowCondition cond = null;
     try{
       cond = this.repo.getWorkflowConditionById("urn:npp:MOA_ORBITS_FileBased");
     }
     catch(Exception e){
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
     
@@ -154,8 +168,8 @@ public class TestPackagedWorkflowRepository extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     repo = new PackagedWorkflowRepository(Collections.singletonList(new File(
         "src/main/resources/examples/wengine/GranuleMaps.xml")));
   }
@@ -165,8 +179,8 @@ public class TestPackagedWorkflowRepository extends TestCase {
    * 
    * @see junit.framework.TestCase#tearDown()
    */
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     repo = null;
   }
 

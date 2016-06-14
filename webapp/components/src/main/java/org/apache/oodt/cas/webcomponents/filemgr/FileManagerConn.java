@@ -17,12 +17,6 @@
 
 package org.apache.oodt.cas.webcomponents.filemgr;
 
-import java.net.URL;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -32,6 +26,12 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -120,7 +120,7 @@ public class FileManagerConn {
     try {
       types = this.fm.getProductTypes();
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to obtain product types: Reason: ["
           + e.getMessage() + "]");
     }

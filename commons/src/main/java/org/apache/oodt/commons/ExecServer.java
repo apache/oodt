@@ -17,28 +17,38 @@
 
 package org.apache.oodt.commons;
 
-import java.io.*;
+import org.apache.oodt.commons.io.Base64EncodingOutputStream;
+import org.apache.oodt.commons.util.LogInit;
+import org.apache.oodt.commons.util.PropertyMgr;
+import org.apache.oodt.commons.util.XML;
+import org.apache.xmlrpc.XmlRpcClientLite;
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.XmlRpcServer;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.*;
-import java.rmi.RMISecurityManager;
-import java.util.*;
-import javax.naming.Context;
-import javax.naming.NamingException;
-import org.apache.oodt.commons.io.Log;
-import org.apache.oodt.commons.util.*;
-import org.apache.xmlrpc.XmlRpcClientLite;
-import org.apache.xmlrpc.XmlRpcServer;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.rmi.Remote;
-import java.rmi.server.RemoteStub;
-import java.rmi.server.UnicastRemoteObject;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.RemoteRef;
-import java.io.ObjectOutputStream;
-import java.io.ByteArrayOutputStream;
-import org.apache.oodt.commons.io.Base64EncodingOutputStream;
+import java.rmi.server.RemoteStub;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.NamingException;
 
 /** Server execution program.
  *
@@ -47,7 +57,10 @@ import org.apache.oodt.commons.io.Base64EncodingOutputStream;
  * @author Kelly
  */
 public class ExecServer {
-	/** Start a server.
+
+  public static final int MILLIS = 15000;
+
+  /** Start a server.
 	 *
 	 * The command-line should have two arguments:
 	 *
@@ -124,9 +137,12 @@ public class ExecServer {
 			});
 
 			// We're done here.
-			for (;;) try {
+			for (;;) {
+			  try {
 				Thread.currentThread().join();
-			} catch (InterruptedException ignore) {}
+			  } catch (InterruptedException ignore) {
+			  }
+			}
 		} catch (IOException ex) {
 			System.err.println("I/O error during initialization: " + ex.getMessage());
 			ex.printStackTrace();
@@ -136,8 +152,6 @@ public class ExecServer {
 		} catch (SAXException ex) {
 			System.err.println("Error " + ex.getClass().getName() + " while attempting to parse the configuration"
 				+ " file: " + ex.getMessage());
-		} catch (javax.naming.NamingException ex) {
-			System.err.println("Naming/directory error: " + ex.getClass().getName() + ": " + ex.getMessage());
 		} catch (java.lang.reflect.InvocationTargetException ex) {
 			Throwable target = ex.getTargetException();
 			System.err.println("Constructor for \"" + className + "\" threw " + target.getClass().getName() + ": "
@@ -262,21 +276,22 @@ public class ExecServer {
 	 */
 	public String getServerStatus() {
 		// Update the status document with the current log.
-		for (Iterator i = LogInit.MEMORY_LOGGER.getMessages().iterator(); i.hasNext();) {
-			String message = (String) i.next();
-			Element messageElement = statusDocument.createElement("message");
-			messageElement.setAttribute("xml:space", "preserve");
-			messageElement.appendChild(statusDocument.createTextNode(message));
-			logElement.appendChild(messageElement);
-		}
+	  for (Object o : LogInit.MEMORY_LOGGER.getMessages()) {
+		String message = (String) o;
+		Element messageElement = statusDocument.createElement("message");
+		messageElement.setAttribute("xml:space", "preserve");
+		messageElement.appendChild(statusDocument.createTextNode(message));
+		logElement.appendChild(messageElement);
+	  }
 
 		// Serialize the document.
 		String rc = XML.serialize(statusDocument);
 
 		// Remove all the log messages from the document.
 		NodeList children = logElement.getChildNodes();
-		for (int i = 0; i < children.getLength(); ++i)
-			logElement.removeChild(children.item(i));
+		for (int i = 0; i < children.getLength(); ++i) {
+		  logElement.removeChild(children.item(i));
+		}
 
 		// Return the serialized form, which included the log messages.
 		System.err.println(rc);
@@ -308,7 +323,8 @@ public class ExecServer {
 	 * @return The return value from the method named by <var>method</var>.
 	 * @throws Exception If any error occurs.
 	 */
-	public Object callLocalServerManager(int port, String user, String password, String method, List params) throws Exception {
+	public Object callLocalServerManager(int port, String user, String password, String method, List params)
+		throws IOException, XmlRpcException {
 		XmlRpcClientLite local = new XmlRpcClientLite("localhost", port);
 		local.setBasicAuthentication(user, password);
 		return local.execute(method, new Vector(params));
@@ -326,7 +342,7 @@ public class ExecServer {
 		new Thread() {
 			public void run() {
 				try {
-					Thread.sleep(15000);
+					Thread.sleep(MILLIS);
 				} catch (InterruptedException ignore) {}
 				System.exit(1);
 			}
@@ -343,12 +359,15 @@ public class ExecServer {
 
 	private void shutdown0() {
 		// Unbind.
-		if (!Boolean.getBoolean(DISABLE_BINDING)) try {
+		if (!Boolean.getBoolean(DISABLE_BINDING)) {
+		  try {
 			binder.stopBinding();
 			Context objectContext = configuration.getObjectContext();
 			objectContext.unbind(getName());
 			objectContext.close();
-		} catch (NamingException ignore) {}
+		  } catch (NamingException ignore) {
+		  }
+		}
 
 		// Kill the ORB.  YEAH!  KILL IT, KILL IT, KIIIIIIIIIIIIIIL IIIIIIIIT!!!!!!!1
 		try {
@@ -357,7 +376,8 @@ public class ExecServer {
 				org.omg.CORBA.ORB orb = s._orb();
 				orb.shutdown(false/*=>terminate without waiting for reqs to complete*/);
 			}
-		} catch (Throwable ignore) {}
+		} catch (Exception ignore) {
+		}
 	}
 
 	/**
@@ -372,17 +392,20 @@ public class ExecServer {
 			keepBinding = true;
 		}
 		public void run() {
-			while (shouldKeepBinding()) try {
+			while (shouldKeepBinding()) {
+			  try {
 				Context objectContext = configuration.getObjectContext();
 				objectContext.rebind(name, server.getServant());
 				objectContext.close();
-			} catch (Throwable ex) {
+			  } catch (Exception ex) {
 				System.err.println("Exception binding at " + new Date() + "; will keep trying...");
 				ex.printStackTrace();
-		        } finally {
+			  } finally {
 				try {
-					Thread.sleep(REBIND_PERIOD);
-				} catch (InterruptedException ignore) {}
+				  Thread.sleep(REBIND_PERIOD);
+				} catch (InterruptedException ignore) {
+				}
+			  }
 			}
 		}
 		public synchronized void stopBinding() {
@@ -426,9 +449,6 @@ public class ExecServer {
 			} catch (IllegalAccessException ex) {
 				System.err.println("Initializer \"" + iname + "\" isn't public; aborting");
 				throw new EDAException(ex);
-			} catch (EDAException ex) {
-				System.err.println("Initializer \"" + iname + "\" failed: " + ex.getMessage());
-				throw new EDAException(ex);
 			}
 		}
 	}
@@ -470,5 +490,6 @@ public class ExecServer {
 	public static final String DISABLE_BINDING = "org.apache.oodt.commons.ExecServer.disableBinding";
 
 	/** How long to wait before bind attempts, in ms. */
-	private static final long REBIND_PERIOD = Long.getLong("org.apache.oodt.commons.ExecServer.rebindPeriod", 30*60*1000).longValue();
+	private static final long REBIND_PERIOD =
+		Long.getLong("org.apache.oodt.commons.ExecServer.rebindPeriod", 30 * 60 * 1000);
 }

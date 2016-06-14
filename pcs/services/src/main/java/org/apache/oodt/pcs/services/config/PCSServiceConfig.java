@@ -21,7 +21,7 @@ package org.apache.oodt.pcs.services.config;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +46,7 @@ public class PCSServiceConfig implements PCSServiceConfMetKeys {
       .getName());
 
   public PCSServiceConfig(ServletConfig config) {
-    this.parameters = new HashMap<String, String>();
+    this.parameters = new ConcurrentHashMap<String, String>();
     this.readContextParams(config);
   }
 

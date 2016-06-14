@@ -27,20 +27,20 @@ package org.apache.oodt.pcs.services.config;
  */
 public interface PCSServiceConfMetKeys {
 
-  public static final String FM_URL = "org.apache.oodt.cas.fm.url";
+  String FM_URL = "org.apache.oodt.cas.fm.url";
 
-  public static final String WM_URL = "org.apache.oodt.cas.wm.url";
+  String WM_URL = "org.apache.oodt.cas.wm.url";
 
-  public static final String RM_URL = "org.apache.oodt.cas.rm.url";
+  String RM_URL = "org.apache.oodt.cas.rm.url";
 
-  public static final String PCS_LL_CONF_FILE_PATH = "org.apache.oodt.pcs.ll.conf.filePath";
+  String PCS_LL_CONF_FILE_PATH = "org.apache.oodt.pcs.ll.conf.filePath";
 
-  public static final String PCS_HEALTH_CRAWLER_CONF_PATH = "org.apache.oodt.pcs.health.crawler.conf.filePath";
+  String PCS_HEALTH_CRAWLER_CONF_PATH = "org.apache.oodt.pcs.health.crawler.conf.filePath";
 
-  public static final String PCS_HEALTH_WORKFLOW_STATUS_PATH = "org.apache.oodt.pcs.health.workflow.statuses.filePath";
+  String PCS_HEALTH_WORKFLOW_STATUS_PATH = "org.apache.oodt.pcs.health.workflow.statuses.filePath";
 
-  public static final String PCS_TRACE_ENABLE_NON_CAT = "org.apache.oodt.pcs.trace.enableNonCat";
+  String PCS_TRACE_ENABLE_NON_CAT = "org.apache.oodt.pcs.trace.enableNonCat";
   
-  public static final String PCS_TRACE_PTYPE_EXCLUDE_LIST = "org.apache.oodt.pcs.trace.productTypeExcludeList";
+  String PCS_TRACE_PTYPE_EXCLUDE_LIST = "org.apache.oodt.pcs.trace.productTypeExcludeList";
 
 }

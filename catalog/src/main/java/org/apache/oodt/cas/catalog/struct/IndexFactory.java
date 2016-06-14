@@ -24,6 +24,6 @@ package org.apache.oodt.cas.catalog.struct;
  */
 public interface IndexFactory {
 
-	public Index createIndex();
+	Index createIndex();
 	
 }

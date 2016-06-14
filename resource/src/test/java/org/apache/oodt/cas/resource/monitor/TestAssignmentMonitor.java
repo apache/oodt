@@ -28,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -93,13 +92,13 @@ public class TestAssignmentMonitor extends TestCase {
 
         boolean hasNode1 = false;
 
-        for (Iterator i = resNodes.iterator(); i.hasNext();) {
-            ResourceNode node = (ResourceNode) i.next();
+        for (Object resNode : resNodes) {
+            ResourceNode node = (ResourceNode) resNode;
             assertNotNull(node);
             if (node.getNodeId().equals("localhost")) {
                 hasNode1 = true;
                 assertEquals(node.getIpAddr().toExternalForm(),
-                        "http://localhost:2001");
+                    "http://localhost:2001");
             }
             assertEquals(node.getCapacity(), 8);
         }

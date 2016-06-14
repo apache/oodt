@@ -15,13 +15,25 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** XML-RPC utilities.
  *
@@ -48,8 +60,9 @@ public class XMLRPC {
 		if (params != null && !params.isEmpty()) {
 			Element paramsElement = doc.createElement("params");
 			methodCallElement.appendChild(paramsElement);
-			for (Iterator i = params.iterator(); i.hasNext();)
-				paramsElement.appendChild(createValueElement(doc, i.next()));
+		  for (Object param : params) {
+			paramsElement.appendChild(createValueElement(doc, param));
+		  }
 		}
 		return XML.serialize(doc).getBytes();
 	}
@@ -64,13 +77,14 @@ public class XMLRPC {
 	 * @throws DOMException If we can't construct the &lt;value&gt;.
 	 */
 	private static Element createValueElement(Document doc, Object value) throws DOMException {
-		if (value == null)
-			throw new IllegalArgumentException("Nulls not supported in XML-RPC");
+		if (value == null) {
+		  throw new IllegalArgumentException("Nulls not supported in XML-RPC");
+		}
 		Element valueElement = doc.createElement("value");
 		if (value instanceof Integer || value instanceof Short) {
 			XML.add(valueElement, "int", value.toString());
 		} else if (value instanceof Boolean) {
-			XML.add(valueElement, "boolean", ((Boolean) value).booleanValue()? "1" : "0");
+			XML.add(valueElement, "boolean", (Boolean) value ? "1" : "0");
 		} else if (value instanceof String) {
 			Element stringElement = doc.createElement("string");
 			valueElement.appendChild(stringElement);
@@ -87,24 +101,28 @@ public class XMLRPC {
 			Element structElement = doc.createElement("struct");
 			valueElement.appendChild(structElement);
 			Map map = (Map) value;
-			for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
-				Element memberElement = doc.createElement("member");
-				valueElement.appendChild(memberElement);
-				Map.Entry entry = (Map.Entry) i.next();
-				if (!(entry.getKey() instanceof String))
-					throw new IllegalArgumentException("Keys in maps for XML-RPC structs must be Strings");
-				XML.add(memberElement, "name", entry.getKey().toString());
-				memberElement.appendChild(createValueElement(doc, entry.getValue()));
+		  for (Object o : map.entrySet()) {
+			Element memberElement = doc.createElement("member");
+			valueElement.appendChild(memberElement);
+			Map.Entry entry = (Map.Entry) o;
+			if (!(entry.getKey() instanceof String)) {
+			  throw new IllegalArgumentException("Keys in maps for XML-RPC structs must be Strings");
 			}
+			XML.add(memberElement, "name", entry.getKey().toString());
+			memberElement.appendChild(createValueElement(doc, entry.getValue()));
+		  }
 		} else if (value instanceof Collection) {
 			Element arrayElement = doc.createElement("array");
 			valueElement.appendChild(arrayElement);
 			Element dataElement = doc.createElement("data");
 			arrayElement.appendChild(dataElement);
 			Collection collection = (Collection) value;
-			for (Iterator i = collection.iterator(); i.hasNext();)
-				dataElement.appendChild(createValueElement(doc, i.next()));
-		} else throw new IllegalArgumentException(value.getClass().getName() + " not supported in XML-RPC");
+		  for (Object aCollection : collection) {
+			dataElement.appendChild(createValueElement(doc, aCollection));
+		  }
+		} else {
+		  throw new IllegalArgumentException(value.getClass().getName() + " not supported in XML-RPC");
+		}
 		return valueElement;
 	}
 
@@ -123,8 +141,9 @@ public class XMLRPC {
 			doc.normalize();
 			XML.removeComments(doc);
 			Element methodResponseElement = doc.getDocumentElement();
-			if (!"methodResponse".equals(methodResponseElement.getNodeName()))
-				throw new SAXException("Not a <methodResponse> document");
+			if (!"methodResponse".equals(methodResponseElement.getNodeName())) {
+			  throw new SAXException("Not a <methodResponse> document");
+			}
 			Node child = methodResponseElement.getFirstChild();
 			if ("params".equals(child.getNodeName())) {
 				return parseValue(child.getFirstChild().getFirstChild());
@@ -136,7 +155,9 @@ public class XMLRPC {
 				} catch (ClassCastException ex) {
 					throw new SAXException("XML-RPC <fault> invalid");
 				}
-			} else throw new SAXException("XML-RPC response does not contain <params> or <fault>");
+			} else {
+			  throw new SAXException("XML-RPC response does not contain <params> or <fault>");
+			}
 		} catch (SAXException ex) {
 			throw new IllegalArgumentException(ex.getMessage());
 		} catch (IOException ex) {
@@ -151,7 +172,9 @@ public class XMLRPC {
 	 */
 	private static Object parseValue(Node node) {
 		String n = node.getNodeName();
-		if (!"value".equals(n)) throw new IllegalArgumentException("Expecting a <value>, not a <" + n + ">");
+		if (!"value".equals(n)) {
+		  throw new IllegalArgumentException("Expecting a <value>, not a <" + n + ">");
+		}
 		Node t = node.getFirstChild();
 		n = t.getNodeName();
 
@@ -163,11 +186,15 @@ public class XMLRPC {
 		// Figure out what the type is from the nested element.
 		String txt = XML.unwrappedText(t);
 		if ("i4".equals(n) || "int".equals(n)) {
-			return new Integer(txt);
+			return Integer.valueOf(txt);
 		} else if ("boolean".equals(n)) {
-			if ("1".equals(txt))      return new Boolean(true);
-			else if ("0".equals(txt)) return new Boolean(false);
-			else throw new IllegalArgumentException(n + " does not contain a 0 or 1");
+			if ("1".equals(txt)) {
+			  return true;
+			} else if ("0".equals(txt)) {
+			  return false;
+			} else {
+			  throw new IllegalArgumentException(n + " does not contain a 0 or 1");
+			}
 		} else if ("string".equals(n)) {
 			return txt;
 		} else if ("double".equals(n)) {
@@ -181,32 +208,39 @@ public class XMLRPC {
 		} else if ("base64".equals(n)) {
 			return Base64.decode(txt.getBytes());
 		} else if ("struct".equals(n)) {
-			Map m = new HashMap();
+			Map m = new ConcurrentHashMap();
 			NodeList memberNodes = t.getChildNodes();
 			for (int i = 0; i < memberNodes.getLength(); ++i) {
 				Node memberNode = memberNodes.item(i);
-				if (!"member".equals(memberNode.getNodeName()))
-					throw new IllegalArgumentException(n + " contains <" + memberNode.getNodeName()
-						+ ">, not <member>");
+				if (!"member".equals(memberNode.getNodeName())) {
+				  throw new IllegalArgumentException(n + " contains <" + memberNode.getNodeName()
+													 + ">, not <member>");
+				}
 				Node nameNode = memberNode.getFirstChild();
-				if (nameNode == null || !"name".equals(nameNode.getNodeName()))
-					throw new IllegalArgumentException("<member> missing <name> element");
+				if (nameNode == null || !"name".equals(nameNode.getNodeName())) {
+				  throw new IllegalArgumentException("<member> missing <name> element");
+				}
 				Node valueNode = nameNode.getNextSibling();
-				if (valueNode == null || !"value".equals(valueNode.getNodeName()))
-					throw new IllegalArgumentException("<member> missing <value> element");
+				if (valueNode == null || !"value".equals(valueNode.getNodeName())) {
+				  throw new IllegalArgumentException("<member> missing <value> element");
+				}
 				m.put(XML.unwrappedText(nameNode), parseValue(valueNode));
 			}
 			return m;
 		} else if ("array".equals(n)) {
 			Node dataNode = t.getFirstChild();
-			if (dataNode == null || !"data".equals(dataNode.getNodeName()))
-				throw new IllegalArgumentException("<array> missing <data> element");
+			if (dataNode == null || !"data".equals(dataNode.getNodeName())) {
+			  throw new IllegalArgumentException("<array> missing <data> element");
+			}
 			NodeList children = dataNode.getChildNodes();
 			List x = new ArrayList(children.getLength());
-			for (int i = 0; i < children.getLength(); ++i)
-				x.add(parseValue(children.item(i)));
+			for (int i = 0; i < children.getLength(); ++i) {
+			  x.add(parseValue(children.item(i)));
+			}
 			return x;
-		} else throw new IllegalArgumentException("Illegal type " + n + " in <value>");
+		} else {
+		  throw new IllegalArgumentException("Illegal type " + n + " in <value>");
+		}
 	}
 
 	/** Constructor that causes a runtime exception since this is a utility class.

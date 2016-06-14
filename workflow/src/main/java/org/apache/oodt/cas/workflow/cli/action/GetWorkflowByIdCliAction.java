@@ -19,9 +19,10 @@ package org.apache.oodt.cas.workflow.cli.action;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 
 /**
- * A {@link CmdLineAction} which retrieves Workflow information for
+ * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which retrieves Workflow information for
  * Workflow with given workflow ID.
  *
  * @author bfoster (Brian Foster)
@@ -35,9 +36,19 @@ public class GetWorkflowByIdCliAction extends WorkflowCliAction {
          throws CmdLineActionException {
       try {
          Workflow workflow = getClient().getWorkflowById(workflowId);
+         
+         StringBuilder taskIds = new StringBuilder();
+         for (WorkflowTask wt : workflow.getTasks()) {
+        	 if (taskIds.length()>0) {
+               taskIds.append(", ");
+             }
+        	 taskIds.append(wt.getTaskId());
+         }
+         
          printer.println("Workflow: [id=" + workflow.getId() + ", name="
                + workflow.getName() + ", numTasks="
-               + workflow.getTasks().size() + "]");
+               + workflow.getTasks().size() + ", taskIds="+taskIds.toString()+"]");
+         
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to get workflow information for" + " workflowId '"

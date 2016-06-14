@@ -18,34 +18,22 @@
 
 package org.apache.oodt.cas.pushpull.retrievalsystem;
 
-//JDK imports
-import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
+//OODT imports
+import org.apache.oodt.cas.pushpull.config.*;
+import org.apache.oodt.cas.pushpull.exceptions.ParserException;
+import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
+import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
+import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.HashMap;
+//JDK imports
+import java.io.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-//OODT imports
-import org.apache.oodt.cas.pushpull.config.Config;
-import org.apache.oodt.cas.pushpull.config.DataFilesInfo;
-import org.apache.oodt.cas.pushpull.config.SiteInfo;
-import org.apache.oodt.cas.pushpull.config.PropFilesInfo;
-import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
-import org.apache.oodt.cas.pushpull.exceptions.ParserException;
-import org.apache.oodt.cas.pushpull.exceptions.RetrievalMethodException;
-import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
-import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
-import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
-import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
-import org.apache.oodt.commons.exec.ExecUtils;
 
 /**
  *
@@ -58,11 +46,12 @@ import org.apache.oodt.commons.exec.ExecUtils;
  */
 public class RetrievalSetup {
 
-    private final Config config;
+  public static final int TIMEOUT = 5000;
+  private final Config config;
 
     private final HashSet<File> alreadyProcessedPropFiles;
 
-    private final HashMap<Class<RetrievalMethod>, RetrievalMethod> classToRmMap;
+    private final ConcurrentHashMap<Class<RetrievalMethod>, RetrievalMethod> classToRmMap;
 
     private boolean downloadingProps;
 
@@ -78,12 +67,11 @@ public class RetrievalSetup {
         this.config = config;
         this.siteInfo = siteInfo;
         alreadyProcessedPropFiles = new HashSet<File>();
-        classToRmMap = new HashMap<Class<RetrievalMethod>, RetrievalMethod>();
+        classToRmMap = new ConcurrentHashMap<Class<RetrievalMethod>, RetrievalMethod>();
         linker = new DataFileToPropFileLinker();
     }
 
-    public void retrieveFiles(PropFilesInfo pfi, final DataFilesInfo dfi)
-            throws RetrievalMethodException {
+    public void retrieveFiles(PropFilesInfo pfi, final DataFilesInfo dfi) {
 
         FileRetrievalSystem dataFilesFRS = null;
         try {
@@ -93,7 +81,7 @@ public class RetrievalSetup {
                     .initialize();
             dataFilesFRS.registerDownloadListener(linker);
 
-            File[] propFiles = null;
+            File[] propFiles;
             while ((propFiles = getCurrentlyDownloadedPropFiles(pfi)).length > 0
                     || downloadingProps) {
                 for (File propFile : propFiles) {
@@ -101,7 +89,7 @@ public class RetrievalSetup {
                         Parser parser = pfi.getParserForFile(propFile);
                         Class<RetrievalMethod> rmClass = config.getParserInfo()
                                 .getRetrievalMethod(parser);
-                        RetrievalMethod rm = null;
+                        RetrievalMethod rm;
                         if ((rm = this.classToRmMap.get(rmClass)) == null) {
                             LOG.log(Level.INFO, "Creating '"
                                     + rmClass.getCanonicalName()
@@ -135,12 +123,13 @@ public class RetrievalSetup {
                 for (File propFile : propFiles) {
                     try {
                         if (pfi.getLocalDir().equals(pfi.getOnSuccessDir())
-                                || pfi.getLocalDir().equals(pfi.getOnFailDir()))
-                            alreadyProcessedPropFiles.add(propFile);
+                                || pfi.getLocalDir().equals(pfi.getOnFailDir())) {
+                          alreadyProcessedPropFiles.add(propFile);
+                        }
                         this.movePropsFileToFinalDestination(pfi, propFile,
                                 linker.getErrorsAndEraseLinks(propFile));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                         LOG.log(Level.SEVERE,
                                 "Error occurred while writing errors to error dir for file '"
                                         + propFile + "' : " + e.getMessage());
@@ -149,17 +138,17 @@ public class RetrievalSetup {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         } finally {
-            if (dataFilesFRS != null)
-                dataFilesFRS.shutdown();
+            if (dataFilesFRS != null) {
+              dataFilesFRS.shutdown();
+            }
             alreadyProcessedPropFiles.clear();
             linker.clear();
         }
     }
 
-    private void startPropFileDownload(final PropFilesInfo pfi)
-            throws IOException {
+    private void startPropFileDownload(final PropFilesInfo pfi) {
         if (pfi.needsToBeDownloaded()) {
             this.downloadingProps = true;
             new Thread(new Runnable() {
@@ -180,7 +169,7 @@ public class RetrievalSetup {
                             Parser parser = pfi.getParserForFile(dirStructFile);
                             Class<RetrievalMethod> rmClass = config
                                     .getParserInfo().getRetrievalMethod(parser);
-                            RetrievalMethod rm = null;
+                            RetrievalMethod rm;
                             if ((rm = RetrievalSetup.this.classToRmMap
                                     .get(rmClass)) == null) {
                                 LOG.log(Level.INFO, "Creating '"
@@ -196,10 +185,11 @@ public class RetrievalSetup {
                                             .getDownloadInfo()), linker);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                     } finally {
-                        if (frs != null)
-                            frs.shutdown();
+                        if (frs != null) {
+                          frs.shutdown();
+                        }
                         RetrievalSetup.this.downloadingProps = false;
                     }
                 }
@@ -213,8 +203,8 @@ public class RetrievalSetup {
                             "Waiting data download thread for 5 secs to give the property files download thread a head start");
             synchronized (this) {
                 try {
-                    this.wait(5000);
-                } catch (Exception e) {
+                    this.wait(TIMEOUT);
+                } catch (Exception ignored) {
                 }
             }
         }

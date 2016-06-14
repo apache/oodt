@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
 	This class is a wrapper for JDBC.
@@ -32,6 +34,7 @@ import java.util.Properties;
 */
 public class JDBC_DB
 {
+  private static Logger LOG = Logger.getLogger(JDBC_DB.class.getName());
 	Properties serverProps;
 	Connection connect;
 	String sql_command;
@@ -39,12 +42,10 @@ public class JDBC_DB
 	ResultSet rs;
 	ResultSetMetaData rs_meta;
 	int affected;
-	boolean more_rows;
-	boolean keep_connect_open;
+  	boolean keep_connect_open;
 	private boolean autoCommitMode = false;
-	public final String TO_DATE_FORMAT = "DD-MM-YYYY HH24:MI:SS";
 
-	/******************************************************************
+  /******************************************************************
 	**
 	** JDBC_DB
 	**
@@ -54,29 +55,21 @@ public class JDBC_DB
 	*******************************************************************/
 
 	public  JDBC_DB(
-			java.util.Properties sys_props) throws SQLException
-	{
-			String  classname;
+			java.util.Properties sys_props) {
 
-			serverProps = sys_props;
+	 		serverProps = sys_props;
 			keep_connect_open = true;
 
 	}
 
 	public  JDBC_DB(
 			java.util.Properties sys_props,
-			Connection srv_connect) throws SQLException
-	{
-			String  classname;
+			Connection srv_connect) {
 
-			serverProps = sys_props;
+	  		serverProps = sys_props;
 			connect = srv_connect;
 
-			if (srv_connect == null) {
-				keep_connect_open  = false;
-			} else {
-				keep_connect_open = true;
-			}
+	  		keep_connect_open = srv_connect != null;
 	}
 
 	public void setAutoCommitMode(boolean autoCommitMode) {
@@ -106,17 +99,21 @@ public class JDBC_DB
 	{
 		String url, classname;
 
-		if (stmt != null)
-			stmt.close();
+		if (stmt != null) {
+		  stmt.close();
+		}
 
-		if (rs != null)
-			rs.close();
+		if (rs != null) {
+		  rs.close();
+		}
 
-		if (keep_connect_open)
-			return;
+		if (keep_connect_open) {
+		  return;
+		}
 
-		if (connect != null)
-			connect.close();
+		if (connect != null) {
+		  connect.close();
+		}
 
 
 		rs_meta = null;
@@ -127,8 +124,9 @@ public class JDBC_DB
 		Properties props = new Properties();
 		props.put("user", username);
 
-		if (password != null)
-			props.put("password", password);
+		if (password != null) {
+		  props.put("password", password);
+		}
 
 
 		classname = serverProps.getProperty("org.apache.oodt.commons.util.JDBC_DB.driver", "oracle.jdbc.driver.OracleDriver");
@@ -138,7 +136,7 @@ public class JDBC_DB
 			System.err.println("Loaded " + classname);
 		} catch (ClassNotFoundException e) {
 			System.err.println("Can't load JDBC driver \"" + classname + "\": " + e.getMessage());
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 		url = serverProps.getProperty("org.apache.oodt.commons.util.JDBC_DB.url", "jdbc:oracle:@");
 		try {
@@ -151,7 +149,7 @@ public class JDBC_DB
 			}
 		} catch (SQLException e) {
 			System.err.println("SQL Exception during connection creation: " + e.getMessage());
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			while (e != null) {
 				System.err.println(e.getMessage());
 				e = e.getNextException();
@@ -190,8 +188,6 @@ public class JDBC_DB
 			stmt = null;
 		} catch (SQLException e) {
 			System.err.println("Ignoring database close connection exception");
-			//System.err.println("Ignoring exception " + e.getClass().getName() + ": " + e.getMessage());
-			//e.printStackTrace();
 		}
 	}
 
@@ -212,26 +208,32 @@ public class JDBC_DB
 		*/
 		sql_command = cmd;
 
-		if (stmt!=null)
-			stmt.close();
+		if (stmt!=null) {
+		  stmt.close();
+		}
 
-		if (connect == null) openConnection();
+		if (connect == null) {
+		  openConnection();
+		}
 		if (connect == null) {
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is null!!!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is null!!!");
+		}
 		
 		if (connect.isClosed()) {
 			connect = null;
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is still null!!!");
-		if (connect.isClosed())
-			throw new IllegalStateException("Connection got closed!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is still null!!!");
+		}
+		if (connect.isClosed()) {
+		  throw new IllegalStateException("Connection got closed!");
+		}
 
 		stmt = connect.createStatement();
 		affected = stmt.executeUpdate(sql_command);
@@ -249,45 +251,40 @@ public class JDBC_DB
 		sql_command = cmd;
 
 
-		if (stmt!=null)
-			stmt.close();
+		if (stmt!=null) {
+		  stmt.close();
+		}
 
-		if (connect == null) openConnection();
+		if (connect == null) {
+		  openConnection();
+		}
 		if (connect == null) {
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is null!!!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is null!!!");
+		}
 		
 		if (connect.isClosed()) {
 			connect = null;
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is still null!!!");
-		if (connect.isClosed())
-			throw new IllegalStateException("Connection got closed!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is still null!!!");
+		}
+		if (connect.isClosed()) {
+		  throw new IllegalStateException("Connection got closed!");
+		}
 
-
-		//long time0 = System.currentTimeMillis();
 		stmt = connect.createStatement();
-		//long time = System.currentTimeMillis();
-		//System.err.println("###### Creating a new statement: " + (time - time0));
-		//time0 = time;
 
-		if (rs!=null)
-			rs.close();
+		if (rs!=null) {
+		  rs.close();
+		}
 
 		rs = stmt.executeQuery(sql_command);
-		//time = System.currentTimeMillis();
-		//System.err.println("###### Executing the query: " + (time - time0));
-
-		if (rs == null)
-		{
-			return(null);
-		}
 
 		return(rs);
 
@@ -307,20 +304,17 @@ public class JDBC_DB
 		int count;
 
 
-		if (stmt!=null)
-			stmt.close();
+		if (stmt!=null) {
+		  stmt.close();
+		}
 
 		stmt = connect.createStatement();
 
-		if (rs!=null)
-			rs.close();
+		if (rs!=null) {
+		  rs.close();
+		}
 
 		rs = stmt.executeQuery(sql_command);
-
-		if (rs == null)
-		{
-			return(0);
-		}
 
 		count = 0;
 
@@ -360,11 +354,12 @@ public class JDBC_DB
 	{
 		try
 		{
-			if (connect != null)
-				connect.rollback();
+			if (connect != null) {
+			  connect.rollback();
+			}
 		}
 
-		catch (SQLException e)
+		catch (SQLException ignored)
 		{
 
 		}
@@ -391,7 +386,7 @@ public class JDBC_DB
 			}
 
 		}
-		catch (SQLException e)
+		catch (SQLException ignored)
 		{
 		}
 	}
@@ -408,34 +403,25 @@ public class JDBC_DB
 	public String toDateStr(java.util.Date inDate)
 	{
 
-		String outDate;
-/*
-		outDate = Integer.toString(inDate.getDate()) + "-" +
-			   Integer.toString(inDate.getMonth() + 1) + "-" +
-			   Integer.toString(inDate.getYear()) + " " +
-			   Integer.toString(inDate.getHours()) + ":" +
-			   Integer.toString(inDate.getMinutes()) + ":" +
-			   Integer.toString(inDate.getSeconds());
-		return(outDate);
-*/
-
 		SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		String dateStr = fmt.format(inDate);
 
-		return dateStr;
+	  return fmt.format(inDate);
 
 
 	}
 
 	public Connection getConnection() throws SQLException
 	{
-		if (connect == null) openConnection();
+		if (connect == null) {
+		  openConnection();
+		}
 		if (connect == null) {
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("getConnection can't get a connection pointer");
+		if (connect == null) {
+		  throw new IllegalStateException("getConnection can't get a connection pointer");
+		}
 		return(connect);
 	}
 }

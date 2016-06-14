@@ -28,7 +28,6 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -105,21 +104,16 @@ public class Pedigree implements PCSMetadata, PCSConfigMetadata {
    * @return A {@link PedigreeTree} containing the Pedigree of a given product.
    */
   public PedigreeTree doPedigree(Product orig, boolean upstream) {
-    List pedProds = null;
+    List pedProds;
     PedigreeTreeNode origRoot = PedigreeTreeNode
         .getPedigreeTreeNodeFromProduct(orig, null);
 
-    // System.out.println("Doing pedigree: upstream: ["+upstream+"]");
     Stack roots = new Stack();
     roots.add(origRoot);
 
     do {
 
       PedigreeTreeNode currRoot = (PedigreeTreeNode) roots.pop();
-      /*
-       * System.out.println("Examining root: ["+currRoot.getNodeProduct().
-       * getProductName()+"]");
-       */
 
       if (upstream) {
         pedProds = getUpstreamPedigreedProducts(currRoot.getNodeProduct());
@@ -128,8 +122,8 @@ public class Pedigree implements PCSMetadata, PCSConfigMetadata {
       }
 
       if (pedProds != null && pedProds.size() > 0) {
-        for (Iterator i = pedProds.iterator(); i.hasNext();) {
-          Product p = (Product) i.next();
+        for (Object pedProd : pedProds) {
+          Product p = (Product) pedProd;
           if (p.getProductName().equals(
               currRoot.getNodeProduct().getProductName())) {
             // don't allow for the same pedigreed product to be
@@ -140,8 +134,6 @@ public class Pedigree implements PCSMetadata, PCSConfigMetadata {
               .getPedigreeTreeNodeFromProduct(p, currRoot);
           roots.add(prodNode);
         }
-      } else {
-        // System.out.println("Pedigree products is null or size 0");
       }
 
     } while (!roots.empty());
@@ -159,13 +151,8 @@ public class Pedigree implements PCSMetadata, PCSConfigMetadata {
    *         {@link Product}.
    */
   public List getUpstreamPedigreedProducts(Product orig) {
-    if (orig == null
-        || (orig != null && orig.getProductType() == null)
-        || (orig != null && orig.getProductType() != null 
-            && orig.getProductType().getName() == null)
-        || (orig != null && orig.getProductType() != null
-            && orig.getProductType().getName() != null && 
-            orig.getProductType().getName().equals(UNKNOWN))) {
+    if (orig == null || (orig.getProductType() == null) ||
+        (orig.getProductType().getName() == null) || (orig.getProductType().getName().equals(UNKNOWN))) {
       return new Vector();
     }
     Metadata pMet = fm.safeGetMetadata(orig);
@@ -204,14 +191,14 @@ public class Pedigree implements PCSMetadata, PCSConfigMetadata {
   }
 
   private List getProducts(List prodNames) {
-    if (prodNames == null || (prodNames != null && prodNames.size() == 0)) {
+    if (prodNames == null || (prodNames.size() == 0)) {
       return new Vector();
     }
 
     List prods = new Vector(prodNames.size());
 
-    for (Iterator i = prodNames.iterator(); i.hasNext();) {
-      String prodName = (String) i.next();
+    for (Object prodName1 : prodNames) {
+      String prodName = (String) prodName1;
       List prodList = fm.queryAllTypes(new FilenameQuery(prodName, fm)
           .buildQuery(), this.prodTypeExcludeList);
       if (prodList != null && prodList.size() > 0) {

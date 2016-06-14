@@ -20,6 +20,8 @@ package org.apache.oodt.cas.filemgr.cli.action;
 import org.apache.commons.lang.Validate;
 
 //OODT imports
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 
@@ -38,7 +40,7 @@ public class SqlQueryCliAction extends AbstractQueryCliAction {
    }
 
    @Override
-   public ComplexQuery getQuery() throws Exception {
+   public ComplexQuery getQuery() throws QueryFormulationException {
       Validate.notNull(query, "Must specify query");
 
       return SqlParser.parseSqlQuery(query);

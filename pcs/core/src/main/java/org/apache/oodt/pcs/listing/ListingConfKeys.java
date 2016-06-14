@@ -27,16 +27,16 @@ package org.apache.oodt.pcs.listing;
  */
 public interface ListingConfKeys {
 
-  public static final String MET_FIELD_COLS_GROUP = "MetFieldColumns";
+  String MET_FIELD_COLS_GROUP = "MetFieldColumns";
   
-  public static final String MET_FIELDS_ORDER_VECTOR = "OrderedMetKeys";
+  String MET_FIELDS_ORDER_VECTOR = "OrderedMetKeys";
 
-  public static final String COLLECTION_FIELDS_GROUP = "CollectionFields";
+  String COLLECTION_FIELDS_GROUP = "CollectionFields";
 
-  public static final String COLLECTION_FIELDS_NAMES = "FieldNames";
+  String COLLECTION_FIELDS_NAMES = "FieldNames";
 
-  public static final String EXCLUDED_PRODUCT_TYPE_GROUP = "ExcludedProductTypeList";
+  String EXCLUDED_PRODUCT_TYPE_GROUP = "ExcludedProductTypeList";
 
-  public static final String EXCLUDED_VECTOR = "ProductTypes";
+  String EXCLUDED_VECTOR = "ProductTypes";
 
 }

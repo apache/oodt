@@ -26,5 +26,5 @@ import org.apache.oodt.cas.pge.metadata.PgeMetadata;
  */
 public interface PgeConfigBuilder {
 
-    public PgeConfig build(PgeMetadata pgeMetadata) throws Exception;
+    PgeConfig build(PgeMetadata pgeMetadata) throws Exception;
 }

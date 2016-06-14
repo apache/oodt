@@ -105,13 +105,13 @@ public class CommonsNetFtpProtocol implements Protocol {
 			String path = this.pwd().getPath();
 			FTPFile[] files = ftp.listFiles();
 			List<ProtocolFile> returnFiles = new LinkedList<ProtocolFile>();
-			for (int i = 0; i < files.length; i++) {
-				FTPFile file = files[i];
-				if (file == null)
-					continue;
-				returnFiles.add(new ProtocolFile(path + "/" + file.getName(), file
-						.isDirectory()));
+		  for (FTPFile file : files) {
+			if (file == null) {
+			  continue;
 			}
+			returnFiles.add(new ProtocolFile(path + "/" + file.getName(), file
+				.isDirectory()));
+		  }
 			return returnFiles;
 		} catch (Exception e) {
 			throw new ProtocolException("Failed to get file list : " + e.getMessage());
@@ -126,17 +126,17 @@ public class CommonsNetFtpProtocol implements Protocol {
 		try {
 			FTPFile[] files = ftp.listFiles();
 			List<ProtocolFile> returnFiles = new LinkedList<ProtocolFile>();
-			for (int i = 0; i < files.length; i++) {
-				FTPFile file = files[i];
-				if (file == null)
-					continue;
-				String path = this.pwd().getPath();
-				ProtocolFile pFile = new ProtocolFile(path + "/" + file.getName(), file
-						.isDirectory());
-				if (filter.accept(pFile)) {
-					returnFiles.add(pFile);
-				}
+		  for (FTPFile file : files) {
+			if (file == null) {
+			  continue;
 			}
+			String path = this.pwd().getPath();
+			ProtocolFile pFile = new ProtocolFile(path + "/" + file.getName(), file
+				.isDirectory());
+			if (filter.accept(pFile)) {
+			  returnFiles.add(pFile);
+			}
+		  }
 			return returnFiles;
 		} catch (Exception e) {
 			throw new ProtocolException("Failed to get file list : " + e.getMessage());
@@ -168,14 +168,15 @@ public class CommonsNetFtpProtocol implements Protocol {
 					+ " : " + e.getMessage(), e);
 		} finally {
 			// close output stream
-			if (os != null)
-				try {
-					os.close();
-				} catch (Exception e) {
-					toFile.delete();
-					throw new ProtocolException("Failed to close outputstream : "
-							+ e.getMessage(), e);
-				}
+			if (os != null) {
+			  try {
+				os.close();
+			  } catch (Exception e) {
+				toFile.delete();
+				throw new ProtocolException("Failed to close outputstream : "
+											+ e.getMessage(), e);
+			  }
+			}
 		}
 	}
 
@@ -196,8 +197,9 @@ public class CommonsNetFtpProtocol implements Protocol {
 	 */
 	public void cd(ProtocolFile file) throws ProtocolException {
 		try {
-			if (!ftp.changeWorkingDirectory(file.getPath()))
-				throw new Exception("Directory change method returned false");
+			if (!ftp.changeWorkingDirectory(file.getPath())) {
+			  throw new Exception("Directory change method returned false");
+			}
 		} catch (Exception e) {
 			throw new ProtocolException("Failed to cd to " + file.getPath() + " : "
 					+ e.getMessage());

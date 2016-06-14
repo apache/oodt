@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.resource.monitor;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
  */
 public class MesosMonitor implements Monitor {
 
-    private static HashMap<String, ResourceNode> nodesMap = new HashMap<String, ResourceNode>();
+    private static ConcurrentHashMap<String, ResourceNode> nodesMap = new ConcurrentHashMap<String, ResourceNode>();
     /* (non-Javadoc)
      * @see org.apache.oodt.cas.resource.monitor.Monitor#getLoad(org.apache.oodt.cas.resource.structs.ResourceNode)
      */

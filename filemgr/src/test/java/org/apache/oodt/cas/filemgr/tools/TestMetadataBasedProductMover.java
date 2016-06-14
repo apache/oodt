@@ -77,7 +77,7 @@ public class TestMetadataBasedProductMover extends TestCase {
     }
 
     private void ingestTestFile() {
-        Metadata prodMet = null;
+        Metadata prodMet;
         StdIngester ingester = new StdIngester(transferServiceFacClass);
 
         try {
@@ -141,13 +141,13 @@ public class TestMetadataBasedProductMover extends TestCase {
         File[] dirFiles = startDirFile.listFiles();
 
         if (dirFiles != null && dirFiles.length > 0) {
-            for (int i = 0; i < dirFiles.length; i++) {
-                if (dirFiles[i].isDirectory()) {
-                    deleteAllFilesRecursive(dirFiles[i].getAbsolutePath());
+            for (File dirFile : dirFiles) {
+                if (dirFile.isDirectory()) {
+                    deleteAllFilesRecursive(dirFile.getAbsolutePath());
                     // all dir files deleted, now delete dir
-                    dirFiles[i].delete();
+                    dirFile.delete();
                 } else {
-                    dirFiles[i].delete();
+                    dirFile.delete();
                 }
             }
         }
@@ -162,8 +162,8 @@ public class TestMetadataBasedProductMover extends TestCase {
         File[] delFiles = startDirFile.listFiles();
 
         if (delFiles != null && delFiles.length > 0) {
-            for (int i = 0; i < delFiles.length; i++) {
-                delFiles[i].delete();
+            for (File delFile : delFiles) {
+                delFile.delete();
             }
         }
 

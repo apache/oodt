@@ -18,6 +18,10 @@
 package org.apache.oodt.pcs.util;
 
 //JDK imports
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.xmlrpc.XmlRpcClient;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -27,9 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
-import org.apache.xmlrpc.XmlRpcClient;
 
 /**
  * 
@@ -67,18 +68,19 @@ public class WorkflowManagerUtils {
     try {
       this.client.updateWorkflowInstanceStatus(wInstId, status);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
 
   }
 
   public List<WorkflowInstance> safeGetWorkflowInstances() {
-    if (!isConnected())
+    if (!isConnected()) {
       return Collections.EMPTY_LIST;
+    }
 
     try {
       return this.client.getWorkflowInstances();
-    } catch (Throwable ignore) {
+    } catch (Exception ignore) {
       return Collections.EMPTY_LIST;
     }
   }

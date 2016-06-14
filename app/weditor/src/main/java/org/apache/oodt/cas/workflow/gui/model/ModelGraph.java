@@ -50,8 +50,9 @@ public class ModelGraph {
     this.isPreCondition = isPostCondition = false;
     this.model = model;
     this.children = new Vector<ModelGraph>();
-    if (this.model.isParentType())
+    if (this.model.isParentType()) {
       this.addChild(new ModelGraph(GuiUtils.createDummyNode()));
+    }
   }
 
   public void setIsRef(boolean isRef) {
@@ -61,10 +62,12 @@ public class ModelGraph {
       ModelGraph curGraph = stack.pop();
       curGraph.getModel().setIsRef(isRef);
       stack.addAll(curGraph.getChildren());
-      if (curGraph.getPreConditions() != null)
+      if (curGraph.getPreConditions() != null) {
         stack.add(curGraph.getPreConditions());
-      if (curGraph.getPostConditions() != null)
+      }
+      if (curGraph.getPostConditions() != null) {
         stack.add(curGraph.getPostConditions());
+      }
     }
   }
 
@@ -85,17 +88,19 @@ public class ModelGraph {
   public void setParent(ModelGraph parent) {
     if (this.parent != null) {
       if (this.isCondition() && !this.parent.isCondition()) {
-        if (this.isPreCondition)
+        if (this.isPreCondition) {
           this.parent.preConditions = null;
-        else
+        } else {
           this.parent.postConditions = null;
+        }
       } else {
         this.parent.removeChild(this);
       }
     }
     this.parent = parent;
-    if (!this.getModel().isRef() && parent != null && parent.getModel().isRef())
+    if (!this.getModel().isRef() && parent != null && parent.getModel().isRef()) {
       this.getModel().setIsRef(true);
+    }
   }
 
   public ModelGraph getParent() {
@@ -103,10 +108,11 @@ public class ModelGraph {
   }
 
   public ModelGraph getRootParent() {
-    if (this.parent == null)
+    if (this.parent == null) {
       return this;
-    else
+    } else {
       return this.parent.getRootParent();
+    }
   }
 
   public List<ModelGraph> getPathFromRootParent() {
@@ -121,8 +127,9 @@ public class ModelGraph {
 
   public void addChild(ModelGraph graph) {
     if (this.children.size() == 1
-        && GuiUtils.isDummyNode(this.children.get(0).getModel()))
+        && GuiUtils.isDummyNode(this.children.get(0).getModel())) {
       this.children.clear();
+    }
     this.children.add(graph);
     graph.setParent(this);
   }
@@ -132,22 +139,25 @@ public class ModelGraph {
     this.getModel().getExcusedSubProcessorIds()
         .remove(graph.getModel().getModelId());
     graph.parent = null;
-    if (this.children.size() == 0)
+    if (this.children.size() == 0) {
       this.addChild(new ModelGraph(GuiUtils.createDummyNode()));
+    }
   }
 
   public List<ModelGraph> getChildren() {
-    if (this.getModel().isParentType() && children.size() == 0)
+    if (this.getModel().isParentType() && children.size() == 0) {
       this.addChild(new ModelGraph(GuiUtils.createDummyNode()));
+    }
     return children;
   }
 
   public boolean hasChildren() {
     if (this.children.size() == 1
-        && GuiUtils.isDummyNode(this.children.get(0).getModel()))
+        && GuiUtils.isDummyNode(this.children.get(0).getModel())) {
       return false;
-    else
+    } else {
       return this.children.size() > 0;
+    }
   }
 
   public ModelNode getModel() {
@@ -162,12 +172,15 @@ public class ModelGraph {
     Metadata m = new Metadata();
     if (this.parent != null) {
       m.replaceMetadata(this.parent.getInheritedStaticMetadata(state));
-      if (this.parent.getModel().getStaticMetadata() != null)
+      if (this.parent.getModel().getStaticMetadata() != null) {
         m.replaceMetadata(this.parent.getModel().getStaticMetadata());
-      if (this.parent.getModel().getExtendsConfig() != null)
-        for (String configGroup : this.parent.getModel().getExtendsConfig())
+      }
+      if (this.parent.getModel().getExtendsConfig() != null) {
+        for (String configGroup : this.parent.getModel().getExtendsConfig()) {
           m.replaceMetadata(state.getGlobalConfigGroups().get(configGroup)
-              .getMetadata());
+                                 .getMetadata());
+        }
+      }
     }
     return m;
   }
@@ -177,8 +190,9 @@ public class ModelGraph {
   }
 
   public void setPreConditions(ModelGraph preConditions) {
-    if (this.preConditions != null)
+    if (this.preConditions != null) {
       this.preConditions.setParent(null);
+    }
     Stack<ModelGraph> stack = new Stack<ModelGraph>();
     stack.add(preConditions);
     while (!stack.empty()) {
@@ -194,8 +208,9 @@ public class ModelGraph {
   }
 
   public void setPostConditions(ModelGraph postConditions) {
-    if (this.postConditions != null)
+    if (this.postConditions != null) {
       this.postConditions.setParent(null);
+    }
     Stack<ModelGraph> stack = new Stack<ModelGraph>();
     stack.add(postConditions);
     while (!stack.empty()) {
@@ -211,13 +226,16 @@ public class ModelGraph {
     stack.add(this);
     while (!stack.empty()) {
       ModelGraph curGraph = stack.pop();
-      if (curGraph.getId().equals(id))
+      if (curGraph.getId().equals(id)) {
         return curGraph;
+      }
       stack.addAll(curGraph.getChildren());
-      if (curGraph.getPreConditions() != null)
+      if (curGraph.getPreConditions() != null) {
         stack.add(curGraph.getPreConditions());
-      if (curGraph.getPostConditions() != null)
+      }
+      if (curGraph.getPostConditions() != null) {
         stack.add(curGraph.getPostConditions());
+      }
     }
     return null;
   }
@@ -227,13 +245,16 @@ public class ModelGraph {
     stack.add(this);
     while (!stack.empty()) {
       ModelGraph curGraph = stack.pop();
-      if (curGraph.getModel().getModelId().equals(modelId))
+      if (curGraph.getModel().getModelId().equals(modelId)) {
         return curGraph;
+      }
       stack.addAll(curGraph.getChildren());
-      if (curGraph.getPreConditions() != null)
+      if (curGraph.getPreConditions() != null) {
         stack.add(curGraph.getPreConditions());
-      if (curGraph.getPostConditions() != null)
+      }
+      if (curGraph.getPostConditions() != null) {
         stack.add(curGraph.getPostConditions());
+      }
     }
     return null;
   }
@@ -244,10 +265,11 @@ public class ModelGraph {
     stack.add(this);
     while (!stack.empty()) {
       ModelGraph curGraph = stack.pop();
-      if (curGraph.getChildren().size() == 0)
+      if (curGraph.getChildren().size() == 0) {
         leafNodes.add(curGraph);
-      else
+      } else {
         stack.addAll(curGraph.getChildren());
+      }
     }
     return leafNodes;
   }
@@ -257,10 +279,11 @@ public class ModelGraph {
   }
 
   public boolean equals(Object obj) {
-    if (obj instanceof ModelGraph)
+    if (obj instanceof ModelGraph) {
       return this.getId().equals(((ModelGraph) obj).getId());
-    else
+    } else {
       return false;
+    }
   }
 
   public String toString() {
@@ -270,12 +293,15 @@ public class ModelGraph {
   public ModelGraph clone() {
     ModelNode cloneNode = this.model.clone();
     ModelGraph clone = new ModelGraph(cloneNode);
-    for (ModelGraph child : this.children)
+    for (ModelGraph child : this.children) {
       clone.addChild(child.clone());
-    if (this.preConditions != null)
+    }
+    if (this.preConditions != null) {
       clone.setPreConditions(this.preConditions.clone());
-    if (this.postConditions != null)
+    }
+    if (this.postConditions != null) {
       clone.setPostConditions(this.postConditions.clone());
+    }
     return clone;
   }
 }

@@ -51,6 +51,7 @@ import org.apache.tika.mime.MimeTypesFactory;
 public final class MimeTypeUtils {
 
     private static final String SEPARATOR = ";";
+    public static final int HEADER_BYTE_SIZE = 1024;
 
     /* our Tika mime type registry */
     private MimeTypes mimeTypes;
@@ -104,8 +105,9 @@ public final class MimeTypeUtils {
      *         mime type.
      */
     public static String cleanMimeType(String origType) {
-        if (origType == null)
+        if (origType == null) {
             return null;
+        }
 
         // take the origType and split it on ';'
         String[] tokenizedMimeType = origType.split(SEPARATOR);
@@ -155,7 +157,7 @@ public final class MimeTypeUtils {
      */
     public String autoResolveContentType(String typeName, String url,
             byte[] data) {
-        MimeType type = null;
+        MimeType type;
         String cleanedMimeType = null;
 
         try {
@@ -220,7 +222,7 @@ public final class MimeTypeUtils {
             }
         }
 
-        return type.getName();
+        return type != null ? type.getName() : null;
     }
 
     /**
@@ -255,7 +257,7 @@ public final class MimeTypeUtils {
         try {
             return tika.detect(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return null;
         }
     }
@@ -274,7 +276,7 @@ public final class MimeTypeUtils {
             return tika.detect(f);
         } catch (Exception e) {
             System.err.println("\n\n\n");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             System.err.println("\n\n\n");
             return null;
         }
@@ -310,10 +312,11 @@ public final class MimeTypeUtils {
     public String getSuperTypeForMimeType(String mimeType) {
     	try {
     		MediaType mediaType = this.mimeTypes.getMediaTypeRegistry().getSupertype(this.mimeTypes.forName(mimeType).getType());
-    		if (mediaType != null)
-    			return mediaType.getType() + "/" + mediaType.getSubtype();
-    		else
-    			return null;
+    		if (mediaType != null) {
+                return mediaType.getType() + "/" + mediaType.getSubtype();
+            } else {
+                return null;
+            }
     	}catch (Exception e) {
     		LOG.log(Level.WARNING, "Failed to get super-type for mimetype " 
     				+ mimeType + " : " + e.getMessage());
@@ -336,7 +339,7 @@ public final class MimeTypeUtils {
     }
     
     public static byte[] readMagicHeader(InputStream stream) throws IOException {
-    	return readMagicHeader(stream, 1024);
+    	return readMagicHeader(stream, HEADER_BYTE_SIZE);
     }
     
     public static byte[] readMagicHeader(InputStream stream, int headerByteSize) 

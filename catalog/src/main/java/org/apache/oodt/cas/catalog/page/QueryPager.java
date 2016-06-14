@@ -47,10 +47,12 @@ public class QueryPager extends IndexPager {
 	public void setPageInfo(PageInfo pageInfo) {
 		this.pageSize = Math.max(pageInfo.getPageSize(), 0);
 		this.totalPages = this.caculateTotalPages();
-		if (this.totalPages == 0)
-			this.pageNum = 0;
-		else
-			this.pageNum = (pageInfo.getPageNum() == PageInfo.LAST_PAGE || pageInfo.getPageNum() >= this.totalPages) ? this.totalPages : pageInfo.getPageNum();
+		if (this.totalPages == 0) {
+		  this.pageNum = 0;
+		} else {
+		  this.pageNum = (pageInfo.getPageNum() == PageInfo.LAST_PAGE || pageInfo.getPageNum() >= this.totalPages)
+						 ? this.totalPages : pageInfo.getPageNum();
+		}
 	}
 		
 	public List<TransactionReceipt> getTransactionReceipts() {
@@ -59,9 +61,12 @@ public class QueryPager extends IndexPager {
 	
 	public List<TransactionReceipt> getCurrentPage() {
 		List<TransactionReceipt> currentPage = new Vector<TransactionReceipt>();
-		if (this.pageNum > 0)
-			for (int i = (this.getPageNum() - 1) * this.getPageSize(); i < receipts.size() && i < this.getPageNum() * this.getPageSize(); i++)
-				currentPage.add(receipts.get(i));
+		if (this.pageNum > 0) {
+		  for (int i = (this.getPageNum() - 1) * this.getPageSize();
+			   i < receipts.size() && i < this.getPageNum() * this.getPageSize(); i++) {
+			currentPage.add(receipts.get(i));
+		  }
+		}
 		return currentPage;
 	}
 	

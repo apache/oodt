@@ -43,8 +43,8 @@ public class DataSourceRepositoryManagerFactory implements
      * Default Constructor
      * </p>.
      */
-    public DataSourceRepositoryManagerFactory() throws Exception {
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+    public DataSourceRepositoryManagerFactory() {
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = System
                 .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.datasource.jdbc.url");

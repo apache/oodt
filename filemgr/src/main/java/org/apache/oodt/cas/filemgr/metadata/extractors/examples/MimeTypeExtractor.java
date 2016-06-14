@@ -62,8 +62,6 @@ public class MimeTypeExtractor extends AbstractFilemgrMetExtractor {
         if (product.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
             Reference prodRef = (Reference) product.getProductReferences().get(
                     0);
-            /*Reference mimeRef = new Reference(prodRef.getOrigReference(),
-                    prodRef.getDataStoreReference(), prodRef.getFileSize());*/
 
             extractMet.addMetadata(MIME_TYPE, prodRef.getMimeType().getName());
             extractMet.addMetadata(MIME_TYPE, prodRef.getMimeType()

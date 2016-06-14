@@ -51,7 +51,7 @@ class ObjectCodec implements Codec {
 			ObjectOutputStream objStream = new ObjectOutputStream(base64);
 			objStream.writeObject(object);
 			objStream.close();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		Element value = doc.createElement("resultValue");
 		value.appendChild(doc.createCDATASection(byteArray.toString()));
 		return value;
@@ -60,10 +60,11 @@ class ObjectCodec implements Codec {
 	public Object decode(Node node) throws ClassNotFoundException, InvalidClassException, StreamCorruptedException,
 		OptionalDataException {
 		String encodedValue;
-		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE)
-			encodedValue = node.getFirstChild().getNodeValue();
-		else
-			encodedValue = XML.text(node);
+		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE) {
+		  encodedValue = node.getFirstChild().getNodeValue();
+		} else {
+		  encodedValue = XML.text(node);
+		}
 		Object rc = null;
 		try {
 			ByteArrayInputStream byteArray = new ByteArrayInputStream(encodedValue.getBytes());
@@ -77,7 +78,7 @@ class ObjectCodec implements Codec {
 			throw ex;
 		} catch (OptionalDataException ex) {
 			throw ex;
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		return rc;
 	}
 

@@ -29,7 +29,6 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 //JDK imports
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -67,7 +66,6 @@ public class LocalCache implements Cache {
     /**
      * 
      * @param fmUrl
-     * @param uniqueElementName
      * @param rangeQueryElementName
      * @param startOfQuery
      * @param endOfQuery
@@ -82,7 +80,6 @@ public class LocalCache implements Cache {
      * 
      * @param fmUrl
      * @param uniqueElementName
-     * @param uniqueElementProductType
      * @param rangeQueryElementName
      * @param startOfQuery
      * @param endOfQuery
@@ -120,20 +117,19 @@ public class LocalCache implements Cache {
             this.uniqueElementName = uniqueElementName;            
             this.uniqueElementProductTypeNames = uniqueElementProductTypeNames;
             List<Product> products = new Vector<Product>();
-            for (String productType : this.uniqueElementProductTypeNames)
+            for (String productType : this.uniqueElementProductTypeNames) {
                 products.addAll(getProductsOverDateRange(
                     this.rangeQueryElementName, productType, this.startOfQuery,
                     this.endOfQuery));
+            }
             clear();
-            for (Iterator<Product> i = products.iterator(); i.hasNext();) {
-                Product product = i.next();
-
+            for (Product product : products) {
                 String value = getValueForMetadata(product, uniqueElementName);
                 this.uniqueElements.add(value);
             }
         } catch (Exception e) {
             throw new CacheException("Failed to sync with database : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
 
@@ -185,9 +181,8 @@ public class LocalCache implements Cache {
      * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync()
      */
     public void sync() throws CacheException {
-        if (this.uniqueElementName == null
-                || (this.uniqueElementProductTypeNames == null || 
-                        (this.uniqueElementProductTypeNames != null && this.uniqueElementProductTypeNames.size() == 0))) {
+        if (this.uniqueElementName == null || (this.uniqueElementProductTypeNames == null || (
+            this.uniqueElementProductTypeNames.size() == 0))) {
             throw new CacheException(
                     "Both uniqueElementName and uniqueElementProductTypeName must "
                             + "be defined in order to use this form of the sync operation!");
@@ -234,7 +229,7 @@ public class LocalCache implements Cache {
             throw new CacheException(
                     "Unable to check for product reception from file manager: ["
                             + fm.getFileManagerUrl() + "]: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
         }
     }
 
@@ -278,8 +273,7 @@ public class LocalCache implements Cache {
                     startOfQuery, endOfQuery));
             if(this.uniqueElementProductTypeNames != null && 
                     this.uniqueElementProductTypeNames.size() > 0){
-                for(Iterator<String> i = this.uniqueElementProductTypeNames.iterator(); i.hasNext(); ){
-                    String productTypeName = i.next();
+                for (String productTypeName : this.uniqueElementProductTypeNames) {
                     products.addAll(getProducts(query, productTypeName));
                 }
                 
@@ -287,7 +281,7 @@ public class LocalCache implements Cache {
         } catch (Exception e) {
             throw new CacheException("Failed to query for product via element "
                     + elementName + " and range " + startOfQuery + " to "
-                    + endOfQuery + " : " + e.getMessage());
+                    + endOfQuery + " : " + e.getMessage(), e);
         }
         
         return products;
@@ -299,7 +293,7 @@ public class LocalCache implements Cache {
             return fm.query(query, fm.getProductTypeByName(productType));
         } catch (Exception e) {
             throw new CacheException("Failed to get product list for query "
-                    + query + " : " + e.getMessage());
+                    + query + " : " + e.getMessage(), e);
         }
     }
 
@@ -309,7 +303,7 @@ public class LocalCache implements Cache {
             return fm.getMetadata(product).getMetadata(metadataElementName);
         } catch (Exception e) {
             throw new CacheException("Failed to get metadata value for "
-                    + metadataElementName + " : " + e.getMessage());
+                    + metadataElementName + " : " + e.getMessage(), e);
         }
     }
 

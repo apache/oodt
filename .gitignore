@@ -74,6 +74,7 @@ crashlytics-build.properties
 fabric.properties
 
 #Eclipse Ignore
+
 *.pydevproject
 .metadata
 .gradle

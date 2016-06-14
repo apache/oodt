@@ -17,14 +17,10 @@
 
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.MouseListener;
-
-import javax.swing.border.LineBorder;
-
 import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
+
+import java.awt.*;
+import java.awt.event.MouseListener;
 
 public class HeaderCell extends Cell {
 

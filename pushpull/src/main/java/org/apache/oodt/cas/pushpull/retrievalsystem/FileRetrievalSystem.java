@@ -18,12 +18,10 @@
 
 package org.apache.oodt.cas.pushpull.retrievalsystem;
 
-//OODT imports
 import org.apache.oodt.cas.pushpull.config.Config;
 import org.apache.oodt.cas.pushpull.config.SiteInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
 import org.apache.oodt.cas.pushpull.exceptions.CrawlerException;
-import org.apache.oodt.cas.pushpull.exceptions.ProtocolFileException;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
 import org.apache.oodt.cas.pushpull.exceptions.ThreadEvaluatorException;
 import org.apache.oodt.cas.pushpull.exceptions.ToManyFailedDownloadsException;
@@ -45,7 +43,6 @@ import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -120,13 +117,17 @@ import com.google.common.base.Strings;
  */
 public class FileRetrievalSystem {
 
-    /* our log stream */
+  /* our log stream */
     private static final Logger LOG = Logger
             .getLogger(FileRetrievalSystem.class.getName());
 
     private final static int MAX_RETRIES = 3;
+  public static final int INT = 180;
+  public static final int TIMEOUT = 5000;
+  public static final int TIMEOUT1 = 5000;
+  public static final int TIMEOUT2 = 600;
 
-    private LinkedList<ProtocolFile> failedDownloadList;
+  private LinkedList<ProtocolFile> failedDownloadList;
 
     private HashSet<ProtocolFile> currentlyDownloading;
 
@@ -187,11 +188,6 @@ public class FileRetrievalSystem {
      * Creates a Crawler based on the URL, DirStruct, and Config objects passed
      * in. If no DirStruct is needed then set it to null.
      *
-     * @param url
-     *            The URL for which you want this Crawler to crawl
-     * @param dirStruct
-     *            The specified directory structure located at the host -- use
-     *            to train crawler (see DirStruct).
      * @param config
      *            The Configuration file that is passed to this objects
      *            ProtocolHandler.
@@ -207,7 +203,7 @@ public class FileRetrievalSystem {
             mimeTypeDetection = new MimeTypeUtils(config
                     .getProductTypeDetectionFile());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new InstantiationException(
                     "Failed to create FileRetrievalSystem : " + e.getMessage());
         }
@@ -231,7 +227,7 @@ public class FileRetrievalSystem {
      *
      * @throws ThreadEvaluatorException
      */
-    void resetVariables() throws ThreadEvaluatorException {
+    void resetVariables() {
         numberOfSessions = 0;
         stagingAreas = new HashSet<File>();
         avaliableSessions = new Vector<Protocol>();
@@ -242,8 +238,9 @@ public class FileRetrievalSystem {
         threadController = new ThreadPoolExecutor(this.max_sessions,
                 this.max_sessions, EXTRA_LAZY_SESSIONS_TIMEOUT,
                 TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        if (config.useTracker())
-            dtEval = new DownloadThreadEvaluator(this.absMaxAllowedSessions);
+        if (config.useTracker()) {
+          dtEval = new DownloadThreadEvaluator(this.absMaxAllowedSessions);
+        }
     }
 
     /**
@@ -254,9 +251,8 @@ public class FileRetrievalSystem {
     }
 
     public boolean isAlreadyInDatabase(RemoteFile rf) throws CatalogException {
-        return config.getIngester() != null ? config.getIngester().hasProduct(
-                config.getFmUrl(), rf.getMetadata(RemoteFile.PRODUCT_NAME))
-                : false;
+        return config.getIngester() != null && config.getIngester().hasProduct(
+            config.getFmUrl(), rf.getMetadata(RemoteFile.PRODUCT_NAME));
     }
 
     public List<RemoteSiteFile> getNextPage(final RemoteSiteFile dir,
@@ -282,72 +278,76 @@ public class FileRetrievalSystem {
                 + dir);
     }
 
-    public void changeToRoot(RemoteSite remoteSite) throws ProtocolException,
-            MalformedURLException, org.apache.oodt.cas.protocol.exceptions.ProtocolException {
-        if (validate(remoteSite))
-            protocolHandler.cdToROOT(protocolHandler
-                    .getAppropriateProtocolBySite(remoteSite, true));
-        else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+    public void changeToRoot(RemoteSite remoteSite) throws
+        org.apache.oodt.cas.protocol.exceptions.ProtocolException {
+        if (validate(remoteSite)) {
+          protocolHandler.cdToROOT(protocolHandler
+              .getAppropriateProtocolBySite(remoteSite, true));
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
-    public void changeToHOME(RemoteSite remoteSite) throws ProtocolException,
-            MalformedURLException {
-        if (validate(remoteSite))
-            protocolHandler.cdToHOME(protocolHandler
-                    .getAppropriateProtocolBySite(remoteSite, true));
-        else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+    public void changeToHOME(RemoteSite remoteSite) throws ProtocolException {
+        if (validate(remoteSite)) {
+          protocolHandler.cdToHOME(protocolHandler
+              .getAppropriateProtocolBySite(remoteSite, true));
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
     public void changeToDir(String dir, RemoteSite remoteSite)
-            throws MalformedURLException, ProtocolException {
-        if (validate(remoteSite))
-            this
-                    .changeToDir(protocolHandler.getProtocolFileFor(remoteSite,
-                            protocolHandler.getAppropriateProtocolBySite(
-                                    remoteSite, true), dir, true));
-        else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+            throws ProtocolException {
+        if (validate(remoteSite)) {
+          this
+              .changeToDir(protocolHandler.getProtocolFileFor(remoteSite,
+                  protocolHandler.getAppropriateProtocolBySite(
+                      remoteSite, true), dir, true));
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
-    public void changeToDir(RemoteSiteFile pFile) throws ProtocolException,
-            MalformedURLException {
+    public void changeToDir(RemoteSiteFile pFile) throws ProtocolException {
         RemoteSite remoteSite = pFile.getSite();
-        if (validate(remoteSite))
-            protocolHandler.cd(protocolHandler.getAppropriateProtocolBySite(
-                    remoteSite, true), pFile);
-        else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+        if (validate(remoteSite)) {
+          protocolHandler.cd(protocolHandler.getAppropriateProtocolBySite(
+              remoteSite, true), pFile);
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
     public ProtocolFile getHomeDir(RemoteSite remoteSite)
             throws ProtocolException {
-        if (validate(remoteSite))
-            return protocolHandler.getHomeDir(remoteSite, protocolHandler
-                    .getAppropriateProtocolBySite(remoteSite, true));
-        else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+        if (validate(remoteSite)) {
+          return protocolHandler.getHomeDir(remoteSite, protocolHandler
+              .getAppropriateProtocolBySite(remoteSite, true));
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
     public ProtocolFile getProtocolFile(RemoteSite remoteSite, String file,
             boolean isDir) throws ProtocolException {
-        if (validate(remoteSite))
-            return protocolHandler.getProtocolFileFor(remoteSite, protocolHandler
-                    .getAppropriateProtocolBySite(remoteSite, true), file,
-                    isDir);
-        else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+        if (validate(remoteSite)) {
+          return protocolHandler.getProtocolFileFor(remoteSite, protocolHandler
+                  .getAppropriateProtocolBySite(remoteSite, true), file,
+              isDir);
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
     public ProtocolFile getCurrentFile(RemoteSite remoteSite)
-            throws ProtocolFileException, ProtocolException,
-            MalformedURLException {
-        if (validate(remoteSite))
-            return protocolHandler.pwd(remoteSite, protocolHandler
-                    .getAppropriateProtocolBySite(remoteSite, true));
-        else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+            throws ProtocolException {
+        if (validate(remoteSite)) {
+          return protocolHandler.pwd(remoteSite, protocolHandler
+              .getAppropriateProtocolBySite(remoteSite, true));
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
     // returns true if download was added to queue. . .false otherwise
@@ -355,18 +355,20 @@ public class FileRetrievalSystem {
             String renamingString, File downloadToDir,
             String uniqueMetadataElement, boolean deleteAfterDownload, Metadata fileMetadata)
             throws ToManyFailedDownloadsException, RemoteConnectionException,
-            ProtocolFileException, ProtocolException,
+        ProtocolException,
             AlreadyInDatabaseException, UndefinedTypeException,
             CatalogException, IOException {
         if (validate(remoteSite)) {
-            if (!file.startsWith("/"))
-                file = "/" + file;
+            if (!file.startsWith("/")) {
+              file = "/" + file;
+            }
             return addToDownloadQueue(protocolHandler.getProtocolFileFor(remoteSite,
                     protocolHandler.getAppropriateProtocolBySite(remoteSite,
                             true), file, false), renamingString, downloadToDir,
                     uniqueMetadataElement, deleteAfterDownload, fileMetadata);
-        } else
-            throw new ProtocolException("Not a valid remote site " + remoteSite);
+        } else {
+          throw new ProtocolException("Not a valid remote site " + remoteSite);
+        }
     }
 
     public boolean validate(RemoteSite remoteSite) {
@@ -386,13 +388,14 @@ public class FileRetrievalSystem {
     public void waitUntilAllCurrentDownloadsAreComplete()
             throws ProtocolException {
         synchronized (this) {
-            for (int i = 0; i < 180; i++) {
+            for (int i = 0; i < INT; i++) {
                 try {
-                    if (this.avaliableSessions.size() == this.numberOfSessions)
-                        return;
-                    else
-                        this.wait(5000);
-                } catch (Exception e) {
+                    if (this.avaliableSessions.size() == this.numberOfSessions) {
+                      return;
+                    } else {
+                      this.wait(TIMEOUT);
+                    }
+                } catch (Exception ignored) {
                 }
             }
             throw new ProtocolException(
@@ -411,12 +414,13 @@ public class FileRetrievalSystem {
                                                                   UndefinedTypeException,
                                                                   CatalogException,
                                                                   IOException {
-        if (this.failedDownloadList.size() > max_allowed_failed_downloads)
-            throw new ToManyFailedDownloadsException(
-                    "Number of failed downloads exceeds "
-                            + max_allowed_failed_downloads
-                            + " . . . blocking all downloads from being added to queue . . . "
-                            + "reset error flag in order to force allow downloads into queue");
+        if (this.failedDownloadList.size() > max_allowed_failed_downloads) {
+          throw new ToManyFailedDownloadsException(
+              "Number of failed downloads exceeds "
+              + max_allowed_failed_downloads
+              + " . . . blocking all downloads from being added to queue . . . "
+              + "reset error flag in order to force allow downloads into queue");
+        }
         if (this.isDownloading(file)) {
             LOG.log(Level.WARNING, "Skipping file '" + file
                     + "' because it is already on the download queue");
@@ -439,7 +443,7 @@ public class FileRetrievalSystem {
                String description = this.mimeTypeDetection
                        .getDescriptionForMimeType(mimeType);
                if (!Strings.isNullOrEmpty(description)) {
-                 if(description.indexOf("&") != -1){
+                 if(description.contains("&")){
                    for (String field : description.split("\\&\\&")) {
                      String[] keyval = field.split("\\=");
                      remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
@@ -461,8 +465,9 @@ public class FileRetrievalSystem {
         downloadToDir = new File(downloadToDir.isAbsolute() ? downloadToDir
                 .getAbsolutePath() : this.config.getBaseStagingArea() + "/"
                 + downloadToDir.getPath());
-        if (!this.isStagingAreaInitialized(downloadToDir))
-            this.initializeStagingArea(downloadToDir);
+        if (!this.isStagingAreaInitialized(downloadToDir)) {
+          this.initializeStagingArea(downloadToDir);
+        }
 
         remoteFile.addMetadata(RemoteFile.DOWNLOAD_TO_DIR, downloadToDir.getAbsolutePath());
 
@@ -492,8 +497,8 @@ public class FileRetrievalSystem {
                                     + file + " . . . retrying in 5 secs");
                             synchronized (this) {
                                 try {
-                                    wait(5000);
-                                } catch (Exception e1) {
+                                    wait(TIMEOUT1);
+                                } catch (Exception ignored) {
                                 }
                             }
                         } else {
@@ -520,9 +525,10 @@ public class FileRetrievalSystem {
                         + " because it is already in staging area");
                 return false;
             }
-        } else
-            throw new AlreadyInDatabaseException("File " + file
-                    + " is already the database");
+        } else {
+          throw new AlreadyInDatabaseException("File " + file
+                                               + " is already the database");
+        }
     }
 
     private boolean isStagingAreaInitialized(File stagingArea) {
@@ -543,17 +549,20 @@ public class FileRetrievalSystem {
                     return pathname.getName().startsWith("Downloading_");
                 }
             });
-            for (File file : failedDownloads) {
+            if(failedDownloads!=null) {
+              for (File file : failedDownloads) {
                 LOG.log(Level.INFO, "Removing failed download file "
-                        + file.getAbsolutePath());
+                                    + file.getAbsolutePath());
                 file.delete();
+              }
             }
         } else {
             LOG.log(Level.INFO, "Staging area " + stagingArea.getAbsolutePath()
                     + " does not exist! -- trying to create it ");
-            if (!stagingArea.mkdirs())
-                throw new IOException("Failed to create staging area at "
-                        + stagingArea.getAbsolutePath());
+            if (!stagingArea.mkdirs()) {
+              throw new IOException("Failed to create staging area at "
+                                    + stagingArea.getAbsolutePath());
+            }
         }
         this.stagingAreas.add(stagingArea);
     }
@@ -570,8 +579,9 @@ public class FileRetrievalSystem {
                     + "/"
                     + RenamingConvention.rename(remoteFile, renamingString));
             if (!newFile.getParentFile().equals(
-                    remoteFile.getMetadata(RemoteFile.DOWNLOAD_TO_DIR)))
-                newFile.getParentFile().mkdirs();
+                    remoteFile.getMetadata(RemoteFile.DOWNLOAD_TO_DIR))) {
+              newFile.getParentFile().mkdirs();
+            }
             return newFile;
         }
     }
@@ -582,7 +592,7 @@ public class FileRetrievalSystem {
         while ((session = getSession(file)) == null) {
             try {
                 waitMainThread();
-            } catch (InterruptedException e1) {
+            } catch (InterruptedException ignored) {
             }
         }
         return session;
@@ -619,11 +629,6 @@ public class FileRetrievalSystem {
      * Gets an available downloading session Protocol. Returns null if none are
      * available
      *
-     * @param path
-     *            The session returned will be checked against the Path passed
-     *            in and if not presently connected to the Path's URL, it will
-     *            be disconnected from it's current server and connected to the
-     *            server specified by the Path.
      * @return The found downloading session Protocol
      * @throws RemoteCommunicationException
      *             If downloading session Protocol has to be reconnected and
@@ -655,7 +660,7 @@ public class FileRetrievalSystem {
     }
 
     Protocol modifyAvailableSessionForPath(RemoteSiteFile file)
-            throws ProtocolException, RemoteConnectionException {
+            throws RemoteConnectionException {
         Protocol session = getAvailableSession();
         if (!file.getSite().getURL().getHost().equals(
                 file.getSite().getURL().getHost())
@@ -665,16 +670,17 @@ public class FileRetrievalSystem {
             false, /* navigate */true);
         } else {
             try {
-                if (file.isDir())
-                    protocolHandler.cd(session, file);
-                else
-                    protocolHandler.cd(session,
-                          new RemoteSiteFile(file.getParent(), file.getSite()));
+                if (file.isDir()) {
+                  protocolHandler.cd(session, file);
+                } else {
+                  protocolHandler.cd(session,
+                      new RemoteSiteFile(file.getParent(), file.getSite()));
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 try {
                     protocolHandler.disconnect(session);
-                } catch (Exception exc) {
+                } catch (Exception ignored) {
                 }
                 session = protocolHandler.getAppropriateProtocol(file, /* reuse */
                 false, /* navigate */true);
@@ -713,8 +719,6 @@ public class FileRetrievalSystem {
      * @param session
      *            The downloading Protocol session to be used to download the
      *            ProtocolFile
-     * @param protocolFile
-     *            The file to be downloaded
      * @param newFile
      *            The location which the downloaded file will be stored
      */
@@ -728,9 +732,10 @@ public class FileRetrievalSystem {
                 int retries = 0;
                 Protocol curSession = session;
 
-                if (FileRetrievalSystem.this.dListener != null)
-                    FileRetrievalSystem.this.dListener
-                            .downloadStarted(remoteFile.getProtocolFile());
+                if (FileRetrievalSystem.this.dListener != null) {
+                  FileRetrievalSystem.this.dListener
+                      .downloadStarted(remoteFile.getProtocolFile());
+                }
 
                 // try until successful or all retries have been used
                 do {
@@ -758,10 +763,11 @@ public class FileRetrievalSystem {
                         }
 
                         successful = true;
-                        if (FileRetrievalSystem.this.dListener != null)
-                            FileRetrievalSystem.this.dListener
-                                    .downloadFinished(remoteFile
-                                            .getProtocolFile());
+                        if (FileRetrievalSystem.this.dListener != null) {
+                          FileRetrievalSystem.this.dListener
+                              .downloadFinished(remoteFile
+                                  .getProtocolFile());
+                        }
 
                         remoteFile.addMetadata(RemoteFile.FILE_SIZE, newFile
                                 .length()
@@ -787,8 +793,9 @@ public class FileRetrievalSystem {
                     } catch (Exception e) {
 
                         // if tracker is being used cancel tracking
-                        if (config.useTracker())
-                            dtEval.cancelRuntimeTracking(newFile);
+                        if (config.useTracker()) {
+                          dtEval.cancelRuntimeTracking(newFile);
+                        }
 
                         // delete any created file from staging area
                         newFile.delete();
@@ -802,11 +809,12 @@ public class FileRetrievalSystem {
                             LOG.log(Level.SEVERE, "Failed to download "
                                     + remoteFile.getProtocolFile() + " : "
                                     + e.getMessage());
-                            if (FileRetrievalSystem.this.dListener != null)
-                                FileRetrievalSystem.this.dListener
-                                        .downloadFailed(remoteFile
-                                                .getProtocolFile(), e
-                                                .getMessage());
+                            if (FileRetrievalSystem.this.dListener != null) {
+                              FileRetrievalSystem.this.dListener
+                                  .downloadFailed(remoteFile
+                                      .getProtocolFile(), e
+                                      .getMessage());
+                            }
                             break;
                         } else if (FileRetrievalSystem.this.failedDownloadList
                                 .size() < max_allowed_failed_downloads) {
@@ -818,7 +826,7 @@ public class FileRetrievalSystem {
                                     + e.getMessage(), e);
                             try {
                                 protocolHandler.disconnect(curSession);
-                            } catch (Exception exc) {
+                            } catch (Exception ignored) {
                             }
                             try {
                                 curSession = protocolHandler
@@ -840,11 +848,12 @@ public class FileRetrievalSystem {
                                                             .getProtocolFile()
                                                     + " do to too many previous download failures : "
                                                     + e.getMessage(), e);
-                            if (FileRetrievalSystem.this.dListener != null)
-                                FileRetrievalSystem.this.dListener
-                                        .downloadFailed(remoteFile
-                                                .getProtocolFile(), e
-                                                .getMessage());
+                            if (FileRetrievalSystem.this.dListener != null) {
+                              FileRetrievalSystem.this.dListener
+                                  .downloadFailed(remoteFile
+                                      .getProtocolFile(), e
+                                      .getMessage());
+                            }
                             break;
                         }
 
@@ -912,14 +921,14 @@ public class FileRetrievalSystem {
             // close out threadpool
             threadController.shutdown();
             // give a max of 10 minutes to finish downloading any files
-            threadController.awaitTermination(600, TimeUnit.SECONDS);
+            threadController.awaitTermination(TIMEOUT2, TimeUnit.SECONDS);
         } catch (Exception e) {
             // log failure
         }
 
         try {
             this.resetVariables();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -950,7 +959,6 @@ public class FileRetrievalSystem {
         for (Protocol session : avaliableSessions) {
             protocolHandler.disconnect(session);
         }
-        // sessions.clear();
         avaliableSessions.clear();
         numberOfSessions = 0;
         return true;

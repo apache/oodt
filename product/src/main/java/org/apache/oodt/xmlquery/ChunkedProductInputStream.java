@@ -18,11 +18,11 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.Retriever;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Streamer for chunked products.
@@ -61,9 +61,13 @@ final class ChunkedProductInputStream extends InputStream {
 	 */
 	public int read() throws IOException {
 		checkOpen();                                                           // Make sure the stream's open
-		if (eof) throw new IOException("End of file");			       // Already reached EOF?  You lose.
+		if (eof) {
+		  throw new IOException("End of file");                   // Already reached EOF?  You lose.
+		}
 		fetchBlock();							       // Get a block.
-		if (eof) return -1;						       // No more blocks?  Signal EOF.
+		if (eof) {
+		  return -1;                               // No more blocks?  Signal EOF.
+		}
 		return block[blockIndex++];					       // Yield next byte (promoted) from block.
 	}
 
@@ -81,14 +85,20 @@ final class ChunkedProductInputStream extends InputStream {
 	 */
 	public int read(byte[] b, int offset, int length) throws IOException {
 		checkOpen();							       // Check if open
-		if (offset < 0 || offset > b.length || length < 0 || (offset + length) > b.length || (offset + length) < 0)
-			throw new IllegalArgumentException("Illegal offset=" + offset + "/length=" + length
-				+ " for byte array of length " + b.length);
-		else if (length == 0)						       // Want zero?
-			return 0;						       // Then you get zero
-		if (eof) throw new IOException("End of file");			       // Already reached EOF?  You lose.
+		if (offset < 0 || offset > b.length || length < 0 || (offset + length) > b.length || (offset + length) < 0) {
+		  throw new IllegalArgumentException("Illegal offset=" + offset + "/length=" + length
+											 + " for byte array of length " + b.length);
+		} else if (length == 0)						       // Want zero?
+		{
+		  return 0;                               // Then you get zero
+		}
+		if (eof) {
+		  throw new IOException("End of file");                   // Already reached EOF?  You lose.
+		}
 		fetchBlock();							       // Get a block.
-		if (eof) return -1;						       // No more blocks?  Signal EOF.
+		if (eof) {
+		  return -1;                               // No more blocks?  Signal EOF.
+		}
 		int amount = Math.min(length, block.length - blockIndex);	       // Return requested amount or whatever's left
 		System.arraycopy(block, blockIndex, b, offset, amount);		       // Transfer
 		blockIndex += amount;						       // Advance
@@ -101,18 +111,20 @@ final class ChunkedProductInputStream extends InputStream {
 	 * @throws IOException if an error occurs.
 	 */
 	private void fetchBlock() throws IOException {
-		if (block == null || blockIndex == block.length) try {		       // No block, or current block exhausted?
-			if (productIndex == size) {				       // No more blocks left to get?
-				block = null;					       // Drop current block
-				eof = true;					       // Signal EOF
-			} else {						       // Otherwise there are more blocks
-				int x=(int)Math.min(BLOCK_SIZE, size - productIndex);  // Can only fetch so much
-				block = retriever.retrieveChunk(id, productIndex, x);  // Get x's worth of data
-				blockIndex = 0;					       // Start at block's beginning
-				productIndex += block.length;			       // Advance product index by block size
+		if (block == null || blockIndex == block.length) {
+		  try {               // No block, or current block exhausted?
+			if (productIndex == size) {                       // No more blocks left to get?
+			  block = null;                           // Drop current block
+			  eof = true;                           // Signal EOF
+			} else {                               // Otherwise there are more blocks
+			  int x = (int) Math.min(BLOCK_SIZE, size - productIndex);  // Can only fetch so much
+			  block = retriever.retrieveChunk(id, productIndex, x);  // Get x's worth of data
+			  blockIndex = 0;                           // Start at block's beginning
+			  productIndex += block.length;                   // Advance product index by block size
 			}
-		} catch (ProductException ex) {
+		  } catch (ProductException ex) {
 			throw new IOException(ex.getMessage());
+		  }
 		}
 	}
 
@@ -132,12 +144,8 @@ final class ChunkedProductInputStream extends InputStream {
 
 	public void close() throws IOException {
 		checkOpen();							       // Open?
-		try {
-			retriever.close(id);					       // Tell retriever we're done
-			open = false;						       // Flag it
-		} catch (ProductException ex) {
-			throw new IOException(ex.getMessage());
-		}
+	  retriever.close(id);					       // Tell retriever we're done
+	  open = false;						       // Flag it
 	}
 
 	/**
@@ -170,8 +178,10 @@ final class ChunkedProductInputStream extends InputStream {
 	 *
 	 * @throws IOException if the stream's closed.
 	 */
-	private final void checkOpen() throws IOException {
-		if (open) return;
+	private void checkOpen() throws IOException {
+		if (open) {
+		  return;
+		}
 		throw new IOException("Stream closed");
 	}
 
@@ -199,6 +209,7 @@ final class ChunkedProductInputStream extends InputStream {
 	/** Is the stream open? */
 	private boolean open;
 
-	/** Size of chunks. */
-	private static final int BLOCK_SIZE = Integer.getInteger("org.apache.oodt.xmlquery.blockSize", 4096).intValue();
+  public static final int VAL = 4096;
+  /** Size of chunks. */
+	private static final int BLOCK_SIZE = Integer.getInteger("org.apache.oodt.xmlquery.blockSize", VAL);
 }

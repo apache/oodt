@@ -17,16 +17,15 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-//JDK imports
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RangeQuery;
+import org.apache.lucene.search.TermQuery;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
@@ -40,16 +39,12 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 
-//APACHE imports
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.TermQuery;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -67,8 +62,8 @@ public final class QueryTool {
 
     private XmlRpcFileManagerClient client = null;
 
-    private static enum QueryType { LUCENE, SQL }; 
-    
+    private enum QueryType { LUCENE, SQL }
+
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(QueryTool.class.getName());
 
@@ -96,25 +91,25 @@ public final class QueryTool {
 
     public List query(org.apache.oodt.cas.filemgr.structs.Query query) {
         List prodIds = new Vector();
-        List products = new Vector();
+        List products;
 
         List productTypes = safeGetProductTypes();
 
         if (productTypes != null && productTypes.size() > 0) {
-            for (Iterator i = productTypes.iterator(); i.hasNext();) {
-                ProductType type = (ProductType) i.next();
+            for (Object productType : productTypes) {
+                ProductType type = (ProductType) productType;
                 try {
                     products = client.query(query, type);
                     if (products != null && products.size() > 0) {
-                        for (Iterator j = products.iterator(); j.hasNext();) {
-                            Product product = (Product) j.next();
+                        for (Object product1 : products) {
+                            Product product = (Product) product1;
                             prodIds.add(product.getProductId());
                         }
                     }
                 } catch (CatalogException e) {
                     LOG.log(Level.WARNING, "Exception querying for: ["
-                            + type.getName() + "] products: Message: "
-                            + e.getMessage());
+                                           + type.getName() + "] products: Message: "
+                                           + e.getMessage());
                 }
 
             }
@@ -130,20 +125,17 @@ public final class QueryTool {
             Query luceneQuery) {
         if (luceneQuery instanceof TermQuery) {
             Term t = ((TermQuery) luceneQuery).getTerm();
-            if (t.field().equals(freeTextBlock)) {
-                // nothing for now
-            } else {
+            if (!t.field().equals(freeTextBlock)) {
                 casQuery.addCriterion(new TermQueryCriteria(t.field(), 
                         t.text()));
             }
         } else if (luceneQuery instanceof PhraseQuery) {
             Term[] t = ((PhraseQuery) luceneQuery).getTerms();
-            if (t[0].field().equals(freeTextBlock)) {
-                // nothing for now
-            } else {
-                for (int i = 0; i < t.length; i++)
+            if (!t[0].field().equals(freeTextBlock)) {
+                for (Term aT : t) {
                     casQuery.addCriterion(new TermQueryCriteria(
-                            t[i].field(), t[i].text()));
+                        aT.field(), aT.text()));
+                }
             }
         } else if (luceneQuery instanceof RangeQuery) {
             Term startT = ((RangeQuery) luceneQuery).getLowerTerm();
@@ -152,8 +144,8 @@ public final class QueryTool {
                     .field(), startT.text(), endT.text()));
         } else if (luceneQuery instanceof BooleanQuery) {
             BooleanClause[] clauses = ((BooleanQuery) luceneQuery).getClauses();
-            for (int i = 0; i < clauses.length; i++) {
-                generateCASQuery(casQuery, (clauses[i]).getQuery());
+            for (BooleanClause clause : clauses) {
+                generateCASQuery(casQuery, (clause).getQuery());
             }
         } else {
             throw new RuntimeException(
@@ -177,7 +169,9 @@ public final class QueryTool {
         return prodTypes;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+        throws MalformedURLException, InstantiationException, CatalogException, QueryFormulationException,
+        ConnectionException {
         String usage = "Usage: QueryTool [options] \n"
             + "options: \n"
             + "--url <fm url> \n"
@@ -194,27 +188,32 @@ public final class QueryTool {
         QueryType queryType = null;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--lucene")) {
-                if (queryType != null)
+                if (queryType != null) {
                     exit("ERROR: Can only perform one query at a time! \n" + usage);
-                if (args[++i].equals("-query"))
+                }
+                if (args[++i].equals("-query")) {
                     queryStr = args[++i];
-                else 
+                } else {
                     exit("ERROR: Must specify a query! \n" + usage);
+                }
                 queryType = QueryType.LUCENE;
             }else if (args[i].equals("--sql")) {
-                if (queryType != null)
+                if (queryType != null) {
                     exit("ERROR: Can only perform one query at a time! \n" + usage);
-                if (args[++i].equals("-query"))
+                }
+                if (args[++i].equals("-query")) {
                     queryStr = args[++i];
-                else 
+                } else {
                     exit("ERROR: Must specify a query! \n" + usage);
+                }
                 for (; i < args.length; i++) {
-                    if (args[i].equals("-sortBy"))
+                    if (args[i].equals("-sortBy")) {
                         sortBy = args[++i];
-                    else if (args[i].equals("-outputFormat"))
+                    } else if (args[i].equals("-outputFormat")) {
                         outputFormat = args[++i];
-                    else if (args[i].equals("-delimiter"))
+                    } else if (args[i].equals("-delimiter")) {
                         delimiter = args[++i];
+                    }
                 }
                 queryType = QueryType.SQL;
             }else if (args[i].equals("--url")) {
@@ -222,8 +221,9 @@ public final class QueryTool {
             }
         }
 
-        if (queryStr == null || fmUrlStr == null) 
+        if (queryStr == null || fmUrlStr == null) {
             exit("Must specify a query and filemgr url! \n" + usage);
+        }
         
         if (queryType == QueryType.LUCENE) {
             URL fmUrl = new URL(fmUrlStr);
@@ -233,8 +233,8 @@ public final class QueryTool {
     
             List prodIds = queryTool.query(casQuery);
             if (prodIds != null && prodIds.size() > 0) {
-                for (Iterator i = prodIds.iterator(); i.hasNext();) {
-                    String prodId = (String) i.next();
+                for (Object prodId1 : prodIds) {
+                    String prodId = (String) prodId1;
                     System.out.println(prodId);
                 }
             }
@@ -250,9 +250,10 @@ public final class QueryTool {
         complexQuery.setSortByMetKey(sortBy);
         complexQuery.setToStringResultFormat(outputFormat);
         List<QueryResult> results = new XmlRpcFileManagerClient(new URL(filemgrUrl)).complexQuery(complexQuery);
-        StringBuffer returnString = new StringBuffer("");
-        for (QueryResult qr : results) 
-            returnString.append(qr.toString() + delimiter);
+        StringBuilder returnString = new StringBuilder("");
+        for (QueryResult qr : results) {
+            returnString.append(qr.toString()).append(delimiter);
+        }
         return returnString.substring(0, returnString.length() - delimiter.length());
     }
     

@@ -23,5 +23,5 @@ package org.apache.oodt.cas.cli.action.store;
  */
 public interface CmdLineActionStoreFactory {
 
-   public CmdLineActionStore createStore();
+   CmdLineActionStore createStore();
 }

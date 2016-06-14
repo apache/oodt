@@ -31,7 +31,7 @@ import org.apache.oodt.commons.date.DateUtils;
  * 
  * Intercepts the calls to {@link TaskQuerier#getNext()} and injects
  * StartDateTime (and potentially other met fields into the
- * {@link TaskProcessor#getDynamicMetadata()}.
+ * .
  * 
  * @author mattmann
  * @version $Revision$

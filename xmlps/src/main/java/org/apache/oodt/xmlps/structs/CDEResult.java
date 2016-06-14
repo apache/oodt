@@ -18,13 +18,13 @@
 package org.apache.oodt.xmlps.structs;
 
 //OODT imports
+
 import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.Result;
 
-//JDK imports
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -35,6 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+
+//JDK imports
 
 /**
  * A {@link Result} that wraps a {@link ResultSet} and returns rows as Strings,
@@ -73,8 +76,9 @@ public class CDEResult extends Result {
 
   @Override
   public InputStream getInputStream() throws IOException {
-    if (rs == null || con == null)
+    if (rs == null || con == null) {
       throw new IOException("InputStream not ready, ResultSet or Connection is null!");
+    }
     return new CDEResultInputStream(this);
   }
 
@@ -84,20 +88,21 @@ public class CDEResult extends Result {
   }
 
  public void close() throws SQLException {
-    if (rs != null)
+    if (rs != null) {
       rs.close();
-    if (con != null)
+    }
+    if (con != null) {
       con.close();
+    }
   }
 
   public String getNextRowAsString() throws SQLException {
     if (rs.next()) {
       CDERow row = createCDERow();
-      if (mapping != null)
+      if (mapping != null) {
         applyMappingFuncs(row);
-      if (this.constValues != null && 
-          ((this.orderedFields == null) || 
-          (this.orderedFields != null && this.orderedFields.size() == 0))){
+      }
+      if (this.constValues != null && ((this.orderedFields == null) || (this.orderedFields.size() == 0))){
         addConstValues(row);
       }
       // if there is some kind of configurable response writer,
@@ -138,7 +143,9 @@ public class CDEResult extends Result {
         }
       }
     }
-    else row.getVals().addAll(orderedDbVals);
+    else {
+      row.getVals().addAll(orderedDbVals);
+    }
     
     
     return row;

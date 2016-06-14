@@ -26,7 +26,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 
 //java imports
-import java.net.URL;
+import java.util.List;
 
 /**
  * @author woollard
@@ -44,15 +44,12 @@ public interface Batchmgr {
      * 
      * @param job
      *            The {@link JobSpec} to execute.
-     * @param remoteHost
-     *            A {@link URL} pointer to the remote host to execute the job
-     *            on.
      * @return true if the job execution was successful, false otherwise.
      * @throws JobExecutionException
      *             If there is an exception executing the job on the remote
      *             host.
      */
-    public boolean executeRemotely(JobSpec job, ResourceNode resNode)
+    boolean executeRemotely(JobSpec job, ResourceNode resNode)
             throws JobExecutionException;
 
     /**
@@ -61,7 +58,7 @@ public interface Batchmgr {
      * @param monitor
      *            The {@link Monitor} to be used.
      */
-    public void setMonitor(Monitor monitor);
+    void setMonitor(Monitor monitor);
 
     /**
      * Sets the {@link JobRepository} that this Batchmgr will use to persist
@@ -69,7 +66,7 @@ public interface Batchmgr {
      * 
      * @param repository
      */
-    public void setJobRepository(JobRepository repository);
+    void setJobRepository(JobRepository repository);
     
     
     /**
@@ -78,7 +75,7 @@ public interface Batchmgr {
      * @param node
      * @return
      */
-    public boolean killJob(String jobId, ResourceNode node);
+    boolean killJob(String jobId, ResourceNode node);
     
     
     /**
@@ -86,6 +83,12 @@ public interface Batchmgr {
      * @param jobId
      * @return
      */
-    public String getExecutionNode(String jobId);
+    String getExecutionNode(String jobId);
+    
+    /**
+     * Get a list of the ids of all jobs that are executing on the given node. 
+     * @return A list of ids of jobs on the given node
+     */
+    List getJobsOnNode(String nodeId);
 
 }

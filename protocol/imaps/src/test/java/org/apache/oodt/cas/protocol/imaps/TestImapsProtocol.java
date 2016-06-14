@@ -69,7 +69,7 @@ public class TestImapsProtocol extends TestCase {
 		gMail.stop();
 		try {
 			imapsProtocol.close();
-		} catch (Exception e) {}
+		} catch (Exception ignored) {}
 		assertEquals(0, ImapsProtocol.connectCalls);
 	}
 	

@@ -32,5 +32,5 @@ public interface WorkflowRepositoryFactory {
     /**
      * @return A new implementation of the {@link WorkflowRepository} interface.
      */
-    public WorkflowRepository createRepository();
+    WorkflowRepository createRepository();
 }

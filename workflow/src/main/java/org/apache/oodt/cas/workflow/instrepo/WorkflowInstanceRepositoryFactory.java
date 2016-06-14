@@ -33,5 +33,5 @@ public interface WorkflowInstanceRepositoryFactory {
      * @return An implementation of the 
      * {@link WorkflowInstanceRepository} interface.
      */
-    public WorkflowInstanceRepository createInstanceRepository();
+    WorkflowInstanceRepository createInstanceRepository();
 }

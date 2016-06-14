@@ -20,7 +20,6 @@ package org.apache.oodt.cas.pushpull.protocol;
 
 //JDK imports
 import java.io.Serializable;
-import java.net.MalformedURLException;
 
 /**
  * This class wraps up a URL for a given path, and whether the path specified by
@@ -56,8 +55,9 @@ public class ProtocolPath implements Serializable {
     }
 
     protected String checkForDelimiters(String path) {
-        if (path.endsWith("/") && path.length() > 1)
+        if (path.endsWith("/") && path.length() > 1) {
             path = path.substring(0, path.length() - 1);
+        }
         relativeToHOME = !path.startsWith("/");
         return path;
     }
@@ -116,9 +116,10 @@ public class ProtocolPath implements Serializable {
         return false;
     }
 
-    public String getParentDirPath() throws MalformedURLException {
-        if (path.length() <= 1)
+    public String getParentDirPath() {
+        if (path.length() <= 1) {
             return null;
+        }
         return path.substring(0, path.lastIndexOf("/"));
     }
 
@@ -126,8 +127,16 @@ public class ProtocolPath implements Serializable {
         return (path + " isDir=" + this.isDir);
     }
 
-    public ProtocolPath getParentPath() throws MalformedURLException {
+    public ProtocolPath getParentPath() {
         return new ProtocolPath(path.substring(0, path.lastIndexOf("/")), true);
     }
 
+    @Override
+    public int hashCode() {
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + (remotePath != null ? remotePath.hashCode() : 0);
+        result = 31 * result + (relativeToHOME ? 1 : 0);
+        result = 31 * result + (isDir ? 1 : 0);
+        return result;
+    }
 }

@@ -19,7 +19,7 @@
 package org.apache.oodt.xmlquery;
 
 import java.io.*;
-import java.util.zip.*;
+
 import org.apache.oodt.commons.util.*;
 import org.w3c.dom.*;
 

@@ -16,10 +16,18 @@
 
 package org.apache.oodt.commons.util;
 
+import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+
 import java.io.IOException;
-import java.util.*;
-import org.xml.sax.*;
-import org.w3c.dom.*;
+import java.util.Locale;
+
 import javax.xml.parsers.DocumentBuilder;
 
 /** An XML Document Object Model parser.
@@ -40,8 +48,9 @@ public class DOMParser {
 	 * @return The document.
 	 */
 	public Document getDocument() {
-		if (document == null)
-			throw new IllegalStateException("Must parse something first");
+		if (document == null) {
+		  throw new IllegalStateException("Must parse something first");
+		}
 		return document;
 	}
 
@@ -68,12 +77,12 @@ public class DOMParser {
 	}
 
 	/** Resets the parser. */
-	public void reset() throws Exception {
+	public void reset() {
 		document = null;
 	}
 
 	/** Resets or copies the parser. */
-	public void resetOrCopy() throws Exception {
+	public void resetOrCopy() {
 		reset();
 	}
 
@@ -91,7 +100,7 @@ public class DOMParser {
 	 *                                     known, but the requested state
 	 *                                     is not supported.
 	 */
-	public void setFeature(String featureId, boolean state) throws SAXNotRecognizedException, SAXNotSupportedException {
+	public void setFeature(String featureId, boolean state) throws SAXNotSupportedException {
 		throw new SAXNotSupportedException("This parser supports no features");
 	}
 
@@ -107,7 +116,7 @@ public class DOMParser {
 	 * @exception SAXNotRecognizedException If the requested feature is
 	 *                                      not known.
 	 */
-	public boolean getFeature(String featureId) throws SAXNotRecognizedException, SAXNotSupportedException {
+	public boolean getFeature(String featureId) throws SAXNotSupportedException {
 		throw new SAXNotSupportedException("This parser supports no features");
 	}
 
@@ -126,7 +135,7 @@ public class DOMParser {
 	 *                                     known, but the requested
 	 *                                     value is not supported.
 	 */
-	public void setProperty(String propertyId, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
+	public void setProperty(String propertyId, Object value) throws SAXNotSupportedException {
 		throw new SAXNotSupportedException("This parser supports no properties");
 	}
 
@@ -143,7 +152,7 @@ public class DOMParser {
 	 *                                      not known.
 	 *
 	 */
-	public Object getProperty(String propertyId) throws SAXNotRecognizedException, SAXNotSupportedException {
+	public Object getProperty(String propertyId) throws SAXNotSupportedException {
 		throw new SAXNotSupportedException("This parser supports no properties");
 	}
 
@@ -253,7 +262,7 @@ public class DOMParser {
 	 * @exception SAXException An exception thrown if the parser does not
 	 *                         support the specified locale.
 	 */
-	public void setLocale(Locale locale) throws SAXException {
+	public void setLocale(Locale locale) {
 		throw new IllegalStateException("This parser does not support localized error messages");
 	}
 

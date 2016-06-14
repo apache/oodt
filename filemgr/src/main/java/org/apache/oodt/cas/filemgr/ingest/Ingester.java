@@ -58,8 +58,8 @@ public interface Ingester {
      * @throws IngestException
      *             If there is an error ingesting the {@link Product}
      */
-    public String ingest(URL fmUrl, File prodFile, MetExtractor extractor,
-            File metConfFile) throws IngestException;
+    String ingest(URL fmUrl, File prodFile, MetExtractor extractor,
+                  File metConfFile) throws IngestException;
 
     /**
      * Ingests a {@link Product} to the file manager service object identified
@@ -78,7 +78,7 @@ public interface Ingester {
      * @throws IngestException
      *             If there is an error ingesting the {@link Product}
      */
-    public String ingest(URL fmUrl, File prodFile, Metadata met)
+    String ingest(URL fmUrl, File prodFile, Metadata met)
             throws IngestException;
 
     /**
@@ -96,8 +96,8 @@ public interface Ingester {
      * @throws IngestException
      *             If there is an error ingesting the {@link Product}s.
      */
-    public void ingest(URL fmUrl, List<String> prodFiles, MetExtractor extractor,
-            File metConfFile) throws IngestException;
+    void ingest(URL fmUrl, List<String> prodFiles, MetExtractor extractor,
+                File metConfFile);
 
     /**
      * Checks the file manager at the given {@link URL} to see whether or not it
@@ -111,7 +111,7 @@ public interface Ingester {
      * @url The {@link URL} pointer to the file manager service.
      * @return
      */
-    public boolean hasProduct(URL fmUrl, File prodFile) throws CatalogException;
+    boolean hasProduct(URL fmUrl, File prodFile) throws CatalogException;
 
     /**
      * Checks the file manager at the given {@link URL} to see whether or not it
@@ -127,6 +127,6 @@ public interface Ingester {
      *            not unique) name.
      * @return True if the file manager has the product, false otherwise.
      */
-    public boolean hasProduct(URL fmUrl, String productName) throws CatalogException;
+    boolean hasProduct(URL fmUrl, String productName) throws CatalogException;
 
 }

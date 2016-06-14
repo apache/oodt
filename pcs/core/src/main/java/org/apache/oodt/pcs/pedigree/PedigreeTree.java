@@ -39,8 +39,9 @@ public class PedigreeTree {
     public int getNumLevels() {
         if (root != null) {
             return traverse(root, 0) + 1;
-        } else
+        } else {
             return 0;
+        }
     }
 
     public PedigreeTreeNode getRoot() {
@@ -91,7 +92,7 @@ public class PedigreeTree {
     }
 
     private String getTabStr(int num) {
-        StringBuffer tabStrBuf = new StringBuffer();
+        StringBuilder tabStrBuf = new StringBuilder();
         for (int i = 0; i < num; i++) {
             tabStrBuf.append("\t");
         }

@@ -18,7 +18,6 @@
 package org.apache.oodt.xmlps.mapping;
 
 //JDK imports
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -58,9 +57,7 @@ public class DatabaseTableGroup {
 
     public List<String> getTableNames() {
         List<String> names = new Vector<String>();
-        for (Iterator<DatabaseTable> i = this.orderedGroup.iterator(); i
-                .hasNext();) {
-            DatabaseTable tbl = i.next();
+        for (DatabaseTable tbl : this.orderedGroup) {
             names.add(tbl.getName());
         }
 

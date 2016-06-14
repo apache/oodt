@@ -17,16 +17,7 @@
 package org.apache.oodt.cas.catalog.system.impl;
 
 //JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
 
-import junit.framework.TestCase;
-
-//OODT imports
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.mapping.InMemoryIngestMapperFactory;
@@ -46,6 +37,18 @@ import org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFact
 import org.apache.oodt.cas.catalog.system.CatalogFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import junit.framework.TestCase;
+
+//OODT imports
+
 /**
  * 
  * @author bfoster
@@ -56,7 +59,7 @@ public class TestCatalogServiceLocal extends TestCase {
 
 	private CatalogServiceLocal cs;
 	private File testDir;
-	
+  private static Logger LOG = Logger.getLogger(TestCatalogServiceLocal.class.getName());
 	public void setUp() {
 		try {
 			File tempFile = File.createTempFile("foo", "bar");
@@ -90,7 +93,7 @@ public class TestCatalogServiceLocal extends TestCase {
 					.setIndexFactory(getInMemoryDSFactory(testDir.getAbsolutePath() + "/index/2/"));
 			cs.addCatalog(catalogFactory.createCatalog());
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			TestCase.fail(e.getMessage());
 		}
 	}
@@ -99,7 +102,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		try {
 			FileUtils.forceDelete(this.testDir);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			TestCase.fail(e.getMessage());
 		}
 	}
@@ -168,7 +171,7 @@ public class TestCatalogServiceLocal extends TestCase {
 	}
 
 	private InMemoryIngestMapperFactory getOracleIngestMapperFactory(
-			String tmpDirPath) throws SQLException, IOException {
+			String tmpDirPath) {
 		String user = "sa";
 		String pass = "";
 		String driver = "org.hsqldb.jdbcDriver";
@@ -179,12 +182,11 @@ public class TestCatalogServiceLocal extends TestCase {
 		factory.setJdbcUrl(url);
 		factory.setPass(pass);
 		factory.setUser(user);
-		factory.setTablesFile("src/test/resources/test-mapper-cat.sql");
+		factory.setTablesFile(this.getClass().getResource("/test-mapper-cat.sql").getPath());
 		return factory;
 	}
 
-	private DataSourceIndexFactory getInMemoryDSFactory(String tmpDirPath)
-			throws IOException, SQLException {
+	private DataSourceIndexFactory getInMemoryDSFactory(String tmpDirPath) {
 		String user = "sa";
 		String pass = "";
 		String driver = "org.hsqldb.jdbcDriver";
@@ -195,7 +197,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		indexFactory.setJdbcUrl(url);
 		indexFactory.setPass(pass);
 		indexFactory.setUser(user);
-		indexFactory.setTablesFile("src/test/resources/test-index-cat.sql");
+		indexFactory.setTablesFile(this.getClass().getResource("/test-index-cat.sql").getPath());
 		return indexFactory;
 	}
 

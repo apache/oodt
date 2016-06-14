@@ -26,7 +26,6 @@ import org.apache.oodt.commons.exec.EnvUtilities;
 //JDK imports
 import java.io.File;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -170,8 +169,8 @@ public class TestXMLRepositoryManager extends TestCase {
         }
 
         assertNotNull(type);
-        assertNull(type.getTypeMetadata());
-
+        assertNotNull(type.getTypeMetadata());
+	assertEquals(0, type.getTypeMetadata().getKeys().size());
     }
 
     /**
@@ -192,7 +191,7 @@ public class TestXMLRepositoryManager extends TestCase {
 
         assertTrue(type.getTypeMetadata().containsKey("Creator"));
         assertTrue(type.getTypeMetadata().containsKey("Contributor"));
-        assertEquals(2, type.getTypeMetadata().getHashtable().keySet().size());
+        assertEquals(2, type.getTypeMetadata().getMap().keySet().size());
         assertNotNull(type.getTypeMetadata().getAllMetadata("Creator"));
         assertEquals(2, type.getTypeMetadata().getAllMetadata("Creator").size());
         assertNotNull(type.getTypeMetadata().getAllMetadata("Contributor"));
@@ -206,8 +205,8 @@ public class TestXMLRepositoryManager extends TestCase {
         List creatorValues = type.getTypeMetadata().getAllMetadata("Creator");
         boolean hasFirstCreator = false, hasSecondCreator = false;
 
-        for (Iterator i = creatorValues.iterator(); i.hasNext();) {
-            String val = (String) i.next();
+        for (Object creatorValue : creatorValues) {
+            String val = (String) creatorValue;
             if (val.equals("Chris Mattmann")) {
                 hasFirstCreator = true;
             } else if (val.equals("Paul Ramirez")) {

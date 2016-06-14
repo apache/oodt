@@ -40,11 +40,11 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
  */
 public class ReducedPagedQueryCliAction extends CatalogServiceCliAction {
 
-   protected int pageNum = -1;
-   protected int pageSize = -1;
-   protected String query;
-   protected Set<String> catalogIds;
-   protected List<String> termNames;
+   private int pageNum = -1;
+   private int pageSize = -1;
+   private String query;
+   private Set<String> catalogIds;
+   private List<String> termNames;
 
    @Override
    public void execute(ActionMessagePrinter printer)
@@ -57,7 +57,7 @@ public class ReducedPagedQueryCliAction extends CatalogServiceCliAction {
 
          QueryExpression queryExpression = QueryParser
                .parseQueryExpression(query);
-         Page page = null;
+         Page page;
          if (catalogIds == null) {
             page = getClient().getPage(new PageInfo(pageSize, pageNum),
                   queryExpression);
@@ -68,14 +68,12 @@ public class ReducedPagedQueryCliAction extends CatalogServiceCliAction {
          List<TransactionalMetadata> transactionMetadatas = getClient()
                .getMetadata(page);
          for (TransactionalMetadata tMet : transactionMetadatas) {
-            StringBuffer sb = new StringBuffer("");
+            StringBuilder sb = new StringBuilder("");
             for (String termName : this.termNames) {
                List<String> values = tMet.getMetadata().getAllMetadata(
                      (String) termName);
-               sb.append(termName
-                     + " = '"
-                     + (values == null ? "null" : StringUtils.join(
-                           values.iterator(), ",")) + "', ");
+               sb.append(termName).append(" = '").append(values == null ? "null" : StringUtils.join(
+                   values.iterator(), ",")).append("', ");
             }
             printer.println(sb.substring(0, sb.length() - 2));
          }
@@ -104,4 +102,33 @@ public class ReducedPagedQueryCliAction extends CatalogServiceCliAction {
    public void setReducedTerms(List<String> termNames) {
       this.termNames = termNames;
    }
+
+   public int getPageNum() {
+      return pageNum;
+   }
+
+   public int getPageSize() {
+      return pageSize;
+   }
+
+   public String getQuery() {
+      return query;
+   }
+
+   public Set<String> getCatalogIds() {
+      return catalogIds;
+   }
+
+   public void setCatalogIds(Set<String> catalogIds) {
+      this.catalogIds = catalogIds;
+   }
+
+   public List<String> getTermNames() {
+      return termNames;
+   }
+
+   public void setTermNames(List<String> termNames) {
+      this.termNames = termNames;
+   }
 }
+

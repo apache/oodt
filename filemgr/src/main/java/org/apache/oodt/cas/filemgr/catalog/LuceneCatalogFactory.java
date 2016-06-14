@@ -41,7 +41,11 @@ import org.apache.lucene.index.IndexWriter;
  */
 public class LuceneCatalogFactory implements CatalogFactory {
 
-	/* path to the index directory for lucene catalogs */
+  public static final int VAL = 20;
+  public static final int VAL1 = 60;
+  public static final int VAL2 = 60;
+  public static final int VAL3 = 20;
+  /* path to the index directory for lucene catalogs */
 	private String indexFilePath = null;
 
 	/* our validation layer */
@@ -76,7 +80,7 @@ public class LuceneCatalogFactory implements CatalogFactory {
 			throw new IllegalArgumentException(
 					"error initializing lucene catalog: "
 							+ "[org.apache.oodt.cas.filemgr.catalog.lucene.idxPath="
-							+ indexFilePath);
+							+ null);
 		}
 
 		//do env var replacement
@@ -92,19 +96,18 @@ public class LuceneCatalogFactory implements CatalogFactory {
 				.getValidationLayerFromFactory(validationLayerFactoryClass);
 		}
 		
-		pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", 20).intValue();
+		pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", VAL);
 		
 		commitLockTimeOut = Long
-				.getLong(
-						"org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
-						60).longValue();
+			.getLong(
+				"org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
+				VAL1);
 		writeLockTimeOut = Long
-				.getLong(
-						"org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
-						60).longValue();
+			.getLong(
+				"org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
+				VAL2);
 		mergeFactor = Integer.getInteger(
-				"org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor", 20)
-				.intValue();
+			"org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor", VAL3);
 	}
 
 	/*

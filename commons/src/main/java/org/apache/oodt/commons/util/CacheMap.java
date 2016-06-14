@@ -15,7 +15,11 @@
 
 package org.apache.oodt.commons.util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 // Definitions for intended functions:
 //
@@ -71,8 +75,9 @@ public class CacheMap implements Map {
 	public CacheMap(int capacity) {
 		// FXN: [ c, C, M := capacity, {}, {} ]
 
-		if (capacity < 0)
-			throw new IllegalArgumentException("Can't have a negative size " + capacity + " cache map");
+		if (capacity < 0) {
+		  throw new IllegalArgumentException("Can't have a negative size " + capacity + " cache map");
+		}
 		this.capacity = capacity;
 	}
 
@@ -150,8 +155,9 @@ public class CacheMap implements Map {
 		}
 
 		cache.addFirst(key);
-		if (cache.size() > capacity)
-			map.remove(cache.removeLast());
+		if (cache.size() > capacity) {
+		  map.remove(cache.removeLast());
+		}
 		return null;
 	}
 	
@@ -159,18 +165,19 @@ public class CacheMap implements Map {
 		// FXN: [ key in M -> C, M, return value := C - key, M - (key, v), v
 		//      | true -> return value := null ]
 
-		if (!map.containsKey(key))
-			return null;
+		if (!map.containsKey(key)) {
+		  return null;
+		}
 		cache.remove(key);
 		return map.remove(key);
 	}
 
 	public void putAll(Map t) {
 		// FXN: [ C, M := (keys(t) || C)[0..(c-1)], { (k_i, v_i) | k_i elem of (keys(t) || C)[0..(c-1)]} ]
-		for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			put(entry.getKey(), entry.getValue());
-		}
+	  for (Object o : t.entrySet()) {
+		Entry entry = (Entry) o;
+		put(entry.getKey(), entry.getValue());
+	  }
 	}
 
 	public void clear() {
@@ -189,8 +196,12 @@ public class CacheMap implements Map {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof CacheMap)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof CacheMap)) {
+		  return false;
+		}
 		CacheMap obj = (CacheMap) rhs;
 		return obj.cache.equals(cache);
 	}
@@ -209,7 +220,9 @@ public class CacheMap implements Map {
 		// FXN: [ C = advance(key, C) ]
 
 		boolean present = cache.remove(key);
-		if (!present) return;
+		if (!present) {
+		  return;
+		}
 		cache.addFirst(key);
 	}
 
@@ -220,7 +233,7 @@ public class CacheMap implements Map {
 	private LinkedList cache = new LinkedList();
 
 	/** The map (M). */
-	private Map map = new HashMap();
+	private Map map = new ConcurrentHashMap();
 
 	/** The capacity of this cache map (c). */
 	private int capacity;

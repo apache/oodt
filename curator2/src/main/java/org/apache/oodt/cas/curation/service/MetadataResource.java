@@ -371,7 +371,7 @@ public class MetadataResource extends CurationService {
   
 
   private JSONObject getMetadataAsJSON(Metadata metadata) {
-    return JSONObject.fromObject(metadata.getHashtable());
+    return JSONObject.fromObject(metadata.getHashTable());
   }
 
   private Metadata getMetadataFromJSON(String metadataJSON) {
@@ -410,7 +410,7 @@ public class MetadataResource extends CurationService {
     StringBuffer html = new StringBuffer();
 
     html.append("<table>\r\n");
-    for (String key : (Set<String>) metadata.getHashtable().keySet()) {
+    for (String key : (Set<String>) metadata.getHashTable().keySet()) {
       html.append(" <tr>\r\n");
       html.append("  <th>").append(key).append("</th>\r\n");
       html.append("  <td class=\"").append(key).append("\">");
@@ -590,7 +590,7 @@ public class MetadataResource extends CurationService {
    * 
    * @param product
    *          The {@link Product} to update {@link Metadata} for.
-   * @param metadata
+   * @param newMetadata
    *          The new {@link Metadata} to persist into the {@link Catalog}.
    * @throws CatalogException
    *           If any error occurs during the update.
@@ -777,8 +777,6 @@ public class MetadataResource extends CurationService {
       vLayer.addParentForProductType(type, parentId);
       return true;
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
-    } catch (ValidationLayerException e) {
       e.printStackTrace();
     }
     return false;

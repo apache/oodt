@@ -16,7 +16,6 @@
  */
 package org.apache.oodt.cas.protocol.http;
 
-//OODT imports
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.auth.Authentication;
@@ -33,7 +32,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,8 @@ import java.util.Map;
  */
 public class HttpProtocol implements Protocol {
 
-  private static Map<String, List<HttpFile>> linkChildren = new HashMap<String, List<HttpFile>>();
+  public static final int INT = 1024;
+  private static Map<String, List<HttpFile>> linkChildren = new ConcurrentHashMap<String, List<HttpFile>>();
 
   private HttpFile parentFile;
   private HttpFile currentFile;
@@ -61,18 +61,19 @@ public class HttpProtocol implements Protocol {
 
   public void cd(ProtocolFile file) throws ProtocolException {
     try {
-    	HttpFile httpFile = null;
-    	if (!(file instanceof HttpFile)) {
-    		URL link = HttpUtils.resolveUri(currentFile.getLink().toURI(), file.getPath()).toURL();
-  			httpFile = new HttpFile(link.getPath(), file.isDir(), link);
-      } else {
+    	HttpFile httpFile;
+      if (file instanceof HttpFile) {
         httpFile = (HttpFile) file;
+      } else {
+        URL link = HttpUtils.resolveUri(currentFile.getLink().toURI(), file.getPath()).toURL();
+        httpFile = new HttpFile(link.getPath(), file.isDir(), link);
       }
     	
       if (!HttpUtils
-          .isDirectory(httpFile.getLink(), file.getPath()))
+          .isDirectory(httpFile.getLink(), file.getPath())) {
         throw new ProtocolException(file
-            + " is not a directory (mime type must be text/html)");
+                                    + " is not a directory (mime type must be text/html)");
+      }
       this.currentFile = httpFile;
     } catch (Exception e) {
       throw new ProtocolException("Failed to cd to " + file + " : "
@@ -118,7 +119,7 @@ public class HttpProtocol implements Protocol {
     	  in = HttpUtils.resolveUri(currentFile.getLink().toURI(), fromFile.getPath()).toURL().openStream();
       }
 
-      byte[] buffer = new byte[1024];
+      byte[] buffer = new byte[INT];
       int numRead;
       long numWritten = 0;
       while ((numRead = in.read(buffer)) != -1) {
@@ -131,18 +132,20 @@ public class HttpProtocol implements Protocol {
       throw new ProtocolException("Failed to get file '" + fromFile + "' : "
           + e.getMessage(), e);
     } finally {
-      if (in != null)
+      if (in != null) {
         try {
           in.close();
         } catch (Exception e) {
           // log failure
         }
-      if (out != null)
+      }
+      if (out != null) {
         try {
           out.close();
         } catch (Exception e) {
           // log failure
         }
+      }
     }
   }
   
@@ -212,123 +215,21 @@ public class HttpProtocol implements Protocol {
     return children;
   }
 
-//  public static String findLinkInATag(String aTag) {
-//    // find 'href' attribute
-//    String find = aTag.substring(aTag.indexOf("href") + 4);
-//    // USE STRICT FINDING FIRST
-//    // (['\"])\s*?[(http)(./)(..)/#].+?\\1
-//    // finds link between ' or ", which starts with one of
-//    // the following: http, ./, .., /, #
-//    // these starting possibilities can then be followed any
-//    // number of characters until the corresponding
-//    // ' or " is reached.
-//    String patternRegExp = "(['\"])\\s*?[\\(http\\)\\(\\./\\)\\(\\.\\.\\)/#].+?\\1";
-//    Pattern linkPattern = Pattern.compile(patternRegExp);
-//    Matcher linkMatch = linkPattern.matcher(find);
-//    if (linkMatch.find())
-//      find = find.substring(linkMatch.start() + 1, linkMatch.end() - 1);
-//    else {
-//      // RELAX FINDING SOME
-//      patternRegExp = "(['\"])\\s*?[^./].+?\\1";
-//      linkPattern = Pattern.compile(patternRegExp);
-//      linkMatch = linkPattern.matcher(find);
-//      if (linkMatch.find())
-//        find = find.substring(linkMatch.start() + 1, linkMatch.end() - 1);
-//      else {
-//        // EXTREMELY RELAX FINDING
-//        patternRegExp = "[^\"='/>\\s]+?[^\\s>\"']*?";
-//        linkPattern = Pattern.compile(patternRegExp);
-//        linkMatch = linkPattern.matcher(find);
-//        if (linkMatch.find())
-//          find = find.substring(linkMatch.start(), linkMatch.end());
-//        else {
-//          return null;
-//        }
-//      }
-//    }
-//    return find;
-//  }
-//
-//  public static String createLinkFromHref(HttpFile parent, String href) {
-//    if (!href.startsWith("http")) {
-//      String link = parent.getLink().toExternalForm();
-//      if (href.startsWith("..")) {
-//        int index = link.substring(0, link.lastIndexOf("/")).lastIndexOf("/");
-//        href = (index < 7) ? link + href.substring(2) : link.substring(0, link
-//            .substring(0, link.lastIndexOf("/")).lastIndexOf("/"))
-//            + href.substring(2);
-//      } else if (href.startsWith("./")) {
-//        int index = link.lastIndexOf("/");
-//        href = (index < 7) ? link + href.substring(1) : link
-//            .substring(0, index)
-//            + href.substring(1);
-//      } else if (href.startsWith("/")) {
-//        URL url = parent.getLink();
-//        href = url.getProtocol() + "://" + url.getHost() + href;
-//      } else {
-//        // find the last / in current link
-//        int index = link.lastIndexOf("/");
-//        // (index < 7) checks if in the current link, "/" only exists
-//        // in the protocol section of link (i.e. http://jpl.nasa.gov)
-//        href = (index < 7) ? link + "/" + href : link.substring(0, index) + "/"
-//            + href;
-//      }
-//    }
-//
-//    // remove "/" at end of link
-//    if (href.endsWith("/"))
-//      href = href.substring(0, href.length() - 1);
-//    href = href.trim();
-//
-//    return href;
-//  }
-//
-//  public ProtocolFile getProtocolFileFor(String path, boolean isDir)
-//      throws ProtocolException {
-//    try {
-//      StringTokenizer st = new StringTokenizer(path, "/ ");
-//      HttpFile curPath = this.parentFile;
-//      // System.out.println(parentPath);
-//      if (st.hasMoreTokens()) {
-//        do {
-//          String token = st.nextToken();
-//          List<HttpFile> children = this.parseLink(curPath);
-//          for (HttpFile pFile : children) {
-//            if (pFile.getName().equals(token)) {
-//              // System.out.println("token " + token + " " +
-//              // pFile);
-//              curPath = pFile;
-//              continue;
-//            }
-//          }
-//        } while (st.hasMoreTokens());
-//        if (curPath.equals(this.parentFile))
-//          return new HttpFile(path, isDir, new URL("http://"
-//                  + this.getSite().getHost() + path), curPath);
-//      }
-//      return curPath;
-//    } catch (Exception e) {
-//      throw new ProtocolException("Failed to get ProtocolPath for " + path);
-//    }
-//  }
-
   public void delete(ProtocolFile file) {}
 
-//  private URL getSite() {
-//	return currentURL;  
-//  }
-  
   public static void main(String[] args) throws Exception {
     String urlString = null, downloadToDir = null;
     for (int i = 0; i < args.length; i++) {
-      if (args[i].equals("--url"))
+      if (args[i].equals("--url")) {
         urlString = args[++i];
-      else if (args[i].equals("--downloadToDir"))
+      } else if (args[i].equals("--downloadToDir")) {
         downloadToDir = args[++i];
+      }
     }
 
-    if (urlString == null)
+    if (urlString == null) {
       throw new Exception("Must specify a url to download: --url <url>");
+    }
 
     URL url = new URL(urlString);
     ProtocolFile urlFile = new HttpFile(url.getPath(), false, url);

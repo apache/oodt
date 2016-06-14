@@ -109,7 +109,7 @@ public class CoreMetExtractor extends AbstractFilemgrMetExtractor implements
     public void doConfigure() {
         if (this.configuration != null) {
             namespaceAware = Boolean.valueOf(
-                    this.configuration.getProperty("nsAware")).booleanValue();
+                this.configuration.getProperty("nsAware"));
 
             if (namespaceAware) {
                 elementNs = this.configuration.getProperty("elementNs");
@@ -121,13 +121,9 @@ public class CoreMetExtractor extends AbstractFilemgrMetExtractor implements
     }
 
     private boolean isNsReplace(String elemName) {
-        if (this.nsReplaceElements == null
-                || (this.nsReplaceElements != null && this.nsReplaceElements
-                        .size() == 0)) {
-            return false;
-        }
+      return !(this.nsReplaceElements == null || (this.nsReplaceElements.size() == 0)) && namespaceAware
+             && this.nsReplaceElements.contains(elemName);
 
-        return namespaceAware && this.nsReplaceElements.contains(elemName);
     }
 
 }

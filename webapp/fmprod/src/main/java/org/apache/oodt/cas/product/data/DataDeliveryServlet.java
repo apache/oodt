@@ -55,19 +55,19 @@ import javax.servlet.ServletException;
 public class DataDeliveryServlet extends HttpServlet implements
     DataDeliveryKeys {
 
+  public static final int INT = 512;
+
   /** {@inheritDoc} */
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      String fileMgrURL = null;
+      String fileMgrURL;
       try {
         fileMgrURL = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
             "filemgr.url") );
       } catch (Exception e) {
         throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
       }
-      if (fileMgrURL == null)
-        fileMgrURL = "http://localhost:9000";
       client = new XmlRpcFileManagerClient(new URL(fileMgrURL));
     } catch (MalformedURLException ex) {
       throw new ServletException(ex);
@@ -116,11 +116,13 @@ public class DataDeliveryServlet extends HttpServlet implements
       throws ServletException, IOException {
     try {
       String productID = req.getParameter("productID");
-      if (productID == null)
+      if (productID == null) {
         throw new IllegalArgumentException("productID is required");
+      }
       String refIndex = req.getParameter("refIndex");
-      if (refIndex == null)
+      if (refIndex == null) {
         refIndex = "0";
+      }
       int index = Integer.parseInt(refIndex);
       String format = req.getParameter("format");
 
@@ -157,8 +159,8 @@ public class DataDeliveryServlet extends HttpServlet implements
     // we'll be delivering a zip
     res.addHeader(CONTENT_TYPE_HDR, FORMAT_ZIP);
 
-    String productZipFilePath = null;
-    File productZipFile = null;
+    String productZipFilePath;
+    File productZipFile;
     InputStream in = null;
     OutputStream o2 = null;
 
@@ -187,12 +189,13 @@ public class DataDeliveryServlet extends HttpServlet implements
 
       // 3. Deliver the data.
       o2 = res.getOutputStream();
-      byte[] buf = new byte[512];
+      byte[] buf = new byte[INT];
       int n;
-      while ((n = in.read(buf)) != -1)
+      while ((n = in.read(buf)) != -1) {
         o2.write(buf, 0, n);
+      }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception delivering data!: Message: "
           + e.getMessage());
     } finally {
@@ -202,7 +205,6 @@ public class DataDeliveryServlet extends HttpServlet implements
         } catch (Exception ignore) {
         }
 
-        in = null;
       }
 
       if (o2 != null) {
@@ -211,10 +213,8 @@ public class DataDeliveryServlet extends HttpServlet implements
         } catch (Exception ignore) {
         }
 
-        o2 = null;
       }
 
-      productZipFile = null;
     }
 
   }
@@ -243,10 +243,11 @@ public class DataDeliveryServlet extends HttpServlet implements
     URLConnection c = url.openConnection();
     InputStream in = c.getInputStream();
     OutputStream out = res.getOutputStream();
-    byte[] buf = new byte[512];
+    byte[] buf = new byte[INT];
     int n;
-    while ((n = in.read(buf)) != -1)
+    while ((n = in.read(buf)) != -1) {
       out.write(buf, 0, n);
+    }
     in.close();
     out.close();
   }

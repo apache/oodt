@@ -56,7 +56,7 @@ public class QueryLogicalGroup extends QueryExpression {
 
     /**
      * 
-     * @param queryCriteria
+     * @param queryExpression
      */
     public void addExpression(QueryExpression queryExpression) {
     	this.queryExpressions.add(queryExpression);
@@ -64,7 +64,7 @@ public class QueryLogicalGroup extends QueryExpression {
     
     /**
      * 
-     * @param queryCriterias
+     * @param queryExpressions
      */
     public void addExpressions(List<QueryExpression> queryExpressions) {
     	this.queryExpressions.addAll(queryExpressions);
@@ -96,9 +96,11 @@ public class QueryLogicalGroup extends QueryExpression {
 
     @Override
     public String toString() {
-        String query = "({" + this.bucketNames + "} " + this.operator + " : ";
-        for (QueryExpression queryExpression : this.queryExpressions)
-            query += queryExpression.toString() + ",";
+        StringBuilder query = new StringBuilder();
+        query.append("({").append(this.bucketNames).append("} ").append(this.operator).append(" : ");
+        for (QueryExpression queryExpression : this.queryExpressions) {
+            query.append(queryExpression.toString()).append(",");
+        }
         return query.substring(0, query.length() - 1) + ")";
     }
     
@@ -106,8 +108,9 @@ public class QueryLogicalGroup extends QueryExpression {
     	QueryLogicalGroup qlGroup = new QueryLogicalGroup();
     	qlGroup.setBucketNames(this.getBucketNames());
     	qlGroup.setOperator(this.operator);
-    	for (QueryExpression qe : this.queryExpressions)
-    		qlGroup.addExpression(qe.clone());
+    	for (QueryExpression qe : this.queryExpressions) {
+            qlGroup.addExpression(qe.clone());
+        }
     	return qlGroup;
     }
     

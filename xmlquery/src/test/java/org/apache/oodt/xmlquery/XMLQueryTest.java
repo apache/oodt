@@ -18,10 +18,8 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
 import java.util.*;
 import org.apache.oodt.commons.util.*;
-import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 

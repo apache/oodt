@@ -41,10 +41,11 @@ public class SequentialProcessor extends WorkflowProcessor {
   @Override
   public List<WorkflowProcessor> getRunnableSubProcessors() {
     WorkflowProcessor nextWP = this.getNext();
-    if (nextWP != null)
+    if (nextWP != null) {
       return Collections.singletonList(nextWP);
-    else
+    } else {
       return new Vector<WorkflowProcessor>();
+    }
   }
 
   @Override
@@ -53,10 +54,12 @@ public class SequentialProcessor extends WorkflowProcessor {
   }
 
   private WorkflowProcessor getNext() {
-    for (WorkflowProcessor wp : this.getSubProcessors())
+    for (WorkflowProcessor wp : this.getSubProcessors()) {
       if (!wp.getWorkflowInstance().getState().getCategory().getName()
-          .equals("done") && !wp.getWorkflowInstance().getState().getName().equals("Executing"))
+             .equals("done") && !wp.getWorkflowInstance().getState().getName().equals("Executing")) {
         return wp;
+      }
+    }
     return null;
   }
 

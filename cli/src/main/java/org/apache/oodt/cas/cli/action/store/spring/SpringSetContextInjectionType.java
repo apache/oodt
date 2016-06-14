@@ -28,7 +28,7 @@ import org.springframework.context.ApplicationContext;
  */
 public interface SpringSetContextInjectionType {
 
-   public void setContext(ApplicationContext appContext);
+   void setContext(ApplicationContext appContext);
 
-   public ApplicationContext getContext();
+   ApplicationContext getContext();
 }

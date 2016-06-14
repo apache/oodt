@@ -18,7 +18,6 @@
 package org.apache.oodt.xmlquery;
 
 import java.util.Vector;
-import org.apache.oodt.commons.util.*;
 
 /************************************************************************
 **

@@ -19,22 +19,9 @@
 package org.apache.oodt.commons.xml;
 
 //JDK imports
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.OutputKeys;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
@@ -43,6 +30,12 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 /**
  * @author mattmann
@@ -56,7 +49,6 @@ import java.util.logging.Logger;
  */
 
 public class XMLUtils {
-
     /* our log stream */
     private final static Logger LOG = Logger
             .getLogger(XMLUtils.class.getName());
@@ -93,7 +85,7 @@ public class XMLUtils {
             xformer.setOutputProperty(OutputKeys.INDENT, "yes");
             xformer.transform(source, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -108,14 +100,14 @@ public class XMLUtils {
 
         for (int i = 0; i < valueNodes.getLength(); i++) {
             Element valElem = (Element) valueNodes.item(i);
-            String value = null;
+            String value;
 
             try {
                 value = URLDecoder.decode(
                         DOMUtil.getSimpleElementText(valElem), encoding);
                 values.add(value);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Error decoding tag: [" + elt
                         + "]: val: [" + DOMUtil.getSimpleElementText(valElem)
                         + "] from metadata. Message: " + e.getMessage());
@@ -144,15 +136,16 @@ public class XMLUtils {
 
     public static Element getFirstElement(String name, Element root) {
         NodeList list = root.getElementsByTagName(name);
-        if (list != null) {
+        if (list.getLength()>0) {
             return (Element) list.item(0);
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getSimpleElementText(Element node, boolean trim) {
         if (node.getChildNodes().item(0) instanceof Text) {
-            String elemTxt = null;
+            String elemTxt;
             if (trim) {
                 elemTxt = node.getChildNodes().item(0).getNodeValue().trim();
             } else {
@@ -160,8 +153,9 @@ public class XMLUtils {
             }
 
             return elemTxt;
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getSimpleElementText(Element node) {
@@ -173,8 +167,9 @@ public class XMLUtils {
         Element elem = getFirstElement(elemName, root);
         if (elem != null) {
             return getSimpleElementText(elem, trim);
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getElementText(String elemName, Element root) {
@@ -183,10 +178,10 @@ public class XMLUtils {
 
     public static Document getDocumentRoot(InputStream is) {
         // open up the XML file
-        DocumentBuilderFactory factory = null;
-        DocumentBuilder parser = null;
-        Document document = null;
-        InputSource inputSource = null;
+        DocumentBuilderFactory factory;
+        DocumentBuilder parser;
+        Document document;
+        InputSource inputSource;
 
         inputSource = new InputSource(is);
 

@@ -24,8 +24,8 @@ package org.apache.oodt.cas.catalog.struct;
  */
 public interface TransactionIdFactory {
 
-	public TransactionId<?> createNewTransactionId();
+	TransactionId<?> createNewTransactionId();
 	
-	public TransactionId<?> createTransactionId(String transactionIdString);
+	TransactionId<?> createTransactionId(String transactionIdString);
 	
 }

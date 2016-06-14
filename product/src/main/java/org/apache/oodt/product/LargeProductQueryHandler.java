@@ -18,8 +18,6 @@
 
 package org.apache.oodt.product;
 
-import org.apache.oodt.xmlquery.XMLQuery;
-
 /**
  * Handle requests for products that are too large to fit in an {@link
  * org.apache.oodt.xmlquery.XMLQuery} object.
@@ -55,5 +53,5 @@ public interface LargeProductQueryHandler extends QueryHandler {
 	 * @param id Product ID.
 	 * @throws ProductException if an error occurs.
 	 */
-	void close(String id) throws ProductException;
+	void close(String id);
 }

@@ -18,13 +18,20 @@
 
 package org.apache.oodt.cas.pge.writers;
 
-//OODT imports
-import org.apache.oodt.cas.pge.metadata.PgeMetadata;
+
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractorConfigReaderException;
+import org.apache.oodt.cas.pge.exceptions.PGEException;
+import org.apache.oodt.cas.pge.metadata.PgeMetadata;
+import org.apache.oodt.commons.exceptions.CommonsException;
 
-//OODT imports
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.ParseException;
+
 
 /**
  * 
@@ -40,28 +47,27 @@ public abstract class PcsMetFileWriter {
 	public static final String FILE_SIZE = "FileSize";
 	
     public Metadata getMetadataForFile(File sciPgeCreatedDataFile,
-            PgeMetadata pgeMetadata, Object... customArgs) throws Exception {
-        try {
-            Metadata inputMetadata = pgeMetadata.asMetadata();
+            PgeMetadata pgeMetadata, Object... customArgs)
+        throws PGEException, MetExtractorConfigReaderException, MetExtractionException, CommonsException,
+        FileNotFoundException, CasMetadataException, ParseException {
+      Metadata inputMetadata = pgeMetadata.asMetadata();
 
-            inputMetadata.replaceMetadata(CoreMetKeys.FILENAME,
-                    sciPgeCreatedDataFile.getName());
-            inputMetadata.replaceMetadata(CoreMetKeys.FILE_LOCATION,
-                    sciPgeCreatedDataFile.getParentFile().getAbsolutePath());
-            inputMetadata.replaceMetadata(FILE_SIZE, Long.toString(new File(
-					inputMetadata.getMetadata(CoreMetKeys.FILE_LOCATION),
-					inputMetadata.getMetadata(CoreMetKeys.FILENAME)).length()));
-            
-            return this.getSciPgeSpecificMetadata(
-                    sciPgeCreatedDataFile, inputMetadata, customArgs);
-        } catch (Exception e) {
-            throw new Exception("Failed to create PCS metadata file for '"
-                    + sciPgeCreatedDataFile + "' : " + e.getMessage(), e);
-        }
+      inputMetadata.replaceMetadata(CoreMetKeys.FILENAME,
+              sciPgeCreatedDataFile.getName());
+      inputMetadata.replaceMetadata(CoreMetKeys.FILE_LOCATION,
+              sciPgeCreatedDataFile.getParentFile().getAbsolutePath());
+      inputMetadata.replaceMetadata(FILE_SIZE, Long.toString(new File(
+              inputMetadata.getMetadata(CoreMetKeys.FILE_LOCATION),
+              inputMetadata.getMetadata(CoreMetKeys.FILENAME)).length()));
+
+      return this.getSciPgeSpecificMetadata(
+              sciPgeCreatedDataFile, inputMetadata, customArgs);
     }
 
     protected abstract Metadata getSciPgeSpecificMetadata(
             File sciPgeCreatedDataFile, Metadata inputMetadata,
-            Object... customArgs) throws Exception;
+            Object... customArgs)
+        throws MetExtractorConfigReaderException, MetExtractionException, FileNotFoundException,
+        ParseException, CommonsException, CasMetadataException;
 
 }

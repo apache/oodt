@@ -99,8 +99,7 @@ public final class DbStructFactory {
     }
 
     public static String getParent(ResultSet rs) throws SQLException {
-        String parent = rs.getString("parent_id");
-        return parent;
+      return rs.getString("parent_id");
     }
     
     public static Element toScienceDataElement(ResultSet rs) throws SQLException {

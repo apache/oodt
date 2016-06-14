@@ -18,6 +18,10 @@
 package org.apache.oodt.opendapps;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.xmlquery.XMLQuery;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +33,13 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.opendapps.config.OpendapConfig;
-import org.apache.oodt.xmlquery.XMLQuery;
-
-//NetCDF-Java imports
-import thredds.catalog.crawl.CatalogCrawler;
-import ucar.nc2.util.CancelTask;
 import opendap.dap.DConnect;
 import opendap.dap.DataDDS;
+import thredds.catalog.crawl.CatalogCrawler;
+import ucar.nc2.util.CancelTask;
+
+//OODT imports
+//NetCDF-Java imports
 
 /**
  * 
@@ -80,12 +81,13 @@ public class DatasetExtractor {
   public List<String> getDapUrls() {
     List<String> urls = null;
 
-    if (this.q.contains(FINDALL))
+    if (this.q.contains(FINDALL)) {
       urls = this.allUrls;
-    else if (this.q.contains(FINDSOME))
+    } else if (this.q.contains(FINDSOME)) {
       urls = this.getFindSome();
-    else if (this.q.contains(FINDQUERY))
+    } else if (this.q.contains(FINDQUERY)) {
       urls = this.getFindQuery();
+    }
 
     return urls;
   }
@@ -132,18 +134,21 @@ public class DatasetExtractor {
       try {
         dConn = new DConnect(datasetUrl, true);
       } catch (FileNotFoundException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, datasetUrl
             + " is neither a valid URL nor a filename.");
       }
       try {
-        DataDDS dds = dConn.getData(queryExpression, null);
+        DataDDS dds = null;
+        if (dConn != null) {
+          dds = dConn.getData(queryExpression, null);
+        }
 
         if (dds != null) {
           datasetUrls.add(datasetUrl);
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.SEVERE, " Some DAP2Exception or not a validate DDS", e);
       }
     }

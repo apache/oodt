@@ -17,7 +17,15 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-//OODT imports
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RangeQuery;
+import org.apache.lucene.search.TermQuery;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -28,24 +36,14 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 
-//JDK imports
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-//Lucene imports
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.TermQuery;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -58,8 +56,7 @@ import org.apache.lucene.search.TermQuery;
  * 
  */
 public class CatalogSearch {
-
-    private static QueryParser parser;
+    private static Logger LOG = Logger.getLogger(CatalogSearch.class.getName());
 
     private static XmlRpcFileManagerClient client;
 
@@ -78,11 +75,11 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
-        for (int i = 0; i < products.size(); i++) {
-            PostQuery(((ProductType) products.get(i)).getProductTypeId(),
-                    casQuery);
+        for (Object product : products) {
+            PostQuery(((ProductType) product).getProductTypeId(),
+                casQuery);
         }
     }
 
@@ -102,7 +99,7 @@ public class CatalogSearch {
             results = (Vector) client.query(casQuery, productType);
         } catch (CatalogException ignore) {
             System.out.println("Error querying the File Manager");
-            ignore.printStackTrace();
+            LOG.log(Level.SEVERE, ignore.getMessage());
             System.exit(-1);
         }
 
@@ -110,10 +107,10 @@ public class CatalogSearch {
             System.out.println("No Products Found Matching This Criteria.");
         } else {
             System.out.println("Products Matching Query");
-            for (int i = 0; i < results.size(); i++) {
-                System.out.print(((Product) results.get(i)).getProductName()
-                        + "\t");
-                System.out.println(((Product) results.get(i)).getProductId());
+            for (Object result : results) {
+                System.out.print(((Product) result).getProductName()
+                                 + "\t");
+                System.out.println(((Product) result).getProductId());
             }
         }
     }
@@ -126,8 +123,9 @@ public class CatalogSearch {
             System.out.println("No product found with ID: " + filter);
             productFilter = "";
         }
-        if (!productFilter.equals(""))
+        if (!productFilter.equals("")) {
             System.out.println("Filtering for " + productFilter + " products.");
+        }
     }
 
     public static void removeFilter() {
@@ -141,26 +139,26 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
-        for (int i = 0; i < products.size(); i++) {
-            System.out.print(((ProductType) products.get(i)).getProductTypeId()
-                    + "\t");
-            System.out.println(((ProductType) products.get(i)).getName());
+        for (Object product : products) {
+            System.out.print(((ProductType) product).getProductTypeId()
+                             + "\t");
+            System.out.println(((ProductType) product).getName());
         }
     }
 
     public static void listElements() {
-        Vector products = new Vector();
+        Vector products;
         try {
             products = (Vector) client.getProductTypes();
-            for (int i = 0; i < products.size(); i++) {
-                listElements(((ProductType) products.get(i)).getProductTypeId());
+            for (Object product : products) {
+                listElements(((ProductType) product).getProductTypeId());
             }
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -177,11 +175,11 @@ public class CatalogSearch {
                     + prodID);
         } catch (ValidationLayerException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
-        for (int i = 0; i < elements.size(); i++) {
-            Element e = (Element) elements.get(i);
+        for (Object element : elements) {
+            Element e = (Element) element;
             System.out.print(e.getElementId() + "\t");
             System.out.println(e.getElementName());
         }
@@ -228,7 +226,7 @@ public class CatalogSearch {
 
     public static Query ParseQuery(String query) {
         // note that "__FREE__" is a control work for free text searching
-        parser = new QueryParser(freeTextBlock, new CASAnalyzer());
+        QueryParser parser = new QueryParser(freeTextBlock, new CASAnalyzer());
         Query luceneQ = null;
         try {
             luceneQ = (Query) parser.parse(query);
@@ -244,25 +242,17 @@ public class CatalogSearch {
             Query luceneQuery) {
         if (luceneQuery instanceof TermQuery) {
             Term t = ((TermQuery) luceneQuery).getTerm();
-            if (t.field().equals(freeTextBlock)) {
-                // if(casQuery.getCriteria().isEmpty())
-                // casQuery.addCriterion(new FreeTextQueryCriteria());
-                // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t.text());
-            } else {
+            if (!t.field().equals(freeTextBlock)) {
                 casQuery
                         .addCriterion(new TermQueryCriteria(t.field(), t.text()));
             }
         } else if (luceneQuery instanceof PhraseQuery) {
             Term[] t = ((PhraseQuery) luceneQuery).getTerms();
-            if (t[0].field().equals(freeTextBlock)) {
-                // if(casQuery.getCriteria().isEmpty())
-                // casQuery.addCriterion(new FreeTextQueryCriteria());
-                // for(int i=0;i<t.length;i++)
-                // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t[i].text());
-            } else {
-                for (int i = 0; i < t.length; i++)
-                    casQuery.addCriterion(new TermQueryCriteria(t[i].field(),
-                            t[i].text()));
+            if (!t[0].field().equals(freeTextBlock)) {
+                for (Term aT : t) {
+                    casQuery.addCriterion(new TermQueryCriteria(aT.field(),
+                        aT.text()));
+                }
             }
         } else if (luceneQuery instanceof RangeQuery) {
             Term startT = ((RangeQuery) luceneQuery).getLowerTerm();
@@ -271,8 +261,8 @@ public class CatalogSearch {
                     .text(), endT.text()));
         } else if (luceneQuery instanceof BooleanQuery) {
             BooleanClause[] clauses = ((BooleanQuery) luceneQuery).getClauses();
-            for (int i = 0; i < clauses.length; i++) {
-                GenerateCASQuery(casQuery, (clauses[i]).getQuery());
+            for (BooleanClause clause : clauses) {
+                GenerateCASQuery(casQuery, (clause).getQuery());
             }
         } else {
             System.out.println("Error Parsing Query");
@@ -301,27 +291,23 @@ public class CatalogSearch {
                                 listElements();
                             } else {
                                 System.out.println("Error parsing command");
-                                return;
                             }
                         }
                     }
                 } else {
                     System.out.println("Error parsing command");
-                    return;
                 }
             } else if (com.equalsIgnoreCase("add")) {
                 if (tokCount == 3 && tok.nextToken().equalsIgnoreCase("filter")) {
                     setFilter(tok.nextToken());
                 } else {
                     System.out.println("Error parsing command");
-                    return;
                 }
             } else if (com.equalsIgnoreCase("remove")) {
                 if (tokCount == 2 && tok.nextToken().equalsIgnoreCase("filter")) {
                     removeFilter();
                 } else {
                     System.out.println("Error parsing command");
-                    return;
                 }
             } else if (com.equalsIgnoreCase("help")) {
                 printHelp();
@@ -330,12 +316,12 @@ public class CatalogSearch {
                 System.out.println("Exiting...");
                 System.exit(0);
             } else if (com.equalsIgnoreCase("query")) {
-                String query = new String();
+                StringBuilder query = new StringBuilder();
                 while (tok.hasMoreTokens()) {
-                    query += tok.nextToken() + " ";
+                    query.append(tok.nextToken()).append(" ");
                 }
                 System.out.println("querying for: " + query);
-                Query parsedQuery = ParseQuery(query);
+                Query parsedQuery = ParseQuery(query.toString());
                 org.apache.oodt.cas.filemgr.structs.Query casQuery = new org.apache.oodt.cas.filemgr.structs.Query();
 
                 GenerateCASQuery(casQuery, parsedQuery);
@@ -351,7 +337,6 @@ public class CatalogSearch {
         welcomeMessage += "Copyright 2006. California Institute of Technology.\n";
         String usage = "CatalogSearch --url <url to File Manager service>\n";
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        CatalogSearch cs = new CatalogSearch();
 
         // determine url
         for (int i = 0; i < args.length; i++) {
@@ -380,7 +365,7 @@ public class CatalogSearch {
 
             System.out.println(welcomeMessage);
 
-            String command = "";
+            String command;
 
             for (;;) {
                 System.out.print("CatalogSearch>");

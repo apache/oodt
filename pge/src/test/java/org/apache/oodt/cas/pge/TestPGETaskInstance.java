@@ -17,58 +17,8 @@
 package org.apache.oodt.cas.pge;
 
 //OODT static imports
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ACTION_IDS;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ATTEMPT_INGEST_ALL;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CONFIG_FILE_PATH;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_CONFIG_FILE;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_CRAWL_FOR_DIRS;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_RECUR;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.DUMP_METADATA;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_CLIENT_TRANSFER_SERVICE_FACTORY;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_FILE_MANAGER_URL;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MIME_EXTRACTOR_REPO;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.NAME;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_CONFIG_BUILDER;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PROPERTY_ADDERS;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.REQUIRED_METADATA;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.WORKFLOW_MANAGER_URL;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 
-//JDK imports
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.StringReader;
-import java.util.Collections;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
-import java.net.URL;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-
-//JUnit imports
-import junit.framework.TestCase;
-
-//Apache imports
 import org.apache.commons.io.FileUtils;
-
-//OODT imports
 import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
 import org.apache.oodt.cas.crawl.ProductCrawler;
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
@@ -87,10 +37,44 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
-//Google imports
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import org.junit.After;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.StringReader;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.*;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
+//JDK imports
+//JUnit imports
+//Apache imports
+//OODT imports
+//Google imports
 
 
 /**
@@ -98,11 +82,11 @@ import com.google.common.collect.Sets;
  *
  * @author bfoster (Brian Foster)
  */
-public class TestPGETaskInstance extends TestCase {
+public class TestPGETaskInstance {
 
    private final List<File> tmpDirs = Lists.newArrayList();
 
-   @Override
+   @After
    public void tearDown() throws Exception {
       for (File tmpDir : tmpDirs) {
          FileUtils.forceDelete(tmpDir);
@@ -110,6 +94,7 @@ public class TestPGETaskInstance extends TestCase {
       tmpDirs.clear();
    }
 
+  @Test
    public void testLoadPropertyAdders() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       ConfigFilePropertyAdder propAdder = pgeTask
@@ -119,6 +104,7 @@ public class TestPGETaskInstance extends TestCase {
       assertTrue(propAdder instanceof MockConfigFilePropertyAdder);
    }
 
+  @Test
    public void testRunPropertyAdders() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       pgeTask.pgeMetadata.replaceMetadata(PROPERTY_ADDERS,
@@ -152,6 +138,7 @@ public class TestPGETaskInstance extends TestCase {
       System.getProperties().remove(PgeTaskMetKeys.USE_LEGACY_PROPERTY);
    }
 
+  @Test
    public void testCreatePgeMetadata() throws Exception {
       final String PGE_NAME = "PGE_Test";
       final String PGE_REQUIRED_METADATA = "Filename, FileLocation ";
@@ -189,6 +176,7 @@ public class TestPGETaskInstance extends TestCase {
             .getAllMetadata(PROPERTY_ADDERS).get(0));
    }
 
+  @Test
    @SuppressWarnings("unchecked") // FileUtils.readLines cast to List<String>
    public void testLogger() throws Exception {
       PGETaskInstance pgeTask1 = createTestInstance();
@@ -229,6 +217,7 @@ public class TestPGETaskInstance extends TestCase {
       assertEquals(Level.SEVERE.getLocalizedName() + ": pge2 message1", messages.get(1));
    }
 
+  @Test
    public void testUpdateStatus() throws Exception {
       final Map<String, String> args = Maps.newHashMap();
       PGETaskInstance pgeTask = createTestInstance();
@@ -249,6 +238,7 @@ public class TestPGETaskInstance extends TestCase {
       assertEquals(status, args.get("Status"));
    }
 
+  @Test
    public void testCreatePgeConfig() throws Exception {
       final String KEY = "TestKey";
       final String VALUE = "TestValue";
@@ -276,6 +266,7 @@ public class TestPGETaskInstance extends TestCase {
       assertEquals(MockPgeConfigBuilder.MOCK_EXE_DIR, pgeConfig.getExeDir());
    }
 
+  @Test
    public void testCreateWorkflowManagerClient() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       pgeTask.pgeMetadata.replaceMetadata(WORKFLOW_MANAGER_URL,
@@ -285,6 +276,7 @@ public class TestPGETaskInstance extends TestCase {
       assertNotNull(wmClient);
    }
 
+  @Test
    public void testGetWorkflowInstanceId() throws Exception {
       String workflowInstId = "12345";
       PGETaskInstance pgeTask = createTestInstance();
@@ -293,6 +285,7 @@ public class TestPGETaskInstance extends TestCase {
       assertEquals(workflowInstId, pgeTask.getWorkflowInstanceId());
    }
 
+  @Test
    public void testCreateExeDir() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       File exeDir = new File(pgeTask.pgeConfig.getExeDir());
@@ -302,6 +295,7 @@ public class TestPGETaskInstance extends TestCase {
       assertTrue(exeDir.exists());
    }
 
+  @Test
    public void testCreateOuputDirsIfRequested() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       File outputDir1 = createTmpDir();
@@ -324,6 +318,7 @@ public class TestPGETaskInstance extends TestCase {
       assertFalse(outputDir3.exists());
    }
 
+  @Test
    public void testCreateDynamicConfigFile() throws Exception {
       File tmpDir = createTmpDir();
       FileUtils.forceDelete(tmpDir);
@@ -339,7 +334,7 @@ public class TestPGETaskInstance extends TestCase {
 
    private static Document parseXmlFile(File file) throws Exception{
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      Document dom = null;
+      Document dom;
       DocumentBuilder db = dbf.newDocumentBuilder();
       dom = db.parse(file);
       return dom;
@@ -351,7 +346,8 @@ public class TestPGETaskInstance extends TestCase {
 	 InputSource is = new InputSource(new StringReader(xml));
 	 return builder.parse(is);
     }
-    
+
+  @Test
    public void testDumpMetadataIfRequested() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       File dumpMetFile = new File(pgeTask.getDumpMetadataPath());
@@ -364,13 +360,13 @@ public class TestPGETaskInstance extends TestCase {
       String expectedMetString =    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
     		+ "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">"
       		+ "<keyval type=\"vector\">"
-    		+ "<key>PGETask%2FName</key>"
+    		+ "<key>PGETask_Name</key>"
       		+ "<val>"
     		+ pgeTask.pgeMetadata.getMetadata(NAME)
     		+ "</val>"
     		+ "</keyval>"
     		+ "<keyval type=\"vector\">"
-    		+ "<key>PGETask%2FDumpMetadata</key>"
+    		+ "<key>PGETask_DumpMetadata</key>"
     		+ "<val>"
     		+ pgeTask.pgeMetadata.getMetadata(DUMP_METADATA)
     		+ "</val>"
@@ -396,8 +392,8 @@ public class TestPGETaskInstance extends TestCase {
        assertEquals(dumpValList.getLength(), expectedValList.getLength());
        
        
-       Map<String, String> dumpKeyValMap = new HashMap<String, String>();
-       Map<String, String> expectedKeyValMap = new HashMap<String, String>();
+       Map<String, String> dumpKeyValMap = new ConcurrentHashMap<String, String>();
+       Map<String, String> expectedKeyValMap = new ConcurrentHashMap<String, String>();
        
        for (int i = 0; i < dumpKeyList.getLength(); i++) {
            
@@ -416,6 +412,7 @@ public class TestPGETaskInstance extends TestCase {
        
    }
 
+  @Test
    public void testCreateProductCrawler() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       pgeTask.pgeMetadata.replaceMetadata(MIME_EXTRACTOR_REPO,
@@ -457,6 +454,7 @@ public class TestPGETaskInstance extends TestCase {
       assertFalse(pc.isNoRecur());
    }
 
+  @Test
    public void testRunIngestCrawler() throws Exception {
       // Case: UpdateStatus Success, VerifyIngest Success,
       PGETaskInstance pgeTask = createTestInstance();
@@ -534,6 +532,7 @@ public class TestPGETaskInstance extends TestCase {
       verify(pc);
    }
 
+  @Test
    public void testVerifyIngests() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
 

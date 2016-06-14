@@ -32,8 +32,9 @@ public class LoggerOutputStream extends OutputStream {
 
    public static final String NUM_BYTES_PER_WRITE_PROPERTY =
          "org.apache.oodt.commons.io.logger.os.bytes.per.write";
+   public static final int VAL = 512;
    private static final int NUM_BYTES_PER_WRITE = Integer.getInteger(
-         NUM_BYTES_PER_WRITE_PROPERTY, 512);
+         NUM_BYTES_PER_WRITE_PROPERTY, VAL);
 
    private Logger logger;
    private CharBuffer buffer;
@@ -43,18 +44,16 @@ public class LoggerOutputStream extends OutputStream {
       this(logger, Level.INFO);
    }
 
-   public LoggerOutputStream(Logger logger, Level logLevel)
-         throws InstantiationException {
+   public LoggerOutputStream(Logger logger, Level logLevel) {
       this(logger, NUM_BYTES_PER_WRITE, logLevel);
    }
 
-   public LoggerOutputStream(Logger logger, int numOfBytesPerWrite)
-         throws InstantiationException {
+   public LoggerOutputStream(Logger logger, int numOfBytesPerWrite) {
       this(logger, numOfBytesPerWrite, Level.INFO);
    }
 
    public LoggerOutputStream(Logger logger, int numOfBytesPerWrite,
-         Level logLevel) throws InstantiationException {
+         Level logLevel) {
       this.logger = logger;
       this.buffer = CharBuffer.wrap(new char[numOfBytesPerWrite]);
       this.logLevel = logLevel;

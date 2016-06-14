@@ -35,6 +35,7 @@ import junit.framework.TestCase;
  * Test class for {@link AddProductTypeCliAction}.
  * 
  * @author bfoster (Brian Foster)
+ * @author riverma (Rishi Verma)
  */
 public class TestAddProductTypeCliAction extends TestCase {
 
@@ -74,11 +75,18 @@ public class TestAddProductTypeCliAction extends TestCase {
       } catch (CmdLineActionException ignore) {
       }
       cliAction.setVersioner(PRODUCT_TYPE_VERSIONER);
+      try {
+    	  cliAction.execute(printer);
+    	  fail("Expected throw CmdLineActionException");
+      } catch (CmdLineActionException ignore) {
+      }
+      cliAction.setProductTypeId(PRODUCT_TYPE_ID);
       cliAction.execute(printer); // Should not throw exception.
    }
 
    public void testDataFlow() throws CmdLineActionException {
       MockAddProductTypeCliAction cliAction = new MockAddProductTypeCliAction();
+      cliAction.setProductTypeId(PRODUCT_TYPE_ID);
       cliAction.setProductTypeName(PRODUCT_TYPE_NAME);
       cliAction.setProductTypeDescription(PRODUCT_TYPE_DESC);
       cliAction.setFileRepositoryPath(PRODUCT_TYPE_REPO);
@@ -90,6 +98,7 @@ public class TestAddProductTypeCliAction extends TestCase {
             .getPrintedMessages().get(0));
       assertEquals("\n", printer.getPrintedMessages().get(1));
 
+      assertEquals(PRODUCT_TYPE_ID, productTypePassedToClient.getProductTypeId());
       assertEquals(PRODUCT_TYPE_NAME, productTypePassedToClient.getName());
       assertEquals(PRODUCT_TYPE_DESC,
             productTypePassedToClient.getDescription());

@@ -19,18 +19,24 @@
 package org.apache.oodt.cas.filemgr.util;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.commons.exec.EnvUtilities;
 
-//JDK imports
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-//Junit imports
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.TestCase;
+
+//JDK imports
+//Junit imports
 
 /**
  * @author mattmann
@@ -42,6 +48,7 @@ import junit.framework.TestCase;
  */
 public class TestXmlStructFactory extends TestCase {
 
+    private static Logger LOG = Logger.getLogger(TestXmlStructFactory.class.getName());
     private static final String origRepoPath = "[HOME]/some/path";
 
     private static final String HOME = EnvUtilities.getEnv("HOME");
@@ -52,7 +59,7 @@ public class TestXmlStructFactory extends TestCase {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document document = null;
+        Document document;
 
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -84,7 +91,7 @@ public class TestXmlStructFactory extends TestCase {
                     + "]", type.getProductRepositoryPath(), expectedRepoPath);
 
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
     }

@@ -36,7 +36,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -94,7 +93,7 @@ public class DBMSExecutor {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw e;
     } finally {
       if (statement != null) {
@@ -103,7 +102,6 @@ public class DBMSExecutor {
         } catch (Exception ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -112,7 +110,6 @@ public class DBMSExecutor {
         } catch (Exception ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -120,6 +117,7 @@ public class DBMSExecutor {
 
   }
 
+  @SuppressWarnings("unchecked")
   private Profile toProfile(ResultSet rs, Mapping map, String resLocationSpec) {
     Profile profile = new Profile();
     ResourceAttributes resAttr = profile.getResourceAttributes();
@@ -130,8 +128,7 @@ public class DBMSExecutor {
 
     Metadata met = new Metadata();
 
-    for (Iterator<String> i = map.getFieldNames().iterator(); i.hasNext();) {
-      String fldName = i.next();
+    for (String fldName : map.getFieldNames()) {
       MappingField fld = map.getFieldByName(fldName);
       ProfileElement elem = new EnumeratedProfileElement(profile);
       elem.setName(fld.getName());
@@ -141,8 +138,7 @@ public class DBMSExecutor {
           elem.getValues().add(fld.getConstantValue());
         } else {
           String elemDbVal = rs.getString(fld.getDbName());
-          for (Iterator<MappingFunc> j = fld.getFuncs().iterator(); j.hasNext();) {
-            MappingFunc func = j.next();
+          for (MappingFunc func : fld.getFuncs()) {
             CDEValue origVal = new CDEValue(fld.getName(), elemDbVal);
             CDEValue newVal = func.translate(origVal);
             elemDbVal = newVal.getVal();
@@ -151,10 +147,10 @@ public class DBMSExecutor {
           elem.getValues().add(elemDbVal);
         }
       } catch (SQLException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, "Unable to obtain field: ["
-            + fld.getLocalName() + "] from result set: message: "
-            + e.getMessage());
+                               + fld.getLocalName() + "] from result set: message: "
+                               + e.getMessage());
       }
 
       met.addMetadata(elem.getName(), (String) elem.getValues().get(0));

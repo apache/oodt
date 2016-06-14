@@ -62,9 +62,11 @@ public class ToolBox extends JPanel {
   public void setSelected(Tool selectedTool) {
     this.selectedTool = selectedTool;
     this.selectedTool.setSelected(true);
-    for (Tool tool : tools)
-      if (!this.selectedTool.equals(tool))
+    for (Tool tool : tools) {
+      if (!this.selectedTool.equals(tool)) {
         tool.setSelected(false);
+      }
+    }
   }
 
   public Tool getSelected() {

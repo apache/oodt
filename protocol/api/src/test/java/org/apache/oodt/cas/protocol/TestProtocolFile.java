@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.protocol;
 
 //JDK imports
-import java.io.File;
 
 //JUnit imports
 import junit.framework.TestCase;

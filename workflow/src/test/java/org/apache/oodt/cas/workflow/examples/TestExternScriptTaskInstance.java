@@ -19,17 +19,21 @@
 package org.apache.oodt.cas.workflow.examples;
 
 //OODT imports
+
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 
-//JDK imports
 import java.io.File;
-import junit.framework.TestCase;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import junit.framework.TestCase;
+
+//JDK imports
 //APACHE imports
-import org.apache.commons.io.FileUtils;
 
 /**
  * @author davoodi
@@ -42,6 +46,7 @@ import org.apache.commons.io.FileUtils;
  */
 public class TestExternScriptTaskInstance extends TestCase {
 
+    private static Logger LOG = Logger.getLogger(TestExternScriptTaskInstance.class.getName());
     private static final String testScriptPath = new File(
             "./src/test/resources/myScript.sh").getAbsolutePath();
 
@@ -77,7 +82,7 @@ public class TestExternScriptTaskInstance extends TestCase {
             assertEquals(expectedStr.trim(), outputFileStr.trim());
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }

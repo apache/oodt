@@ -17,23 +17,21 @@
 
 package org.apache.oodt.profile.gui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JOptionPane;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
-
-import java.util.Iterator;
-
-import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.EnumeratedProfileElement;
 import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileElement;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 
 
@@ -109,7 +107,7 @@ public class LeafListener extends MouseAdapter{
 	  }
 	  
 	  public DefaultMutableTreeNode generateNewProfileElementTree(String peName){
-	  	 DefaultMutableTreeNode peRoot = null;
+	  	 DefaultMutableTreeNode peRoot;
 	  	 
 	  	 ProfileElement theProfileElement = new EnumeratedProfileElement(new Profile());
           
@@ -132,17 +130,18 @@ public class LeafListener extends MouseAdapter{
 	    	
 	    	theIDRoot.add(theID);
 	    	
-	    	DefaultMutableTreeNode theMO = new DefaultMutableTreeNode(new Integer(theProfileElement.getMaxOccurrence()).toString());
+	    	DefaultMutableTreeNode theMO = new DefaultMutableTreeNode(
+				Integer.toString(theProfileElement.getMaxOccurrence()));
 	    	DefaultMutableTreeNode theMORoot = new DefaultMutableTreeNode("Max Occurence");
 	    	theMORoot.add(theMO);
 	    	
 	    	DefaultMutableTreeNode theSynonyms = new DefaultMutableTreeNode("Synonyms");
-	    	
-	    	for(Iterator i2 = theProfileElement.getSynonyms().iterator(); i2.hasNext(); ){
-	    		String theSynonym = (String)i2.next();
-	    		DefaultMutableTreeNode sNode = new DefaultMutableTreeNode(theSynonym);
-	    		theSynonyms.add(sNode);
-	    	}
+
+		for (Object o : theProfileElement.getSynonyms()) {
+		  String theSynonym = (String) o;
+		  DefaultMutableTreeNode sNode = new DefaultMutableTreeNode(theSynonym);
+		  theSynonyms.add(sNode);
+		}
 	
 	    	DefaultMutableTreeNode theType = new DefaultMutableTreeNode(theProfileElement.getType());
 	    	DefaultMutableTreeNode theTypeRoot = new DefaultMutableTreeNode("Type");
@@ -167,7 +166,6 @@ public class LeafListener extends MouseAdapter{
 	  }
 
 	  protected void menuItem2ActionPerformed(ActionEvent evt,DefaultMutableTreeNode theTreeNode,DefaultTreeModel theModel){
-	  	//System.out.println("Adding child");
 	  	
 	  	//only add child if it's one of the things that should have children
 	  	String treeNodeName = (String)theTreeNode.getUserObject();
@@ -186,7 +184,6 @@ public class LeafListener extends MouseAdapter{
 	  
 	  
 	  protected void menuItem1ActionPerformed(ActionEvent evt,DefaultMutableTreeNode theTreeNode,DefaultTreeModel theModel){
-	  	//System.out.println("Adding child");
 	  	
 	  	//only add child if it's one of the things that should have children
 	  	String treeNodeName = (String)theTreeNode.getUserObject();
@@ -195,7 +192,7 @@ public class LeafListener extends MouseAdapter{
 	  		return;
 	  	}
 	
-	  	DefaultMutableTreeNode theAddNode = null;
+	  	DefaultMutableTreeNode theAddNode;
 	  	String childNodeName = (String)JOptionPane.showInputDialog(null,"Add","Enter Node Name", JOptionPane.PLAIN_MESSAGE,null,null,"Child Value");
 	  	
 	  	if(childNodeName == null){return; } //they didn't specify name or hit cancel
@@ -216,20 +213,13 @@ public class LeafListener extends MouseAdapter{
 	  
 	  public void mousePressed(MouseEvent e) {
 
-	  	//System.out.println("In Mouse Pressed event ");
 	    int selectedRow = tree.getRowForLocation(e.getX(), e.getY());
 	    TreePath selectedPath = tree.getPathForLocation(e.getX(), e.getY());
 	    
 	    if(selectedRow != -1) {
 	       DefaultMutableTreeNode tn               //get end of current path
 	        = (DefaultMutableTreeNode)(selectedPath.getLastPathComponent());
-	      // if (tn.isLeaf()){ //we need leaf only
-	         //write your required process for tn here
-	         //for instance: popupMenu.show( ..... );
-	         //below is a dummy process
-	         //String str = (String)(tn.getUserObject());
-	        // System.out.println(str);
-	       	
+
 	       	JMenuItem menuItem1 = new JMenuItem("Add");
 	       	JMenuItem menuItem2 = new JMenuItem("Edit");
 	       	
@@ -242,31 +232,19 @@ public class LeafListener extends MouseAdapter{
 	       	if(e.isPopupTrigger()){
 	       		popup.show(tree,e.getX(),e.getY());
 	       	}
-	       	else{
-	       		//System.out.println("Wasn't popup trigger!");
-	       	}
 
-	       //}
 	    }
 	  }
 	  
 	  public void mouseReleased(MouseEvent e) {
 
-	  	//System.out.println("In Mouse Pressed event ");
 	    int selectedRow = tree.getRowForLocation(e.getX(), e.getY());
 	    TreePath selectedPath = tree.getPathForLocation(e.getX(), e.getY());
 	    
 	    if(selectedRow != -1) {
 	       DefaultMutableTreeNode tn               //get end of current path
 	        = (DefaultMutableTreeNode)(selectedPath.getLastPathComponent());
-	      // if (tn.isLeaf()){ //we need leaf only
-	         //write your required process for tn here
-	         //for instance: popupMenu.show( ..... );
-	         //below is a dummy process
-	         //String str = (String)(tn.getUserObject());
-	        // System.out.println(str);
-	       	
-	       	
+
 	       	JMenuItem menuItem1 = new JMenuItem("Add");
 	       	JMenuItem menuItem2 = new JMenuItem("Edit");
 	       	
@@ -279,11 +257,7 @@ public class LeafListener extends MouseAdapter{
 	       	if(e.isPopupTrigger()){
 	       		popup.show(tree,e.getX(),e.getY());
 	       	}
-	       	else{
-	       		//System.out.println("Wasn't popup trigger!");
-	       	}
 
-	       //}
 	    }
 	  }
 	  
@@ -301,7 +275,6 @@ public class LeafListener extends MouseAdapter{
 	  	  }
 	  	  
 			public void actionPerformed(ActionEvent evt) {
-				//System.out.println("Caught click");
 				if(type.equals("ADD")){
 					theLeafListener.menuItem1ActionPerformed(evt,myTreeNode,myTreeModel);				
 				}

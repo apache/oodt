@@ -36,7 +36,7 @@ public class TestCmdLineIterable extends TestCase {
    private static final String ARGS_STRING = "--operation download --url http://somewhere.com --user foo --pass bar --toDir /tmp";
 
    public void testIteration() throws CmdLineParserException {
-      StringBuffer argsString = new StringBuffer("");
+      StringBuilder argsString = new StringBuilder("");
       CmdLineIterable<ParsedArg> args = createArgs();
       for (ParsedArg arg : args) {
          if (arg.getType().equals(ParsedArg.Type.OPTION)) {

@@ -30,8 +30,11 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,8 +61,8 @@ public class XmlRpcBatchMgr implements Batchmgr {
     private Map specToProxyMap;
 
     public XmlRpcBatchMgr() {
-        nodeToJobMap = new HashMap();
-        specToProxyMap = new HashMap();
+        nodeToJobMap = new ConcurrentHashMap();
+        specToProxyMap = new ConcurrentHashMap();
     }
 
     /*
@@ -127,7 +130,7 @@ public class XmlRpcBatchMgr implements Batchmgr {
      *      org.apache.oodt.cas.resource.structs.ResourceNode)
      */
     public boolean killJob(String jobId, ResourceNode node) {
-        JobSpec spec = null;
+        JobSpec spec;
         try {
             spec = repo.getJobById(jobId);
         } catch (Exception e) {
@@ -139,13 +142,30 @@ public class XmlRpcBatchMgr implements Batchmgr {
         XmlRpcBatchMgrProxy proxy = new XmlRpcBatchMgrProxy(spec, node, this);
         return proxy.killJob();
     }
+    
+    public List getJobsOnNode(String nodeId){
+    	Vector<String> jobIds = new Vector();
+    	
+    	if(this.nodeToJobMap.size() > 0){
+            for (Object o : this.nodeToJobMap.keySet()) {
+                String jobId = (String) o;
+                if (nodeId.equals(this.nodeToJobMap.get(jobId))) {
+                    jobIds.add(jobId);
+                }
+            }
+    	}
+    	
+    	Collections.sort(jobIds); // sort the list to return as a courtesy to the user
+    	
+    	return jobIds;
+    }
 
     protected void notifyMonitor(ResourceNode node, JobSpec jobSpec) {
         Job job = jobSpec.getJob();
-        int reducedLoad = job.getLoadValue().intValue();
+        int reducedLoad = job.getLoadValue();
         try {
             mon.reduceLoad(node, reducedLoad);
-        } catch (MonitorException e) {
+        } catch (MonitorException ignored) {
         }
     }
 
@@ -155,11 +175,8 @@ public class XmlRpcBatchMgr implements Batchmgr {
             this.nodeToJobMap.remove(spec.getJob().getId());
         }
         synchronized (this.specToProxyMap) {
-            XmlRpcBatchMgrProxy proxy = (XmlRpcBatchMgrProxy) this.specToProxyMap
+            this.specToProxyMap
                     .remove(spec.getJob().getId());
-            if (proxy != null) {
-                proxy = null;
-            }
         }
 
         try {
@@ -176,11 +193,9 @@ public class XmlRpcBatchMgr implements Batchmgr {
             this.nodeToJobMap.remove(spec.getJob().getId());
         }
         synchronized (this.specToProxyMap) {
-            XmlRpcBatchMgrProxy proxy = (XmlRpcBatchMgrProxy) this.specToProxyMap
+            this.specToProxyMap
                     .remove(spec.getJob().getId());
-            if (proxy != null) {
-                proxy = null;
-            }
+
         }
 
         try {

@@ -19,17 +19,22 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //OODT imports
+
 import org.apache.oodt.commons.xml.XMLUtils;
 
-//JDK imports
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Properties;
-//Junit imports
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//JDK imports
+//Junit imports
 
 /**
  * @author mattmann
@@ -42,6 +47,7 @@ import junit.framework.TestCase;
  */
 public class TestProduct extends TestCase {
 
+  private static Logger LOG = Logger.getLogger(TestProduct.class.getName());
   private Properties initialProperties = new Properties(System.getProperties());
 
   public void setUp() throws Exception {
@@ -107,7 +113,7 @@ public class TestProduct extends TestCase {
     try {
       XMLUtils.writeXmlToStream(product.toXML(), os);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 

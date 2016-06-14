@@ -37,6 +37,6 @@ public interface JobInput extends XmlRpcWriteable, Configurable {
    * 
    * @return The string identifier of this JobInput object.
    */
-  public String getId();
+  String getId();
 
 }

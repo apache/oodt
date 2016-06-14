@@ -1,0 +1,405 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+UL.fileTree {
+    font-family: Verdana, sans-serif;
+    font-size: 11px;
+    line-height: 18px;
+    padding: 0;
+    margin: 0;
+}
+
+LI.helper {
+    font-family: Verdana, sans-serif;
+    font-size:11px;
+    line-height:18px;
+}
+
+UL.fileTree LI, LI.helper {
+    list-style: none;
+    padding: 0;
+    padding-left: 20px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+UL.fileTree A, LI.helper A {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    padding: 0 2px;
+}
+
+UL.fileTree A:hover, LI.helper A {
+    background: #BDF;
+}
+
+/* Core Styles */
+.fileTree LI.directory, LI.helper.directory { background: url(directory.png) left top no-repeat; }
+.fileTree LI.expanded, LI.helper.expanded   { background: url(folder_open.png) left top no-repeat; }
+.fileTree LI.file, LI.helper.file           { background: url(file.png) left top no-repeat; }
+.fileTree LI.wait, LI.helper.wait           { background: url(spinner.gif) left top no-repeat; }
+/* File Extensions*/
+.fileTree LI.ext_3gp, LI.helper.ext_3gp { background: url(film.png) left top no-repeat; }
+.fileTree LI.ext_afp, LI.helper.ext_afp { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_afpa, LI.helper.ext_afpa { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_asp, LI.helper.ext_asp { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_aspx, LI.helper.ext_aspx { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_avi, LI.helper.ext_avi { background: url(film.png) left top no-repeat; }
+.fileTree LI.ext_bat, LI.helper.ext_bat { background: url(application.png) left top no-repeat; }
+.fileTree LI.ext_bmp, LI.helper.ext_bmp { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_c, LI.helper.ext_c { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_cfm, LI.helper.ext_cfm { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_cgi, LI.helper.ext_cgi { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_com, LI.helper.ext_com { background: url(application.png) left top no-repeat; }
+.fileTree LI.ext_cpp, LI.helper.ext_cpp { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_css, LI.helper.ext_css { background: url(css.png) left top no-repeat; }
+.fileTree LI.ext_doc, LI.helper.ext_doc { background: url(doc.png) left top no-repeat; }
+.fileTree LI.ext_exe, LI.helper.ext_exe { background: url(application.png) left top no-repeat; }
+.fileTree LI.ext_gif, LI.helper.ext_gif { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_fla, LI.helper.ext_fla { background: url(flash.png) left top no-repeat; }
+.fileTree LI.ext_h, LI.helper.ext_h { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_htm, LI.helper.ext_htm { background: url(html.png) left top no-repeat; }
+.fileTree LI.ext_html, LI.helper.ext_html { background: url(html.png) left top no-repeat; }
+.fileTree LI.ext_jar, LI.helper.ext_jar { background: url(java.png) left top no-repeat; }
+.fileTree LI.ext_jpg, LI.helper.ext_jpg { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_jpeg, LI.helper.ext_jpeg { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_js, LI.helper.ext_js { background: url(script.png) left top no-repeat; }
+.fileTree LI.ext_lasso, LI.helper.ext_lasso { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_log, LI.helper.ext_log { background: url(txt.png) left top no-repeat; }
+.fileTree LI.ext_m4p, LI.helper.ext_m4p { background: url(music.png) left top no-repeat; }
+.fileTree LI.ext_mov, LI.helper.ext_mov { background: url(film.png) left top no-repeat; }
+.fileTree LI.ext_mp3, LI.helper.ext_mp3 { background: url(music.png) left top no-repeat; }
+.fileTree LI.ext_mp4, LI.helper.ext_mp4 { background: url(film.png) left top no-repeat; }
+.fileTree LI.ext_mpg, LI.helper.ext_mpg { background: url(film.png) left top no-repeat; }
+.fileTree LI.ext_mpeg, LI.helper.ext_mpeg { background: url(film.png) left top no-repeat; }
+.fileTree LI.ext_ogg, LI.helper.ext_ogg { background: url(music.png) left top no-repeat; }
+.fileTree LI.ext_pcx, LI.helper.ext_pcx { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_pdf, LI.helper.ext_pdf { background: url(pdf.png) left top no-repeat; }
+.fileTree LI.ext_php, LI.helper.ext_php { background: url(php.png) left top no-repeat; }
+.fileTree LI.ext_png, LI.helper.ext_png { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_ppt, LI.helper.ext_ppt { background: url(ppt.png) left top no-repeat; }
+.fileTree LI.ext_psd, LI.helper.ext_psd { background: url(psd.png) left top no-repeat; }
+.fileTree LI.ext_pl, LI.helper.ext_pl { background: url(script.png) left top no-repeat; }
+.fileTree LI.ext_py, LI.helper.ext_py { background: url(script.png) left top no-repeat; }
+.fileTree LI.ext_rb, LI.helper.ext_rb { background: url(ruby.png) left top no-repeat; }
+.fileTree LI.ext_rbx, LI.helper.ext_rbx { background: url(ruby.png) left top no-repeat; }
+.fileTree LI.ext_rhtml, LI.helper.ext_rhtml { background: url(ruby.png) left top no-repeat; }
+.fileTree LI.ext_rpm, LI.helper.ext_rpm { background: url(linux.png) left top no-repeat; }
+.fileTree LI.ext_ruby, LI.helper.ext_ruby { background: url(ruby.png) left top no-repeat; }
+.fileTree LI.ext_sql, LI.helper.ext_sql { background: url(db.png) left top no-repeat; }
+.fileTree LI.ext_swf, LI.helper.ext_swf { background: url(flash.png) left top no-repeat; }
+.fileTree LI.ext_tif, LI.helper.ext_tif { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_tiff, LI.helper.ext_tiff { background: url(picture.png) left top no-repeat; }
+.fileTree LI.ext_txt, LI.helper.ext_txt { background: url(txt.png) left top no-repeat; }
+.fileTree LI.ext_vb, LI.helper.ext_vb { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_wav, LI.helper.ext_wav { background: url(music.png) left top no-repeat; }
+.fileTree LI.ext_wmv, LI.helper.ext_wmv { background: url(film.png) left top no-repeat; }
+.fileTree LI.ext_xls, LI.helper.ext_xls { background: url(xls.png) left top no-repeat; }
+.fileTree LI.ext_xml, LI.helper.ext_xml { background: url(code.png) left top no-repeat; }
+.fileTree LI.ext_zip, LI.helper.ext_zip { background: url(zip.png) left top no-repeat; }
+
+/**
+ * .CLR
+ * This is a utility which serves to reset things after a 
+ * series of floated elements
+ */
+.clr {
+    clear:both;
+}
+
+
+/* UI.TABS */
+.ui-tabs { padding: 0; zoom: 1; font-size:11px; }
+.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 0; }
+.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0; margin: 0 .2em; padding: 0; }
+.ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: .5em 1em; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 1px; border-bottom-width: 3px; border-bottom-color:#fff; margin-bottom:-2px; overflow:none; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { padding: 1em 0; display: block; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }
+
+
+
+.ui-tabs .ui-tabs-nav li { border: solid 1px #ccc; background-color: #bbb; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {  background-color: #fff; color: #555; }
+.ui-tabs .ui-tabs-nav li a { color: #fff; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a { color:  #555; }
+.ui-tabs .ui-tabs-nav {  }
+.ui-tabs .ui-tabs-panel { padding: 1em 0; margin: 0; border-top: solid 1px #ccc;}
+
+
+
+
+/* MAIN INTERFACE STRUCTURES */
+div.container {
+    position:relative;
+    border:solid 1px grey;
+    padding:5px;
+}
+
+div#browseStagingContainer, div#browseCatalogContainer {
+    position:relative;
+    width:47%;
+    border:solid 2px #ccc;
+    padding:2px;
+}
+div#browseStagingContainer {
+    position:relative;
+    float:left;
+}
+
+div#browseCatalogContainer {
+    position:relative;
+    float:right;
+}
+
+div#browseStaging {
+    position:relative;
+    float:left;
+    width:33%;
+    border:solid 1px #ccc;
+    overflow:scroll;    
+}
+div#browseCatalog {
+    position:relative;
+    float:left;
+    width:33%;
+    border:solid 1px #ccc;
+    overflow:scroll;    
+}
+div#stagingMetContainer {
+    position:relative;
+    float:right;
+    width:60%;
+    height:350px;
+    font-size:12px;
+}
+div#stagingMetExtractorSelection {
+    position:relative;
+    margin-bottom:3px;
+    display:none;
+}
+
+div#stagedMetadataWorkbenchContent {
+    position:relative;
+    height:323px;
+    background-color:#fff;
+    overflow:scroll;
+    border:solid 1px #ccc;  
+}
+div#catalogMetadataWorkbenchContent {
+    position:relative;
+    float:right;
+    width:60%;
+    height:350px;
+    background-color:#fff;
+    overflow:scroll;
+    border:solid 1px #ccc;  
+}
+
+.browser {
+    background:#FFFFFF none repeat scroll 0 0;
+    border-color:#BBBBBB #FFFFFF #FFFFFF #BBBBBB;
+    border-style:solid;
+    border-width:1px;
+    height:350px;
+    padding:5px;
+    width:200px;
+}
+.container.browsers, .container.tasks {
+    background-color:#EEEEEE;
+    border:solid 1px #ccc;
+    padding-top:18px;
+    margin:5px 0;
+}
+.container h5 {
+    position:relative;
+    margin:-20px -4px 5px;
+    padding:0;
+    font-family:arial,sans-serif;
+    text-transform:uppercase;
+    color:#999; 
+}
+
+.pathbar {
+    border:solid 1px #ccc;
+    background-color:#f4f4f4;
+    color:#222;
+    padding:3px;
+    margin-bottom:2px;  
+    font-family:courier,sans-serif;
+    font-size:11px;
+}
+
+
+/* METADATA EDITOR */
+div.editor {
+    position:relative;
+    padding:0;
+}
+
+div.editor.info {
+    padding:5px;    
+}
+
+div.editor table {
+    font-size:11px;
+    width:100%;
+}
+
+div.editor table tr {
+    
+}
+
+div.editor table tr th {
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    padding:5px;
+    text-align:left;
+    background-color:#f6f6f6;
+    color:#555;
+}
+
+div.editor table tr td {
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    padding:5px;
+}
+
+/* 
+ * INGESTION TASK LIST 
+ */
+
+
+.container.tasks {
+    padding:5px;
+    padding-top:20px;
+}
+.container.tasks h5 {
+    margin:-18px 0 2px;
+}
+div#ingestionTaskList {
+    
+}
+div#ingestionTaskListContent {
+    background-color:#fff;
+    min-height:100px;
+    border:solid 1px #ccc;  
+}
+
+div#ingestionTaskListContent table {
+    font-size:11px;
+    width:100%;
+}
+
+div#ingestionTaskListContent table tr{
+
+}
+div#ingestionTaskListContent table tr th{
+    padding:4px;
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    background-color:#f6f6f6;
+}
+div#ingestionTaskListContent table tr td{
+    padding:4px;
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+}
+
+
+/* PRODUCTTYPE WORKBENCH */
+
+div#productTypeWorkbenchLabel {
+    font-size:12px;
+    font-family:arial,sans-serif;
+    text-transform:uppercase;
+    color:#555;
+    font-weight:normal;
+    padding:1px 1px 1px 4px;    
+}
+
+div#ptwbAddProducts {
+    padding:5px;    
+}
+
+div#productTypeWorkbenchContents .instructions {
+    font-size:90%;
+    color:#444; 
+}
+
+div#ptwbMetadataList table {
+    border:solid 1px #ccc;  
+}
+
+div#droppedFileList {
+
+    overflow:scroll;
+    min-height:50px;
+        
+}
+
+div.ptwbSectionBox {
+    border:solid 1px #ccc;
+    padding:2px;
+    margin:5px 0 2px 0;
+}
+
+div.ptwbSectionBox h5 {
+    margin:0 0 4px;
+    padding:0;
+}
+
+div#droppedFileTarget {
+    height:30px;
+    border-color:#bdb;
+    background-color:#dfd;  
+}
+
+div#itMetExtractorSelector {
+    
+}
+
+div#itCreateIngestionTaskButton {
+    margin-top:5px; 
+}
+
+div.editor table tr td {
+    
+    position:relative;
+    padding-left:5px;
+    cursor:pointer;
+    _cursor:hand;
+    
+}
+
+div.editor table tr td img.pencil {
+    
+    position:relative;
+    left:0;
+    cursor:pointer;
+    _cursor:hand;
+    
+}
+
+
+.ptwbMetadataList table {
+    border-top:solid 1px #ccc;
+}
+
+

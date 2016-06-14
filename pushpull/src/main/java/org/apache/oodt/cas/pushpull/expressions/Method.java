@@ -18,12 +18,12 @@
 
 package org.apache.oodt.cas.pushpull.expressions;
 
-//OODT imports
 import org.apache.oodt.cas.pushpull.exceptions.MethodException;
 
-//JDK imports
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -36,6 +36,7 @@ import java.util.Stack;
  */
 public class Method {
 
+    private static Logger LOG = Logger.getLogger(Method.class.getName());
     private String name;
 
     private String infix;
@@ -59,15 +60,15 @@ public class Method {
 
     public void addArgSignature(String name, int type) {
         argNames.add(name);
-        argTypes.add(new Integer(type));
+        argTypes.add(type);
     }
 
     public boolean addArg(String name, String value) {
         int nextLoc = args.size();
         if (nextLoc >= 0) {
-            switch (argTypes.get(nextLoc).intValue()) {
+            switch (argTypes.get(nextLoc)) {
             case INT:
-                addArg(new Variable(null, new Integer(value)));
+                addArg(new Variable(null, Integer.valueOf(value)));
                 break;
             case STRING:
                 addArg(new Variable(null, value));
@@ -76,8 +77,9 @@ public class Method {
                 return false;
             }
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     public void addArg(Variable v) {
@@ -98,7 +100,7 @@ public class Method {
                 // System.out.println("Next C = " + c);
                 switch (c) {
                 case '$':
-                    StringBuffer variable = new StringBuffer("");
+                    StringBuilder variable = new StringBuilder("");
                     boolean globalVar = false;
 
                     // skip $ by incr i and if true then variable is a global
@@ -113,49 +115,51 @@ public class Method {
                         // System.out.println("ch = " + ch);
                         if ((ch <= 'Z' && ch >= 'A')
                                 || (ch <= 'z' && ch >= 'a')
-                                || (ch <= '9' && ch >= '0') || ch == '_')
+                                || (ch <= '9' && ch >= '0') || ch == '_') {
                             variable.append(ch);
-                        else
+                        } else {
                             break;
+                        }
                     }
 
                     if (globalVar) {
                         try {
-                            output.addLast(GlobalVariables.hashMap.get(variable
+                            output.addLast(GlobalVariables.ConcurrentHashMap.get(variable
                                     .toString()));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            LOG.log(Level.SEVERE, e.getMessage());
                         }
                     } else {
                         i--;
                         output.addLast(args.get(argNames.indexOf(variable
                                 .toString())));
                     }
-                    // System.out.println(output);
                     break;
                 case '#':
-                    StringBuffer variableIntString = new StringBuffer("");
+                    StringBuilder variableIntString = new StringBuilder("");
                     int k = i + 1;
                     for (; k < infixArray.length; k++) {
                         char ch = infixArray[k];
-                        if (ch <= '9' && ch >= '0')
+                        if (ch <= '9' && ch >= '0') {
                             variableIntString.append(ch);
-                        else
+                        } else {
                             break;
+                        }
                     }
-                    output.addLast(new Variable(null, new Integer(
+                    output.addLast(new Variable(null, Integer.valueOf(
                             variableIntString.toString())));
                     i = k - 1;
                     break;
                 case '"':
-                    StringBuffer variableString = new StringBuffer("");
+                    StringBuilder variableString = new StringBuilder("");
                     int l = i + 1;
                     for (; l < infixArray.length; l++) {
                         char ch = infixArray[l];
-                        if (ch != '"')
-                            variableString.append(ch);
-                        else
+                        if (ch == '"') {
                             break;
+                        } else {
+                            variableString.append(ch);
+                        }
                     }
                     output
                             .addLast(new Variable(null, variableString
@@ -166,20 +170,19 @@ public class Method {
                 case '-':
                 case '/':
                 case '*':
-                    // System.out.println("operators");
                     while (!stack.empty()
                             && hasHigherPrecedence(stack.peek().toString()
                                     .charAt(0), c)) {
                         output.addLast(stack.pop());
                     }
                     stack.push(new Operator(c + ""));
-                    // System.out.println("Stack: " + stack);
                     break;
                 case ')':
                     while (!stack.empty()) {
                         ValidInput vi = stack.pop();
-                        if (vi.toString().charAt(0) == '(')
+                        if (vi.toString().charAt(0) == '(') {
                             break;
+                        }
                         output.addLast(vi);
                     }
                     break;
@@ -189,8 +192,9 @@ public class Method {
 
                 }
             }
-            while (!stack.empty())
+            while (!stack.empty()) {
                 output.addLast(stack.pop());
+            }
 
             return output;
         } catch (Exception e) {
@@ -217,9 +221,9 @@ public class Method {
                             stack.push(new Variable(null, value));
                         } else if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    + ((Integer) first.getValue()).intValue());
+                            Integer value = (Integer) second
+                                .getValue()
+                                            + (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(
@@ -229,9 +233,9 @@ public class Method {
                     case '-':
                         if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    - ((Integer) first.getValue()).intValue());
+                            Integer value = (Integer) second
+                                .getValue()
+                                            - (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(
@@ -241,9 +245,9 @@ public class Method {
                     case '*':
                         if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    * ((Integer) first.getValue()).intValue());
+                            Integer value = (Integer) second
+                                .getValue()
+                                            * (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(
@@ -253,11 +257,10 @@ public class Method {
                     case '/':
                         if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()
-                                && ((Integer) ((Variable) first).getValue())
-                                        .intValue() > 0) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    / ((Integer) first.getValue()).intValue());
+                                && (Integer) first.getValue() > 0) {
+                            Integer value = (Integer) second
+                                .getValue()
+                                            / (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(

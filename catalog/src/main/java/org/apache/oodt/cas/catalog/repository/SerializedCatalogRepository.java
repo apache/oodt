@@ -16,7 +16,13 @@
  */
 package org.apache.oodt.cas.catalog.repository;
 
-//JDK imports
+
+import org.apache.commons.io.FileUtils;
+import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
+import org.apache.oodt.cas.catalog.system.Catalog;
+import org.apache.oodt.cas.catalog.util.PluginURL;
+import org.apache.oodt.cas.catalog.util.Serializer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,14 +33,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//APACHE imports
-import org.apache.commons.io.FileUtils;
-
-//OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
-import org.apache.oodt.cas.catalog.system.Catalog;
-import org.apache.oodt.cas.catalog.util.PluginURL;
-import org.apache.oodt.cas.catalog.util.Serializer;
 
 /**
  * @author bfoster
@@ -55,7 +53,8 @@ public class SerializedCatalogRepository implements CatalogRepository {
 			new File(this.storageDir + "/catalogs").mkdirs();
 			new File(this.storageDir + "/classloaders").mkdirs();
 		}catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
+		  	LOG.log(Level.SEVERE, e.getMessage());
 			throw new InstantiationException("Failed to instantiate SerializedCatalogRepository : " + e.getMessage());
 		}
 	}
@@ -68,10 +67,12 @@ public class SerializedCatalogRepository implements CatalogRepository {
 			throws CatalogRepositoryException {
 		LOG.log(Level.INFO, "Deleting Catalog: '" + catalogUrn + "' . . . ");
 		boolean catalogFileDelete = this.getCatalogFile(catalogUrn).delete();
-		if (!catalogFileDelete)
-			throw new CatalogRepositoryException("Failed to deserialize catalog '" + catalogUrn + "', delete files returned false");
-		else 
-			LOG.log(Level.INFO, "Successfully deleting Catalog: '" + catalogUrn + "'");
+		if (!catalogFileDelete) {
+		  throw new CatalogRepositoryException(
+			  "Failed to deserialize catalog '" + catalogUrn + "', delete files returned false");
+		} else {
+		  LOG.log(Level.INFO, "Successfully deleting Catalog: '" + catalogUrn + "'");
+		}
 	}
 
 	/*
@@ -89,7 +90,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}finally {
 			try {
 				catalogIn.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 	
@@ -111,8 +112,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 	 * (non-Javadoc)
 	 * @see org.apache.oodt.cas.catalog.repository.MemoryBasedCatalogRepository#isCatalogSerialized(java.lang.String)
 	 */
-	public boolean isCatalogSerialized(String catalogUrn)
-			throws CatalogRepositoryException {
+	public boolean isCatalogSerialized(String catalogUrn) {
 		return this.getCatalogFile(catalogUrn).exists();
 	}
 
@@ -127,8 +127,9 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		try {
 			//serialize Catalog
 			new Serializer().serializeObject(catalog, (catalogOut = new FileOutputStream(this.getCatalogFileWorker(catalog.getId()))));
-			if (this.getCatalogFile(catalog.getId()).exists())
-				FileUtils.copyFile(this.getCatalogFile(catalog.getId()), this.getCatalogFileBkup(catalog.getId()), true);
+			if (this.getCatalogFile(catalog.getId()).exists()) {
+			  FileUtils.copyFile(this.getCatalogFile(catalog.getId()), this.getCatalogFileBkup(catalog.getId()), true);
+			}
 			FileUtils.copyFile(this.getCatalogFileWorker(catalog.getId()), this.getCatalogFile(catalog.getId()), true);
 			this.getCatalogFileWorker(catalog.getId()).delete();
 			this.getCatalogFileBkup(catalog.getId()).delete();
@@ -137,7 +138,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}finally {
 			try {
 				catalogOut.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}	
 	}
 	
@@ -147,8 +148,9 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		try {
 			//serialize URLs
 			new Serializer().serializeObject(urls, (urlsOut = new FileOutputStream(this.getClassLoaderUrlsFileWorker())));
-			if (this.getClassLoaderUrlsFile().exists())
-				FileUtils.copyFile(this.getClassLoaderUrlsFile(), this.getClassLoaderUrlsFileBkup(), true);
+			if (this.getClassLoaderUrlsFile().exists()) {
+			  FileUtils.copyFile(this.getClassLoaderUrlsFile(), this.getClassLoaderUrlsFileBkup(), true);
+			}
 			FileUtils.copyFile(this.getClassLoaderUrlsFileWorker(), this.getClassLoaderUrlsFile(), true);
 			this.getClassLoaderUrlsFileWorker().delete();
 			this.getClassLoaderUrlsFileBkup().delete();
@@ -157,28 +159,29 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}finally {
 			try {
 				urlsOut.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}	
 	}
 
 	public List<PluginURL> deserializePluginURLs() throws CatalogRepositoryException {
 		FileInputStream urlsIn = null;
 		try {
-			if (this.getClassLoaderUrlsFile().exists())
-				return new Serializer().deserializeObject(List.class, (urlsIn = new FileInputStream(this.getClassLoaderUrlsFile())));
-			else
-				return Collections.emptyList();
+			if (this.getClassLoaderUrlsFile().exists()) {
+			  return new Serializer()
+				  .deserializeObject(List.class, (urlsIn = new FileInputStream(this.getClassLoaderUrlsFile())));
+			} else {
+			  return Collections.emptyList();
+			}
 		}catch (Exception e) {
 			throw new CatalogRepositoryException("Failed to Deserialized All ClassLoader URLs from '" + this.storageDir + "' : " + e.getMessage(), e);
 		}finally {
 			try {
 				urlsIn.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 
-	public boolean isModifiable() 
-			throws CatalogRepositoryException {
+	public boolean isModifiable() {
 		return true;
 	}
 

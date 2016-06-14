@@ -17,18 +17,15 @@
 
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
+
+import java.awt.*;
 import java.awt.event.ActionListener;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
 public class QueryPane extends JPanel {
 

@@ -34,8 +34,9 @@ import org.xml.sax.SAXException;
  */
 class ConfigurationEntityResolver implements EntityResolver {
 	public InputSource resolveEntity(String publicID, String systemID) throws SAXException, IOException {
-		if (Configuration.DTD_FPI.equals(publicID) || Configuration.DTD_OLD_FPI.equals(publicID))
-			return new InputSource(Configuration.class.getResourceAsStream("Configuration.dtd"));
+		if (Configuration.DTD_FPI.equals(publicID) || Configuration.DTD_OLD_FPI.equals(publicID)) {
+		  return new InputSource(Configuration.class.getResourceAsStream("Configuration.dtd"));
+		}
 		return null;
 	}
 }

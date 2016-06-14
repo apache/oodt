@@ -45,7 +45,7 @@ public interface SciPgeConfigFileWriter {
      * @return
      * @throws IOException
      */
-    public File createConfigFile(String sciPgeConfigFilePath,
-            Metadata inputMetadata, Object... customArgs) throws IOException;
+    File createConfigFile(String sciPgeConfigFilePath,
+                          Metadata inputMetadata, Object... customArgs) throws IOException;
 
 }

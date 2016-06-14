@@ -75,9 +75,10 @@ public class JobStack implements JobQueue {
       spec.getJob().setStatus(JobStatus.QUEUED);
       safeUpdateJob(spec);
       return jobId;
-    } else
+    } else {
       throw new JobQueueException("Reached max queue size: [" + maxQueueSize
-          + "]: Unable to add job: [" + spec.getJob().getId() + "]");
+                                  + "]: Unable to add job: [" + spec.getJob().getId() + "]");
+    }
   }
 
   /*
@@ -102,7 +103,7 @@ public class JobStack implements JobQueue {
    * 
    * @see org.apache.oodt.cas.resource.jobqueue.JobQueue#getQueuedJobs()
    */
-  public List getQueuedJobs() throws JobQueueException {
+  public List getQueuedJobs() {
     return queue;
   }
 
@@ -111,7 +112,7 @@ public class JobStack implements JobQueue {
    * 
    * @see org.apache.oodt.cas.resource.jobqueue.JobQueue#purge()
    */
-  public void purge() throws JobQueueException {
+  public void purge() {
     queue.removeAllElements();
     //TODO: think about whether or not it makes
     //sense to do something with the JobRepository
@@ -128,7 +129,7 @@ public class JobStack implements JobQueue {
   /* (non-Javadoc)
    * @see org.apache.oodt.cas.resource.jobqueue.JobQueue#getNextJob()
    */
-  public JobSpec getNextJob() throws JobQueueException {
+  public JobSpec getNextJob() {
     JobSpec spec = (JobSpec)queue.remove(0);
     // update its status since getNextJob is
     // called by the scheduler when it is going

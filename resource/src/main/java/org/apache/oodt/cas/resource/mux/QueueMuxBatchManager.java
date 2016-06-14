@@ -17,7 +17,8 @@
 
 package org.apache.oodt.cas.resource.mux;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.jobrepo.JobRepository;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.structs.JobSpec;
+import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
@@ -41,7 +43,7 @@ public class QueueMuxBatchManager implements Batchmgr {
     private Logger LOG = Logger.getLogger(QueueMuxBatchManager.class.getName());
 
     BackendManager backend;
-    Map<String,String> jobIdToQueue = new HashMap<String,String>();
+    Map<String,String> jobIdToQueue = new ConcurrentHashMap<String,String>();
     JobRepository repo;
 
     /**
@@ -82,6 +84,11 @@ public class QueueMuxBatchManager implements Batchmgr {
     @Override
     public void setMonitor(Monitor monitor) {
         throw new UnsupportedOperationException("Cannot set the monitor when using the queue-mux batch manager.");
+    }
+
+    @Override
+    public List<Job> getJobsOnNode(String nodeId) {
+        throw new UnsupportedOperationException("Method not supported: get Jobs on Node.");
     }
 
     /* (non-Javadoc)

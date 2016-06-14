@@ -18,16 +18,6 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.util.Properties;
-import java.util.Vector;
-
-//OODT imports
-import org.apache.oodt.cas.filemgr.catalog.LuceneCatalog;
-import org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -38,9 +28,21 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
+
 import com.google.common.collect.Lists;
 
-//Junit imports
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
 
 /**
@@ -54,7 +56,7 @@ import junit.framework.TestCase;
  * </p>.
  */
 public class TestLuceneCatalog extends TestCase {
-
+    private static Logger LOG = Logger.getLogger(TestLuceneCatalog.class.getName());
     private LuceneCatalog myCat;
 
     private String tmpDirPath = null;
@@ -87,7 +89,7 @@ public class TestLuceneCatalog extends TestCase {
         // get a temp directory
 
         File tempDir = null;
-        File tempFile = null;
+        File tempFile;
 
         try {
             tempFile = File.createTempFile("foo", "bar");
@@ -124,6 +126,9 @@ public class TestLuceneCatalog extends TestCase {
                 "org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor",
                 "20");
 
+        properties.setProperty(
+            "org.apache.oodt.cas.filemgr.catalog.datasource.lenientFields",
+            "false");
         // now override the val layer ones
         URL examplesCoreUrl = this.getClass().getResource(
             "/examples/core");
@@ -156,8 +161,8 @@ public class TestLuceneCatalog extends TestCase {
             File[] tmpFiles = tmpDir.listFiles();
 
             if (tmpFiles != null && tmpFiles.length > 0) {
-                for (int i = 0; i < tmpFiles.length; i++) {
-                    tmpFiles[i].delete();
+                for (File tmpFile : tmpFiles) {
+                    tmpFile.delete();
                 }
 
                 tmpDir.delete();
@@ -315,7 +320,7 @@ public class TestLuceneCatalog extends TestCase {
         Product testProd = getTestProduct();
         Metadata met = getTestMetadata("test");
 
-        for (int i = 0; i < this.catPageSize; i++) {
+        for (int i = 0; i < catPageSize; i++) {
             try {
                 myCat.addProduct(testProd);
                 myCat.addMetadata(met, testProd);
@@ -354,10 +359,470 @@ public class TestLuceneCatalog extends TestCase {
         assertEquals(1, page.getPageProducts().size());
         assertEquals(2, page.getTotalPages());
         assertNotNull(page.getPageProducts().get(0));
-        Product retProd = ((Product) page.getPageProducts().get(0));
+        Product retProd = page.getPageProducts().get(0);
         assertEquals("ShouldBeFirstForPage.txt", retProd.getProductName());
     }
-    
+
+    public void testGetLastProductOnLastPage() {
+        // add catPageSize of the test Product
+        // then add a product called "ShouldBeFirstForPage.txt"
+        // make sure it's the first one on the 2nd page
+
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getLastProductPage(type));
+        assertNotNull(myCat.getLastProductPage(type).getPageProducts());
+        assertEquals(1, myCat.getLastProductPage(type).getPageProducts()
+                                       .size());
+        ProductPage page = myCat.getLastProductPage(type);
+        assertNotNull(page);
+        assertNotNull(page.getPageProducts());
+        assertEquals(1, page.getPageProducts().size());
+        assertEquals(2, page.getTotalPages());
+        List<Product> prods = page.getPageProducts();
+        assertNotNull(page.getPageProducts().get(0));
+        Product retProd = page.getPageProducts().get(0);
+        assertEquals("ShouldBeFirstForPage.txt", retProd.getProductName());
+    }
+
+    public void testGetTopNProducts() {
+        // add catPageSize of the test Product
+        // then add a product called "ShouldBeFirstForPage.txt"
+        // make sure it's the first one on the 2nd page
+
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getTopNProducts(5));
+            assertEquals(5, myCat.getTopNProducts(5).size());
+            Product retProd = myCat.getTopNProducts(5).get(0);
+            assertEquals("test", retProd.getProductName());
+        } catch (CatalogException e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+        }
+
+    }
+
+    public void testGetNextPageNullType(){
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                                       .size());
+
+        ProductPage page = myCat.getNextPage(null, myCat.getFirstPage(type));
+
+
+        assertNull(page);
+    }
+
+    public void testGetNextPageNullCurrentPage(){
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                                       .size());
+        ProductPage page = myCat.getNextPage(type, null);
+        assertNotNull(page);
+        assertNotNull(page.getPageProducts());
+        assertEquals(20, page.getPageProducts().size());
+        assertEquals(2, page.getTotalPages());
+        assertNotNull(page.getPageProducts().get(0));
+        Product retProd = page.getPageProducts().get(0);
+        assertEquals("test", retProd.getProductName());
+    }
+
+    public void testGetNextPageCurrentPageIsLastPage(){
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                                       .size());
+        ProductPage page = myCat.getNextPage(type, myCat.getLastProductPage(type));
+        assertNotNull(page);
+        assertNotNull(page.getPageProducts());
+        assertEquals(1, page.getPageProducts().size());
+        assertEquals(2, page.getTotalPages());
+        assertNotNull(page.getPageProducts().get(0));
+        Product retProd = page.getPageProducts().get(0);
+        assertEquals("ShouldBeFirstForPage.txt", retProd.getProductName());
+    }
+
+    public void testGetPrevPage(){
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                                       .size());
+        ProductPage page2 = myCat.getNextPage(type, myCat.getFirstPage(type));
+        ProductPage page = myCat.getPrevPage(type, page2);
+        assertEquals(2, page2.getPageNum());
+        assertEquals(1, page.getPageNum());
+    }
+
+    public void testGetPrevPageNullCurrentPage(){
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                                       .size());
+        ProductPage page = myCat.getPrevPage(type, null);
+        assertNotNull(page);
+        assertNotNull(page.getPageProducts());
+        assertEquals(20, page.getPageProducts().size());
+        assertEquals(2, page.getTotalPages());
+        assertNotNull(page.getPageProducts().get(0));
+        Product retProd = page.getPageProducts().get(0);
+        assertEquals("test", retProd.getProductName());
+    }
+
+    public void testGetPrevPageCurrentPageIsFirstPage(){
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                                       .size());
+        ProductPage page = myCat.getPrevPage(type, myCat.getFirstPage(type));
+        assertNotNull(page);
+        assertNotNull(page.getPageProducts());
+        assertEquals(20, page.getPageProducts().size());
+        assertEquals(2, page.getTotalPages());
+        assertNotNull(page.getPageProducts().get(0));
+        Product retProd = page.getPageProducts().get(0);
+        assertEquals("test", retProd.getProductName());
+    }
+
+    public void testGetPrevPageNullProductType(){
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                                       .size());
+        ProductPage page2 = myCat.getNextPage(type, myCat.getFirstPage(type));
+        ProductPage page = myCat.getPrevPage(null, page2);
+        assertNull(page);
+
+    }
+
+    public void testGetTopNProductsByType() {
+
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        try {
+            assertNotNull(myCat.getTopNProducts(5, type));
+            assertEquals(5, myCat.getTopNProducts(5, type).size());
+            Product retProd = myCat.getTopNProducts(5, type).get(0);
+            assertEquals("test", retProd.getProductName());
+        } catch (CatalogException e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+        }
+
+    }
+
     /**
      * @since OODT-141
      */
@@ -369,7 +834,7 @@ public class TestLuceneCatalog extends TestCase {
         myCat.getTopNProducts(20);
       }
       catch(Exception e){
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         fail(e.getMessage());
       }
     }
@@ -381,7 +846,7 @@ public class TestLuceneCatalog extends TestCase {
             myCat.addProduct(testProduct);
             myCat.addMetadata(getTestMetadata("tempProduct"), testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -412,7 +877,7 @@ public class TestLuceneCatalog extends TestCase {
             myCat.addProduct(testProduct);
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -438,14 +903,14 @@ public class TestLuceneCatalog extends TestCase {
             myCat.addProduct(testProduct);
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
         try {
             myCat.removeMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -454,7 +919,7 @@ public class TestLuceneCatalog extends TestCase {
             String retValue = retMet.getMetadata("Filename");
             assertNull(retValue);
         } catch (CatalogException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
     }
@@ -477,7 +942,7 @@ public class TestLuceneCatalog extends TestCase {
                 myCat.addProduct(testProduct);
                 myCat.addMetadata(met, testProduct);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 fail(e.getMessage());
             }
     	}
@@ -488,7 +953,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		bqc.setOperator(BooleanQueryCriteria.AND);
     	}catch (Exception e){
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
     	}
     	TermQueryCriteria tqc = new TermQueryCriteria();
@@ -497,7 +962,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		bqc.addTerm(tqc);
     	}catch (Exception e){
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
     	}
     	tqc = new TermQueryCriteria();
@@ -506,7 +971,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		bqc.addTerm(tqc);
     	}catch (Exception e){
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
     	}
     	query.addCriterion(bqc);
@@ -516,7 +981,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		page = myCat.pagedQuery(query, testProduct.getProductType(), 1);
     	}catch (Exception e){
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
     	}
     	assertEquals(page.getPageProducts().size(), 1);
@@ -524,7 +989,25 @@ public class TestLuceneCatalog extends TestCase {
     	assertEquals(page.getPageNum(), 1);
     	assertEquals(page.getTotalPages(), 1);
     }
-	
+
+    public void testNullIndexPath(){
+        System.clearProperty("org.apache.oodt.cas.filemgr.catalog.lucene.idxPath");
+        Properties sysProps = System.getProperties();
+
+        try{
+            LuceneCatalogFactory fact = new LuceneCatalogFactory();
+            fail( "Missing exception" );
+
+        } catch( IllegalArgumentException e ) {
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("error initializing lucene catalog: "));
+        }
+    }
+
+    public void testCreateCatalogException(){
+
+        //TODO Use the TestAppender to make sure that an exception thrown is caught and logged.
+    }
+
     private static Product getTestProduct() {
         Product testProduct = Product.getDefaultFlatProduct("test",
                 "urn:oodt:GenericFile");

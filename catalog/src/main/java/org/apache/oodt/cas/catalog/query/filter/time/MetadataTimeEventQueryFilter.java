@@ -76,8 +76,9 @@ public class MetadataTimeEventQueryFilter extends QueryFilter<MetadataTimeEvent>
     }
 
     public void setConverter(VersionConverter converter) {
-        if (converter != null)
+        if (converter != null) {
             this.converter = converter;
+        }
     }
 
 	@Override
@@ -85,13 +86,15 @@ public class MetadataTimeEventQueryFilter extends QueryFilter<MetadataTimeEvent>
 		List<MetadataTimeEvent> timeEvents = new Vector<MetadataTimeEvent>();
 		for (TransactionalMetadata transactionalMetadata : metadataList) {
 			double priority = 0;
-			if (this.getPriorityMetKey() != null)
-				priority = Double.parseDouble(transactionalMetadata.getMetadata().getMetadata(this.priorityMetKey));
+			if (this.getPriorityMetKey() != null) {
+                priority = Double.parseDouble(transactionalMetadata.getMetadata().getMetadata(this.priorityMetKey));
+            }
 			long startTime = Long.parseLong(transactionalMetadata.getMetadata().getMetadata(this.startDateTimeMetKey));
 			String endTimeString = transactionalMetadata.getMetadata().getMetadata(this.endDateTimeMetKey);
 			long endTime = startTime;
-			if (endTimeString != null)
-				endTime = Long.parseLong(endTimeString);
+			if (endTimeString != null) {
+                endTime = Long.parseLong(endTimeString);
+            }
 			timeEvents.add(new MetadataTimeEvent(startTime, endTime, priority, transactionalMetadata));
 		}
 		return Collections.unmodifiableList(timeEvents);
@@ -100,8 +103,9 @@ public class MetadataTimeEventQueryFilter extends QueryFilter<MetadataTimeEvent>
 	@Override
 	protected List<TransactionalMetadata> filterTypeToMetadata(List<MetadataTimeEvent> filterObjects) {
 		List<TransactionalMetadata> metadataList = new Vector<TransactionalMetadata>();
-		for (MetadataTimeEvent timeEvent : filterObjects)
-			metadataList.add(timeEvent.getTimeObject());
+		for (MetadataTimeEvent timeEvent : filterObjects) {
+            metadataList.add(timeEvent.getTimeObject());
+        }
 		return Collections.unmodifiableList(metadataList);
 	}
 

@@ -31,7 +31,9 @@ public class FixedBufferOutputStream extends OutputStream {
 	 * @param n Size of the buffer.
 	 */
 	public FixedBufferOutputStream(int n) {
-		if (n < 0) throw new IllegalArgumentException("Buffer size must be nonnegative");
+		if (n < 0) {
+		  throw new IllegalArgumentException("Buffer size must be nonnegative");
+		}
 		buffer = new byte[n];
 		length = n;
 		size = 0;
@@ -40,10 +42,12 @@ public class FixedBufferOutputStream extends OutputStream {
 
 	public void write(int b) throws IOException {
 		checkIfClosed();
-		if (length == 0) return;
-		if (size < length)
-			buffer[size++] = (byte) b;
-		else {
+		if (length == 0) {
+		  return;
+		}
+		if (size < length) {
+		  buffer[size++] = (byte) b;
+		} else {
 			buffer[start] = (byte) b;
 			start = (start + 1) % length;
 		}
@@ -51,8 +55,9 @@ public class FixedBufferOutputStream extends OutputStream {
 
 	public void write(byte[] a, int off, int len) throws IOException {
 		checkIfClosed();
-		if (a == null) throw new NullPointerException("Can't write from a null array");
-		else if ((off < 0) || (off > a.length) || (len < 0) || ((off + len) > a.length) || ((off + len) < 0)) {
+		if (a == null) {
+		  throw new NullPointerException("Can't write from a null array");
+		} else if ((off < 0) || (off > a.length) || (len < 0) || ((off + len) > a.length) || ((off + len) < 0)) {
 			throw new IndexOutOfBoundsException("Offset " + off + " and length " + len + " not within array bounds");
 		} else if (len == 0) {
 			return;
@@ -69,8 +74,9 @@ public class FixedBufferOutputStream extends OutputStream {
 		if (remaining > 0) {
 			System.arraycopy(a, off + insertionLength, buffer, 0, remaining);
 			start = remaining;
-		} else if (capacity == 0)
-			start = insertionIndex + insertionLength;
+		} else if (capacity == 0) {
+		  start = insertionIndex + insertionLength;
+		}
 		size = Math.min(length, size + len);
 	}
 
@@ -102,7 +108,9 @@ public class FixedBufferOutputStream extends OutputStream {
 	 * @throws IOException If this stream has been closed.
 	 */
 	private void checkIfClosed() throws IOException {
-		if (start == -1) throw new IOException("Can't write to closed stream");
+		if (start == -1) {
+		  throw new IOException("Can't write to closed stream");
+		}
 	}
 
 	/** Length of the buffer. */

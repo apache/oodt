@@ -17,13 +17,7 @@
 
 package org.apache.oodt.grid;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.apache.oodt.product.HttpRedirectException;
 import org.apache.oodt.product.LargeProductQueryHandler;
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.QueryHandler;
@@ -32,40 +26,55 @@ import org.apache.oodt.xmlquery.LargeResult;
 import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Product query servlet handles product queries.  It always returns the first matching
  * product, if any.  If no handler can provide a product, it returns 404 Not Found.  If
  * there are no query handlers, it returns 404 Not Found.
- * 
+ *
  */
 public class ProductQueryServlet extends QueryServlet {
-	/** {@inheritDoc} */
+
+  public static final int INT = 512;
+
+  /** {@inheritDoc} */
 	protected List getServers(Configuration config) {
 		return config.getProductServers();
 	}
 
 	/** {@inheritDoc} */
 	protected void handleQuery(XMLQuery query, List handlers, HttpServletRequest req, HttpServletResponse res)
-		throws IOException, ServletException {
+		throws IOException {
 		if (handlers.isEmpty()) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND, "no query handlers available to handle query");
 			return;
 		}
 
 		try {								       // OK, let's try
-			for (Iterator i = handlers.iterator(); i.hasNext();) {	       // Try each query handler
-				QueryHandler handler = (QueryHandler) i.next();	       // Get the query handler
-				query = handler.query(query);			       // Give it the query
-				if (!query.getResults().isEmpty()) {		       // Did it give any result?
-					Result result = (Result) query.getResults().get(0); // Yes, get the result
-					deliverResult(handler, result, res);	       // And deliver it
-					return;					       // Done!
-				}
+		  for (Object handler1 : handlers) {           // Try each query handler
+			QueryHandler handler = (QueryHandler) handler1;           // Get the query handler
+			query = handler.query(query);                   // Give it the query
+			if (!query.getResults().isEmpty()) {               // Did it give any result?
+			  Result result = (Result) query.getResults().get(0); // Yes, get the result
+			  deliverResult(handler, result, res);           // And deliver it
+			  return;                           // Done!
 			}
+		  }
 		} catch (ProductException ex) {
-			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-			return;
+          if (ex instanceof HttpRedirectException) {
+            HttpRedirectException hre = (HttpRedirectException) ex;
+            res.sendRedirect(hre.getLocation());
+          } else {
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+          }
+          return;
 		}
 
 		res.sendError(HttpServletResponse.SC_NOT_FOUND, "no matching products from any query handler");
@@ -90,15 +99,20 @@ public class ProductQueryServlet extends QueryServlet {
 		BufferedInputStream in = null;					       // Start with no input stream
 		try {								       // Then try ...
 			in = new BufferedInputStream(result.getInputStream());	       // To open the input stream
-			byte[] buf = new byte[512];				       // And a byte buffer for data
+			byte[] buf = new byte[INT];				       // And a byte buffer for data
 			int num;						       // And a place to count data
 			while ((num = in.read(buf)) != -1)			       // While we read
-				res.getOutputStream().write(buf, 0, num);	       // We write
+			{
+			  res.getOutputStream().write(buf, 0, num);           // We write
+			}
 			res.getOutputStream().flush();				       // Flush to commit response
 		} finally {							       // And finally
-			if (in != null) try {					       // If we opened it
-				in.close();					       // Close it
-			} catch (IOException ignore) {}				       // Ignoring any error during closing
+			if (in != null) {
+			  try {                           // If we opened it
+				in.close();                           // Close it
+			  } catch (IOException ignore) {
+			  }                       // Ignoring any error during closing
+			}
 		}								       // Because come on, it's just closing!
 	}									       // For fsck's sake!
 
@@ -112,10 +126,13 @@ public class ProductQueryServlet extends QueryServlet {
 		String contentType = result.getMimeType();			       // Grab the content type
 		res.setContentType(contentType);				       // Set it
 		long size = result.getSize();					       // Grab the size
-		if (size >= 0)
-			res.addHeader("Content-Length", String.valueOf(size));	       // Don't use setContentLength(int)
+		if (size >= 0) {
+		  res.addHeader("Content-Length", String.valueOf(size));           // Don't use setContentLength(int)
+		}
 		if (!displayable(contentType))					       // Finally, if a browser can't show it
-			this.suggestFilename(handler, result, res);		       // Then suggest a save-as filename
+		{
+		  this.suggestFilename(handler, result, res);               // Then suggest a save-as filename
+		}
 	}
 
 	/**
@@ -126,8 +143,11 @@ public class ProductQueryServlet extends QueryServlet {
 	 * @return a <code>boolean</code> value.
 	 */
 	protected static boolean displayable(String contentType) {
-		for (int i = 0; i < DISPLAYABLE_TYPES.length; ++i)		       // For each displayable type
-			if (DISPLAYABLE_TYPES[i].equals(contentType)) return true;     // Does it match?
+	  for (String DISPLAYABLE_TYPE : DISPLAYABLE_TYPES) {
+		if (DISPLAYABLE_TYPE.equals(contentType)) {
+		  return true;     // Does it match?
+		}
+	  }
 		return false;							       // None of 'em do, it's not displayable
 	}
 
@@ -140,7 +160,9 @@ public class ProductQueryServlet extends QueryServlet {
 	protected void suggestFilename(QueryHandler handler, Result result, HttpServletResponse res) {
 		
 		String resource = result.getResourceID();
-		if (resource == null || resource.length() == 0) resource = "product.dat";
+		if (resource == null || resource.length() == 0) {
+		  resource = "product.dat";
+		}
 		
 		// suggest some names based on resource mime type
 		String contentType = res.getContentType();
@@ -193,7 +215,7 @@ public class ProductQueryServlet extends QueryServlet {
 		}
 
 		/** {@inheritDoc} */
-		public void close(String id) throws ProductException {
+		public void close(String id) {
 			handler.close(id);
 		}
 

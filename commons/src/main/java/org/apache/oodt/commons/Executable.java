@@ -18,7 +18,6 @@
 package org.apache.oodt.commons;
 
 import java.io.*;
-import java.util.*;
 
 /** An executable object.
  *
@@ -29,7 +28,10 @@ import java.util.*;
  * @author Kelly
  */
 public abstract class Executable {
-	/** Construct an executable.
+
+  public static final int INT = 1024;
+
+  /** Construct an executable.
 	 */
 	public Executable() {}
 
@@ -71,7 +73,7 @@ public abstract class Executable {
 				new Thread() {
 					public void run() {
 						try {
-							byte[] buf = new byte[1024];
+							byte[] buf = new byte[INT];
 							for (;;) {
 								int numRead = in.read(buf);
 								if (numRead == -1) {
@@ -91,8 +93,9 @@ public abstract class Executable {
 		}.start();
 
 		// Spin until the process field is set.
-		while (process == null)
-			Thread.yield();
+		while (process == null) {
+		  Thread.yield();
+		}
 	}
 
 	/** Wait for the process to terminate.

@@ -18,15 +18,16 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
 import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -38,12 +39,12 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
  * The TaskRunner thread first pops a task off the list using
  * {@link TaskQuerier#getNext()} and then so long as the thread's
  * {@link #runner} has open slots as returned by
- * {@link EngineRunner#hasOpenSlots(WorkflowTask)}, and {@link #isPause()} is
+ * , and  is
  * false and {@link #isRunning()} is true, then the task is handed off to the
  * runner for execution.
  * 
  * The TaskRunner thread can be paused during which time it waits
- * {@link #waitSeconds} seconds, wakes up to see if it's unpaused, and then goes
+ *  seconds, wakes up to see if it's unpaused, and then goes
  * back to sleep if not, otherwise, resumes executing if it was unpaused.
  * 
  * @since Apache OODT 0.5
@@ -78,7 +79,7 @@ public class TaskRunner implements Runnable {
    */
   @Override
   public void run() {
-    TaskProcessor nextTaskProcessor = null;
+    TaskProcessor nextTaskProcessor;
 
     while (running) {
       nextTaskProcessor = taskQuerier.getNext();
@@ -88,14 +89,12 @@ public class TaskRunner implements Runnable {
           runner.execute(nextTaskProcessor);
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(
             Level.SEVERE,
             "Engine failed while submitting jobs to its runner : "
                 + e.getMessage(), e);
-        if (nextTaskProcessor != null) {
-          this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());
-        }
+        this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());
       }
     }
 

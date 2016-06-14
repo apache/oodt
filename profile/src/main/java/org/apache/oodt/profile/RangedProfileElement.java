@@ -18,15 +18,15 @@
 
 package org.apache.oodt.profile;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
+
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Ranged profile element.

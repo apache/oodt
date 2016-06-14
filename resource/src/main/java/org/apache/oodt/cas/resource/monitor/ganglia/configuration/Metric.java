@@ -17,7 +17,7 @@
 
 package org.apache.oodt.cas.resource.monitor.ganglia.configuration;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author rajith
@@ -44,7 +44,7 @@ public class Metric {
     private String dmax;
     private String slope;
     private String source;
-    private HashMap<String, String> extraData;
+    private ConcurrentHashMap<String, String> extraData;
 
     public Metric(String name, String value, String valueType, String units,
                   String tn, String tmax, String dmax, String slope, String source) {
@@ -96,11 +96,11 @@ public class Metric {
         return source;
     }
 
-    public HashMap<String, String> getExtraData() {
+    public ConcurrentHashMap<String, String> getExtraData() {
         return extraData;
     }
 
-    public void setExtraData(HashMap<String, String> extraData) {
+    public void setExtraData(ConcurrentHashMap<String, String> extraData) {
         this.extraData = extraData;
     }
 }

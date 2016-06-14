@@ -46,7 +46,7 @@ public interface MetExtractorConfigReader {
      * @throws MetExtractorConfigReaderException
      *             If any error occurs
      */
-    public MetExtractorConfig parseConfigFile(File configFile)
+    MetExtractorConfig parseConfigFile(File configFile)
             throws MetExtractorConfigReaderException;
 
 }

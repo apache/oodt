@@ -18,14 +18,16 @@
 package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
 //APACHE imports
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * 
@@ -56,19 +58,20 @@ public class MetadataKeyReplacerTemplateWriter extends
    */
   @Override
   public File generateFile(String filePath, Metadata metadata, Logger logger,
-      Object... args) throws Exception {
+      Object... args) throws IOException {
     String templateFile = (String) args[0];
     String processedTemplate = FileUtils
         .readFileToString(new File(templateFile));
     String separator = args.length == 2 ? (String) args[1] : DEFAULT_SEPARATOR;
 
     for (String key : metadata.getAllKeys()) {
-      String replaceVal = null;
+      String replaceVal;
       if (metadata.isMultiValued(key)) {
         List<String> values = metadata.getAllMetadata(key);
         replaceVal = StringUtils.join(values, separator);
-      } else
+      } else {
         replaceVal = metadata.getMetadata(key);
+      }
       processedTemplate = processedTemplate.replaceAll("\\$" + key, replaceVal);
     }
 

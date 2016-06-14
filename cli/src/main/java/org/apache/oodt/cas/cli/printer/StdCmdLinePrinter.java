@@ -16,36 +16,19 @@
  */
 package org.apache.oodt.cas.cli.printer;
 
-//OODT static imports
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.asGroupOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineOptional;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRelevantSubOptions;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequired;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequiredSubOptions;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.getFormattedString;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.isGroupOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortActions;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortOptions;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortOptionsByRequiredStatus;
 
-//JDK imports
+import com.google.common.collect.Lists;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.cli.action.CmdLineAction;
+import org.apache.oodt.cas.cli.option.*;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
+
 import java.util.List;
 import java.util.Set;
 
-//Apache imports
-import org.apache.commons.lang.StringUtils;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.*;
 
-//OODT imports
-import org.apache.oodt.cas.cli.action.CmdLineAction;
-import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
-import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
-import org.apache.oodt.cas.cli.option.CmdLineOption;
-import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
-import org.apache.oodt.cas.cli.option.GroupSubOption;
-import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
-
-//Google imports
-import com.google.common.collect.Lists;
 
 /**
  * Standard {@link CmdLinePrinter}.
@@ -57,13 +40,8 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    @Override
    public String printActionHelp(CmdLineAction action,
          Set<CmdLineOption> options) {
-      StringBuffer sb = new StringBuffer("");
-      sb.append(getHeader(action)).append("\n");
-      sb.append(getDescription(action)).append("\n");
-      sb.append(getUsage(action, options)).append("\n");
-      sb.append(getExamples(action)).append("\n");
-      sb.append(getFooter(action)).append("\n");
-      return sb.toString();
+      return "" + getHeader(action) + "\n" + getDescription(action) + "\n" + getUsage(action, options) + "\n"
+             + getExamples(action) + "\n" + getFooter(action) + "\n";
    }
 
    protected String getHeader(CmdLineAction action) {
@@ -71,7 +49,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    }
 
    protected String getDescription(CmdLineAction action) {
-      StringBuffer sb = new StringBuffer("> DESCRIPTION:\n");
+      StringBuilder sb = new StringBuilder("> DESCRIPTION:\n");
       if (action.getDetailedDescription() != null) {
          sb.append(" ").append(action.getDetailedDescription()
                .replaceAll("^\\s*", "").replaceAll("\\s*$", ""));
@@ -86,7 +64,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    }
 
    protected String getUsage(CmdLineAction action, Set<CmdLineOption> options) {
-      StringBuffer sb = new StringBuffer("> USAGE:\n");
+      StringBuilder sb = new StringBuilder("> USAGE:\n");
       sb.append(getRequiredSubHeader()).append("\n");
       Set<CmdLineOption> requiredOptions = determineRequired(action, options);
       List<CmdLineOption> sortedRequiredOptions = sortOptions(requiredOptions);
@@ -130,7 +108,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    }
 
    protected String getExamples(CmdLineAction action) {
-      StringBuffer sb = new StringBuffer("> EXAMPLES:\n");
+      StringBuilder sb = new StringBuilder("> EXAMPLES:\n");
       if (action.getExamples() != null) {
          sb.append(" ").append(action.getExamples().replaceAll("^\\s*", "")
                .replaceAll("\\s*$", ""));
@@ -152,7 +130,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
                .getArgDescription(action, option);
       }
 
-      String argHelp = null;
+      String argHelp;
       if (option instanceof ActionCmdLineOption && option.hasArgs()) {
          argHelp = " " + action.getName();
       } else {
@@ -166,42 +144,39 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
 
    protected String getGroupHelp(CmdLineAction action,
          GroupCmdLineOption option, String indent) {
-      String helpString = getOptionHelp(action, option, indent);
+      StringBuilder helpString = new StringBuilder(getOptionHelp(action, option, indent));
       Set<CmdLineOption> subOptions = determineRequiredSubOptions(action,
-            (GroupCmdLineOption) option);
+          option);
       if (subOptions.isEmpty()) {
          if (!option.getSubOptions().isEmpty()) {
-            helpString += "\n" + indent + "  One of:";
+            helpString.append("\n").append(indent).append("  One of:");
             for (GroupSubOption subOption : option.getSubOptions()) {
-               helpString += "\n"
-                     + getOptionHelp(action, subOption.getOption(), "   "
-                           + indent);
+               helpString.append("\n").append(getOptionHelp(action, subOption.getOption(), "   "
+                                                                                           + indent));
             }
          }
       } else {
          for (CmdLineOption subOption : determineRelevantSubOptions(action,
                option)) {
-            helpString += "\n";
+            helpString.append("\n");
             if (subOption instanceof GroupCmdLineOption) {
-               helpString += getGroupHelp(action,
-                     (GroupCmdLineOption) subOption, "  " + indent);
+               helpString.append(getGroupHelp(action,
+                     (GroupCmdLineOption) subOption, "  " + indent));
             } else {
-               helpString += getOptionHelp(action, subOption, "  " + indent);
+               helpString.append(getOptionHelp(action, subOption, "  " + indent));
             }
-            helpString += " "
-                  + (subOptions.contains(subOption) ? "(required)"
-                        : "(optional)");
+            helpString.append(" ").append(subOptions.contains(subOption) ? "(required)"
+                                                                         : "(optional)");
          }
       }
-      return helpString;
+      return helpString.toString();
    }
 
    @Override
    public String printActionsHelp(Set<CmdLineAction> actions) {
-      StringBuffer sb = new StringBuffer("");
+      StringBuilder sb = new StringBuilder("");
       sb.append("-----------------------------------------------------------------------------------------------------------------\n");
-      sb.append("|" + StringUtils.rightPad(" Action", 35) + "|"
-            + " Description\n");
+      sb.append("|").append(StringUtils.rightPad(" Action", 35)).append("|").append(" Description\n");
       sb.append("-----------------------------------------------------------------------------------------------------------------\n");
       for (CmdLineAction action : sortActions(actions)) {
          sb.append("  ").append(StringUtils.rightPad(action.getName(), 35));
@@ -213,7 +188,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
 
    @Override
    public String printOptionsHelp(Set<CmdLineOption> options) {
-      StringBuffer sb = new StringBuffer("");
+      StringBuilder sb = new StringBuilder("");
       List<CmdLineOption> sortedOptions = sortOptionsByRequiredStatus(options);
       sb.append(getHeader()).append("\n");
       for (CmdLineOption option : sortedOptions) {
@@ -224,12 +199,11 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    }
 
    protected String getHeader() {
-      StringBuffer sb = new StringBuffer("");
-      sb.append("-----------------------------------------------------------------------------------------------------------------\n");
-      sb.append("|" + StringUtils.rightPad(" Short", 7) + "|"
-            + StringUtils.rightPad(" Long", 50) + "| Description\n");
-      sb.append("-----------------------------------------------------------------------------------------------------------------\n");
-      return sb.toString();
+      return ""
+             + "-----------------------------------------------------------------------------------------------------------------\n"
+             + "|" + StringUtils.rightPad(" Short", 7) + "|"
+             + StringUtils.rightPad(" Long", 50) + "| Description\n"
+             + "-----------------------------------------------------------------------------------------------------------------\n";
    }
 
    protected String getOptionHelp(CmdLineOption option, String indent) {
@@ -290,7 +264,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
 
    @Override
    public String printOptionValidationErrors(List<Result> results) {
-      StringBuffer sb = new StringBuffer("Validation Failures:");
+      StringBuilder sb = new StringBuilder("Validation Failures:");
       for (Result result : results) {
          sb.append(" - ").append(result.getMessage()).append("\n");
       }
@@ -300,7 +274,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    @Override
    public String printRequiredOptionsMissingError(
          Set<CmdLineOption> missingOptions) {
-      StringBuffer sb = new StringBuffer("Missing required options:\n");
+      StringBuilder sb = new StringBuilder("Missing required options:\n");
       for (CmdLineOption option : missingOptions) {
          sb.append(" - ").append(option.toString()).append("\n");
       }
@@ -309,7 +283,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
 
    @Override
    public String printActionMessages(List<String> messages) {
-      StringBuffer sb = new StringBuffer("");
+      StringBuilder sb = new StringBuilder("");
       for (String message : messages) {
          sb.append(message);
       }

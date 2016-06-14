@@ -33,7 +33,9 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public class LongTask implements WorkflowTaskInstance {
 
-	/**
+  public static final long LONG = 10L;
+
+  /**
 	 * 
 	 */
 	public LongTask() {
@@ -48,7 +50,7 @@ public class LongTask implements WorkflowTaskInstance {
 	public void run(Metadata metadata, WorkflowTaskConfiguration config) {
 		//simulate that this job takes a passed in amount of seconds to execute for
 		
-		long waitSeconds = (String)metadata.getMetadata("numSeconds") != null ? Long.parseLong((String)metadata.getMetadata("numSeconds")):10L;
+		long waitSeconds = (String)metadata.getMetadata("numSeconds") != null ? Long.parseLong((String)metadata.getMetadata("numSeconds")): LONG;
 		System.out.println("Task: Num seconds: "+waitSeconds);
 		
 		  try{

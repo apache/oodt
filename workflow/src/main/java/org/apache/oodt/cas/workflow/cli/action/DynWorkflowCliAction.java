@@ -52,7 +52,7 @@ public class DynWorkflowCliAction extends WorkflowCliAction {
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to submit dynamic workflow for taskIds " + taskIds
-                     + " with metadata " + metadata.getHashtable() + " : "
+                     + " with metadata " + metadata.getMap() + " : "
                      + e.getMessage(), e);
       }
    }

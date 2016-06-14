@@ -24,7 +24,7 @@ package org.apache.oodt.cas.cli.util;
 public class ParsedArg {
 
    public enum Type {
-      OPTION, VALUE;
+      OPTION, VALUE
    }
 
    private String name;

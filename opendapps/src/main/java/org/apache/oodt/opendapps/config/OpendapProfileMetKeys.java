@@ -24,13 +24,13 @@ package org.apache.oodt.opendapps.config;
  */
 public interface OpendapProfileMetKeys {
 	
-	 public static final String VARIABLES = "Variables";
+	 String VARIABLES = "Variables";
 	 
-	 public static final String COORDINATES = "Coordinates";
+	 String COORDINATES = "Coordinates";
 	 
-	 public static final String VARIABLES_LONG_NAMES = "Variable Long Names";
+	 String VARIABLES_LONG_NAMES = "Variable Long Names";
 	 
-	 public static final String CF_STANDARD_NAMES = "CF Standard Names";
+	 String CF_STANDARD_NAMES = "CF Standard Names";
 	 
 
 }

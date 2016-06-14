@@ -17,14 +17,8 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 //OODT imports
+
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
@@ -32,6 +26,13 @@ import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -45,7 +46,7 @@ import org.apache.tika.mime.MimeTypesFactory;
  * 
  */
 public class Reference {
-
+    private static Logger LOG = Logger.getLogger(Reference.class.getName());
     /* the item's original location */
     private String origReference = null;
 
@@ -118,7 +119,7 @@ public class Reference {
         try {
             this.mimeType = mimeTypeRepository.forName(new Tika().detect(origRef));
         } catch (MimeTypeException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -212,13 +213,14 @@ public class Reference {
      *            the String name of the mimetype of this reference
      */
     public void setMimeType(String name) {
-        if(name == null || (name != null && 
-            name.equals(""))) return;
+        if(name == null || (name.equals(""))) {
+            return;
+        }
         
         try {
           this.mimeType = mimeTypeRepository.forName(name);
         } catch (MimeTypeException e) {
-           e.printStackTrace();
+           LOG.log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -228,17 +230,8 @@ public class Reference {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("[orig=");
-        buf.append(this.origReference);
-        buf.append(",dest=");
-        buf.append(this.dataStoreReference);
-        buf.append(",size=");
-        buf.append(this.fileSize);
-        buf.append(",mime=");
-        buf.append(this.mimeType != null ? this.mimeType.toString() : "N/A");
-        buf.append("]");
-        return buf.toString();
+        return "[orig=" + this.origReference + ",dest=" + this.dataStoreReference + ",size=" + this.fileSize + ",mime="
+               + (this.mimeType != null ? this.mimeType.toString() : "N/A") + "]";
     }
 
 }

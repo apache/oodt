@@ -22,6 +22,7 @@ import java.util.List;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 
 /**
  * A {@link CmdLineAction} which get the current list of workflows by
@@ -34,20 +35,31 @@ public class GetWorkflowsByEventCliAction extends WorkflowCliAction {
    private String eventName;
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
+      
+	   try {
          @SuppressWarnings("unchecked")
          List<Workflow> workflows = getClient().getWorkflowsByEvent(eventName);
 
          if (workflows == null) {
             throw new Exception("WorkflowManager returned null workflow list");
          }
+         
          for (Workflow workflow : workflows) {
+        	 
+             StringBuilder taskIds = new StringBuilder();
+             for (WorkflowTask wt : workflow.getTasks()) {
+            	 if (taskIds.length()>0) {
+                   taskIds.append(", ");
+                 }
+            	 taskIds.append(wt.getTaskId());
+             }
+        	 
             printer.println("Workflow: [id=" + workflow.getId() + ", name="
                   + workflow.getName() + ", numTasks="
-                  + workflow.getTasks().size() + "]");
+                  + workflow.getTasks().size() + ", taskIds="+taskIds.toString() + "]");
          }
+         
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to get workflows by event name '" + eventName + "' : "
@@ -58,4 +70,5 @@ public class GetWorkflowsByEventCliAction extends WorkflowCliAction {
    public void setEventName(String eventName) {
       this.eventName = eventName;
    }
+   
 }

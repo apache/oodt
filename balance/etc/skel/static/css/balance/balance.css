@@ -65,19 +65,19 @@ html,body {
 }
 
 h1, h2, h3, h4, h5 {
-    margin:10px 0px;
+    margin:10px 0;
 }
 
 h1 {
     font-size:2.1em;
     font-weight:bold;
-    margin:15px 0px;
+    margin:15px 0;
 }
 
 h2 {
     font-size:1.8em;
     font-weight:bold;
-    margin:12px 0px;
+    margin:12px 0;
 }
 
 h3 {

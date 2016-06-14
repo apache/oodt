@@ -1,0 +1,72 @@
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#login{
+    text-align: center;
+    display: block;
+}
+
+#login_form{
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+}
+
+#centered{
+	width:90%; 
+    margin-left:15%; 
+    margin-right:15%;
+}
+#invalid_creds{
+	align:center;
+	margin:0;
+	margin-bottom:5px;
+	width:230px;
+	font-size:90%;
+}
+
+#connect_error{
+	align:center;
+	margin:0;
+	margin-bottom:5px;
+	width:230px;
+	font-size:90%;
+}
+
+#spacer{
+    align:center;
+    margin:0;
+    margin-bottom:5px;
+    width:230px;
+    font-size:90%;
+}
+
+#section_title{
+	 width: auto; 
+	 font-size: 22px; 
+	 font-weight: bold; 
+	 margin-top: 24px; 
+	 text-align: center;
+}
+
+#password_txt{
+	text-align:right;
+}
+
+#username_txt{
+	text-align:right;
+}

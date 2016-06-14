@@ -29,8 +29,8 @@ package org.apache.oodt.cas.pushpull.expressions;
  */
 public interface ValidInput {
 
-    public Object getValue();
+    Object getValue();
 
-    public String toString();
+    String toString();
 
 }

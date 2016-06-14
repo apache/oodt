@@ -18,11 +18,11 @@ package org.apache.oodt.cas.crawl;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.extractors.MetReaderExtractor;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
 
 /**
  * A generic Product Crawler for Products. The Crawler is given a root Product
@@ -50,7 +50,7 @@ public class StdProductCrawler extends ProductCrawler {
    }
 
    @Override
-   protected Metadata getMetadataForProduct(File product) throws Exception {
+   protected Metadata getMetadataForProduct(File product) throws MetExtractionException {
       MetReaderExtractor extractor = new MetReaderExtractor(
             this.metFileExtension);
       return extractor.extractMetadata(product);

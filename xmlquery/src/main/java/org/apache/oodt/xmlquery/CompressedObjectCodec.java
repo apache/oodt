@@ -54,7 +54,7 @@ class CompressedObjectCodec implements Codec {
 			ObjectOutputStream objStream = new ObjectOutputStream(gzip);
 			objStream.writeObject(object);
 			objStream.close();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		Element value = doc.createElement("resultValue");
 		value.appendChild(doc.createCDATASection(byteArray.toString()));
 		return value;
@@ -63,10 +63,11 @@ class CompressedObjectCodec implements Codec {
 	public Object decode(Node node) throws ClassNotFoundException, InvalidClassException, StreamCorruptedException,
 		OptionalDataException {
 		String encodedValue;
-		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE)
-			encodedValue = node.getFirstChild().getNodeValue();
-		else
-			encodedValue = XML.text(node);
+		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE) {
+		  encodedValue = node.getFirstChild().getNodeValue();
+		} else {
+		  encodedValue = XML.text(node);
+		}
 		Object rc = null;
 		try {
 			ByteArrayInputStream byteArray = new ByteArrayInputStream(encodedValue.getBytes());
@@ -81,7 +82,7 @@ class CompressedObjectCodec implements Codec {
 			throw ex;
 		} catch (OptionalDataException ex) {
 			throw ex;
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		return rc;
 	}
 

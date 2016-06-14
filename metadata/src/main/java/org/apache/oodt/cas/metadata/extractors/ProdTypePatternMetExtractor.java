@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -152,17 +152,17 @@ public class ProdTypePatternMetExtractor extends CmdLineMetExtractor {
         /*
          * full file name reg exp => prod type
          */
-        private final Map<Pattern, String> prodTypePatterns = new HashMap<Pattern, String>();
+        private final Map<Pattern, String> prodTypePatterns = new ConcurrentHashMap<Pattern, String>();
 
         /*
          * prod type => list of met elements in the file name
          */
-        private final Map<String, List<String>> prodTypeElements = new HashMap<String, List<String>>();
+        private final Map<String, List<String>> prodTypeElements = new ConcurrentHashMap<String, List<String>>();
 
         /*
          * met elements => element reg exp patterns
          */
-        private final Map<String, Pattern> elementPatterns = new HashMap<String, Pattern>();
+        private final Map<String, Pattern> elementPatterns = new ConcurrentHashMap<String, Pattern>();
 
 
         Map<Pattern, String> getProdTypePatterns() {

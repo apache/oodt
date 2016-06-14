@@ -19,27 +19,34 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-import javax.sql.DataSource;
 
-//OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-import org.apache.oodt.commons.database.SqlScript;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.database.SqlScript;
 
-//Junit imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.sql.DataSource;
+
 import junit.framework.TestCase;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author mattmann
@@ -52,6 +59,7 @@ import junit.framework.TestCase;
  */
 public class TestDataSourceCatalog extends TestCase {
 
+    private static Logger LOG = Logger.getLogger(TestDataSourceCatalog.class.getName());
     protected Catalog myCat;
 
     private String tmpDirPath = null;
@@ -71,7 +79,7 @@ public class TestDataSourceCatalog extends TestCase {
         properties.setProperty("java.util.logging.config.file", new File(
             loggingPropertiesUrl.getFile()).getAbsolutePath());
 
-        if(properties.getProperty("overrideProperties") == null){
+        if(properties.getProperty("overrideProperties") == null) {
 
             try {
                 URL filemgrPropertiesUrl = this.getClass().getResource(
@@ -83,42 +91,45 @@ public class TestDataSourceCatalog extends TestCase {
             }
 
 
-        // first load the example configuration
+            // first load the example configuration
 
 
-        // get a temp directory
-        File tempDir = null;
-        File tempFile = null;
+            // get a temp directory
+            File tempDir = null;
+            File tempFile;
 
-        try {
-            tempFile = File.createTempFile("foo", "bar");
-            tempFile.deleteOnExit();
-            tempDir = tempFile.getParentFile();
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+            try {
+                tempFile = File.createTempFile("foo", "bar");
+                tempFile.deleteOnExit();
+                tempDir = tempFile.getParentFile();
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
 
-        tmpDirPath = tempDir.getAbsolutePath();
-        if (!tmpDirPath.endsWith("/")) {
-            tmpDirPath += "/";
-        }
+            tmpDirPath = tempDir.getAbsolutePath();
+            if (!tmpDirPath.endsWith("/")) {
+                tmpDirPath += "/";
+            }
 
-        tmpDirPath += "testCat";
+            tmpDirPath += "testCat";
 
-        // now override the catalog ones
-        properties.setProperty(
+            // now override the catalog ones
+            properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url",
                 "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
 
-        properties.setProperty(
+            properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user",
                 "sa");
-        properties.setProperty(
+            properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass",
                 "");
-        properties.setProperty(
+            properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
                 "org.hsqldb.jdbcDriver");
+            properties.setProperty(
+                "org.apache.oodt.cas.filemgr.catalog.datasource.lenientFields",
+                "false");
         }
         else{
             try {
@@ -166,8 +177,8 @@ public class TestDataSourceCatalog extends TestCase {
             File[] tmpFiles = tmpDir.listFiles();
 
             if (tmpFiles != null && tmpFiles.length > 0) {
-                for (int i = 0; i < tmpFiles.length; i++) {
-                    tmpFiles[i].delete();
+                for (File tmpFile : tmpFiles) {
+                    tmpFile.delete();
                 }
 
                 tmpDir.delete();
@@ -261,7 +272,7 @@ public class TestDataSourceCatalog extends TestCase {
         Product testProd = getTestProduct();
         Metadata met = getTestMetadata("test");
 
-        for (int i = 0; i < this.catPageSize; i++) {
+        for (int i = 0; i < catPageSize; i++) {
             try {
                 myCat.addProduct(testProd);
                 myCat.addMetadata(met, testProd);
@@ -314,7 +325,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addProduct(testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -346,7 +357,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -372,14 +383,14 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
         try {
             myCat.removeMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -390,6 +401,37 @@ public class TestDataSourceCatalog extends TestCase {
         } catch (CatalogException e) {
             fail(e.getMessage());
         }
+    }
+
+    public void testAddProductReferences() {
+
+        Product testProduct = getTestProduct();
+        testProduct.setProductId("1"); // need to link reference to prod
+
+        Reference ref = new Reference();
+
+        ref.setMimeType("text/plain");
+        ref.setFileSize(12345);
+        List<Reference> refs = new ArrayList<Reference>();
+        refs.add(ref);
+        testProduct.setProductReferences(refs);
+        try {
+            myCat.addProductReferences(testProduct);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            fail(e.getMessage());
+        }
+
+        try {
+            List<Reference> productReferences = myCat.getProductReferences(testProduct);
+            assertNotNull(productReferences);
+            assertFalse(productReferences.isEmpty());
+            assertEquals(productReferences.get(0).getMimeType().getName(), "text/plain");
+            assertEquals(productReferences.get(0).getFileSize(), 12345);
+        } catch (CatalogException e) {
+            fail(e.getMessage());
+        }
+
     }
 
     public void testQuery() throws Exception {
@@ -453,6 +495,59 @@ public class TestDataSourceCatalog extends TestCase {
         assertEquals("[24, 23]", productIds.toString());
     }
 
+    public void testNullValidationLayer(){
+
+        setUpProperties();
+        System.setProperty(
+            "org.apache.oodt.cas.filemgr.catalog.datasource.lenientFields",
+            "true");
+        myCat = getCatalog();
+        // now create the basic schema for the DB
+        createSchema();
+
+        assertThat(myCat, instanceOf(LenientDataSourceCatalog.class));
+
+    }
+
+    public void testPassDatasource(){
+        String url = System
+            .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url");
+        String user = System
+            .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user");
+        String pass = System
+            .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass");
+        String driver = System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver");
+
+        DataSource ds = DatabaseConnectionBuilder.buildDataSource(user,pass,driver,url);
+
+        myCat = new DataSourceCatalogFactory(ds).createCatalog();
+
+        Product testProduct = getTestProduct();
+        try {
+            myCat.addProduct(testProduct);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            fail(e.getMessage());
+        }
+
+        Product retProduct;
+        try {
+            retProduct = myCat.getProductByName("test");
+            assertNotNull(retProduct);
+            assertEquals("test", retProduct.getProductName());
+            assertEquals(Product.STRUCTURE_FLAT, retProduct
+                .getProductStructure());
+            assertNotNull(retProduct.getProductType());
+            assertEquals("urn:oodt:GenericFile", retProduct.getProductType()
+                                                           .getProductTypeId());
+            assertEquals(Product.STATUS_TRANSFER, retProduct
+                .getTransferStatus());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+
+    }
     protected String getSchemaPath() {
         URL url = this.getClass().getResource(
           "/testcat.sql");
@@ -486,13 +581,13 @@ public class TestDataSourceCatalog extends TestCase {
             coreSchemaScript.loadScript();
             coreSchemaScript.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
     }
 
-    private static Product getTestProduct() {
+    protected static Product getTestProduct() {
         Product testProduct = Product.getDefaultFlatProduct("test",
                 "urn:oodt:GenericFile");
         testProduct.getProductType().setName("GenericFile");

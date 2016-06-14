@@ -35,11 +35,23 @@ public class GetTaskByIdCliAction extends WorkflowCliAction {
          throws CmdLineActionException {
       try {
          WorkflowTask task = getClient().getTaskById(taskId);
-         printer.println("Task: [id=" + task.getTaskId() + ", name="
-               + task.getTaskName() + ", order=" + task.getOrder() + ", class="
-               + task.getClass().getName() + ", numConditions="
-               + task.getConditions().size() + ", configuration="
-               + task.getTaskConfig().getProperties() + "]");
+         
+         StringBuilder requiredMetFields = new StringBuilder();
+        for (Object o : task.getRequiredMetFields()) {
+          if (requiredMetFields.length() > 0) {
+            requiredMetFields.append(", ");
+          }
+          requiredMetFields.append((String) o);
+        }
+         
+         printer.println("Task: [id=" + task.getTaskId() 
+               + ", name=" + task.getTaskName() 
+               + ", order=" + task.getOrder() 
+               + ", class=" + task.getClass().getName() 
+               + ", numConditions=" + task.getConditions().size() 
+               + ", requiredMetadataFields=[" + requiredMetFields.toString()+"]"
+               + ", configuration="+ task.getTaskConfig().getProperties() + "]");
+         
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to get task by id for taskId '" + taskId + "' : "

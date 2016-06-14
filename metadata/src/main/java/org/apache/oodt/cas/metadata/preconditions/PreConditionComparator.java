@@ -23,7 +23,6 @@ import java.io.File;
 
 //OODT imports
 import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
-import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 import static org.apache.oodt.cas.metadata.preconditions.PreConditionOperatorMetKeys.*;
@@ -39,7 +38,7 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  * <p>
  * The abstract base class for evaluating {@link PreCondition} checks for
- * running a {@link MetExtractor}
+ * running a {@link org.apache.oodt.cas.metadata.MetExtractor}
  * </p>.
  */
 public abstract class PreConditionComparator<CompareType> implements SpringSetIdInjectionType {
@@ -64,9 +63,10 @@ public abstract class PreConditionComparator<CompareType> implements SpringSetId
     
     public boolean passes(File product) {
         try {
-            if (fileExtension != null)
+            if (fileExtension != null) {
                 product = new File(product.getAbsolutePath() + "."
-                        + this.fileExtension);
+                                   + this.fileExtension);
+            }
             return eval(this.type, this.performCheck(product, this.compareItem));
         } catch (Exception e) {
             return false;
@@ -101,14 +101,15 @@ public abstract class PreConditionComparator<CompareType> implements SpringSetId
     private static boolean eval(String opKey, int preconditionResult)
             throws MetExtractionException {
         opKey = opKey.toUpperCase();
-        if (preconditionResult == 0)
+        if (preconditionResult == 0) {
             return EQUAL_TO.equals(opKey);
-        else if (preconditionResult > 0)
+        } else if (preconditionResult > 0) {
             return NOT_EQUAL_TO.equals(opKey) || GREATER_THAN.equals(opKey);
-        else if (preconditionResult < 0)
+        } else if (preconditionResult < 0) {
             return NOT_EQUAL_TO.equals(opKey) || LESS_THAN.equals(opKey);
-        else
+        } else {
             throw new MetExtractionException("evalType is not a valid type");
+        }
     }
 
 }

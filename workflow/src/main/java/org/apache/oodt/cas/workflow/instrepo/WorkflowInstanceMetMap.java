@@ -23,7 +23,6 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -51,8 +50,8 @@ public final class WorkflowInstanceMetMap implements WorkflowInstanceMetMapKeys{
 
     public void addWorkflowToMap(String id, List fields) {
         if (fields != null && fields.size() > 0) {
-            for (Iterator i = fields.iterator(); i.hasNext();) {
-                String fld = (String) i.next();
+            for (Object field : fields) {
+                String fld = (String) field;
                 addFieldToWorkflow(id, fld);
             }
         }
@@ -71,7 +70,7 @@ public final class WorkflowInstanceMetMap implements WorkflowInstanceMetMapKeys{
     }
 
     public List getWorkflows() {
-        return Arrays.asList(map.getHashtable().keySet().toArray());
+        return Arrays.asList(map.getMap().keySet().toArray());
     }
 
 }

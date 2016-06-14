@@ -54,8 +54,8 @@ public class ProfileSerializer {
 
     final StringWriter writer = new StringWriter();
     writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-    writer.append("<!DOCTYPE profiles PUBLIC '" + Profile.PROFILES_DTD_FPI
-        + "' '" + Profile.PROFILES_DTD_URL + "'>");
+    writer.append("<!DOCTYPE profiles PUBLIC '" + Profile.PROFILES_DTD_FPI + "' '").append(Profile.PROFILES_DTD_URL)
+          .append("'>");
     writer.append("<profiles>");
 
     final Transformer transformer = createTransformer();

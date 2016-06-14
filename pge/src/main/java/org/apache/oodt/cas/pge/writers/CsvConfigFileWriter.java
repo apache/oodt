@@ -16,11 +16,13 @@
  */
 package org.apache.oodt.cas.pge.writers;
 
-//Google static imports
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
-//JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,14 +30,9 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.logging.Logger;
 
-//Google imports
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * CSV {@link SciPgeConfigFileWriter} which takes a comma separted list of
@@ -74,7 +71,7 @@ public class CsvConfigFileWriter extends DynamicConfigFileWriter {
 
    @Override
    public File generateFile(String filePath, Metadata metadata, Logger logger,
-         Object... customArgs) throws Exception {
+         Object... customArgs) throws IOException {
       checkArgument(customArgs.length > 0,
             CsvConfigFileWriter.class.getCanonicalName()
                   + " has no args specified");

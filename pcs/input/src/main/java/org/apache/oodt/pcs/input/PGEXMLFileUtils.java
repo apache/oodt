@@ -17,23 +17,26 @@ package org.apache.oodt.pcs.input;
 
 //OODT imports
 import org.apache.oodt.commons.xml.DOMUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-//JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+//JDK imports
 
 /**
  * <p>
@@ -56,11 +59,11 @@ public final class PGEXMLFileUtils {
     NodeList matrixs = group.getElementsByTagName("matrix");
 
     // if it's null, return null
-    if (matrixs == null) {
-      return null;
+    if (matrixs.getLength()==0) {
+      return Collections.emptyMap();
     }
 
-    Map matrixMap = new HashMap(matrixs.getLength());
+    Map matrixMap = new ConcurrentHashMap(matrixs.getLength());
 
     // for each matrix in the list, create a PGEMatrix with the name
     // attribute and the appropriate value
@@ -75,8 +78,7 @@ public final class PGEXMLFileUtils {
       NodeList rowNodeList = matrix.getElementsByTagName("tr");
 
       // there has to be at least one 1
-      if (rowNodeList == null
-          || (rowNodeList != null && rowNodeList.getLength() <= 0)) {
+      if (rowNodeList == null || (rowNodeList.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "there must be at least one row in a matrix!");
       }
@@ -91,8 +93,7 @@ public final class PGEXMLFileUtils {
         NodeList colNodeList = rowElem.getElementsByTagName("td");
 
         // there must be at least one colum in each row
-        if (colNodeList == null
-            || (colNodeList != null && colNodeList.getLength() <= 0)) {
+        if (colNodeList == null || (colNodeList.getLength() <= 0)) {
           throw new PGEConfigFileException(
               "there must be at least one column a matrix row!");
         }
@@ -122,8 +123,8 @@ public final class PGEXMLFileUtils {
     NodeList matrixs = group.getElementsByTagName("matrix");
 
     // if it's null, return null
-    if (matrixs == null) {
-      return null;
+    if (matrixs.getLength()==0) {
+      return Collections.emptyList();
     }
 
     List matrixList = new Vector(matrixs.getLength());
@@ -141,8 +142,7 @@ public final class PGEXMLFileUtils {
       NodeList rowNodeList = matrix.getElementsByTagName("tr");
 
       // there has to be at least one 1
-      if (rowNodeList == null
-          || (rowNodeList != null && rowNodeList.getLength() <= 0)) {
+      if (rowNodeList == null || (rowNodeList.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "there must be at least one row in a matrix!");
       }
@@ -157,8 +157,7 @@ public final class PGEXMLFileUtils {
         NodeList colNodeList = rowElem.getElementsByTagName("td");
 
         // there must be at least one colum in each row
-        if (colNodeList == null
-            || (colNodeList != null && colNodeList.getLength() <= 0)) {
+        if (colNodeList == null || (colNodeList.getLength() <= 0)) {
           throw new PGEConfigFileException(
               "there must be at least one column a matrix row!");
         }
@@ -184,17 +183,16 @@ public final class PGEXMLFileUtils {
     return matrixList;
   }
 
-  public static Map getScalarsAsMap(Element group)
-      throws PGEConfigFileException {
+  public static Map getScalarsAsMap(Element group) {
     // get the nodelist for scalars
     NodeList scalars = group.getElementsByTagName("scalar");
 
     // if it's null, return null
-    if (scalars == null) {
-      return null;
+    if (scalars.getLength()==0) {
+      return Collections.emptyMap();
     }
 
-    Map scalarMap = new HashMap(scalars.getLength());
+    Map scalarMap = new ConcurrentHashMap(scalars.getLength());
 
     // for each scalar in the list, create a PGEScalar with the name
     // attribute, and appropriate value
@@ -213,13 +211,13 @@ public final class PGEXMLFileUtils {
     return scalarMap;
   }
 
-  public static List getScalars(Element group) throws PGEConfigFileException {
+  public static List getScalars(Element group) {
     // get the nodelist for scalars
     NodeList scalars = group.getElementsByTagName("scalar");
 
     // if it's null, return null
-    if (scalars == null) {
-      return null;
+    if (scalars.getLength()==0) {
+      return Collections.emptyList();
     }
 
     List scalarList = new Vector(scalars.getLength());
@@ -247,11 +245,11 @@ public final class PGEXMLFileUtils {
     NodeList vectors = group.getElementsByTagName("vector");
 
     // if it's null, return null
-    if (vectors == null) {
-      return null;
+    if (vectors.getLength()==0) {
+      return Collections.emptyMap();
     }
 
-    Map vectorMap = new HashMap(vectors.getLength());
+    Map vectorMap = new ConcurrentHashMap(vectors.getLength());
 
     // for each vector in the list, create a PGEVector with the name
     // attribute, and appropriate value
@@ -267,7 +265,7 @@ public final class PGEXMLFileUtils {
       // get the nodelist of elements
       NodeList vecElems = vector.getElementsByTagName("element");
 
-      if (vecElems == null || (vecElems != null && vecElems.getLength() <= 0)) {
+      if (vecElems == null || (vecElems.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "There must be at least one element in a PGEVector!");
       }
@@ -291,8 +289,8 @@ public final class PGEXMLFileUtils {
     NodeList vectors = group.getElementsByTagName("vector");
 
     // if it's null, return null
-    if (vectors == null) {
-      return null;
+    if (vectors.getLength()==0) {
+      return Collections.emptyList();
     }
 
     List vectorList = new Vector(vectors.getLength());
@@ -311,7 +309,7 @@ public final class PGEXMLFileUtils {
       // get the nodelist of elements
       NodeList vecElems = vector.getElementsByTagName("element");
 
-      if (vecElems == null || (vecElems != null && vecElems.getLength() <= 0)) {
+      if (vecElems == null || (vecElems.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "There must be at least one element in a PGEVector!");
       }
@@ -332,12 +330,12 @@ public final class PGEXMLFileUtils {
 
   public static Document getDocumentRoot(String xmlFile) {
     // open up the XML file
-    DocumentBuilderFactory factory = null;
-    DocumentBuilder parser = null;
-    Document document = null;
-    InputSource inputSource = null;
+    DocumentBuilderFactory factory;
+    DocumentBuilder parser;
+    Document document;
+    InputSource inputSource;
 
-    InputStream xmlInputStream = null;
+    InputStream xmlInputStream;
 
     try {
       xmlInputStream = new File(xmlFile).toURL().openStream();

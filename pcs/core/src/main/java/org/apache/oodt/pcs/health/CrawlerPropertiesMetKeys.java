@@ -26,10 +26,10 @@ package org.apache.oodt.pcs.health;
  */
 public interface CrawlerPropertiesMetKeys {
 
-  public static final String CRAWLER_INFO_GROUP = "CrawlerInfo";
+  String CRAWLER_INFO_GROUP = "CrawlerInfo";
 
-  public static final String CRAWLER_PROPERTIES_GROUP = "CrawlProperties";
+  String CRAWLER_PROPERTIES_GROUP = "CrawlProperties";
 
-  public static final String CRAWLER_HOST_NAME = "Hostname";
+  String CRAWLER_HOST_NAME = "Hostname";
 
 }

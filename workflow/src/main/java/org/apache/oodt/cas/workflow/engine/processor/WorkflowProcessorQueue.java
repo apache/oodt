@@ -17,38 +17,28 @@
 
 package org.apache.oodt.cas.workflow.engine.processor;
 
+//OODT imports
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
+import org.apache.oodt.cas.workflow.structs.*;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.oodt.cas.workflow.engine.TaskQuerier;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
-import org.apache.oodt.cas.workflow.structs.ConditionTaskInstance;
-import org.apache.oodt.cas.workflow.structs.Graph;
-import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
-import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
-
 /**
  * 
  * The queue of available {@link WorkflowTask}s, that will be fed into the
- * {@link TaskQuerier}.
+ * {@link org.apache.oodt.cas.workflow.engine.TaskQuerier}.
  * 
  * @author mattmann
  * @version $Revision$
@@ -72,7 +62,7 @@ public class WorkflowProcessorQueue {
     this.repo = repo;
     this.lifecycle = lifecycle;
     this.modelRepo = modelRepo;
-    this.processorCache = new HashMap<String, WorkflowProcessor>();
+    this.processorCache = new ConcurrentHashMap<String, WorkflowProcessor>();
   }
 
   /**
@@ -81,11 +71,11 @@ public class WorkflowProcessorQueue {
    * @return the list of available, Queued, {@link WorkflowProcessor}s.
    */
   public synchronized List<WorkflowProcessor> getProcessors() {
-    WorkflowInstancePage page = null;
+    WorkflowInstancePage page;
     try {
       page = repo.getPagedWorkflows(1);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to load workflow processors: Message: "
           + e.getMessage());
       return null;
@@ -96,18 +86,19 @@ public class WorkflowProcessorQueue {
     for (WorkflowInstance inst : (List<WorkflowInstance>) (List<?>) page
         .getPageWorkflows()) {
       if (!inst.getState().getCategory().getName().equals("done")) {
-        WorkflowProcessor processor = null;
+        WorkflowProcessor processor;
         try {
           processor = fromWorkflowInstance(inst);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           LOG.log(Level.WARNING,
               "Unable to convert workflow instance: [" + inst.getId()
                   + "] into WorkflowProcessor: Message: " + e.getMessage());
           continue;
         }
-        if (processor != null)
+        if (processor != null) {
           processors.add(processor);
+        }
       }
     }
 
@@ -117,8 +108,7 @@ public class WorkflowProcessorQueue {
 
   public synchronized void persist(WorkflowInstance inst) {
     try {
-      if (inst.getId() == null
-          || (inst.getId() != null && inst.getId().equals(""))) {
+      if (inst.getId() == null || (inst.getId().equals(""))) {
         // we have to persist it by adding it
         // rather than updating it
         repo.addWorkflowInstance(inst);
@@ -127,7 +117,7 @@ public class WorkflowProcessorQueue {
         repo.updateWorkflowInstance(inst);
       }
     } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Unable to update workflow instance: [" + inst.getId()
               + "] with status: [" + inst.getState().getName() + "]: Message: "
@@ -135,8 +125,7 @@ public class WorkflowProcessorQueue {
     }
   }  
 
-  private WorkflowProcessor fromWorkflowInstance(WorkflowInstance inst)
-      throws EngineException {
+  private WorkflowProcessor fromWorkflowInstance(WorkflowInstance inst) {
     WorkflowProcessor processor = null;
     if (processorCache.containsKey(inst.getId())) {
       return processorCache.get(inst.getId());
@@ -145,7 +134,7 @@ public class WorkflowProcessorQueue {
         LOG.log(Level.SEVERE,
             "Unable to process Graph for workflow instance: [" + inst.getId()
                 + "]");
-        return processor;
+        return null;
       }
 
       if (isCompositeProcessor(inst)) {
@@ -373,7 +362,7 @@ public class WorkflowProcessorQueue {
         modelRepo.addTask(task);
       }
       catch(RepositoryException e){
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     }
   }
@@ -383,7 +372,7 @@ public class WorkflowProcessorQueue {
       try {
         modelRepo.addWorkflow(workflow);
       } catch (RepositoryException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     }
   }
@@ -432,7 +421,9 @@ public class WorkflowProcessorQueue {
   private synchronized WorkflowTask toConditionTask(WorkflowCondition cond){    
     String taskId = cond.getConditionId()+"-task"; // TODO: this is incompat with DataSourceWorkflowRepository
     WorkflowTask condTask = safeGetTaskById(taskId);
-    if(condTask != null) return condTask;
+    if(condTask != null) {
+      return condTask;
+    }
     condTask = new WorkflowTask();
     condTask.setTaskId(taskId);
     condTask.setTaskInstanceClassName(ConditionTaskInstance.class.getCanonicalName());
@@ -454,10 +445,10 @@ public class WorkflowProcessorQueue {
         }
       }
       catch(RepositoryException e){
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     
-    return task;
+    return null;
   }
 
 }

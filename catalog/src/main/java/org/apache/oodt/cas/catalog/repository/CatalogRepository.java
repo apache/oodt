@@ -16,14 +16,12 @@
  */
 package org.apache.oodt.cas.catalog.repository;
 
-//JDK imports
-import java.util.List;
-import java.util.Set;
-
-//OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
 import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.catalog.util.PluginURL;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -36,20 +34,7 @@ import org.apache.oodt.cas.catalog.util.PluginURL;
  *          <p>
  */
 public interface CatalogRepository {
-//
-//	/**
-//	 * Verifies if the given Catalog URN has been serialized via {@link
-//	 * serializeCatalog(Catalog)}
-//	 * 
-//	 * @param catalogUrn
-//	 *            The URN that unique represents the Catalog
-//	 * @return True if the Catalog has been serialized, false otherwise
-//	 * @throws CatalogRepositoryException
-//	 *             Any Error
-//	 */
-//	public boolean isCatalogSerialized(String catalogUrn)
-//			throws CatalogRepositoryException;
-//
+
 	/**
 	 * Serializes a given Catalog to the Repository
 	 * 
@@ -58,32 +43,17 @@ public interface CatalogRepository {
 	 * @throws CatalogRepositoryException
 	 *             Any Error
 	 */
-	public void serializeCatalog(Catalog catalog)
+	void serializeCatalog(Catalog catalog)
 			throws CatalogRepositoryException;
-//
-//	/**
-//	 * Loads a Catalog from the Repository
-//	 * 
-//	 * @param catalogUrn
-//	 *            The URN that unique represents a Catalog
-//	 * @return The Catalog represented by the given URN
-//	 * @throws CatalogRepositoryException
-//	 *             Any Error
-//	 */
-//	public Catalog deserializeCatalog(String catalogUrn)
-//			throws CatalogRepositoryException;
-//
 	/**
 	 * Removes a Catalog from the Repository
 	 * 
 	 * @param catalogUrn
 	 *            The URN that unique represents the Catalog to be removed
-	 * @param preserveMapping
-	 *            If true, don't erase TransactionId mapping for this catalog
 	 * @throws CatalogRepositoryException
 	 *             Any Error
 	 */
-	public void deleteSerializedCatalog(String catalogUrn)
+	void deleteSerializedCatalog(String catalogUrn)
 			throws CatalogRepositoryException;
 
 	/**
@@ -93,15 +63,15 @@ public interface CatalogRepository {
 	 * @throws CatalogRepositoryException
 	 *             Any Error
 	 */
-	public Set<Catalog> deserializeAllCatalogs()
+	Set<Catalog> deserializeAllCatalogs()
 			throws CatalogRepositoryException;
 
-	public void serializePluginURLs(List<PluginURL> urls) 
+	void serializePluginURLs(List<PluginURL> urls)
 			throws CatalogRepositoryException;
 	
-	public List<PluginURL> deserializePluginURLs() 
+	List<PluginURL> deserializePluginURLs()
 			throws CatalogRepositoryException;
 	
-	public boolean isModifiable() throws CatalogRepositoryException;
+	boolean isModifiable();
 	
 }
