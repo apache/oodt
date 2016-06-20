@@ -115,6 +115,12 @@ define(["jquery",
             if(Configuration.INPUT_SUGGESTIONS != undefined && "input-"+element.elementName in Configuration.INPUT_SUGGESTIONS){
                 typeahead = true;
             }
+            // Determine if element is uneditable text field
+            var textfield = false;
+            if ((Configuration.TEXT_FIELDS != undefined) && (Configuration.TEXT_FIELDS.indexOf(element.elementName) !== -1)) {
+                textfield = true;
+            }
+
             //Grab the template and build it
             var obj = {
                 "id":"input-"+element.elementName,
@@ -129,6 +135,7 @@ define(["jquery",
                 "error":error,
                 "index":index++,
                 "modelsize": modelsize,
+                "textfield": textfield,
                 "typeahead": typeahead
             };
             obj.html = this._entryTemplate(obj);
