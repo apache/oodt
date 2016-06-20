@@ -26,7 +26,7 @@
 <script type="text/template" id="template-table-element">
     <td ><span title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true"><%= displayName %></span></td>
     <td>
-    <% var disabled = locked ? "disabled" : "";
+    <% var disabled = (locked || textfield) ? "disabled" : "";
        var invisible = hidden ? "hidden" : "";
        var needed = required ? "<em>*</em>" : "";
         var dc = description;
@@ -103,7 +103,7 @@
         
         </tbody>    
     </table>
-    <em>*</em> denotes required field
+    <div class="required-field-label"><em>*</em> denotes required field</div>
     <% if (hiddenErrors.length > 0) { %>
         <span class="alert alert-danger" role="alert" style="display: inline-block">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
