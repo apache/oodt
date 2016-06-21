@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-profile</artifactId>
@@ -121,7 +121,7 @@
    <!-- <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>-->
-    <tag>1.0</tag>
+    <tag>0.13-SNAPSHOT</tag>
   </scm>
   <profiles>
     <profile>
