@@ -1,6 +1,19 @@
 Apache OODT Change Log
 ======================
-Release 0.11 - Current Development
+Release 0.12 - 02/10/2016
+
+* OODT-781 Add missing XMLRPC endpoint for remove hashtable. (magicaltrout)
+
+* OODT-923 Fix start script for solr deployments (magicaltrout)
+
+* OODT-924 Fix missing timestamp metadata field in returned data from solr (magicaltrout)
+
+* OODT-992 Fix incorrect product count for solr backed store (magicaltrout)
+
+Release 0.11 - 12/29/2015
+
+* OODT-918 - Created a prerequisite workflow condition for DRAT (Karanjeet
+  Singh via mattmann)
 
 * OODT-913 Multiple metadata values not written out into product-types.xml (luca)
 
@@ -103,6 +116,7 @@ Release 0.10 - 08/30/2015
 
 * OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
 
+* OODT-781 Fix removal of files from the LocalDataTransferer (magicaltrout)
 
 Release 0.9 - 05/31/2015
 

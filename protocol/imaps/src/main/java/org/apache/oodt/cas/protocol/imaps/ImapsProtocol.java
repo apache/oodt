@@ -53,10 +53,6 @@ import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
 
-//Javamail imports
-//APACHE imports
-//OODT imports
-//TIKA imports
 
 /**
  * IMAP Secure {@link Protocol} implementation
@@ -133,17 +129,6 @@ public class ImapsProtocol implements Protocol {
     decrementConnections();
     if (connectCalls <= 0) {
       try {
-//        if (!currentFolder.isOpen()) {
-//          try {
-//            currentFolder.open(Folder.READ_WRITE);
-//          } catch (Exception e) {
-//            try {
-//              currentFolder.open(Folder.READ_ONLY);
-//            } catch (Exception e2) {
-//            }
-//          }
-//        }
-//        currentFolder.close(true);
         store.close();
       } catch (Exception e) {
         throw new ProtocolException("Failed to close connection : " + e.getMessage(), e);
@@ -171,7 +156,6 @@ public class ImapsProtocol implements Protocol {
       for (Message message : messages) {
         if (this.getMessageName(message).equals(fromFile.getName())) {
           writeMessageToLocalFile(message, toFile);
-          // message.setFlag(Flags.Flag.DELETED, true);
           break;
         }
       }
@@ -225,9 +209,6 @@ public class ImapsProtocol implements Protocol {
   }
 
   public List<ProtocolFile> ls() throws ProtocolException {
-    // if (changedDir) {
-    // System.out.println("Refreshed LS");
-    // currentFilesForCurrentFolder = new LinkedList<ProtocolFile>();
     LinkedList<ProtocolFile> currentFilesForCurrentFolder = new LinkedList<ProtocolFile>();
     try {
       openFolder(currentFolder);
@@ -302,7 +283,6 @@ public class ImapsProtocol implements Protocol {
       Header header = (Header) headers.nextElement();
       if (header.getName().toLowerCase().equals("message-id")) {
         String stringHeader = header.getValue();
-        // System.out.println(stringHeader);
         stringHeader = stringHeader.replace("<", "");
         return stringHeader.substring(0, stringHeader.indexOf("@"));
       }

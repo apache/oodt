@@ -89,8 +89,6 @@ public class QueryHeader implements Serializable, Cloneable, Documentable {
 			  statusID = XML.unwrappedText(child);
 			} else if ("querySecurityType".equals(child.getNodeName())) {
 			  securityType = XML.unwrappedText(child);
-			} else if ("queryParentId".equals(child.getNodeName())) {
-			} else if ("queryChildId".equals(child.getNodeName())) {
 			} else if ("queryRevisionNote".equals(child.getNodeName())) {
 			  revisionNote = XML.unwrappedText(child);
 			} else if ("queryDataDictId".equals(child.getNodeName())) {

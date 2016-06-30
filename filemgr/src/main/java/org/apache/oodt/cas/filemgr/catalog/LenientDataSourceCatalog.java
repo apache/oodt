@@ -328,33 +328,34 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             conn = dataSource.getConnection();
             statement = conn.createStatement();
 
-            String elementIds = "";
+            StringBuilder elementIds = new StringBuilder("");
             if (elems.size() > 0) {
             	
             	  if (getValidationLayer()!=null) {
             	  	// validation layer: column "element_id" contains the element identifier (e.g. "urn:oodt:ProductReceivedTime")
-	                elementIds += " AND (element_id = '" + this.getValidationLayer().getElementByName(elems.get(0)).getElementId() + "'";
+	                elementIds.append(" AND (element_id = '" + this.getValidationLayer().getElementByName(elems.get(0))
+                                                            .getElementId() + "'");
 	                for (int i = 1; i < elems.size(); i++) {
-                      elementIds +=
+                      elementIds.append(
                           " OR element_id = '" + this.getValidationLayer().getElementByName(elems.get(i)).getElementId()
-                          + "'";
+                          + "'");
                     }
-	                elementIds += ")";
+	                elementIds.append(")");
             	 
             	  } else {
             	  	// no validation layer: column "element_id" contains the element name (e.g. "CAS.ProductReceivedTime")
-	                elementIds += " AND (element_id = '" + elems.get(0) + "'";
+	                elementIds.append(" AND (element_id = '" + elems.get(0) + "'");
 	                for (int i = 1; i < elems.size(); i++) {
-                      elementIds += " OR element_id = '" + elems.get(i) + "'";
+                      elementIds.append(" OR element_id = '" + elems.get(i) + "'");
                     }
-	                elementIds += ")";
+	                elementIds.append(")");
 	                
             	  }
             	  
             }
             String metadataSql = "SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
-		+ " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds;
+		+ " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds.toString();
             if(this.orderedValues) {
               metadataSql += " ORDER BY pkey";
             }
@@ -761,24 +762,26 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
      * Overridden method from superclass to allow for null validation layer.
      */
     protected String getSqlQuery(QueryCriteria queryCriteria, ProductType type) throws ValidationLayerException, CatalogException {
-      String sqlQuery;
+      StringBuilder sqlQuery = new StringBuilder();
       if (queryCriteria instanceof BooleanQueryCriteria) {
           BooleanQueryCriteria bqc = (BooleanQueryCriteria) queryCriteria;
           if (bqc.getOperator() == BooleanQueryCriteria.NOT) {
           	  if (!this.productIdString) {
-          	  	sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+          	  	new StringBuilder("SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN "
+                           + "(" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")");
           	  } else {
-               	sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
-               					 + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
-          	  			     + " AND products.product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+               	new StringBuilder("SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+               					 + " WHERE products.product_id="+type.getName() + "_metadata.product_id"
+          	  			     + " AND products.product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) +
+                                  ")");
           	  }
           } else {
-              sqlQuery = "(" + this.getSqlQuery(bqc.getTerms().get(0), type);
+              sqlQuery.append("(").append(this.getSqlQuery(bqc.getTerms().get(0), type));
               String op = bqc.getOperator() == BooleanQueryCriteria.AND ? "INTERSECT" : "UNION";
               for (int i = 1; i < bqc.getTerms().size(); i++) {
-                sqlQuery += ") " + op + " (" + this.getSqlQuery(bqc.getTerms().get(i), type);
+                sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(bqc.getTerms().get(i), type));
               }
-              sqlQuery += ")";
+              sqlQuery.append(")");
           }
       }else {
       	  String elementIdStr = queryCriteria.getElementName();
@@ -790,14 +793,15 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             elementIdStr = "'" + elementIdStr + "'";
           }
           if (!this.productIdString) {
-          	sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
+          	new StringBuilder("SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr +
+               " AND ");
           } else {
-          	sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+          	new StringBuilder("SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
           	         + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
-          			     + " AND element_id = " + elementIdStr + " AND ";
+          			     + " AND element_id = " + elementIdStr + " AND ");
           }
           if (queryCriteria instanceof TermQueryCriteria) {
-              sqlQuery += "metadata_value = '" + ((TermQueryCriteria) queryCriteria).getValue() + "'";
+              sqlQuery.append("metadata_value = '" + ((TermQueryCriteria) queryCriteria).getValue() + "'");
           } else if (queryCriteria instanceof RangeQueryCriteria) {
               RangeQueryCriteria rqc = (RangeQueryCriteria) queryCriteria;
               String rangeSubQuery = null;
@@ -815,13 +819,13 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                             .getEndValue() + "')";
                   }
               }
-              sqlQuery += rangeSubQuery;
+              sqlQuery.append(rangeSubQuery);
           } else {
               throw new CatalogException("Invalid QueryCriteria [" + queryCriteria.getClass().getCanonicalName() + "]");
           }
       }
 
-      return sqlQuery;
+      return sqlQuery.toString();
   }
 
 }

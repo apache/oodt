@@ -44,20 +44,21 @@ public class ProfileElementPrinter {
 	}
 	
 	public String toXMLString(){
-		String rStr="";
+		StringBuilder rStr= new StringBuilder();
 		
-		  rStr+="<profElement>\n";
-		  rStr+="\t<elemName>"+myProfileElement.getName()+"</elemName>\n";
-		  rStr+="\t<elemMaxOccurrence>"+myProfileElement.getMaxOccurrence()+"</elemMaxOccurrence>\n";
-		  rStr+="\t<elemMaxValue>"+myProfileElement.getMaxValue()+"</elemMaxValue>\n";
-		  rStr+="\t<elemMinValue>"+myProfileElement.getMinValue()+"</elemMinValue>\n";
+		  rStr.append("<profElement>\n");
+		  rStr.append("\t<elemName>").append(myProfileElement.getName()).append("</elemName>\n");
+		  rStr.append("\t<elemMaxOccurrence>").append(myProfileElement.getMaxOccurrence())
+			  .append("</elemMaxOccurrence>\n");
+		  rStr.append("\t<elemMaxValue>").append(myProfileElement.getMaxValue()).append("</elemMaxValue>\n");
+		  rStr.append("\t<elemMinValue>").append(myProfileElement.getMinValue()).append("</elemMinValue>\n");
 
 	  for (Object o : myProfileElement.getValues()) {
 		String theValue = (String) o;
-		rStr += "<elemValue>" + theValue + "</elemValue>\n";
+		rStr.append("<elemValue>").append(theValue).append("</elemValue>\n");
 	  }
-		  rStr+="\t<elemComment>"+myProfileElement.getComments()+"</elemComment>\n";
-		  rStr+="</profElement>\n";
-		return rStr;
+		  rStr.append("\t<elemComment>").append(myProfileElement.getComments()).append("</elemComment>\n");
+		  rStr.append("</profElement>\n");
+		return rStr.toString();
 	}
 }

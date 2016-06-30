@@ -173,32 +173,32 @@ public class SqlParser {
     }
     
     public static String getInfixCriteriaString(QueryCriteria criteria) {
-        String returnString = "";
+        StringBuilder returnString = new StringBuilder();
         if (criteria instanceof BooleanQueryCriteria) {
             BooleanQueryCriteria bqc = (BooleanQueryCriteria) criteria;
             List<QueryCriteria> terms = bqc.getTerms();
             switch(bqc.getOperator()){
             case 0:
-                returnString = "(" + getInfixCriteriaString((QueryCriteria) terms.get(0));
+                returnString.append("(").append(getInfixCriteriaString(terms.get(0)));
                 for (int i = 1; i < terms.size(); i++) {
-                    returnString += " AND " + getInfixCriteriaString((QueryCriteria) terms.get(i));
+                    returnString.append(" AND ").append(getInfixCriteriaString(terms.get(i)));
                 }
-                returnString += ")";
+                returnString.append(")");
                 break;
             case 1:
-                returnString = "(" + getInfixCriteriaString((QueryCriteria) terms.get(0));
+                returnString.append("(").append(getInfixCriteriaString(terms.get(0)));
                 for (int i = 1; i < terms.size(); i++) {
-                    returnString += " OR " + getInfixCriteriaString((QueryCriteria) terms.get(i));
+                    returnString.append(" OR ").append(getInfixCriteriaString(terms.get(i)));
                 }
-                returnString += ")";
+                returnString.append(")");
                 break;
             case 2:
                 QueryCriteria qc = bqc.getTerms().get(0);
                 if (qc instanceof TermQueryCriteria) {
                     TermQueryCriteria tqc = (TermQueryCriteria) qc;
-                    returnString = tqc.getElementName() + " != '" + tqc.getValue() + "'";
+                    returnString.append(tqc.getElementName()).append(" != '").append(tqc.getValue()).append("'");
                 }else {
-                    returnString = "NOT(" + getInfixCriteriaString(qc) + ")";
+                    returnString.append("NOT(").append(getInfixCriteriaString(qc)).append(")");
                 }
                 break;
             }
@@ -210,12 +210,12 @@ public class SqlParser {
             }else {
                 opString = "<" + opString + " '" + rqc.getEndValue() + "'";
             }
-            returnString = rqc.getElementName() + " " + opString;
+            returnString.append(rqc.getElementName()).append(" ").append(opString);
         }else if (criteria instanceof TermQueryCriteria) {
             TermQueryCriteria tqc = (TermQueryCriteria) criteria;
-            returnString = tqc.getElementName() + " == '" + tqc.getValue() + "'";
+            returnString.append(tqc.getElementName()).append(" == '").append(tqc.getValue()).append("'");
         }
-        return returnString;
+        return returnString.toString();
     }
     
     private static String stripOutSqlDefinition(String sqlStringQueryMethod) {
@@ -346,14 +346,14 @@ public class SqlParser {
     }
 
     private static String listToString(List<String> list) {
-        String arrayString = "";
+        StringBuilder arrayString = new StringBuilder();
         if (list.size() > 0) {
-            arrayString = list.get(0);
+            arrayString.append(list.get(0));
             for (int i = 1; i < list.size(); i++) {
-                arrayString += "," + list.get(i);
+                arrayString.append(",").append(list.get(i));
             }
-        }  
-        return arrayString;
+        }
+        return arrayString.toString();
     }
 
 

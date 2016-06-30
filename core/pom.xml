@@ -21,11 +21,11 @@ the License.
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>16</version>
-    <relativePath></relativePath>
+    <relativePath />
   </parent>
   <groupId>org.apache.oodt</groupId>
   <artifactId>oodt-core</artifactId>
-  <version>0.11-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>OODT Core</name>
   <properties>
@@ -543,10 +543,10 @@ the License.
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
- <plugin>
-            <groupId>com.atlassian.maven.plugins</groupId>
-            <artifactId>maven-clover2-plugin</artifactId>
-            <version>4.0.6</version>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-clover2-plugin</artifactId>
+        <version>4.0.6</version>
         <configuration>
             <license><![CDATA[
 oOmRsdEFLXepeoGMXQooikmNPOPmVegiGubXhbERoJfRSL
@@ -556,13 +556,12 @@ onmqmUUnqrovqvommmmmUUnqrovqvommmmmUU1mXZebUUn
 mm
 ]]></license>
         </configuration>
-        </plugin>
-
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
       <plugin>
@@ -637,7 +636,7 @@ mm
           <docencoding>UTF-8</docencoding>
           <encoding>UTF-8</encoding>
           <aggregate>true</aggregate>
-          <source>1.5</source>
+          <source>1.7</source>
         </configuration>
       </plugin>
       <!-- Produce Source cross references -->
@@ -918,9 +917,10 @@ mm
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/core</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/core</url>-->
+    <tag>0.13-SNAPSHOT</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -950,7 +950,7 @@ mm
                   <goal>javadoc</goal>
                 </goals>
                 <phase>package</phase>
-                <configuration></configuration>
+                <configuration />
               </execution>
             </executions>
           </plugin>

@@ -21,7 +21,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>0.13-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-metadata</artifactId>
@@ -157,9 +157,10 @@ the License.
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>-->
+    <tag>0.13-SNAPSHOT</tag>
   </scm>
   <profiles>
     <profile>

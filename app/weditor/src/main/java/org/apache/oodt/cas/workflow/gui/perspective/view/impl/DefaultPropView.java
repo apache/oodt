@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.workflow.gui.perspective.view.impl;
 
-//JDK imports
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
@@ -73,8 +72,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-//Apache imports
-//OODT imports
 
 /**
  * 
@@ -156,8 +153,7 @@ public class DefaultPropView extends View {
             .getMetadata(key + "/envReplace"))));
         rows.add(row);
       }
-      table = new JTable();// rows, new Vector<String>(Arrays.asList(new
-                           // String[] { "key", "values", "envReplace" })));
+      table = new JTable();
       table.setModel(new AbstractTableModel() {
         public String getColumnName(int col) {
           switch (col) {
@@ -234,7 +230,6 @@ public class DefaultPropView extends View {
           Arrays.asList(new String[] { "key", "values", "envReplace" })));
     }
 
-    // table.setFillsViewportHeight(true);
     table.setSelectionBackground(Color.cyan);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     TableCellRenderer cellRenderer = new TableCellRenderer() {
@@ -276,7 +271,7 @@ public class DefaultPropView extends View {
       public void mouseClicked(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3
             && DefaultPropView.this.table.getSelectedRow() != -1) {
-          int row = DefaultPropView.this.table.getSelectedRow();// rowAtPoint(DefaultPropView.this.table.getMousePosition());
+          int row = DefaultPropView.this.table.getSelectedRow();
           String key = getKey(
               (String) DefaultPropView.this.table.getValueAt(row, 1), state);
           Metadata staticMet = state.getSelected().getModel()
@@ -312,7 +307,7 @@ public class DefaultPropView extends View {
     override = new JMenuItem(OVERRIDE);
     override.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        int row = DefaultPropView.this.table.getSelectedRow();// rowAtPoint(DefaultPropView.this.table.getMousePosition());
+        int row = DefaultPropView.this.table.getSelectedRow();
         String key = getKey(
             (String) DefaultPropView.this.table.getValueAt(row, 1), state);
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
@@ -338,7 +333,7 @@ public class DefaultPropView extends View {
     delete.addActionListener(new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
-        int row = DefaultPropView.this.table.getSelectedRow();// rowAtPoint(DefaultPropView.this.table.getMousePosition());
+        int row = DefaultPropView.this.table.getSelectedRow();
         String key = getKey(
             (String) DefaultPropView.this.table.getValueAt(row, 1), state);
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
@@ -596,8 +591,6 @@ public class DefaultPropView extends View {
 
       public void actionPerformed(ActionEvent e) {
         if (!graph.getModel().getModelName().equals(e.getActionCommand())) {
-          // GuiUtils.updateGraphModelName(getState(),
-          // graph.getModel().getModelId(), e.getActionCommand());
           graph.getModel().setModelName(e.getActionCommand());
           DefaultPropView.this.notifyListeners();
           DefaultPropView.this.refreshView(state);

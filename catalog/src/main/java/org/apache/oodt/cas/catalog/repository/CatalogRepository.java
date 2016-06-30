@@ -16,14 +16,12 @@
  */
 package org.apache.oodt.cas.catalog.repository;
 
-//JDK imports
-import java.util.List;
-import java.util.Set;
-
-//OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
 import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.catalog.util.PluginURL;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -36,20 +34,7 @@ import org.apache.oodt.cas.catalog.util.PluginURL;
  *          <p>
  */
 public interface CatalogRepository {
-//
-//	/**
-//	 * Verifies if the given Catalog URN has been serialized via {@link
-//	 * serializeCatalog(Catalog)}
-//	 * 
-//	 * @param catalogUrn
-//	 *            The URN that unique represents the Catalog
-//	 * @return True if the Catalog has been serialized, false otherwise
-//	 * @throws CatalogRepositoryException
-//	 *             Any Error
-//	 */
-//	public boolean isCatalogSerialized(String catalogUrn)
-//			throws CatalogRepositoryException;
-//
+
 	/**
 	 * Serializes a given Catalog to the Repository
 	 * 
@@ -60,19 +45,6 @@ public interface CatalogRepository {
 	 */
 	void serializeCatalog(Catalog catalog)
 			throws CatalogRepositoryException;
-//
-//	/**
-//	 * Loads a Catalog from the Repository
-//	 * 
-//	 * @param catalogUrn
-//	 *            The URN that unique represents a Catalog
-//	 * @return The Catalog represented by the given URN
-//	 * @throws CatalogRepositoryException
-//	 *             Any Error
-//	 */
-//	public Catalog deserializeCatalog(String catalogUrn)
-//			throws CatalogRepositoryException;
-//
 	/**
 	 * Removes a Catalog from the Repository
 	 * 

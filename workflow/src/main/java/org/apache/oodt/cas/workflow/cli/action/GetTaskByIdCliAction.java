@@ -36,12 +36,12 @@ public class GetTaskByIdCliAction extends WorkflowCliAction {
       try {
          WorkflowTask task = getClient().getTaskById(taskId);
          
-         String requiredMetFields = "";
+         StringBuilder requiredMetFields = new StringBuilder();
         for (Object o : task.getRequiredMetFields()) {
           if (requiredMetFields.length() > 0) {
-            requiredMetFields += ", ";
+            requiredMetFields.append(", ");
           }
-          requiredMetFields += (String) o;
+          requiredMetFields.append((String) o);
         }
          
          printer.println("Task: [id=" + task.getTaskId() 
@@ -49,7 +49,7 @@ public class GetTaskByIdCliAction extends WorkflowCliAction {
                + ", order=" + task.getOrder() 
                + ", class=" + task.getClass().getName() 
                + ", numConditions=" + task.getConditions().size() 
-               + ", requiredMetadataFields=[" + requiredMetFields+"]"
+               + ", requiredMetadataFields=[" + requiredMetFields.toString()+"]"
                + ", configuration="+ task.getTaskConfig().getProperties() + "]");
          
       } catch (Exception e) {

@@ -176,7 +176,14 @@ public class LocalDataTransferer implements DataTransfer {
    @Override
    public void deleteProduct(Product product) throws DataTransferException, IOException {
      for (Reference ref : product.getProductReferences()) {
-       File dataFile = new File(URI.create(ref.getDataStoreReference()).toURL().getPath());
+       String u;
+       try {
+          u = URI.create(ref.getDataStoreReference()).toURL().getPath();
+       }
+       catch (IllegalArgumentException e) {
+         u = URI.create("file://"+ref.getDataStoreReference()).toURL().getPath();
+       }
+       File dataFile = new File(u);
        if (!dataFile.delete()) {
         throw new IOException(String.format("Failed to delete file %s - delete returned false",
             dataFile));

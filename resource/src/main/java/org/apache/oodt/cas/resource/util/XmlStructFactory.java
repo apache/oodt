@@ -74,7 +74,7 @@ public final class XmlStructFactory {
 					.getAttribute("envReplace")) ? PathUtils
 					.doDynamicReplacement(resourceNodeRoot.getAttribute("ip"))
 					: resourceNodeRoot.getAttribute("ip"));
-            capacity = new Integer(resourceNodeRoot.getAttribute("capacity"));
+            capacity = Integer.valueOf(resourceNodeRoot.getAttribute("capacity"));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
         }

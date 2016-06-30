@@ -356,7 +356,7 @@ public class XmlRpcResourceManager {
     }
     
     public String getNodeReport() throws MonitorException{
-    	String report = "";
+    	StringBuilder report = new StringBuilder();
     	
     	try{
     		
@@ -368,27 +368,27 @@ public class XmlRpcResourceManager {
             for (Object node1 : nodes) {
                 ResourceNode node = (ResourceNode) node1;
                 String nodeId = node.getNodeId();
-                report += nodeId;
-                report += " (" + getNodeLoad(nodeId) + "/" + node.getCapacity() + ")";
+                report.append(nodeId);
+                report.append(" (").append(getNodeLoad(nodeId)).append("/").append(node.getCapacity()).append(")");
                 List<String> nodeQueues = getQueuesWithNode(nodeId);
                 if (nodeQueues != null && nodeQueues.size() > 0) {
-                    report += " -- " + nodeQueues.get(0);
+                    report.append(" -- ").append(nodeQueues.get(0));
                     for (int j = 1; j < nodeQueues.size(); j++) {
-                        report += ", " + nodeQueues.get(j);
+                        report.append(", ").append(nodeQueues.get(j));
                     }
                 }
-                report += "\n";
+                report.append("\n");
             }
     	
     	}catch(Exception e){
     		throw new MonitorException(e.getMessage(), e);
     	}
     	
-    	return report;
+    	return report.toString();
     }
     
     public String getExecutionReport() throws JobRepositoryException{
-    	String report = "";
+    	StringBuilder report = new StringBuilder();
     	
     	try{
     	
@@ -413,10 +413,10 @@ public class XmlRpcResourceManager {
                         String jobId = (String) execJobId;
                         Job job = scheduler.getJobQueue().getJobRepository()
                                            .getJobById(jobId).getJob();
-                        report += "job id=" + jobId;
-                        report += ", load=" + job.getLoadValue();
-                        report += ", node=" + nodeId;
-                        report += ", queue=" + job.getQueueName() + "\n";
+                        report.append("job id=").append(jobId);
+                        report.append(", load=").append(job.getLoadValue());
+                        report.append(", node=").append(nodeId);
+                        report.append(", queue=").append(job.getQueueName()).append("\n");
                     }
 	    		}
 	    	}
@@ -425,7 +425,7 @@ public class XmlRpcResourceManager {
     		throw new JobRepositoryException(e.getMessage(), e);
     	}
     	
-    	return report;
+    	return report.toString();
     }
     
     public static void main(String[] args) throws IOException {

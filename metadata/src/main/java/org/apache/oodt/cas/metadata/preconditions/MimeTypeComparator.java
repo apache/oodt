@@ -61,7 +61,7 @@ public class MimeTypeComparator extends PreConditionComparator<String> {
                     .getMimeTypeByMagic(MimeTypeUtils
                         .readMagicHeader(new FileInputStream(product)));
             }
-            return tikaMimeType.compareTo(mimeType);
+            return tikaMimeType != null ? tikaMimeType.compareTo(mimeType) : 0;
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
             throw new PreconditionComparatorException(

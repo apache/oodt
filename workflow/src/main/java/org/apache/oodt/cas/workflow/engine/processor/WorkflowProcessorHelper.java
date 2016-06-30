@@ -16,7 +16,6 @@
  */
 package org.apache.oodt.cas.workflow.engine.processor;
 
-//OODT imports
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
@@ -32,9 +31,6 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-//JDK imports
-//APACHE imports
 
 /**
  * 
@@ -75,11 +71,8 @@ public class WorkflowProcessorHelper {
             + "execution = '"
             + skeleton.getWorkflowInstance().getParentChildWorkflow()
                 .getGraph().getExecutionType() + "', state = '"
-            + skeleton.getWorkflowInstance().getState().getName() + "']");// ,
-                                                                          // properties
-    // =
-    // " + processor.getStaticMetadata().asHashtable() + "]");
-    if (skeleton.getPreConditions() != null) {
+            + skeleton.getWorkflowInstance().getState().getName() + "']");
+     if (skeleton.getPreConditions() != null) {
       stringModel.append(indent).append("{PreCond:").append(indent).append("   ")
                  .append(toString(skeleton.getPreConditions(), indent + "      ")).append("}");
     }
@@ -163,7 +156,6 @@ public class WorkflowProcessorHelper {
     WorkflowLifecycle wLifecycle = getLifecycle(model);
     // FIXME: I'm not sure what these excused processor Ids are. I didn't seem
     // need them in the PackagedWorkflowRepository, so not sure what they do.
-    // wp.setExcusedSubProcessorIds(model.getGraph().getExcusedSubProcessorIds());
     wp.getWorkflowInstance().setId(instanceId);
     if (model.getPreConditions() != null) {
       wp.setPreConditions(buildProcessor(instanceId, model,

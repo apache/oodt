@@ -108,17 +108,12 @@ public class Pedigree implements PCSMetadata, PCSConfigMetadata {
     PedigreeTreeNode origRoot = PedigreeTreeNode
         .getPedigreeTreeNodeFromProduct(orig, null);
 
-    // System.out.println("Doing pedigree: upstream: ["+upstream+"]");
     Stack roots = new Stack();
     roots.add(origRoot);
 
     do {
 
       PedigreeTreeNode currRoot = (PedigreeTreeNode) roots.pop();
-      /*
-       * System.out.println("Examining root: ["+currRoot.getNodeProduct().
-       * getProductName()+"]");
-       */
 
       if (upstream) {
         pedProds = getUpstreamPedigreedProducts(currRoot.getNodeProduct());

@@ -330,17 +330,6 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
 	  }
 	}
 
-//	public Catalog getCatalog(String catalogUrn) throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(catalogUrn);
-//		return this.serializer.deserializeObject(Catalog.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getCatalog", args));
-//	}
-
-//	public CatalogRepository getCatalogRepository()
-//			throws CatalogException {
-//		return this.serializer.deserializeObject(CatalogRepository.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getCatalogRepository", new Vector<Object>()));
-//	}
-
 	public TransactionId<?> getCatalogServiceTransactionId(
 			TransactionId<?> catalogTransactionId, String catalogUrn)
 			throws CatalogException {
@@ -395,14 +384,6 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
 		throw new CatalogException("Get Current Catalog Ids Failed: "+ e.getMessage(), e);
 	  }
 	}
-
-//	public Set<Catalog> getCurrentCatalogList() throws CatalogException {
-//		return this.serializer.deserializeObject(Set.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getCurrentCatalogList", new Vector<Object>()));
-//	}
-//
-//	public IngestMapper getIngestMapper() throws CatalogException { 
-//		return this.serializer.deserializeObject(IngestMapper.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getIngestMapper", new Vector<Object>()));
-//	}
 
 	public List<TransactionalMetadata> getMetadataFromTransactionIdStrings(
 			List<String> catalogServiceTransactionIdStrings)
@@ -639,14 +620,7 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
 		throw new CatalogException("Query Failed: "+ e.getMessage(), e);
 	  }
 	}
-	
-//	public QueryPager query(QueryExpression queryExpression, boolean sortResults)
-//			throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(this.serializer.serializeObject(queryExpression));
-//		args.add(this.serializer.serializeObject(new Boolean(sortResults)));
-//		return this.serializer.deserializeObject(QueryPager.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_query", args));
-//	}
+
 
 	public void removeCatalog(String catalogUrn) throws CatalogException {
 		Vector<Object> args = new Vector<Object>();
@@ -660,45 +634,6 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
 	  }
 	}
 
-//	public void removeCatalog(String catalogUrn, boolean preserveMapping)
-//			throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(catalogUrn);
-//		args.add(this.serializer.serializeObject(new Boolean(preserveMapping)));
-//		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_removeCatalog", args);		
-//	}
-
-//	public void setCatalogRepository(CatalogRepository catalogRepository)
-//			throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(this.serializer.serializeObject(catalogRepository));
-//		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setCatalogRepository", args);
-//	}
-
-//	public void setHasIngestPermissions(boolean restrictIngestPermissions) throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(this.serializer.serializeObject(new Boolean(restrictIngestPermissions)));
-//		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setHasIngestPermissions", args);		
-//	}
-
-//	public void setIngestMapper(IngestMapper ingestMapper) throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(this.serializer.serializeObject(ingestMapper));
-//		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setIngestMapper", args);		
-//	}
-
-//	public void setRestrictQueryPermissions(boolean restrictQueryPermissions) throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(this.serializer.serializeObject(new Boolean(restrictQueryPermissions)));
-//		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setRestrictQueryPermissions", args);			
-//	}
-
-//	public void setTransactionIdClass(
-//			Class<? extends TransactionId<?>> transactionIdClass) throws CatalogException {
-//		Vector<Object> args = new Vector<Object>();
-//		args.add(this.serializer.serializeObject(transactionIdClass));
-//		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setTransactionIdClass", args);		
-//	}
 
 
 }

@@ -17,7 +17,14 @@
 
 package org.apache.oodt.cas.workflow.gui.perspective.view.impl;
 
-//JDK imports
+import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
+import org.apache.oodt.cas.workflow.gui.perspective.view.View;
+import org.apache.oodt.cas.workflow.gui.perspective.view.ViewChange;
+import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
+import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -28,9 +35,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -41,16 +49,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 
-//Apache imports
-import org.apache.commons.lang.StringUtils;
-
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
-import org.apache.oodt.cas.workflow.gui.perspective.view.View;
-import org.apache.oodt.cas.workflow.gui.perspective.view.ViewChange;
-import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
-import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
 
 /**
  * 
@@ -153,7 +151,6 @@ public class DefaultTreeView extends View {
     tree.add(this.actionsMenu);
 
     if (state.getSelected() != null) {
-      // System.out.println("SELECTED: " + state.getSelected());
       TreePath treePath = this.getTreePath(root, state.getSelected());
       if (state.getCurrentMetGroup() != null) {
         treePath = this.getTreePath(treePath, state);
@@ -435,9 +432,6 @@ public class DefaultTreeView extends View {
               .getFirstPropertyValue(EXPAND_PRECONDITIONS))
               || Boolean.parseBoolean(state
                   .getFirstPropertyValue(EXPAND_POSTCONDITIONS))) {
-            // if (node.getUserObject() instanceof String &&
-            // (node.getUserObject().equals("pre-conditions") ||
-            // node.getUserObject().equals("post-conditions"))) {
             ModelGraph graph = state.getSelected();
             if (Boolean.parseBoolean(state
                 .getFirstPropertyValue(EXPAND_PRECONDITIONS))) {

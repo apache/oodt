@@ -16,8 +16,6 @@
  */
 package org.apache.oodt.cas.catalog.struct.impl.index;
 
-//JDK imports
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.IngestServiceException;
@@ -116,33 +114,6 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 	 * {@inheritDoc}
 	 */
 	public List<TransactionId<?>> getPage(IndexPager indexPage) {
-//		Connection conn = null;
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		try {
-//			conn = this.dataSource.getConnection();
-//			stmt = conn.createStatement();
-//			rs = stmt.executeQuery("SELECT transaction_id,transaction_class,transaction_date FROM transactions");
-//			int startLoc = pager.getPageNum() * pager.getPageSize();
-//			int endLoc = startLoc + pager.getPageSize();
-//			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
-//			for (int i = startLoc; i < endLoc && rs.next(); i++) {
-//				receipts.add(new IngestReceipt(((TransactionId<?>) Class.forName(rs.getString("transaction_class")).getConstructor(String.class).newInstance(rs.getString("transaction_id"))), DateUtils.toCalendar(rs.getString("transaction_date"), DateUtils.FormatType.LOCAL_FORMAT).getTime()));
-//			}
-//			return rs.next();
-//		}catch (Exception e) {
-//			throw new CatalogIndexException("Failed to check for transaction id '" + transactionId + "' : " + e.getMessage(), e);
-//		}finally {
-//			try {
-//				conn.close();
-//			}catch(Exception e) {}
-//			try {
-//				stmt.close();
-//			}catch(Exception e) {}
-//			try {
-//				rs.close();
-//			}catch(Exception e) {}
-//		}
 		return null;
 	}
 

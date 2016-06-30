@@ -457,9 +457,9 @@ public class DefaultProductSerializer implements ProductSerializer {
 					} else if (name.equals(Parameters.PRODUCT_TYPE_ID)) {
 						productType.setProductTypeId(value);
 					} else if (name.equals(Parameters.PRODUCT_RECEIVED_TIME)) {
-						// ignore ?
-						
-					// CAS root reference
+						product.setProductRecievedTime(value);
+						metadata.addMetadata(name, value);
+						// CAS root reference
 					} else if (name.startsWith(Parameters.NS+Parameters.ROOT)) {
 						if (rootReference==null) {
 						  rootReference = new Reference();

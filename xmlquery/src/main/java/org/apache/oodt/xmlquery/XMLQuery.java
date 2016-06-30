@@ -22,6 +22,18 @@
 
 package org.apache.oodt.xmlquery;
 
+import org.apache.oodt.commons.util.EnterpriseEntityResolver;
+import org.apache.oodt.commons.util.XML;
+import org.apache.oodt.product.Retriever;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.SAXException;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileReader;
@@ -32,6 +44,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,16 +54,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.oodt.product.Retriever;
-import org.apache.oodt.commons.util.EnterpriseEntityResolver;
-import org.apache.oodt.commons.util.XML;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.SAXException;
 
 /**
  * EDA XML query class. Parses a DIS style keyword query and creates query 
@@ -679,21 +682,21 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
     private String replaceCharWithString (String s1, char c, String rs)
 	{
         int p1, p2, s1l;
-    	String s2;
+    	StringBuilder s2;
     	
     	p1 = 0;
 	  s1l = s1.length();
-    	s2 = "";
+    	s2 = new StringBuilder();
     	p2 = s1.indexOf(c, p1);
     	while (p2 >= 0) {
-    	    s2 += s1.substring (p1, p2) + rs;
+    	    s2.append(s1.substring(p1, p2)).append(rs);
             p1 = p2 + 1;
             p2 = s1.indexOf(c, p1);
         }
         if (p1 < s1l) {
-            s2 += s1.substring(p1, s1l);
+            s2.append(s1.substring(p1, s1l));
         }
-        return s2;
+        return s2.toString();
 	}       
        
     /**

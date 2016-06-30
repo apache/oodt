@@ -20,13 +20,13 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>0.13-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-sso</artifactId>
   <packaging>jar</packaging>
   <name>OODT Single Sign On Security Package</name>
-  <properties></properties>
+  <properties />
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
      Once the dependency is in the core pom, it can then be used in other modules without the version tags.
      For example, within core/pom.xml:
@@ -69,7 +69,7 @@ the License.
     </dependency>
   </dependencies>
   <build>
-    <plugins></plugins>
+    <plugins />
   </build>
-  <distributionManagement></distributionManagement>
+  <distributionManagement />
 </project>

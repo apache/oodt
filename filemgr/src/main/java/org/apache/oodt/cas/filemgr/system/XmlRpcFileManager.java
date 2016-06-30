@@ -956,6 +956,15 @@ public class XmlRpcFileManager {
             + filePath + ": Message: " + e.getMessage());
         success = false;
       }
+      finally {
+        try {
+          if (fOut != null) {
+            fOut.close();
+          }
+        } catch (IOException e) {
+          LOG.log(Level.SEVERE, "Could not close file stream", e.getMessage());
+        }
+      }
     } else {
       // create the output directory
       String outFileDirPath = outFile.getAbsolutePath().substring(0,
@@ -1088,6 +1097,20 @@ public class XmlRpcFileManager {
 
     try {
       catalog.modifyProduct(p);
+    } catch (CatalogException e) {
+      LOG.log(Level.WARNING, "Exception modifying product: ["
+                             + p.getProductId() + "]: Message: " + e.getMessage(), e);
+      throw e;
+    }
+
+    return true;
+  }
+
+  public boolean removeProduct(Hashtable table) throws CatalogException {
+    Product p = XmlRpcStructFactory.getProductFromXmlRpc(table);
+
+    try {
+      catalog.removeProduct(p);
     } catch (CatalogException e) {
       LOG.log(Level.WARNING, "Exception modifying product: ["
                              + p.getProductId() + "]: Message: " + e.getMessage(), e);

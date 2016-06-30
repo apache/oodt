@@ -97,16 +97,16 @@ public class ScriptFile {
     }
 
     public String toString() {
-        String rStr = "";
+        StringBuilder rStr = new StringBuilder();
 
-        rStr += "#!" + commandShell + "\n";
+        rStr.append("#!").append(commandShell).append("\n");
 
         for (Object command : commands) {
             String cmd = (String) command;
-            rStr += cmd + "\n";
+            rStr.append(cmd).append("\n");
         }
 
-        return rStr;
+        return rStr.toString();
     }
 
     public void writeScriptFile(String filePath) throws WorkflowException {

@@ -16,11 +16,6 @@
  */
 package org.apache.oodt.cas.catalog.util;
 
-//JDK imports
-import java.util.List;
-import java.util.Vector;
-
-//OODT imports
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
@@ -30,7 +25,8 @@ import org.apache.oodt.cas.catalog.query.parser.ParseException;
 import org.apache.oodt.cas.catalog.query.parser.QueryParser;
 import org.apache.oodt.cas.catalog.query.parser.TokenMgrError;
 
-//OODT imports
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author bfoster
@@ -91,57 +87,5 @@ public class QueryUtils {
 		System.out.println(qe.toString());
 		System.out.println(simplifyQuery(qe).toString());
 	}
-	
-//	public static QueryExpression convertAndsToOrs(QueryExpression queryExpression) {
-//		if (queryExpression instanceof QueryLogicalGroup) {
-//			if (((QueryLogicalGroup) queryExpression).getOperator().equals(QueryLogicalGroup.Operator.AND)) {
-//				QueryLogicalGroup convertedQueryExpression = new QueryLogicalGroup();
-//				convertedQueryExpression.setOperator(QueryLogicalGroup.Operator.OR);
-//				for (QueryExpression subQueryExpression : ((QueryLogicalGroup) queryExpression).getExpressions())
-//					convertedQueryExpression.addExpression(new NotQueryExpression(convertAndsToOrs(subQueryExpression)));
-//				return new NotQueryExpression(convertedQueryExpression);
-//			}else {
-//				QueryLogicalGroup convertedQueryExpression = new QueryLogicalGroup();
-//				convertedQueryExpression.setOperator(QueryLogicalGroup.Operator.OR);
-//				for (QueryExpression subQueryExpression : ((QueryLogicalGroup) queryExpression).getExpressions()) 
-//					convertedQueryExpression.addExpression(convertAndsToOrs(subQueryExpression));
-//				return convertedQueryExpression;
-//			}
-//		}else if (queryExpression instanceof NotQueryExpression) {
-//			return new NotQueryExpression(convertAndsToOrs(((NotQueryExpression) queryExpression).getQueryExpression()));
-//		}else {
-//			return queryExpression;
-//		}
-//	}
-//	
-//	public static QueryExpression reduceNots(QueryExpression queryExpression) {
-//		if (queryExpression instanceof NotQueryExpression) {
-//			NotQueryExpression notQueryExpression = (NotQueryExpression) queryExpression;
-//			if (notQueryExpression.getQueryExpression() instanceof QueryLogicalGroup && ((QueryLogicalGroup) notQueryExpression.getQueryExpression()).getOperator().equals(QueryLogicalGroup.Operator.OR)) {
-//				QueryLogicalGroup queryLogicalGroup = (QueryLogicalGroup) notQueryExpression.getQueryExpression();
-//				QueryLogicalGroup newQueryLogicalGroup = new QueryLogicalGroup();
-//				newQueryLogicalGroup.setOperator(QueryLogicalGroup.Operator.AND);
-//				for (QueryExpression subQueryExpression : queryLogicalGroup.getExpressions()) {
-//					if (subQueryExpression instanceof NotQueryExpression) {
-//						newQueryLogicalGroup.addExpression(reduceNots(((NotQueryExpression) subQueryExpression).getQueryExpression()));
-//					}else {
-//						newQueryLogicalGroup.addExpression(new NotQueryExpression(reduceNots(subQueryExpression)));
-//					}
-//				}
-//				return newQueryLogicalGroup;
-//			}else {
-//				return new NotQueryExpression(reduceNots(notQueryExpression.getQueryExpression()));
-//			}
-//		}else if (queryExpression instanceof QueryLogicalGroup){
-//			QueryLogicalGroup queryLogicalGroup = (QueryLogicalGroup) queryExpression;
-//			QueryLogicalGroup newQueryLogicalGroup = new QueryLogicalGroup();
-//			newQueryLogicalGroup.setOperator(queryLogicalGroup.getOperator());
-//			for (QueryExpression subQueryExpression : queryLogicalGroup.getExpressions())
-//				newQueryLogicalGroup.addExpression(reduceNots(subQueryExpression));
-//			return newQueryLogicalGroup;
-//		}else {
-//			return queryExpression;
-//		}
-//	}
-	
+
 }

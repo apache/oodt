@@ -18,7 +18,6 @@
 
 package org.apache.oodt.cas.pushpull.filerestrictions;
 
-//JDK imports
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
@@ -165,7 +164,6 @@ public class VirtualFile {
 
     public VirtualFile getChild(String regExp, boolean isDirectory) {
         for (VirtualFile vf : children) {
-            // System.out.println("GETCHILD: " + regExp + " " + vf.regExp);
             if ((regExp.equals(vf.regExp) || Pattern.matches(vf.regExp, regExp))
                     && vf.isDir == isDirectory) {
                 return vf;

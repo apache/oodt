@@ -18,16 +18,12 @@
 
 package org.apache.oodt.cas.pushpull.expressions;
 
-//OODT imports
-
 import org.apache.oodt.cas.pushpull.exceptions.MethodException;
 
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//JDK imports
 
 /**
  * 
@@ -72,7 +68,7 @@ public class Method {
         if (nextLoc >= 0) {
             switch (argTypes.get(nextLoc)) {
             case INT:
-                addArg(new Variable(null, new Integer(value)));
+                addArg(new Variable(null, Integer.valueOf(value)));
                 break;
             case STRING:
                 addArg(new Variable(null, value));
@@ -138,7 +134,6 @@ public class Method {
                         output.addLast(args.get(argNames.indexOf(variable
                                 .toString())));
                     }
-                    // System.out.println(output);
                     break;
                 case '#':
                     StringBuilder variableIntString = new StringBuilder("");
@@ -151,7 +146,7 @@ public class Method {
                             break;
                         }
                     }
-                    output.addLast(new Variable(null, new Integer(
+                    output.addLast(new Variable(null, Integer.valueOf(
                             variableIntString.toString())));
                     i = k - 1;
                     break;
@@ -160,10 +155,10 @@ public class Method {
                     int l = i + 1;
                     for (; l < infixArray.length; l++) {
                         char ch = infixArray[l];
-                        if (ch != '"') {
-                            variableString.append(ch);
-                        } else {
+                        if (ch == '"') {
                             break;
+                        } else {
+                            variableString.append(ch);
                         }
                     }
                     output
@@ -175,14 +170,12 @@ public class Method {
                 case '-':
                 case '/':
                 case '*':
-                    // System.out.println("operators");
                     while (!stack.empty()
                             && hasHigherPrecedence(stack.peek().toString()
                                     .charAt(0), c)) {
                         output.addLast(stack.pop());
                     }
                     stack.push(new Operator(c + ""));
-                    // System.out.println("Stack: " + stack);
                     break;
                 case ')':
                     while (!stack.empty()) {

@@ -18,7 +18,6 @@
 
 package org.apache.oodt.cas.pushpull.retrievalsystem;
 
-//OODT imports
 import org.apache.oodt.cas.pushpull.config.Config;
 import org.apache.oodt.cas.pushpull.config.SiteInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
@@ -44,7 +43,6 @@ import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -961,7 +959,6 @@ public class FileRetrievalSystem {
         for (Protocol session : avaliableSessions) {
             protocolHandler.disconnect(session);
         }
-        // sessions.clear();
         avaliableSessions.clear();
         numberOfSessions = 0;
         return true;

@@ -32,9 +32,9 @@ the License.
     </description>
 
     <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/streaming</connection>
+        <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/streaming</connection>
         <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/streaming</developerConnection>
-        <url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/streaming</url>
+        <url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/streaming</url>-->
     </scm>
 
     <modules>

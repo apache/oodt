@@ -170,10 +170,6 @@ public class XmlRpcCommunicationChannelServer extends
 		return this.serializer.serializeObject(this.getCalalogProperties(catalogUrn));	
 	}
 
-//	public String xmlrpc_getCatalog(String catalogUrn) throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getCatalog(catalogUrn));	
-//	}
-
 	public String xmlrpc_getCatalogServiceTransactionId(
 			String catalogTransactionIdObject, String catalogUrn)
 			throws CatalogServiceException {
@@ -196,10 +192,6 @@ public class XmlRpcCommunicationChannelServer extends
 		return this.serializer.serializeObject(this.getCurrentCatalogIds());	
 	}
 
-//	public String xmlrpc_getCurrentCatalogList() throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getCurrentCatalogList());	
-//	}
-
 	public String xmlrpc_getMetadataFromTransactionIdStrings(
 			String catalogServiceTransactionIdStringsObject)
 			throws CatalogServiceException {
@@ -220,15 +212,7 @@ public class XmlRpcCommunicationChannelServer extends
 	public String xmlrpc_getProperty(String key) throws CatalogServiceException {
 		return this.serializer.serializeObject(this.getProperty(key));	
 	}
-//
-//	public String xmlrpc_getTransactionIdClass() throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getTransactionIdClass());	
-//	}
 
-//	public String xmlrpc_getTransactionIdsForAllPages(
-//			String queryPagerObject) throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getTransactionIdsForAllPages(this.serializer.deserializeObject(QueryPager.class, queryPagerObject)));	
-//	}
 
 	public String xmlrpc_ingest(String metadataObject)
 			throws CatalogServiceException {
@@ -250,15 +234,7 @@ public class XmlRpcCommunicationChannelServer extends
 	public String xmlrpc_query(String queryExpressionObject, String catalogIdsObject) throws CatalogServiceException {
 		return this.serializer.serializeObject(this.query(this.serializer.deserializeObject(QueryExpression.class, queryExpressionObject), this.serializer.deserializeObject(Set.class, catalogIdsObject)));	
 	}
-	
-//	public String xmlrpc_getFirstPage(String queryExpressionObject) throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getFirstPage(this.serializer.deserializeObject(QueryExpression.class, queryExpressionObject)));	
-//	}
-//
-//	public String xmlrpc_getFirstPage(String queryExpressionObject, String catalogIdsObject) throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getFirstPage(this.serializer.deserializeObject(QueryExpression.class, queryExpressionObject), this.serializer.deserializeObject(Set.class, catalogIdsObject)));	
-//	}
-	
+
 	public String xmlrpc_getNextPage2(String pageObject) throws CatalogServiceException {
 		return this.serializer.serializeObject(this.getNextPage(this.serializer.deserializeObject(Page.class, pageObject)));	
 	}
@@ -270,47 +246,16 @@ public class XmlRpcCommunicationChannelServer extends
 	public String xmlrpc_getPage(String pageInfoObject, String queryExpressionObject, String catalogIdsObject) throws CatalogServiceException {
 		return this.serializer.serializeObject(this.getPage(this.serializer.deserializeObject(PageInfo.class, pageInfoObject), this.serializer.deserializeObject(QueryExpression.class, queryExpressionObject), this.serializer.deserializeObject(Set.class, catalogIdsObject)));
 	}
-	
-//	public String xmlrpc_getLastPage(String queryExpressionObject) throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getLastPage(this.serializer.deserializeObject(QueryExpression.class, queryExpressionObject)));	
-//	}
-//
-//	public String xmlrpc_getLastPage(String queryExpressionObject, String catalogIdsObject) throws CatalogServiceException {
-//		return this.serializer.serializeObject(this.getLastPage(this.serializer.deserializeObject(QueryExpression.class, queryExpressionObject), this.serializer.deserializeObject(Set.class, catalogIdsObject)));	
-//	}
-	
+
 	public String xmlrpc_getMetadata(String pageObject) throws CatalogServiceException {
 		return this.serializer.serializeObject(this.getMetadata(this.serializer.deserializeObject(Page.class, pageObject)));
 	}
-	
-//	public String xmlrpc_query(String queryExpressionObject, String sortResultsObject) throws CatalogServiceException {
-//		System.out.println(this.getClass().getClassLoader());
-//		return this.serializer.serializeObject(this.query(this.serializer.deserializeObject(QueryExpression.class, queryExpressionObject), this.serializer.deserializeObject(Boolean.class, sortResultsObject)));	
-//	}
+
 
 	public boolean xmlrpc_removeCatalog(String catalogUrn) throws CatalogServiceException {
 		this.removeCatalog(catalogUrn);
 		return true;
 	}
-//
-//	public boolean xmlrpc_removeCatalog(String catalogUrn, String preserveMappingObject) throws CatalogServiceException {
-//		this.removeCatalog(catalogUrn, this.serializer.deserializeObject(Boolean.class, preserveMappingObject));	
-//		return true;
-//	}
-//	
-//	public boolean xmlrpc_setHasIngestPermissions(String restrictIngestPermissionsObject) throws CatalogServiceException {
-//		this.setHasIngestPermissions(this.serializer.deserializeObject(Boolean.class, restrictIngestPermissionsObject));	
-//		return true;
-//	}
-//
-//	public boolean xmlrpc_setRestrictQueryPermissions(String restrictQueryPermissionsObject) throws CatalogServiceException {
-//		this.setRestrictQueryPermissions(this.serializer.deserializeObject(Boolean.class, restrictQueryPermissionsObject));		
-//		return true;
-//	}
 
-//	public boolean setTransactionIdClass(String transactionIdClassObject) throws CatalogServiceException {
-//		this.setTransactionIdClass(this.serializer.deserializeObject(Class.class, transactionIdClassObject));	
-//		return true;
-//	}
 
 }

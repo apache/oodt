@@ -188,8 +188,6 @@ public class JDBC_DB
 			stmt = null;
 		} catch (SQLException e) {
 			System.err.println("Ignoring database close connection exception");
-			//System.err.println("Ignoring exception " + e.getClass().getName() + ": " + e.getMessage());
-			//LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -280,22 +278,13 @@ public class JDBC_DB
 		  throw new IllegalStateException("Connection got closed!");
 		}
 
-
-		//long time0 = System.currentTimeMillis();
 		stmt = connect.createStatement();
-		//long time = System.currentTimeMillis();
-		//System.err.println("###### Creating a new statement: " + (time - time0));
-		//time0 = time;
 
 		if (rs!=null) {
 		  rs.close();
 		}
 
 		rs = stmt.executeQuery(sql_command);
-		//time = System.currentTimeMillis();
-		//System.err.println("###### Executing the query: " + (time - time0));
-
-
 
 		return(rs);
 
@@ -413,17 +402,6 @@ public class JDBC_DB
 
 	public String toDateStr(java.util.Date inDate)
 	{
-
-		String outDate;
-/*
-		outDate = Integer.toString(inDate.getDate()) + "-" +
-			   Integer.toString(inDate.getMonth() + 1) + "-" +
-			   Integer.toString(inDate.getYear()) + " " +
-			   Integer.toString(inDate.getHours()) + ":" +
-			   Integer.toString(inDate.getMinutes()) + ":" +
-			   Integer.toString(inDate.getSeconds());
-		return(outDate);
-*/
 
 		SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
