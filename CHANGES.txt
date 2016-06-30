@@ -1,5 +1,12 @@
 Apache OODT Change Log
 ======================
+Release 0.13 - 06/21/2016
+
+* OODT-925 - Update schema.xml field defs for SOLR 5.x
+* OODT-926 - Fix pom versioning
+* OODT-927 - Sanitize SQL commands in CAS DatasourceIngestMapper
+* OODT-928 - UPdate maven-compiler-plugin
+
 Release 0.12 - 02/10/2016
 
 * OODT-781 Add missing XMLRPC endpoint for remove hashtable. (magicaltrout)
