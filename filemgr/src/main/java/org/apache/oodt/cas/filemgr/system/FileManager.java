@@ -849,7 +849,7 @@ public class FileManager {
         }
 
         Metadata met = new Metadata();
-        met.addMetadata(metadata.getHashtable());
+        met.addMetadata(metadata.getHashTable());
 
         if (product.getProductType().getExtractors() != null) {
             for (ExtractorSpec spec: product.getProductType().getExtractors()) {

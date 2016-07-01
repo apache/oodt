@@ -37,6 +37,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 

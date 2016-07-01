@@ -101,7 +101,7 @@ public class AvroTypeFactory {
     public static AvroMetadata getAvroMetadata(Metadata metadata){
 
         AvroMetadata avroMetadata = new AvroMetadata();
-        Hashtable met = metadata.getHashtable();
+        Hashtable met = metadata.getHashTable();
         Map<String,List<String>> hashMapMetadata = new HashMap<String,List<String>>();
 
         if (met != null && met.size() > 0){

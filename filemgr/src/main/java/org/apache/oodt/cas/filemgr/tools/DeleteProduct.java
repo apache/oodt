@@ -23,6 +23,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 //JDK imports
@@ -55,7 +56,7 @@ public class DeleteProduct {
     private static final Logger LOG = Logger.getLogger(DeleteProduct.class.getName());
 
     /* our File Manager client */
-    private XmlRpcFileManagerClient client = null;
+    private FileManagerClient client = null;
 
     /* whether or not we should commit our deletions */
     private boolean commit = true;

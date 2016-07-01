@@ -35,6 +35,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
