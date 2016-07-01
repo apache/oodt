@@ -44,7 +44,7 @@ public class RetrieveFilesCliAction extends FileManagerCliAction {
       try {
          FileManagerClient fmClient = getClient();
          dt.setFileManagerUrl(fmClient.getFileManagerUrl());
-         Product product = null;
+         Product product;
          if (productId != null) {
             product = fmClient.getProductById(productId);
          } else if (productName != null) {

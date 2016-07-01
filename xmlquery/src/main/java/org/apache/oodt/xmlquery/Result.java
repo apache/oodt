@@ -18,13 +18,26 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import org.apache.oodt.commons.util.*;
-import org.w3c.dom.*;
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
 import org.apache.oodt.product.Retriever;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** A single result.
  *
@@ -82,16 +95,18 @@ public class Result implements Serializable, Cloneable, Documentable {
 	 */
 	public Result(String id, String mimeType, String profileID, String resourceID, List headers, Object value,
 		boolean classified, long validity) {
-		if (validity < 0 && validity != INFINITE)
-			throw new IllegalArgumentException("Validity must be a nonnegative time in milliseconds or "
-				+ " Result.INFINITE to indicate no expiration");
-		if (!codecs.containsKey(mimeType))
-			throw new IllegalArgumentException("MIME type \"" + mimeType + "\" unknown");
-		for (Iterator i = headers.iterator(); i.hasNext();) {
-			Object header = i.next();
-			if (!(header instanceof Header))
-				throw new IllegalArgumentException("List of headers doesn't contain Header object");
+		if (validity < 0 && validity != INFINITE) {
+		  throw new IllegalArgumentException("Validity must be a nonnegative time in milliseconds or "
+											 + " Result.INFINITE to indicate no expiration");
 		}
+		if (!codecs.containsKey(mimeType)) {
+		  throw new IllegalArgumentException("MIME type \"" + mimeType + "\" unknown");
+		}
+	  for (Object header : headers) {
+		if (!(header instanceof Header)) {
+		  throw new IllegalArgumentException("List of headers doesn't contain Header object");
+		}
+	  }
 
 		this.id         = id;
 		this.mimeType   = mimeType;
@@ -108,9 +123,10 @@ public class Result implements Serializable, Cloneable, Documentable {
 	 * @param node The DOM node, which must be a &lt;resultElement&gt; element.
 	 */
 	public Result(Node node) {
-		if (!"resultElement".equals(node.getNodeName()))
-			throw new IllegalArgumentException("Result must be constructed from <resultElement> node, not <"
-				+ node.getNodeName() + ">");
+		if (!"resultElement".equals(node.getNodeName())) {
+		  throw new IllegalArgumentException("Result must be constructed from <resultElement> node, not <"
+											 + node.getNodeName() + ">");
+		}
 		Element rootElement = (Element) node;
 		classified = "true".equals(rootElement.getAttribute("classified"));
 		validity = Long.parseLong(rootElement.getAttribute("validity"));
@@ -118,21 +134,22 @@ public class Result implements Serializable, Cloneable, Documentable {
 		String encodedValue = null;
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node child = children.item(i);
-			if ("resultId".equals(child.getNodeName()))
-				id = XML.unwrappedText(child);
-			else if ("resultMimeType".equals(child.getNodeName()))
-				mimeType = XML.unwrappedText(child);
-			else if ("profId".equals(child.getNodeName()))
-				profileID = XML.unwrappedText(child);
-			else if ("identifier".equals(child.getNodeName()))
-				resourceID = XML.unwrappedText(child);
-			else if ("resultHeader".equals(child.getNodeName()))
-				headers = Header.createHeaders(child);
-			else if ("resultValue".equals(child.getNodeName())) {
+			if ("resultId".equals(child.getNodeName())) {
+			  id = XML.unwrappedText(child);
+			} else if ("resultMimeType".equals(child.getNodeName())) {
+			  mimeType = XML.unwrappedText(child);
+			} else if ("profId".equals(child.getNodeName())) {
+			  profileID = XML.unwrappedText(child);
+			} else if ("identifier".equals(child.getNodeName())) {
+			  resourceID = XML.unwrappedText(child);
+			} else if ("resultHeader".equals(child.getNodeName())) {
+			  headers = Header.createHeaders(child);
+			} else if ("resultValue".equals(child.getNodeName())) {
 				Codec codec = (Codec) codecs.get(mimeType);
-				if (codec == null)
-					throw new IllegalArgumentException("Unkown MIME type \"" + mimeType
-						+ "\" in <resultElement>'s <resultMimeType>");
+				if (codec == null) {
+				  throw new IllegalArgumentException("Unkown MIME type \"" + mimeType
+													 + "\" in <resultElement>'s <resultMimeType>");
+				}
 				try {
 					value = codec.decode(child);
 				} catch (RuntimeException ex) {
@@ -246,8 +263,10 @@ public class Result implements Serializable, Cloneable, Documentable {
 	 */
 	public long getSize() {
 		Codec codec = (Codec) codecs.get(mimeType);
-		if (codec == null) throw new IllegalStateException("No codec available for supposedly valid MIME type \""
-			+ mimeType + "\"");
+		if (codec == null) {
+		  throw new IllegalStateException("No codec available for supposedly valid MIME type \""
+										  + mimeType + "\"");
+		}
 		return codec.sizeOf(value);
 	}
 
@@ -261,13 +280,15 @@ public class Result implements Serializable, Cloneable, Documentable {
 		XML.add(root, "identifier", resourceID);
 		Element resultHeader = doc.createElement("resultHeader");
 		root.appendChild(resultHeader);
-		for (Iterator i = headers.iterator(); i.hasNext();) {
-			Header header = (Header) i.next();
-			resultHeader.appendChild(header.toXML(doc));
-		}
+	  for (Object header1 : headers) {
+		Header header = (Header) header1;
+		resultHeader.appendChild(header.toXML(doc));
+	  }
 		Codec codec = (Codec) codecs.get(mimeType);
-		if (codec == null) throw new IllegalStateException("No codec available for supposedly valid MIME type \""
-			+ mimeType + "\"");
+		if (codec == null) {
+		  throw new IllegalStateException("No codec available for supposedly valid MIME type \""
+										  + mimeType + "\"");
+		}
 		root.appendChild(codec.encode(value, doc));
 		return root;
 	}
@@ -280,8 +301,10 @@ public class Result implements Serializable, Cloneable, Documentable {
 	 */
 	public InputStream getInputStream() throws IOException {
 		Codec codec = (Codec) codecs.get(mimeType);
-		if (codec == null) throw new IllegalStateException("No codec available for allegedly valid MIME type \""
-			+ mimeType + "\"");
+		if (codec == null) {
+		  throw new IllegalStateException("No codec available for allegedly valid MIME type \""
+										  + mimeType + "\"");
+		}
 		return codec.getInputStream(value);
 	}
 
@@ -327,15 +350,19 @@ public class Result implements Serializable, Cloneable, Documentable {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof Result)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof Result)) {
+		  return false;
+		}
 		Result obj = (Result) rhs;
 		return id.equals(obj.id) && mimeType.equals(obj.mimeType) && profileID.equals(obj.profileID)
 			&& resourceID.equals(obj.resourceID) && headers.equals(obj.headers) && value.equals(obj.value);
 	}
 
 	public Object clone() {
-		Object rc = null;
+		Object rc;
 		try {
 			rc = super.clone();
 		} catch (CloneNotSupportedException cantHappen) {
@@ -346,8 +373,12 @@ public class Result implements Serializable, Cloneable, Documentable {
 	}
 
 	public void setRetriever(Retriever retriever) {
-		if (retriever == null) throw new IllegalArgumentException("retriever must be non-null");
-		if (this.retriever == null) this.retriever = retriever;
+		if (retriever == null) {
+		  throw new IllegalArgumentException("retriever must be non-null");
+		}
+		if (this.retriever == null) {
+		  this.retriever = retriever;
+		}
 	}
 
 	public String toString() {
@@ -387,17 +418,17 @@ public class Result implements Serializable, Cloneable, Documentable {
 
 	/** Initialize the set of valid MIME types. */
 	static {
-		codecs = new HashMap();
+		codecs = new ConcurrentHashMap();
 		try {
 			java.io.InputStream inp = Result.class.getResourceAsStream("mime.properties");
 			BufferedInputStream in = new BufferedInputStream(inp);
 			Properties props = new Properties();
 			props.load(in);
 			in.close();
-			for (Iterator i = props.entrySet().iterator(); i.hasNext();) {
-				Map.Entry entry = (Map.Entry) i.next();
-				codecs.put(entry.getKey(), CodecFactory.createCodec((String) entry.getValue()));
-			}
+		  for (Map.Entry<Object, Object> objectObjectEntry : props.entrySet()) {
+			Map.Entry entry = (Map.Entry) objectObjectEntry;
+			codecs.put(entry.getKey(), CodecFactory.createCodec((String) entry.getValue()));
+		  }
 		} catch (IOException ex) {
 			System.err.println("I/O exception WHILE reading mime.properties: " + ex.getMessage());
 			ex.printStackTrace();

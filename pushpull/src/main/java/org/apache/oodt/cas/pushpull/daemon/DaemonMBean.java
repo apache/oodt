@@ -40,7 +40,7 @@ public interface DaemonMBean {
      * 
      * @return
      */
-    public void quit();
+    void quit();
 
     /**
      * Can be used to determine if Crawler is presently running
@@ -48,48 +48,48 @@ public interface DaemonMBean {
      * @return true if Crawler is runnning
      * @uml.property name="isRunning"
      */
-    public boolean isRunning();
+    boolean isRunning();
 
-    public boolean getHasBeenToldToQuit();
+    boolean getHasBeenToldToQuit();
 
-    public long getTimeIntervalInMilliseconds();
+    long getTimeIntervalInMilliseconds();
 
-    public long getEpsilonInMilliseconds();
+    long getEpsilonInMilliseconds();
 
-    public boolean getRunOnReboot();
+    boolean getRunOnReboot();
 
-    public Date getFirstRunDateTime();
+    Date getFirstRunDateTime();
 
-    public String[] downloadedFilesInStagingArea();
+    String[] downloadedFilesInStagingArea();
 
-    public String[] downloadingFilesInStagingArea();
+    String[] downloadingFilesInStagingArea();
 
-    public int numberOfFilesDownloadedInStagingArea();
+    int numberOfFilesDownloadedInStagingArea();
 
-    public int numberOfFilesDownloadingInStagingArea();
+    int numberOfFilesDownloadingInStagingArea();
 
-    public String getDataFilesRemoteSite();
+    String getDataFilesRemoteSite();
 
-    public String getDataFilesRenamingConv();
+    String getDataFilesRenamingConv();
 
-    public boolean getDeleteDataFilesFromServer();
+    boolean getDeleteDataFilesFromServer();
 
-    public String getQueryMetadataElementName();
+    String getQueryMetadataElementName();
 
-    public File getDataFilesStagingArea();
+    File getDataFilesStagingArea();
 
-    public boolean getAllowAliasOverride();
+    boolean getAllowAliasOverride();
 
-    public String getPropertyFilesRemoteSite();
+    String getPropertyFilesRemoteSite();
 
-    public String getPropertyFilesRenamingConv();
+    String getPropertyFilesRenamingConv();
 
-    public boolean getDeletePropertyFilesFromServer();
+    boolean getDeletePropertyFilesFromServer();
 
-    public String getPropertyFilesOnSuccessDir();
+    String getPropertyFilesOnSuccessDir();
 
-    public String getPropertyFilesOnFailDir();
+    String getPropertyFilesOnFailDir();
 
-    public File getPropertyFilesLocalDir();
+    File getPropertyFilesLocalDir();
 
 }

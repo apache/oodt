@@ -177,7 +177,7 @@ public abstract class ProductCrawlerBean implements
 	}
 
 	public void setGlobalMetadata(Metadata globalMetadata) {
-		this.globalMetadata.addMetadata(globalMetadata.getHashtable());
+		this.globalMetadata.addMetadata(globalMetadata.getMap());
 	}
 
 }

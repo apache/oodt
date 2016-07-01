@@ -17,14 +17,7 @@
 package org.apache.oodt.cas.catalog.server.channel.rmi;
 
 //JDK imports
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
-//OODT imports
+import org.apache.oodt.cas.catalog.exception.CatalogException;
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
 import org.apache.oodt.cas.catalog.page.CatalogReceipt;
 import org.apache.oodt.cas.catalog.page.Page;
@@ -40,6 +33,15 @@ import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.catalog.util.PluginURL;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+//OODT imports
+
 /**
  * 
  * @author bfoster
@@ -54,214 +56,214 @@ public class RmiCommunicationChannelClient extends UnicastRemoteObject implement
 		super();
 	}
 
-	public void addCatalog(Catalog catalog) throws Exception {
+	public void addCatalog(Catalog catalog) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void addCatalog(String catalogId, Index index) throws Exception {
+	public void addCatalog(String catalogId, Index index) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void addCatalog(String catalogId, Index index,
-			List<Dictionary> dictionaries) throws Exception {
+			List<Dictionary> dictionaries) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void addCatalog(String catalogId, Index index,
 			List<Dictionary> dictionaries, boolean restrictQueryPermission,
-			boolean restrictIngestPermission) throws Exception {
+			boolean restrictIngestPermission) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void addDictionary(String catalogId, Dictionary dictionary)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void addPluginUrls(List<PluginURL> pluginUrls) throws Exception {
+	public void addPluginUrls(List<PluginURL> pluginUrls) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void delete(Metadata metadata) throws Exception {
+	public void delete(Metadata metadata) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public List<TransactionalMetadata> getAllPages(QueryPager queryPager)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Properties getCalalogProperties() throws Exception {
+	public Properties getCalalogProperties() throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Properties getCalalogProperties(String catalogUrn) throws Exception {
+	public Properties getCalalogProperties(String catalogUrn) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public TransactionId<?> getCatalogServiceTransactionId(
 			TransactionId<?> catalogTransactionId, String catalogUrn)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public TransactionId<?> getCatalogServiceTransactionId(
 			CatalogReceipt catalogReceipt, boolean generateNew)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<TransactionId<?>> getCatalogServiceTransactionIds(
 			List<TransactionId<?>> catalogTransactionIds, String catalogUrn)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<String> getCurrentCatalogIds() throws Exception {
+	public Set<String> getCurrentCatalogIds() throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<TransactionalMetadata> getMetadata(Page page) throws Exception {
+	public List<TransactionalMetadata> getMetadata(Page page) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<TransactionalMetadata> getMetadataFromTransactionIdStrings(
-			List<String> catalogServiceTransactionIdStrings) throws Exception {
+			List<String> catalogServiceTransactionIdStrings) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<TransactionalMetadata> getMetadataFromTransactionIds(
 			List<TransactionId<?>> catalogServiceTransactionIds)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Page getNextPage(Page page) throws Exception {
+	public Page getNextPage(Page page) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<TransactionalMetadata> getNextPage(QueryPager queryPager)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Page getPage(PageInfo pageInfo, QueryExpression queryExpression)
-			throws Exception {
+			throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Page getPage(PageInfo pageInfo, QueryExpression queryExpression,
-			Set<String> catalogIds) throws Exception {
+			Set<String> catalogIds) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public URL getPluginStorageDir() throws Exception {
+	public URL getPluginStorageDir() throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<PluginURL> getPluginUrls() throws Exception {
+	public List<PluginURL> getPluginUrls() throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<String> getProperty(String key) throws Exception {
+	public List<String> getProperty(String key) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<TransactionId<?>> getTransactionIdsForAllPages(
-			QueryPager queryPager) throws Exception {
+			QueryPager queryPager) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public TransactionReceipt ingest(Metadata metadata) throws Exception {
+	public TransactionReceipt ingest(Metadata metadata) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public boolean isRestrictIngestPermissions() throws Exception {
+	public boolean isRestrictIngestPermissions() throws CatalogException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean isRestrictQueryPermissions() throws Exception {
+	public boolean isRestrictQueryPermissions() throws CatalogException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public void modifyIngestPermission(String catalogId,
-			boolean restrictIngestPermission) throws Exception {
+			boolean restrictIngestPermission) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void modifyQueryPermission(String catalogId,
-			boolean restrictQueryPermission) throws Exception {
+			boolean restrictQueryPermission) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public QueryPager query(QueryExpression queryExpression) throws Exception {
+	public QueryPager query(QueryExpression queryExpression) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public QueryPager query(QueryExpression queryExpression,
-			Set<String> catalogIds) throws Exception {
+			Set<String> catalogIds) throws CatalogException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void removeCatalog(String catalogUrn) throws Exception {
+	public void removeCatalog(String catalogUrn) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void replaceCatalog(Catalog catalog) throws Exception {
+	public void replaceCatalog(Catalog catalog) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void replaceDictionaries(String catalogId,
-			List<Dictionary> dictionaries) throws Exception {
+			List<Dictionary> dictionaries) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void replaceIndex(String catalogId, Index index) throws Exception {
+	public void replaceIndex(String catalogId, Index index) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void shutdown() throws Exception {
+	public void shutdown() throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void transferUrl(URL fromUrl, URL toUrl) throws Exception {
+	public void transferUrl(URL fromUrl, URL toUrl) throws CatalogException {
 		// TODO Auto-generated method stub
 		
 	}

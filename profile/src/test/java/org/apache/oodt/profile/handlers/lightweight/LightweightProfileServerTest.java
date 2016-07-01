@@ -22,8 +22,7 @@ import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.ProfileException;
 import org.apache.oodt.xmlquery.XMLQuery;
 
-import java.net.URL;
-import java.util.Iterator;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +40,8 @@ public class LightweightProfileServerTest extends TestCase {
 	}
 
 	protected void setUp() throws Exception {
-	  URL url = getClass().getResource("lightweightTest.xml");
-		server = new LightweightProfileServer(url, "testing");
+	  URI uri = getClass().getResource("lightweightTest.xml").toURI();
+		server = new LightweightProfileServer(uri, "testing");
 	}
 	
 	/**
@@ -106,16 +105,18 @@ public class LightweightProfileServerTest extends TestCase {
 			// And again, but spanning profiles
 			profiles = doSearch("TEST2 = 48 OR TEST4 = 192");
 			assertEquals(2, profiles.size());
-			for (Iterator i = profiles.iterator(); i.hasNext();) {
-				profile = (SearchableProfile) i.next();
-				elements = profile.getProfileElements();
-				assertEquals(3, elements.size());
-				if (profile.getProfileAttributes().getID().equals("PROFILE1")) {
-					assertTrue(elements.containsKey("TEST2"));
-				} else if (profile.getProfileAttributes().getID().equals("PROFILE2")) {
-					assertTrue(elements.containsKey("TEST4"));
-				} else fail("Profile \"" + profile.getProfileAttributes().getID() + "\" matched, but shouldn't");
+		  for (Object profile1 : profiles) {
+			profile = (SearchableProfile) profile1;
+			elements = profile.getProfileElements();
+			assertEquals(3, elements.size());
+			if (profile.getProfileAttributes().getID().equals("PROFILE1")) {
+			  assertTrue(elements.containsKey("TEST2"));
+			} else if (profile.getProfileAttributes().getID().equals("PROFILE2")) {
+			  assertTrue(elements.containsKey("TEST4"));
+			} else {
+			  fail("Profile \"" + profile.getProfileAttributes().getID() + "\" matched, but shouldn't");
 			}
+		  }
 
 			// And again, but with a query on the "from" part.
 			profiles = doSearch("( TEST2 = 48 OR TEST4 = 192 ) AND Creator = Alice");

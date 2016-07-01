@@ -21,13 +21,11 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
-import java.util.*;
-import org.apache.oodt.commons.Configuration;
-import org.apache.oodt.commons.util.DOMParser;
-import org.apache.oodt.commons.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.apache.oodt.commons.util.XML;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * EDM Statisti class. 
@@ -45,7 +43,7 @@ public class Statistic implements java.io.Serializable, Cloneable
 
 	public Statistic()
         {
-		url = new String("UNKNOWN");
+		url = "UNKNOWN";
 		time = 0;
 	}
 
@@ -76,11 +74,12 @@ public class Statistic implements java.io.Serializable, Cloneable
                 	if (node instanceof Element)
                 	{
                     		nodeName = node.getNodeName();
-                    		if (nodeName.compareTo("url") == 0)
-                        	   url = XML.unwrappedText(node);
-                    		else
-                    		if (nodeName.compareTo("time") == 0)
-                        	   time = Long.parseLong(XML.unwrappedText(node));
+                    		if (nodeName.compareTo("url") == 0) {
+							  url = XML.unwrappedText(node);
+							} else
+                    		if (nodeName.compareTo("time") == 0) {
+							  time = Long.parseLong(XML.unwrappedText(node));
+							}
                  	}
          	}
    	}

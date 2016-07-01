@@ -20,7 +20,7 @@ package org.apache.oodt.cas.product.jaxrs.configurations;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -63,11 +63,11 @@ public class RdfConfiguration
   private static final String TYPE_VALUE = "ns";
   private static final String TYPE_DEFAULT = "default";
 
-  private Map<String, String> nsMap = new HashMap<String, String>();
-  private Map<String, String> rewriteMap = new HashMap<String, String>();
-  private Map<String, String> resLinkMap = new HashMap<String, String>();
-  private Map<String, String> keyNsMap = new HashMap<String, String>();
-  private Map<String, String> typesNsMap = new HashMap<String, String>();
+  private Map<String, String> nsMap = new ConcurrentHashMap<String, String>();
+  private Map<String, String> rewriteMap = new ConcurrentHashMap<String, String>();
+  private Map<String, String> resLinkMap = new ConcurrentHashMap<String, String>();
+  private Map<String, String> keyNsMap = new ConcurrentHashMap<String, String>();
+  private Map<String, String> typesNsMap = new ConcurrentHashMap<String, String>();
   private String defaultKeyNs = null;
   private String defaultTypeNs = null;
 
@@ -114,7 +114,7 @@ public class RdfConfiguration
   private Map<String, String> readConfiguration(Element element,
     String outerTag, String innerTag, String key, String value)
   {
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new ConcurrentHashMap<String, String>();
 
     Element outer = XMLUtils.getFirstElement(outerTag, element);
     NodeList nodeList = outer.getElementsByTagName(innerTag);
@@ -183,7 +183,7 @@ public class RdfConfiguration
   {
     // Apply the rewrite rules.
     String tagName = rewriteMap.containsKey(key) ? rewriteMap.get(key) : key;
-    if (tagName.indexOf(" ") != -1) {
+    if (tagName.contains(" ")) {
       tagName = StringUtils.join(WordUtils.capitalizeFully(tagName).split(
           " "));
     }
@@ -193,7 +193,7 @@ public class RdfConfiguration
       ? keyNsMap.get(key) : defaultKeyNs;
 
     // Create the element.
-    Element element = null;
+    Element element;
     if (resLinkMap.containsKey(key))
     {
       element = document.createElement(namespace + ":" + tagName);

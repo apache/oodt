@@ -18,27 +18,26 @@
 package org.apache.oodt.cas.resource.queuerepo;
 
 //OODT imports
-import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.resource.scheduler.QueueManager;
 import org.apache.oodt.cas.resource.util.XmlStructFactory;
+import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
-//JDK imports
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JDK imports
 //DOM imports
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -74,87 +73,77 @@ public class XmlQueueRepository implements QueueRepository {
 		QueueManager queueManager = new QueueManager();
 
 		if (dirUris != null && dirUris.size() > 0) {
-			for (Iterator i = dirUris.iterator(); i.hasNext();) {
-				String dirUri = (String) i.next();
+		  for (String dirUri : dirUris) {
+			try {
+			  File nodesDir = new File(new URI(dirUri));
+			  if (nodesDir.isDirectory()) {
 
-				try {
-					File nodesDir = new File(new URI(dirUri));
-					if (nodesDir.isDirectory()) {
 
-						String nodesDirStr = nodesDir.getAbsolutePath();
+				// get all the workflow xml files
+				File[] nodesFiles = nodesDir.listFiles(queuesXmlFilter);
 
-						if (!nodesDirStr.endsWith("/")) {
-							nodesDirStr += "/";
+				if(nodesFiles!=null){
+				for (File nodesFile : nodesFiles) {
+
+				  Document nodesRoot;
+				  try {
+					nodesRoot = XMLUtils
+						.getDocumentRoot(new FileInputStream(
+							nodesFile));
+				  } catch (FileNotFoundException e) {
+					LOG.log(Level.SEVERE, e.getMessage());
+					return null;
+				  }
+
+				  NodeList nodeList = nodesRoot
+					  .getElementsByTagName("node");
+
+				  if (nodeList != null && nodeList.getLength() > 0) {
+					for (int k = 0; k < nodeList.getLength(); k++) {
+
+					  String nodeId = ((Element) nodeList.item(k))
+						  .getAttribute("id");
+					  Vector assignments = (Vector) XmlStructFactory
+						  .getQueueAssignment(nodeList
+							  .item(k));
+					  for (Object assignment : assignments) {
+						try {
+						  // make sure queue exists
+						  queueManager
+							  .addQueue((String) assignment);
+						  // add node to queue
+						  queueManager
+							  .addNodeToQueue(nodeId,
+								  (String) assignment);
+						} catch (Exception e) {
+						  LOG
+							  .log(
+								  Level.WARNING,
+								  "Failed to add node '"
+								  + nodeId
+								  + "' to queue '"
+								  + (String) assignment
+								  + "' : "
+								  + e
+									  .getMessage(),
+								  e);
 						}
-
-						// get all the workflow xml files
-						File[] nodesFiles = nodesDir.listFiles(queuesXmlFilter);
-
-						for (int j = 0; j < nodesFiles.length; j++) {
-
-							String nodesXmlFile = nodesFiles[j]
-									.getAbsolutePath();
-							Document nodesRoot = null;
-							try {
-								nodesRoot = XMLUtils
-										.getDocumentRoot(new FileInputStream(
-												nodesFiles[j]));
-							} catch (FileNotFoundException e) {
-								e.printStackTrace();
-								return null;
-							}
-
-							NodeList nodeList = nodesRoot
-									.getElementsByTagName("node");
-
-							if (nodeList != null && nodeList.getLength() > 0) {
-								for (int k = 0; k < nodeList.getLength(); k++) {
-
-									String nodeId = ((Element) nodeList.item(k))
-											.getAttribute("id");
-									Vector assignments = (Vector) XmlStructFactory
-											.getQueueAssignment((Element) nodeList
-													.item(k));
-									for (int l = 0; l < assignments.size(); l++) {
-										try {
-											// make sure queue exists
-											queueManager
-													.addQueue((String) assignments
-															.get(l));
-											// add node to queue
-											queueManager
-													.addNodeToQueue(nodeId,
-															(String) assignments
-																	.get(l));
-										} catch (Exception e) {
-											LOG
-													.log(
-															Level.WARNING,
-															"Failed to add node '"
-																	+ nodeId
-																	+ "' to queue '"
-																	+ (String) assignments
-																			.get(l)
-																	+ "' : "
-																	+ e
-																			.getMessage(),
-															e);
-										}
-									}
-								}
-							}
-						}
+					  }
 					}
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-					LOG
-							.log(
-									Level.WARNING,
-									"DirUri: "
-											+ dirUri
-											+ " is not a directory: skipping node loading for it.");
+				  }
 				}
+				}
+			  }
+			} catch (URISyntaxException e) {
+			  LOG.log(Level.SEVERE, e.getMessage());
+			  LOG
+				  .log(
+					  Level.WARNING,
+					  "DirUri: "
+					  + dirUri
+					  + " is not a directory: skipping node loading for it.");
 			}
+		  }
 
 		}
 		return queueManager;

@@ -26,22 +26,22 @@ package org.apache.oodt.cas.filemgr.metadata;
  */
 public interface CoreMetKeys {
   
-  public static final String PRODUCT_NAME = "ProductName";
+  String PRODUCT_NAME = "ProductName";
   
-  public static final String PRODUCT_ID = "ProductId";
+  String PRODUCT_ID = "ProductId";
   
-  public static final String PRODUCT_RECEVIED_TIME = "ProductReceivedTime";
+  String PRODUCT_RECEVIED_TIME = "ProductReceivedTime";
   
-  public static final String FILE_LOCATION = "FileLocation";
+  String FILE_LOCATION = "FileLocation";
   
-  public static final String FILENAME = "Filename";
+  String FILENAME = "Filename";
 
-  public static final String FILE_SIZE = "FileSize";
+  String FILE_SIZE = "FileSize";
 
-  public static final String PRODUCT_TYPE = "ProductType";
+  String PRODUCT_TYPE = "ProductType";
   
-  public static final String PRODUCT_STRUCTURE = "ProductStructure";
+  String PRODUCT_STRUCTURE = "ProductStructure";
 
-  public static final String MIME_TYPE = "MimeType";
+  String MIME_TYPE = "MimeType";
 
 }

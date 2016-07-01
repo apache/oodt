@@ -17,13 +17,16 @@
 
 package org.apache.oodt.grid;
 
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.handlers.ProfileHandler;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import javax.servlet.ServletException;
+import java.util.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.OutputKeys;
@@ -32,13 +35,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.handlers.ProfileHandler;
-import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 
 /**
@@ -55,15 +51,16 @@ public class ProfileQueryServlet extends QueryServlet {
 
 	/** {@inheritDoc} */
 	protected void handleQuery(XMLQuery query, List handlers, HttpServletRequest req, HttpServletResponse res)
-		throws IOException, ServletException {
+		throws IOException {
 		// Find if the query should be targeted to specific handlers.
 		Set ids = new HashSet();
 		if (query.getFromElementSet() != null) {
-			for (Iterator i = query.getFromElementSet().iterator(); i.hasNext();) {
-				QueryElement qe = (QueryElement) i.next();
-				if ("handler".equals(qe.getRole()) && qe.getValue() != null)
-					ids.add(qe.getValue());
+		  for (Object o : query.getFromElementSet()) {
+			QueryElement qe = (QueryElement) o;
+			if ("handler".equals(qe.getRole()) && qe.getValue() != null) {
+			  ids.add(qe.getValue());
 			}
+		  }
 		}
 		
 		res.setContentType("text/xml");					       // XML, comin' at ya
@@ -76,27 +73,33 @@ public class ProfileQueryServlet extends QueryServlet {
 		Document doc = null;						       // Don't make 'em if we don't need 'em
 		boolean sentAtLeastOne = false;					       // Track if we send any profiles at all
 		Exception exception = null;					       // And save any exception
-		for (Iterator i = handlers.iterator(); i.hasNext();) try {	       // To iterate over each handler
-			ProfileHandler handler = (ProfileHandler) i.next();            // Get the handler
-			String id = handler.getID();                                   // Get the ID, and if targeting to IDs
-			if (!ids.isEmpty() && !ids.contains(id)) continue;             // ... and it's not one we want, skip it.
-			List results = handler.findProfiles(query);                    // Have it find profiles
-			if (results == null) results = Collections.EMPTY_LIST;         // Assume nothing
-			for (Iterator j = results.iterator(); j.hasNext();) {          // For each matching profile
-				Profile profile = (Profile) j.next();	               // Get the profile
-				if (transformer == null) {		               // No transformer/doc yet?
-					transformer = createTransformer();             // Then make the transformer
-					doc = Profile.createProfileDocument();         // And the doc
-				}					               // And use the doc ...
-				Node profileNode = profile.toXML(doc);	               // To render the profile into XML
-				DOMSource source = new DOMSource(profileNode);         // And the XML becomes is source
-				StreamResult result = new StreamResult(res.getWriter()); // And the response is a result
-				transformer.transform(source, result);	               // And serialize into glorious text
-				sentAtLeastOne = true;				       // OK, we got at least one out the doo
-			}
-		} catch (Exception ex) {					       // Uh oh
-			exception = ex;						       // OK, just hold onto it for now
+	  for (Object handler1 : handlers) {
+		try {           // To iterate over each handler
+		  ProfileHandler handler = (ProfileHandler) handler1;            // Get the handler
+		  String id = handler.getID();                                   // Get the ID, and if targeting to IDs
+		  if (!ids.isEmpty() && !ids.contains(id)) {
+			continue;             // ... and it's not one we want, skip it.
+		  }
+		  List results = handler.findProfiles(query);                    // Have it find profiles
+		  if (results == null) {
+			results = Collections.EMPTY_LIST;         // Assume nothing
+		  }
+		  for (Object result1 : results) {          // For each matching profile
+			Profile profile = (Profile) result1;                   // Get the profile
+			if (transformer == null) {                       // No transformer/doc yet?
+			  transformer = createTransformer();             // Then make the transformer
+			  doc = Profile.createProfileDocument();         // And the doc
+			}                                   // And use the doc ...
+			Node profileNode = profile.toXML(doc);                   // To render the profile into XML
+			DOMSource source = new DOMSource(profileNode);         // And the XML becomes is source
+			StreamResult result = new StreamResult(res.getWriter()); // And the response is a result
+			transformer.transform(source, result);                   // And serialize into glorious text
+			sentAtLeastOne = true;                       // OK, we got at least one out the doo
+		  }
+		} catch (Exception ex) {                           // Uh oh
+		  exception = ex;                               // OK, just hold onto it for now
 		}
+	  }
 		if (!sentAtLeastOne && exception != null) {			       // Got none out the door and had an error?
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,    // Then we can report it.
 				exception.getMessage());

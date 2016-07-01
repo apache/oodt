@@ -26,10 +26,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 
 /**
- * A JAX-RS resource representing currently active {@link FileTransferStatus
+ * A JAX-RS resource representing currently active {@link org.apache.oodt.cas.filemgr.structs.FileTransferStatus
  * file transfers} as {@link TransferResource transfer resources}.
  * @author rlaidlaw
  * @version $Revision$

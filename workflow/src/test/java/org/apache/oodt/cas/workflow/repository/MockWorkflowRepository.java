@@ -272,8 +272,7 @@ public class MockWorkflowRepository implements WorkflowRepository {
       return tasks.get(taskId);
    }
 
-   public WorkflowTask getWorkflowTaskByName(String taskName)
-         throws RepositoryException {
+   public WorkflowTask getWorkflowTaskByName(String taskName) {
       Validate.notNull(taskName);
 
       for (WorkflowTask task : tasks.values()) {

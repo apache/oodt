@@ -94,8 +94,6 @@ public class WorkflowInstancePage {
     }
 
     /**
-     * @param pageProducts
-     *            The pageWorkflows to set.
      */
     public void setPageWorkflows(List pageWorkflows) {
         this.pageWorkflows = pageWorkflows;

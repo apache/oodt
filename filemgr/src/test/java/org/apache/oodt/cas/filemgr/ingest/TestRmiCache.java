@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
@@ -28,7 +29,6 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.commons.util.DateConvert;
 
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
@@ -36,9 +36,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-//Junit imports
 import junit.framework.TestCase;
+
+//JDK imports
+//Junit imports
 
 /**
  * @author mattmann
@@ -50,6 +54,7 @@ import junit.framework.TestCase;
  */
 public class TestRmiCache extends TestCase {
 
+    private static Logger LOG = Logger.getLogger(TestRmiCache.class.getName());
     private RmiCache cache;
 
     private RmiCacheServer cacheServer;
@@ -164,7 +169,7 @@ public class TestRmiCache extends TestCase {
             cacheServer.launchServer(new URL(FM_URL), RMI_PORT);
             cache = new RmiCache(rmiServerURN);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail("Error performing test setup: Message: " + e.getMessage());
         }
     }
@@ -195,7 +200,7 @@ public class TestRmiCache extends TestCase {
     }
 
     private void doIngest() {
-        Metadata prodMet = null;
+        Metadata prodMet;
 
         try {
             URL ingestUrl = this.getClass().getResource("/ingest");
@@ -211,7 +216,7 @@ public class TestRmiCache extends TestCase {
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -223,7 +228,6 @@ public class TestRmiCache extends TestCase {
             assertNotNull(p);
             assertEquals(Product.STATUS_RECEIVED, p.getTransferStatus());
             assertTrue(fmClient.hasProduct("test.txt"));
-            fmClient = null;
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -234,8 +238,8 @@ public class TestRmiCache extends TestCase {
         File[] delFiles = startDirFile.listFiles();
 
         if (delFiles != null && delFiles.length > 0) {
-            for (int i = 0; i < delFiles.length; i++) {
-                delFiles[i].delete();
+            for (File delFile : delFiles) {
+                delFile.delete();
             }
         }
 

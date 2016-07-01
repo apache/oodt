@@ -16,18 +16,18 @@
  */
 package org.apache.oodt.cas.pge.util;
 
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 //OODT imports
 import org.apache.oodt.cas.pge.ConfigFilePropertyAdder;
 import org.apache.oodt.cas.pge.PGETaskInstance;
 import org.apache.oodt.cas.pge.config.PgeConfigBuilder;
 import org.apache.oodt.cas.pge.staging.FileStager;
-import org.apache.oodt.cas.pge.writers.DynamicConfigFileWriter;
 import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
+
+//JDK imports
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * Factory for creating {@link Object}s.
@@ -53,11 +53,20 @@ public class GenericPgeObjectFactory {
          String clazz, Logger logger) {
       try {
          return (PgeConfigBuilder) Class.forName(clazz).newInstance();
-      } catch (Exception e) {
+      } catch (InstantiationException e) {
          logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
-               + clazz + "] : " + e.getMessage(), e);
+                                  + clazz + "] : " + e.getMessage(), e);
+         return null;
+      } catch (IllegalAccessException e) {
+         logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
+                                  + clazz + "] : " + e.getMessage(), e);
+         return null;
+      } catch (ClassNotFoundException e) {
+         logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
+                                  + clazz + "] : " + e.getMessage(), e);
          return null;
       }
+
    }
 
    public static ConfigFilePropertyAdder createConfigFilePropertyAdder(

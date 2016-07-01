@@ -38,14 +38,14 @@ import java.net.URL;
  */
 public interface DataTransfer {
 	/* extension point ID */
-	public static final String X_POINT_ID = DataTransfer.class.getName();
+	String X_POINT_ID = DataTransfer.class.getName();
 	
 	/**
 	 * 
 	 * @param url The URL to the File Manager that this transferer will be
 	 * transferring Products to.
 	 */
-	public void setFileManagerUrl(URL url);
+	void setFileManagerUrl(URL url);
 	
 	/**
 	 * 
@@ -58,7 +58,7 @@ public interface DataTransfer {
 	 * @throws IOException
 	 *             If there is an IO eerror when performing the transfer.
 	 */
-	public void transferProduct(Product product) throws DataTransferException,
+	void transferProduct(Product product) throws DataTransferException,
 			IOException;
 
 	  /**
@@ -70,8 +70,8 @@ public interface DataTransfer {
     * @throws IOException
     *             If there is an IO eerror when performing the transfer.
     */
-   public void retrieveProduct(Product product, File directory) throws DataTransferException,
+	  void retrieveProduct(Product product, File directory) throws DataTransferException,
          IOException;
    
-   public void deleteProduct(Product product) throws DataTransferException, IOException;
+   void deleteProduct(Product product) throws DataTransferException, IOException;
 }

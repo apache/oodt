@@ -42,8 +42,7 @@ public class PackagedWorkflowRepositoryFactory implements
   public PackagedWorkflowRepositoryFactory() throws InstantiationException {
     this.wDirPath = System
         .getProperty("org.apache.oodt.cas.workflow.wengine.packagedRepo.dir.path");
-    if (this.wDirPath == null
-        || (this.wDirPath != null && !new File(wDirPath).isDirectory())) {
+    if (this.wDirPath == null || (!new File(wDirPath).isDirectory())) {
       throw new InstantiationException("Must specify valid directory path "
           + "containing wengine-style workflow xml files! path specified: ["
           + this.wDirPath + "]");
@@ -60,10 +59,17 @@ public class PackagedWorkflowRepositoryFactory implements
   @Override
   public WorkflowRepository createRepository() {
     try {
-      return new PackagedWorkflowRepository(
-          Arrays.asList(new File(this.wDirPath).listFiles()));
+      if(this.wDirPath!=null) {
+        return new PackagedWorkflowRepository(
+            Arrays.asList(new File(this.wDirPath).listFiles()));
+      }
+      else {
+        LOG.log(
+            Level.SEVERE,
+            "Unable to create packaged workflow repository! Reason: empty wDirPath");
+        return null;
+      }
     } catch (Exception e) {
-      e.printStackTrace();
       LOG.log(
           Level.SEVERE,
           "Unable to create packaged workflow repository! Reason: "

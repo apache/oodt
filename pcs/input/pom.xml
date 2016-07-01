@@ -18,19 +18,59 @@ the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>pcs-input</artifactId>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
-  <name>Process Control System Input Data Package</name>
+  <artifactId>pcs-input</artifactId>
   <packaging>jar</packaging>
+  <name>Process Control System Input Data Package</name>
   <description>The Process Control System's data handling package. This package contains data structures
-  and readers and writers to write an input file format similar to HDF, as represented in XML.
-  </description>
+  and readers and writers to write an input file format similar to HDF, as represented in XML.</description>
+  <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
+     Once the dependency is in the core pom, it can then be used in other modules without the version tags.
+     For example, within core/pom.xml:
+
+      <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+     Elsewhere in the platform:
+     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+    </dependency>
+
+     Where possible the same dependency version should be used across the whole platform but if required the version
+     can be overridden in a specific pom and should have a comment explaing why the version has been overridden
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+  </dependencies>
   <build>
+    <resources>
+      <resource>
+        <targetPath>org/apache/oodt/pcs/input</targetPath>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>pge-config-example.xml</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -44,35 +84,13 @@ the License.
               <value>com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</value>
             </property>
           </systemProperties>
-           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
-           <redirectTestOutputToFile>true</redirectTestOutputToFile>
-            <includes>
-              <include>**/*Test*.java</include>
-            </includes>
+          <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
         </configuration>
-      </plugin>  
+      </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <targetPath>org/apache/oodt/pcs/input</targetPath>
-        <directory>${basedir}/src/main/resources</directory>
-        <includes>
-          <include>pge-config-example.xml</include>
-        </includes>
-      </resource>
-    </resources>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

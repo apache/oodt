@@ -18,7 +18,7 @@ package org.apache.oodt.cas.protocol.verify;
 
 //JDK imports
 import java.net.URI;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 //OODT imports
@@ -37,7 +37,7 @@ public class BasicProtocolVerifierFactory implements ProtocolVerifierFactory {
 		if (testCdMap != null) {
 			return new BasicProtocolVerifier(testCdMap);
 		} else {
-			return new BasicProtocolVerifier(new HashMap<URI, ProtocolFile>());
+			return new BasicProtocolVerifier(new ConcurrentHashMap<URI, ProtocolFile>());
 		}
 	}
 

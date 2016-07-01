@@ -47,7 +47,7 @@ public class VisibilityToggler extends WebMarkupContainer {
       String moreId, final ListModel model) {
     super(id, model);
 
-    Link<Link> showLink = null;
+    Link<Link> showLink;
     Link<Link> hideLink = null;
     final Vector allStatusList = (Vector) ((Vector) model.getObject()).clone();
 
@@ -56,7 +56,7 @@ public class VisibilityToggler extends WebMarkupContainer {
     final WebMarkupContainer moreComponent = new WebMarkupContainer(moreId);
     add(moreComponent);
 
-    showLink = new Link<Link>(showLinkId, new Model<Link>(hideLink)) {
+    showLink = new Link<Link>(showLinkId, new Model<Link>(null)) {
       /*
        * (non-Javadoc)
        * 
@@ -102,8 +102,7 @@ public class VisibilityToggler extends WebMarkupContainer {
 
   private static List subsetModelObject(Object obj) {
     List objList = (List) obj;
-    List subsetList = getTopN(objList, 3);
-    return subsetList;
+    return getTopN(objList, 3);
   }
 
   private static List getTopN(List statuses, int topN) {

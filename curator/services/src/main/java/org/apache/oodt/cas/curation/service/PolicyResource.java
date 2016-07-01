@@ -27,20 +27,20 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 
-//JDK imports
+import net.sf.json.JSONObject;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//JAX-RS imports
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,8 +52,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-//JSON imports
-import net.sf.json.JSONObject;
 
 @Path("policy")
 public class PolicyResource extends CurationService {
@@ -93,14 +91,9 @@ public class PolicyResource extends CurationService {
     // calls.
 
     String[] pathToks = tokenizeVirtualPath(path);
-    String policy = null;
-    String productType = null;
+    String policy;
+    String productType;
 
-    if (pathToks == null) {
-      LOG.log(Level.WARNING, "malformed path token string: "
-          + Arrays.asList(pathToks));
-      return "";
-    }
 
     policy = pathToks.length > 0 ? pathToks[0]:null;
     productType = pathToks.length > 1 ? pathToks[1] : null;
@@ -124,12 +117,12 @@ public class PolicyResource extends CurationService {
     ProductType productType;
     ProductPage page;
     try {
-      productType = this.config.getFileManagerClient().getProductTypeByName(
+      productType = config.getFileManagerClient().getProductTypeByName(
           productTypeName);
-      page = this.config.getFileManagerClient().pagedQuery(new Query(),
+      page = config.getFileManagerClient().pagedQuery(new Query(),
           productType, pageNum);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to obtain products for product type: ["
           + productTypeName + "]: Message: " + e.getMessage());
       return "";
@@ -146,7 +139,7 @@ public class PolicyResource extends CurationService {
   
   private String encodeProductsAsHTML(ProductPage page, String policy,
       String productTypeName) {
-    StringBuffer html = new StringBuffer();
+    StringBuilder html = new StringBuilder();
     html.append("<ul class=\"fileTree\" >\r\n");
     
     for (Product product : page.getPageProducts()) {
@@ -188,11 +181,11 @@ public class PolicyResource extends CurationService {
   }
 
   private String getProductTypesForPolicy(String policy, String format) {
-    String[] typeNames = null;
+    String[] typeNames;
     try {
       typeNames = this.getProductTypeNamesForPolicy(policy);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Unable to obtain product type names for policy: [" + policy
               + "]: Message: " + e.getMessage());
@@ -210,7 +203,7 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodePoliciesAsHTML(String[] policyDirs) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     out.append("<ul class=\"fileTree\" >");
     for (String policy : policyDirs) {
       out.append("<li class=\"directory collapsed\"><a href=\"#\" rel=\"/");
@@ -224,7 +217,7 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodePoliciesAsJSON(String[] policyDirs) {
-    Map<String, String> retMap = new HashMap<String, String>();
+    Map<String, String> retMap = new ConcurrentHashMap<String, String>();
     for (String policyDir : policyDirs) {
       retMap.put("policy", policyDir);
     }
@@ -235,7 +228,7 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodeProductTypesAsHTML(String policy, String[] typeNames) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     out.append("<ul class=\"fileTree\" >");
     for (String type : typeNames) {
       out
@@ -253,11 +246,11 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodeProductTypesAsJSON(String policy, String[] typeNames) {
-    Map<String, Object> retMap = new HashMap<String, Object>();
+    Map<String, Object> retMap = new ConcurrentHashMap<String, Object>();
     retMap.put("policy", policy);
     List<Map<String, String>> typeList = new Vector<Map<String, String>>();
     for (String typeName : typeNames) {
-      Map<String, String> typeMap = new HashMap<String, String>();
+      Map<String, String> typeMap = new ConcurrentHashMap<String, String>();
       typeMap.put("name", typeName);
       typeList.add(typeMap);
     }

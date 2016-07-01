@@ -15,12 +15,12 @@
 
 package org.apache.oodt.commons.util;
 
-import java.beans.PropertyChangeEvent;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Iterator;
-import org.apache.oodt.commons.io.LogListener;
 import org.apache.oodt.commons.io.LogEvent;
+import org.apache.oodt.commons.io.LogListener;
+
+import java.beans.PropertyChangeEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 /** In-memory logger.
  *
@@ -69,13 +69,20 @@ public class MemoryLogger implements LogListener {
 	 * @param size The new maximum cache size.
 	 */
 	public void setSize(int size) {
-		if (size < 0) throw new IllegalArgumentException("Log cache size can't be negative");
+		if (size < 0) {
+		  throw new IllegalArgumentException("Log cache size can't be negative");
+		}
 		int delta = this.size - size;
 		this.size = size;
-		if (delta <= 0) return;
-		if (messages.size() < size) return;
-		while (delta-- > 0)
-			messages.removeFirst();
+		if (delta <= 0) {
+		  return;
+		}
+		if (messages.size() < size) {
+		  return;
+		}
+		while (delta-- > 0) {
+		  messages.removeFirst();
+		}
 	}
 
 	public void streamStarted(LogEvent ignore) {}
@@ -85,8 +92,9 @@ public class MemoryLogger implements LogListener {
 	public void messageLogged(LogEvent event) {
 		messages.add(DateConvert.isoFormat(event.getTimestamp()) + " " + event.getSource() + " " + event.getCategory()
 			+ ": " + event.getMessage());
-		if (messages.size() > size)
-			messages.removeFirst();
+		if (messages.size() > size) {
+		  messages.removeFirst();
+		}
 	}
 
 	/** The list of messages. */

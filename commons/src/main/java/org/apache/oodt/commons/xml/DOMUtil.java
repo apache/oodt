@@ -18,6 +18,7 @@
 
 package org.apache.oodt.commons.xml;
 
+import org.apache.oodt.commons.exceptions.CommonsException;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -50,11 +51,11 @@ public class DOMUtil {
      * @return Element "element" with Name "name"'s first occurence.
      */
     public static Element getFirstElement(Element element, String name)
-            throws Exception {
+        throws CommonsException {
         NodeList n1 = element.getElementsByTagName(name);
 
         if (n1.getLength() < 1) {
-            throw new Exception("Element: " + element + " does not contain: "
+            throw new CommonsException("Element: " + element + " does not contain: "
                     + name);
         }
 
@@ -75,7 +76,7 @@ public class DOMUtil {
      * @return the Text inbetween the simple element tags.
      */
     public static String getSimpleElementText(Element node, String name)
-            throws Exception {
+        throws CommonsException {
         Element namedElement = getFirstElement(node, name);
         return getSimpleElementText(namedElement);
     }
@@ -92,7 +93,7 @@ public class DOMUtil {
      * @return String text inbetween the simple element tag.
      */
     public static String getSimpleElementText(Element node) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         NodeList children = node.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {

@@ -70,7 +70,7 @@ public class DatagramLoggingActivityFactoryTest extends TestCase {
 		try {
 			new DatagramLoggingActivityFactory();
 			fail("Can make a DatagramLoggingActivityFactory without host property set");
-		} catch (IllegalStateException ex) {}
+		} catch (IllegalStateException ignored) {}
 
 		System.setProperty("org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.host", "localhost");
 		System.setProperty("activity.host", "non-existent-host");
@@ -109,7 +109,7 @@ public class DatagramLoggingActivityFactoryTest extends TestCase {
 	 * @throws IOException if an error occurs.
 	 * @throws ClassNotFoundException if an error occurs.
 	 */
-	public void testActivityReceipt() throws SocketException, IOException, ClassNotFoundException {
+	public void testActivityReceipt() throws IOException, ClassNotFoundException {
 		DatagramSocket socket = null;
 		try {
 			byte[] buf = new byte[512];

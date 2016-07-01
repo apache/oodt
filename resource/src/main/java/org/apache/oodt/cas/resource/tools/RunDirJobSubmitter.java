@@ -19,15 +19,6 @@
 package org.apache.oodt.cas.resource.tools;
 
 //JDK imports
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobSpec;
@@ -35,6 +26,17 @@ import org.apache.oodt.cas.resource.structs.NameValueJobInput;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.resource.util.JobBuilder;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * @author cecilia
@@ -102,11 +104,12 @@ public final class RunDirJobSubmitter {
 
         try {
             BufferedReader in = new BufferedReader(new FileReader(inputFname));
-            if (!in.ready())
+            if (!in.ready()) {
                 throw new IOException();
+            }
 
-            String line = null;
-            String jobId = null;
+            String line;
+            String jobId;
             while ((line = in.readLine()) != null) {
 
                 // overwrite the runDirName
@@ -123,7 +126,7 @@ public final class RunDirJobSubmitter {
 
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws JobExecutionException, MalformedURLException {
         String resMgrUrlStr = null;
         String jobFileName = null;
         String runDirFileName = null;

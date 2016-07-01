@@ -43,5 +43,11 @@ public class RepositoryManagerException extends Exception {
         super(message);
     }
 
+    public RepositoryManagerException(Throwable t){
+        super(t);
+    }
 
+    public RepositoryManagerException(String message, Throwable t) {
+        super(message,t);
+    }
 }

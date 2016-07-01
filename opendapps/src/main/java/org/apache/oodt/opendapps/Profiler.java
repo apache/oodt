@@ -140,12 +140,11 @@ public class Profiler {
     final String query = "<query><queryKWQString>"
         + "PFunction=findall?ConfigUrl=" + file.getAbsolutePath()
         + "</queryKWQString></query>";
-    final XMLQuery xmlQuery = new XMLQuery(query);
-    return xmlQuery;
+    return new XMLQuery(query);
 
   }
 
-  private final static void usage() {
+  private static void usage() {
     System.out
         .println("Usage: java -classpath [path to opendapps-version-jar-with-dependencies.jar] org.apache.oodt.opendapps.Profiler <config file location> [<output_dir>]");
     System.out

@@ -17,20 +17,19 @@
 
 package org.apache.oodt.security.sso.opensso;
 
-//JDK imports
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//APACHE imports
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 /**
  * 
@@ -87,7 +86,7 @@ public class SSOProxy implements SSOMetKeys {
   public String authenticate(String username, String password) {
     HttpClient httpClient = new HttpClient();
     PostMethod post = new PostMethod(AUTH_ENDPOINT);
-    String response = null;
+    String response;
     String ssoToken = null;
 
     NameValuePair[] data = { new NameValuePair("username", username),
@@ -104,7 +103,7 @@ public class SSOProxy implements SSOMetKeys {
       response = post.getResponseBodyAsString().trim();
       ssoToken = response.substring(9);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       post.releaseConnection();
     }
@@ -113,7 +112,7 @@ public class SSOProxy implements SSOMetKeys {
   }
 
   public IdentityDetails readIdentity(String username, String token)
-      throws Exception {
+      throws IOException, SingleSignOnException {
     HttpClient httpClient = new HttpClient();
     PostMethod post = new PostMethod(IDENT_READ_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining identity: username: [" + username
@@ -126,14 +125,14 @@ public class SSOProxy implements SSOMetKeys {
 
     httpClient.executeMethod(post);
     if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new Exception(post.getStatusLine().toString());
+      throw new SingleSignOnException(post.getStatusLine().toString());
     }
 
     return parseIdentityDetails(post.getResponseBodyAsString().trim());
 
   }
 
-  public UserDetails getUserAttributes(String token) throws Exception {
+  public UserDetails getUserAttributes(String token) throws IOException, SingleSignOnException {
     HttpClient httpClient = new HttpClient();
     PostMethod post = new PostMethod(IDENT_ATTR_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining user attributes: token: [" + token
@@ -144,7 +143,7 @@ public class SSOProxy implements SSOMetKeys {
 
     httpClient.executeMethod(post);
     if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new Exception(post.getStatusLine().toString());
+      throw new SingleSignOnException(post.getStatusLine().toString());
     }
 
     return parseUserDetails(post.getResponseBodyAsString().trim());
@@ -166,10 +165,10 @@ public class SSOProxy implements SSOMetKeys {
       }
     } catch (HttpException e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } catch (IOException e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       post.releaseConnection();
     }
@@ -184,9 +183,10 @@ public class SSOProxy implements SSOMetKeys {
 
     try {
       while ((line = br.readLine()) != null) {
-        if (line.equals(IDENTITY_DETAILS_ATTR_SKIP_LINE))
+        if (line.equals(IDENTITY_DETAILS_ATTR_SKIP_LINE)) {
           continue;
-        String key = null, val = null;
+        }
+        String key, val;
         if (line.startsWith(IDENTITY_DETAILS_REALM)) {
           // can't parse it the same way
           key = line.substring(0, IDENTITY_DETAILS_REALM.length());
@@ -212,27 +212,20 @@ public class SSOProxy implements SSOMetKeys {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
           + "]: Message: " + e.getMessage());
     } finally {
-      if (is != null) {
-        try {
-          is.close();
-        } catch (Exception ignore) {
-        }
-
-        is = null;
+      try {
+        is.close();
+      } catch (Exception ignore) {
       }
 
-      if (br != null) {
-        try {
-          br.close();
-        } catch (Exception ignore) {
-        }
-
-        br = null;
+      try {
+        br.close();
+      } catch (Exception ignore) {
       }
+
     }
 
     return details;
@@ -247,7 +240,7 @@ public class SSOProxy implements SSOMetKeys {
 
     try {
       while ((line = br.readLine()) != null) {
-        String key = null, val = null;
+        String key, val;
         if (line.startsWith(USER_DETAILS_ROLE)) {
           // can't parse by splitting, parse by using substring
           key = line.substring(0, USER_DETAILS_ROLE.length());
@@ -269,33 +262,26 @@ public class SSOProxy implements SSOMetKeys {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
           + "]: Message: " + e.getMessage());
     } finally {
-      if (is != null) {
-        try {
-          is.close();
-        } catch (Exception ignore) {
-        }
-
-        is = null;
+      try {
+        is.close();
+      } catch (Exception ignore) {
       }
 
-      if (br != null) {
-        try {
-          br.close();
-        } catch (Exception ignore) {
-        }
-
-        br = null;
+      try {
+        br.close();
+      } catch (Exception ignore) {
       }
+
     }
 
     return details;
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException, SingleSignOnException {
     String usage = "SSOProxy <cmd> [args]\n\n" + "Where cmd is one of:\n"
         + "authenticate <user> <pass>\n" + "identity <user> <token>\n"
         + "attributes <token>\nlogout <token>\n";

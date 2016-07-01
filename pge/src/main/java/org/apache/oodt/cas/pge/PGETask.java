@@ -16,18 +16,17 @@
  */
 package org.apache.oodt.cas.pge;
 
-//JDK static imports
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPGETaskInstance;
-
-//JDK imports
-import java.io.File;
-import java.util.logging.Logger;
-
-//OODT imports
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPGETaskInstance;
+
 
 /**
  * Runs a {@link PGETaskInstance} given {@link Metadata} and a
@@ -50,14 +49,14 @@ public class PGETask {
     }
 
     public void run(String pgeTaskInstanceClasspath)
-            throws InstantiationException, IllegalAccessException,
-            ClassNotFoundException, WorkflowTaskInstanceException {
+            throws
+        WorkflowTaskInstanceException {
         PGETaskInstance pgeTaskInst = createPGETaskInstance(
                 pgeTaskInstanceClasspath, LOGGER);
         pgeTaskInst.run(this.metadata, this.wftConfig);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InstantiationException, IOException, WorkflowTaskInstanceException {
         String metadataFilePath = null, configPropertiesPath = null;
         String pgeTaskInstanceClasspath = null;
         String usage = "PGETask --instanceClass <PGETaskInstance> "

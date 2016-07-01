@@ -60,8 +60,9 @@ public class ConfigBean implements Serializable {
    *          Message to display.
    */
   public void setMessage(String message) {
-    if (message == null)
+    if (message == null) {
       throw new IllegalArgumentException("message cannot be null");
+    }
     this.message = message;
   }
 
@@ -158,8 +159,9 @@ public class ConfigBean implements Serializable {
    *           if the administrator's not authenticated.
    */
   private void checkAuthenticity() throws AuthenticationRequiredException {
-    if (isAuthentic() && configuration != null)
+    if (isAuthentic() && configuration != null) {
       return;
+    }
     message = "";
     throw new AuthenticationRequiredException();
   }

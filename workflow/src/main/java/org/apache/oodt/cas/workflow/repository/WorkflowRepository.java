@@ -49,7 +49,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public Workflow getWorkflowByName(String workflowName)
+  Workflow getWorkflowByName(String workflowName)
       throws RepositoryException;
 
   /**
@@ -63,7 +63,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public Workflow getWorkflowById(String workflowId) throws RepositoryException;
+  Workflow getWorkflowById(String workflowId) throws RepositoryException;
 
   /**
    * <p>
@@ -74,7 +74,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List getWorkflows() throws RepositoryException;
+  List getWorkflows() throws RepositoryException;
 
   /**
    * <p>
@@ -90,7 +90,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List getTasksByWorkflowId(String workflowId)
+  List getTasksByWorkflowId(String workflowId)
       throws RepositoryException;
 
   /**
@@ -107,7 +107,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List getTasksByWorkflowName(String workflowName)
+  List getTasksByWorkflowName(String workflowName)
       throws RepositoryException;
 
   /**
@@ -123,7 +123,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List getWorkflowsForEvent(String eventName) throws RepositoryException;
+  List getWorkflowsForEvent(String eventName) throws RepositoryException;
 
   /**
    * <p>
@@ -138,7 +138,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List getConditionsByTaskName(String taskName)
+  List getConditionsByTaskName(String taskName)
       throws RepositoryException;
 
   /**
@@ -154,7 +154,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List getConditionsByTaskId(String taskId) throws RepositoryException;
+  List getConditionsByTaskId(String taskId) throws RepositoryException;
 
   /**
    * <p>
@@ -170,7 +170,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public WorkflowTaskConfiguration getConfigurationByTaskId(String taskId)
+  WorkflowTaskConfiguration getConfigurationByTaskId(String taskId)
       throws RepositoryException;
 
   /**
@@ -184,7 +184,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public WorkflowTask getWorkflowTaskById(String taskId)
+  WorkflowTask getWorkflowTaskById(String taskId)
       throws RepositoryException;
 
   /**
@@ -200,7 +200,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public WorkflowCondition getWorkflowConditionById(String conditionId)
+  WorkflowCondition getWorkflowConditionById(String conditionId)
       throws RepositoryException;
 
   /**
@@ -215,7 +215,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List getRegisteredEvents() throws RepositoryException;
+  List getRegisteredEvents() throws RepositoryException;
 
   /**
    * Adds the specified new {@link Workflow} to this Repository.
@@ -227,7 +227,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public String addWorkflow(Workflow workflow) throws RepositoryException;
+  String addWorkflow(Workflow workflow) throws RepositoryException;
 
   /**
    * 
@@ -243,7 +243,7 @@ public interface WorkflowRepository {
    * @throws RepositoryException
    *           If any error occurs.
    */
-  public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
+  List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
       throws RepositoryException;
   
   
@@ -256,7 +256,7 @@ public interface WorkflowRepository {
    * this function to return that same identifier back.
    * @throws RepositoryException If any error occurs.
    */
-  public String addTask(WorkflowTask task) throws RepositoryException;
+  String addTask(WorkflowTask task) throws RepositoryException;
   
   /**
    * Returns the {@link WorkflowTask} identified by the given taskId.
@@ -265,6 +265,6 @@ public interface WorkflowRepository {
    * @return The {@link WorkflowTask} identified by the given taskId.
    * @throws RepositoryException If any error occurs.
    */
-  public WorkflowTask getTaskById(String taskId) throws RepositoryException;
+  WorkflowTask getTaskById(String taskId) throws RepositoryException;
 
 }

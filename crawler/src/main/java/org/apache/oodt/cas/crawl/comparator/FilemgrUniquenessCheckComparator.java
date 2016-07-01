@@ -49,8 +49,9 @@ public class FilemgrUniquenessCheckComparator extends
     protected int performCheck(File product, Boolean compareItem)
             throws PreconditionComparatorException {
         try {
-            boolean returnVal = RpcCommunicationFactory.createClient(new URL(this.filemgrUrl)).hasProduct(product.getName());
-            return new Boolean(returnVal).compareTo(compareItem);
+            boolean returnVal = new XmlRpcFileManagerClient(new URL(
+                    this.filemgrUrl)).hasProduct(product.getName());
+            return Boolean.valueOf(returnVal).compareTo(compareItem);
         } catch (Exception e) {
             throw new PreconditionComparatorException(
                     "Failed to check for product " + product + " : "

@@ -18,7 +18,6 @@
 
 package org.apache.oodt.profile.handlers.lightweight;
 
-import org.apache.oodt.profile.ProfileElement;
 
 /**
  * A profile element that can be searched.

@@ -71,7 +71,7 @@ public final class MetadataDumper {
     }
 
     private Metadata getMetadata(String productId) {
-        Product product = null;
+        Product product;
 
         try {
             product = this.fmClient.getProductById(productId);
@@ -80,7 +80,7 @@ public final class MetadataDumper {
                     + productId + "] by id");
         }
 
-        Metadata met = null;
+        Metadata met;
 
         try {
             met = this.fmClient.getMetadata(product);
@@ -140,7 +140,7 @@ public final class MetadataDumper {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InstantiationException {
         String fileManagerUrlStr = null, productId = null, outDirPath = null;
         String usage = "MetadataDumper --url <filemgr url> --productId <id> [--out <dir path>]\n";
 
@@ -162,8 +162,9 @@ public final class MetadataDumper {
         MetadataDumper dumper = new MetadataDumper(fileManagerUrlStr);
         if (outDirPath != null) {
             dumper.dumpMetadata(productId, outDirPath);
-        } else
+        } else {
             dumper.dumpMetadata(productId);
+        }
     }
 
 }

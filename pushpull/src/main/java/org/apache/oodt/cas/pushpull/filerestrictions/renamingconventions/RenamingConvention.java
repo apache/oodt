@@ -128,10 +128,12 @@ public class RenamingConvention {
      
     private static String replace(String theString,
             String theValueToBeReplaced, String whatToReplaceWith) {
-        if (theValueToBeReplaced == null || theValueToBeReplaced.equals(""))
+        if (theValueToBeReplaced == null || theValueToBeReplaced.equals("")) {
             return theString;
-        if (whatToReplaceWith == null)
+        }
+        if (whatToReplaceWith == null) {
             whatToReplaceWith = "";
+        }
         return theString.replace(theValueToBeReplaced, whatToReplaceWith);
     }
 
@@ -139,7 +141,7 @@ public class RenamingConvention {
         String parentPath = "";
         try {
             parentPath = fileToGenNewNameFor.getProtocolFile().getParent().getPath();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return parentPath;
     }
@@ -148,7 +150,7 @@ public class RenamingConvention {
         String parentFileName = "";
         try {
             parentFileName = fileToGenNewNameFor.getProtocolFile().getParent().getName();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return parentFileName;
     }
@@ -158,7 +160,7 @@ public class RenamingConvention {
         try {
             grandParentPath = fileToGenNewNameFor.getProtocolFile().getParent()
                     .getParent().getPath();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return grandParentPath;
     }

@@ -18,7 +18,15 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
-import java.util.HashMap;
+import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -27,13 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
  * Runs a local version of a {@link TaskProcessor} asynchronously.
@@ -58,7 +59,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
   public AsynchronousLocalEngineRunner(int numThreads) {
     super();
     this.executor = Executors.newFixedThreadPool(numThreads);
-    this.workerMap = new HashMap<String, Thread>();
+    this.workerMap = new ConcurrentHashMap<String, Thread>();
   }
 
   /*
@@ -69,7 +70,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    * .oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public void execute(final TaskProcessor taskProcessor) throws Exception {
+  public void execute(final TaskProcessor taskProcessor) {
     Thread worker = new Thread() {
 
       @Override
@@ -90,7 +91,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
           taskProcessor.getWorkflowInstance().setState(state);
           persist(taskProcessor.getWorkflowInstance());
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           String msg = "Exception executing task: ["
               + workflowTask.getTaskName() + "]: Message: " + e.getMessage();
           LOG.log(Level.WARNING, msg);
@@ -129,11 +130,10 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    * @see org.apache.oodt.cas.workflow.engine.EngineRunner#shutdown()
    */
   @Override
-  public void shutdown() throws Exception {
+  public void shutdown() {
     for (Thread worker : this.workerMap.values()) {
       if (worker != null) {
         worker.interrupt();
-        worker = null;
       }
     }
 
@@ -147,7 +147,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    * .apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception {
+  public boolean hasOpenSlots(TaskProcessor taskProcessor) {
     // TODO Auto-generated method stub
     return true;
   }

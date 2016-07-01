@@ -29,7 +29,7 @@ public enum CrawlerActionPhases {
 
    private String name;
 
-   private CrawlerActionPhases(String name) {
+   CrawlerActionPhases(String name) {
       this.name = name;
    }
 

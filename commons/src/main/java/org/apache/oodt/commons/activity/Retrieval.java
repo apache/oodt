@@ -17,7 +17,6 @@
 
 package org.apache.oodt.commons.activity;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**

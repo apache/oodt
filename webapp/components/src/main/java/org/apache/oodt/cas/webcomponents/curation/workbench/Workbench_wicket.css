@@ -1,13 +1,25 @@
-/* file tree */
-
-
-
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 UL.fileTree {
     font-family: Verdana, sans-serif;
     font-size: 11px;
     line-height: 18px;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 LI.helper {
@@ -18,9 +30,9 @@ LI.helper {
 
 UL.fileTree LI, LI.helper {
     list-style: none;
-    padding: 0px;
+    padding: 0;
     padding-left: 20px;
-    margin: 0px;
+    margin: 0;
     white-space: nowrap;
 }
 
@@ -28,7 +40,7 @@ UL.fileTree A, LI.helper A {
     color: #333;
     text-decoration: none;
     display: block;
-    padding: 0px 2px;
+    padding: 0 2px;
 }
 
 UL.fileTree A:hover, LI.helper A {
@@ -111,14 +123,14 @@ UL.fileTree A:hover, LI.helper A {
 
 
 /* UI.TABS */
-.ui-tabs { padding: 0em; zoom: 1; font-size:11px; }
-.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 0px; }
+.ui-tabs { padding: 0; zoom: 1; font-size:11px; }
+.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 0; }
 .ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0; margin: 0 .2em; padding: 0; }
 .ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: .5em 1em; }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 1px; border-bottom-width: 3px; border-bottom-color:#fff; margin-bottom:-2px; overflow:none; }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
-.ui-tabs .ui-tabs-panel { padding: 1em 0em; display: block; background: none; }
+.ui-tabs .ui-tabs-panel { padding: 1em 0; display: block; background: none; }
 .ui-tabs .ui-tabs-hide { display: none !important; }
 
 
@@ -128,7 +140,7 @@ UL.fileTree A:hover, LI.helper A {
 .ui-tabs .ui-tabs-nav li a { color: #fff; }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a { color:  #555; }
 .ui-tabs .ui-tabs-nav {  }
-.ui-tabs .ui-tabs-panel { padding: 1em 0em; margin: 0em; border-top: solid 1px #ccc;}
+.ui-tabs .ui-tabs-panel { padding: 1em 0; margin: 0; border-top: solid 1px #ccc;}
 
 
 
@@ -213,12 +225,12 @@ div#catalogMetadataWorkbenchContent {
     background-color:#EEEEEE;
     border:solid 1px #ccc;
     padding-top:18px;
-    margin:5px 0px;
+    margin:5px 0;
 }
 .container h5 {
     position:relative;
     margin:-20px -4px 5px;
-    padding:0px;
+    padding:0;
     font-family:arial,sans-serif;
     text-transform:uppercase;
     color:#999; 
@@ -238,7 +250,7 @@ div#catalogMetadataWorkbenchContent {
 /* METADATA EDITOR */
 div.editor {
     position:relative;
-    padding:0px;    
+    padding:0;
 }
 
 div.editor.info {
@@ -279,7 +291,7 @@ div.editor table tr td {
     padding-top:20px;
 }
 .container.tasks h5 {
-    margin:-18px 0px 2px;
+    margin:-18px 0 2px;
 }
 div#ingestionTaskList {
     
@@ -345,12 +357,12 @@ div#droppedFileList {
 div.ptwbSectionBox {
     border:solid 1px #ccc;
     padding:2px;
-    margin:5px 0px 2px 0px; 
+    margin:5px 0 2px 0;
 }
 
 div.ptwbSectionBox h5 {
     margin:0 0 4px;
-    padding:0px;    
+    padding:0;
 }
 
 div#droppedFileTarget {
@@ -379,7 +391,7 @@ div.editor table tr td {
 div.editor table tr td img.pencil {
     
     position:relative;
-    left:0px;
+    left:0;
     cursor:pointer;
     _cursor:hand;
     

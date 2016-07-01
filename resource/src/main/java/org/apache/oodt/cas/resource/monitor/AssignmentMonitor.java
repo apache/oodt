@@ -18,14 +18,15 @@
 package org.apache.oodt.cas.resource.monitor;
 
 //JDK imports
+import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.resource.structs.ResourceNode;
-import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 /**
  * 
@@ -44,18 +45,18 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 public class AssignmentMonitor implements Monitor {
 	
     /* our nodes map */
-    private static HashMap<String, ResourceNode> nodesMap;
+    private ConcurrentHashMap<String, ResourceNode> nodesMap;
 
     /* our load map */
-    private static HashMap<String, Integer> loadMap;
+    private ConcurrentHashMap<String, Integer> loadMap;
 
     public AssignmentMonitor(List<ResourceNode> nodes) {
-        nodesMap = new HashMap<String, ResourceNode>();
-        loadMap = new HashMap<String, Integer>();
+        nodesMap = new ConcurrentHashMap<String, ResourceNode>();
+        loadMap = new ConcurrentHashMap<String, Integer>();
         
         for (ResourceNode node : nodes) {
             nodesMap.put(node.getNodeId(), node);
-            loadMap.put(node.getNodeId(), new Integer(0));
+            loadMap.put(node.getNodeId(), 0);
         }
     }
 
@@ -73,7 +74,7 @@ public class AssignmentMonitor implements Monitor {
 
         if (loadValue <= (loadCap - curLoad)) {
             loadMap.remove(node.getNodeId());
-            loadMap.put(node.getNodeId(), new Integer(curLoad + loadValue));
+            loadMap.put(node.getNodeId(), curLoad + loadValue);
             return true;
         } else {
             return false;
@@ -85,10 +86,11 @@ public class AssignmentMonitor implements Monitor {
             throws MonitorException {
         int load = loadMap.get(node.getNodeId());
         int newVal = load - loadValue;
-        if (newVal < 0)
+        if (newVal < 0) {
             newVal = 0; // should not happen but just in case
+        }
         loadMap.remove(node.getNodeId());
-        loadMap.put(node.getNodeId(), new Integer(newVal));
+        loadMap.put(node.getNodeId(), newVal);
         return true;
     }
 
@@ -98,7 +100,7 @@ public class AssignmentMonitor implements Monitor {
      * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#getLoad(gov.nasa.jpl.oodt.cas.resource.structs.ResourceNode)
      */
     public int getLoad(ResourceNode node) throws MonitorException {
-        ResourceNode resource = (ResourceNode) nodesMap.get(node.getNodeId());
+        ResourceNode resource = nodesMap.get(node.getNodeId());
         int i = loadMap.get(node.getNodeId());
         return (resource.getCapacity() - i);
     }
@@ -118,7 +120,7 @@ public class AssignmentMonitor implements Monitor {
      * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#getNodeById(java.lang.String)
      */
     public ResourceNode getNodeById(String nodeId) throws MonitorException {
-        return (ResourceNode) nodesMap.get(nodeId);
+        return nodesMap.get(nodeId);
     }
 
     /*
@@ -129,9 +131,9 @@ public class AssignmentMonitor implements Monitor {
     public ResourceNode getNodeByURL(URL ipAddr) throws MonitorException {
         ResourceNode targetResource = null;
         List<ResourceNode> nodes = this.getNodes();
-        for (int i = 0; i < nodes.size(); i++) {
-            if (((ResourceNode) nodes.get(i)).getIpAddr() == ipAddr) {
-                targetResource = (ResourceNode) nodes.get(i);
+        for (ResourceNode node : nodes) {
+            if (node.getIpAddr() == ipAddr) {
+                targetResource = node;
                 break;
             }
         }
@@ -140,8 +142,9 @@ public class AssignmentMonitor implements Monitor {
 
     public void addNode(ResourceNode node) throws MonitorException {
         nodesMap.put(node.getNodeId(), node);
-        if (!loadMap.containsKey(node.getNodeId()))
-            loadMap.put(node.getNodeId(), new Integer(0));
+        if (!loadMap.containsKey(node.getNodeId())) {
+            loadMap.put(node.getNodeId(), 0);
+        }
     }
 
     public void removeNodeById(String nodeId) throws MonitorException {

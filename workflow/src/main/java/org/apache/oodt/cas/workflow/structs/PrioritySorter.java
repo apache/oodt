@@ -43,6 +43,6 @@ public interface PrioritySorter {
    *          The {@link List} of {@link WorkflowProcessor}s to sort in priority
    *          order.
    */
-  public void sort(List<WorkflowProcessor> candidates);
+  void sort(List<WorkflowProcessor> candidates);
 
 }

@@ -29,5 +29,5 @@ public interface Initializer {
 	 *
 	 * @throws EDAException if an error occurs.
 	 */
-	void initialize() throws EDAException;
+	void initialize();
 }

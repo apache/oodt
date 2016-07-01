@@ -28,15 +28,15 @@ package org.apache.oodt.cas.install;
  */
 public interface CASInstallDirMetKeys {
 
-    public static final String POLICY_DIR_NAME = "policy";
+    String POLICY_DIR_NAME = "policy";
 
-    public static final String CONFIG_DIR_NAME = "etc";
+    String CONFIG_DIR_NAME = "etc";
     
-    public static final String LIB_DIR_NAME = "lib";
+    String LIB_DIR_NAME = "lib";
     
-    public static final String BIN_DIR_NAME = "bin";
+    String BIN_DIR_NAME = "bin";
 
-    public static final String[] FM_CONFIG_FILES = { "filemgr.properties",
+    String[] FM_CONFIG_FILES = { "filemgr.properties",
             "logging.properties" };
 
 }

@@ -18,15 +18,6 @@
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
@@ -36,14 +27,20 @@ import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.oodt.pcs.webcomponents.trace.Trace;
 
 //Wicket imports
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
+import org.apache.wicket.*;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 import org.apache.wicket.util.file.File;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 
 /**
  * 
@@ -116,7 +113,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
     try {
       return (Class<? extends Page>) Class.forName(getHomePageClass());
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return HomePage.class;
     }
   }
@@ -194,9 +191,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
         "org.apache.oodt.pcs.trace.excludeList").split(",");
     List<String> excludes = new Vector<String>();
 
-    for (String type : types) {
-      excludes.add(type);
-    }
+    Collections.addAll(excludes, types);
 
     return excludes;
 

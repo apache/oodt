@@ -15,9 +15,8 @@
 
 package org.apache.oodt.cas.metadata;
 
-//JDK imports
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -56,16 +55,18 @@ public class Metadata {
    *          Metadata to add metadata from
    */
   public void addMetadata(Metadata metadata) {
-    for (String key : metadata.getAllKeys())
+    for (String key : metadata.getAllKeys()) {
       this.addMetadata(key, metadata.getAllMetadata(key));
+    }
   }
 
   public void addMetadata(String group, Metadata metadata) {
     if (group == null) {
       this.addMetadata(metadata);
     } else {
-      for (String key : metadata.getAllKeys())
+      for (String key : metadata.getAllKeys()) {
         this.addMetadata(group + "/" + key, metadata.getAllMetadata(key));
+      }
     }
   }
 
@@ -75,16 +76,18 @@ public class Metadata {
    * @param metadata
    */
   public void replaceMetadata(Metadata metadata) {
-    for (String key : metadata.getAllKeys())
+    for (String key : metadata.getAllKeys()) {
       this.replaceMetadata(key, metadata.getAllMetadata(key));
+    }
   }
 
   public void replaceMetadata(String group, Metadata metadata) {
     if (group == null) {
       this.replaceMetadata(metadata);
     } else {
-      for (String key : metadata.getAllKeys())
+      for (String key : metadata.getAllKeys()) {
         this.replaceMetadata(group + "/" + key, metadata.getAllMetadata(key));
+      }
     }
   }
 
@@ -145,23 +148,23 @@ public class Metadata {
   public void removeMetadata(String key) {
     Group removeGroup = this.getGroup(key, false);
     if (removeGroup != null && removeGroup.hasValues()) {
-      if (removeGroup.getChildren().size() > 0)
+      if (removeGroup.getChildren().size() > 0) {
         removeGroup.clearValues();
-      else
+      } else {
         removeGroup.getParent().removeChild(removeGroup.getName());
+      }
     }
   }
 
   /**
    * Removes key
-   * 
-   * @param key
-   *          Key to remove
+   *
    */
   public void removeMetadataGroup(String group) {
     Group removeGroup = this.getGroup(group, false);
-    if (removeGroup != null && removeGroup.getChildren().size() > 0)
+    if (removeGroup != null && removeGroup.getChildren().size() > 0) {
       removeGroup.getParent().removeChild(removeGroup.getName());
+    }
   }
 
   /**
@@ -198,8 +201,9 @@ public class Metadata {
   public Metadata getSubMetadata(String group) {
     Metadata m = new Metadata();
     Group newRoot = this.getGroup(group, false);
-    if (newRoot != null)
+    if (newRoot != null) {
       m.root.addChildren(newRoot.clone().getChildren());
+    }
     return m;
   }
 
@@ -212,10 +216,11 @@ public class Metadata {
    */
   public String getMetadata(String key) {
     Group group = this.getGroup(key, false);
-    if (group != null)
+    if (group != null) {
       return group.getValue();
-    else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -227,10 +232,11 @@ public class Metadata {
    */
   public List<String> getAllMetadata(String key) {
     Group group = this.getGroup(key, false);
-    if (group != null)
+    if (group != null) {
       return new Vector<String>(group.getValues());
-    else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -242,10 +248,11 @@ public class Metadata {
    */
   public List<String> getKeys(String group) {
     Group foundGroup = this.getGroup(group);
-    if (foundGroup != null)
+    if (foundGroup != null) {
       return this.getKeys(foundGroup);
-    else
+    } else {
       return new Vector<String>();
+    }
   }
 
   /**
@@ -259,9 +266,11 @@ public class Metadata {
 
   protected List<String> getKeys(Group group) {
     Vector<String> keys = new Vector<String>();
-    for (Group child : group.getChildren())
-      if (child.hasValues())
+    for (Group child : group.getChildren()) {
+      if (child.hasValues()) {
         keys.add(child.getFullPath());
+      }
+    }
     return keys;
   }
 
@@ -274,10 +283,11 @@ public class Metadata {
    */
   public List<String> getAllKeys(String group) {
     Group foundGroup = this.getGroup(group);
-    if (foundGroup != null)
+    if (foundGroup != null) {
       return this.getAllKeys(foundGroup);
-    else
+    } else {
       return new Vector<String>();
+    }
   }
 
   /**
@@ -292,8 +302,9 @@ public class Metadata {
   protected List<String> getAllKeys(Group group) {
     Vector<String> keys = new Vector<String>();
     for (Group child : group.getChildren()) {
-      if (child.hasValues())
+      if (child.hasValues()) {
         keys.add(child.getFullPath());
+      }
       keys.addAll(this.getAllKeys(child));
     }
     return keys;
@@ -310,8 +321,9 @@ public class Metadata {
 	  stack.add(this.root);
 	  while (!stack.empty()) {
 		  Group curGroup = stack.pop();
-		  if (curGroup.getName().equals(key) && curGroup.hasValues())
-			  keys.add(curGroup.getFullPath());
+		  if (curGroup.getName().equals(key) && curGroup.hasValues()) {
+            keys.add(curGroup.getFullPath());
+          }
 		  stack.addAll(curGroup.getChildren());
 	  }
 	  return keys;
@@ -324,8 +336,9 @@ public class Metadata {
    */
   public List<String> getValues() {
     Vector<String> values = new Vector<String>();
-    for (String key : this.getKeys())
+    for (String key : this.getKeys()) {
       values.addAll(this.getAllMetadata(key));
+    }
     return values;
   }
 
@@ -338,8 +351,9 @@ public class Metadata {
    */
   public List<String> getValues(String group) {
     Vector<String> values = new Vector<String>();
-    for (String key : this.getKeys(group))
+    for (String key : this.getKeys(group)) {
       values.addAll(this.getAllMetadata(key));
+    }
     return values;
   }
 
@@ -350,8 +364,9 @@ public class Metadata {
    */
   public List<String> getAllValues() {
     Vector<String> values = new Vector<String>();
-    for (String key : this.getAllKeys())
+    for (String key : this.getAllKeys()) {
       values.addAll(this.getAllMetadata(key));
+    }
     return values;
   }
 
@@ -364,39 +379,46 @@ public class Metadata {
    */
   public List<String> getAllValues(String group) {
     Vector<String> values = new Vector<String>();
-    for (String key : this.getAllKeys(group))
+    for (String key : this.getAllKeys(group)) {
       values.addAll(this.getAllMetadata(key));
+    }
     return values;
   }
 
+  @Deprecated
   public void addMetadata(Hashtable<String, Object> metadata) {
     addMetadata(metadata, false);
   }
 
+  public void addMetadata(Map<String, Object> metadata) {
+    addMetadata(metadata, false);
+  }
+
   /**
-   * Takes a hashtable of String keys and Object values.  Values of type List
+   * Takes a Map of String keys and Object values.  Values of type List
    * must be a List of Strings; all other values will have its toString() method
    * invoked.
-   * @param metadata Hashtable based metadata to add
+   * @param metadata Map based metadata to add
    * @param replace If true, existing keys will be replaced, other values will be
    * combined.
    */
-  public void addMetadata(Hashtable<String, Object> metadata, boolean replace) {
+  @Deprecated
+  public void addMetadata(Map<String, Object> metadata, boolean replace) {
     // for back compat: the old method allowed us to give it a
-    // Hashtable<String,String> and it still worked
-	for (String key : metadata.keySet()) {
-	  List<String> vals = (metadata.get(key) instanceof List) ? (List<String>) metadata
-        .get(key)
-        : Collections.singletonList(metadata.get(key).toString());
+    // Map<String,String> and it still worked
+	for (Map.Entry<String, Object> key : metadata.entrySet()) {
+	  List<String> vals = (key.getValue() instanceof List) ? (List<String>) key.getValue()
+        : Collections.singletonList(key.getValue().toString());
       if (replace) {
-        this.replaceMetadata(key, vals);
+        this.replaceMetadata(key.getKey(), vals);
       } else {
-        this.addMetadata(key, vals);
+        this.addMetadata(key.getKey(), vals);
       }
     }
   }
 
-  public void replaceMetadata(Hashtable<String, Object> metadata) {
+
+  public void replaceMetadata(Map<String, Object> metadata) {
     this.root = this.createNewRoot();
     this.addMetadata(metadata);
   }
@@ -415,8 +437,9 @@ public class Metadata {
 
   protected List<String> getGroups(Group group) {
     Vector<String> groupNames = new Vector<String>();
-    for (Group child : group.getChildren())
+    for (Group child : group.getChildren()) {
       groupNames.add(child.getName());
+    }
     return groupNames;
   }
 
@@ -425,16 +448,18 @@ public class Metadata {
   }
 
   protected Group getGroup(String key, boolean create) {
-    if (key == null)
+    if (key == null) {
       return this.root;
+    }
     StringTokenizer tokenizer = new StringTokenizer(key, "/");
     Group curGroup = this.root;
     while (tokenizer.hasMoreTokens()) {
       String groupName = tokenizer.nextToken();
       Group childGroup = curGroup.getChild(groupName);
       if (childGroup == null) {
-        if (!create)
+        if (!create) {
           return null;
+        }
         childGroup = new Group(groupName);
         curGroup.addChild(childGroup);
       }
@@ -459,7 +484,21 @@ public class Metadata {
     public Group(String name) {
       this.name = name;
       this.values = new Vector<String>();
-      this.children = new HashMap<String, Group>();
+      this.children = new Hashtable<String, Group>();
+    }
+
+    /**
+     * Create Metadata Group.
+     * By default we create a group using a Hashtable for XMLRPC support. Once this has been superceeded by the Avro
+     * Impl we should make the HashMap implementation the default.
+     * @param name
+     * @param legacy
+     */
+    public Group(String name, boolean legacy) {
+      this.name = name;
+      this.values = new Vector<String>();
+      this.children = legacy ? new Hashtable<String, Group>() : new ConcurrentHashMap<String, Group>();
+
     }
 
     public String getName() {
@@ -467,10 +506,11 @@ public class Metadata {
     }
 
     public String getFullPath() {
-      if (this.parent != null && !this.parent.getName().equals(ROOT_GROUP_NAME))
+      if (this.parent != null && !this.parent.getName().equals(ROOT_GROUP_NAME)) {
         return this.parent.getFullPath() + "/" + this.name;
-      else
+      } else {
         return this.name;
+      }
     }
 
     public Group getParent() {
@@ -504,10 +544,11 @@ public class Metadata {
     }
 
     public String getValue() {
-      if (this.hasValues())
+      if (this.hasValues()) {
         return this.values.get(0);
-      else
+      } else {
         return null;
+      }
     }
 
     public List<String> getValues() {
@@ -520,8 +561,9 @@ public class Metadata {
     }
 
     public void addChildren(List<Group> children) {
-      for (Group child : children)
+      for (Group child : children) {
         this.addChild(child);
+      }
     }
 
     public List<Group> getChildren() {
@@ -540,8 +582,9 @@ public class Metadata {
     public Group clone() {
       Group clone = new Group(this.name);
       clone.setValues(this.values);
-      for (Group child : this.children.values())
+      for (Group child : this.children.values()) {
         clone.addChild(child.clone());
+      }
       return clone;
     }
 
@@ -552,10 +595,21 @@ public class Metadata {
 
   }
 
-  public Hashtable<String, Object> getHashtable() {
+
+  @Deprecated
+  public Hashtable<String, Object> getHashTable() {
     Hashtable<String, Object> table = new Hashtable<String, Object>();
-    for (String key : this.getAllKeys())
+    for (String key : this.getAllKeys()) {
       table.put(key, this.getAllMetadata(key));
+    }
+    return table;
+  }
+
+  public Map<String, Object> getMap() {
+    Map<String, Object> table = new ConcurrentHashMap<String, Object>();
+    for (String key : this.getAllKeys()) {
+      table.put(key, this.getAllMetadata(key));
+    }
     return table;
   }
 
@@ -563,9 +617,11 @@ public class Metadata {
     if (obj instanceof Metadata) {
       Metadata compMet = (Metadata) obj;
       if (this.getKeys().equals(compMet.getKeys())) {
-        for (String key : this.getKeys())
-          if (!this.getAllMetadata(key).equals(compMet.getAllMetadata(key)))
+        for (String key : this.getKeys()) {
+          if (!this.getAllMetadata(key).equals(compMet.getAllMetadata(key))) {
             return false;
+          }
+        }
         return true;
       } else {
         return false;
@@ -576,4 +632,8 @@ public class Metadata {
     }
   }
 
+  @Override
+  public int hashCode() {
+    return root != null ? root.hashCode() : 0;
+  }
 }

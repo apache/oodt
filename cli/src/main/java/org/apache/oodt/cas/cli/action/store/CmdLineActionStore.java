@@ -16,12 +16,10 @@
  */
 package org.apache.oodt.cas.cli.action.store;
 
-//JDK imports
+import org.apache.oodt.cas.cli.action.CmdLineAction;
+
 import java.util.Set;
 
-//OODT imports
-import org.apache.oodt.cas.cli.action.CmdLineAction;
-import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
 
 /**
  * Storage for loading supported {@link CmdLineAction}s.
@@ -30,6 +28,6 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
  */
 public interface CmdLineActionStore {
 
-   public Set<CmdLineAction> loadSupportedActions()
-         throws CmdLineActionStoreException;
+   Set<CmdLineAction> loadSupportedActions()
+       ;
 }

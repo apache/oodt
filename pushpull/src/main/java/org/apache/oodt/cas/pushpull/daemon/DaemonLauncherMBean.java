@@ -27,12 +27,12 @@ package org.apache.oodt.cas.pushpull.daemon;
  */
 public interface DaemonLauncherMBean {
 
-    public void killAllDaemons();
+    void killAllDaemons();
 
-    public void refreshDaemons();
+    void refreshDaemons();
 
-    public void quit();
+    void quit();
 
-    public String[] viewDaemonWaitingList();
+    String[] viewDaemonWaitingList();
 
 }

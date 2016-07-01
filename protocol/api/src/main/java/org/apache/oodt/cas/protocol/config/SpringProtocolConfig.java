@@ -20,7 +20,7 @@ package org.apache.oodt.cas.protocol.config;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class SpringProtocolConfig implements ProtocolConfig {
 	
 	public SpringProtocolConfig(String configFile) {
 		Validate.notNull(configFile, "SpringProtocolConfig configFile cannnot be NULL");
-		factoryMap = new HashMap<String, List<ProtocolFactory>>();
+		factoryMap = new ConcurrentHashMap<String, List<ProtocolFactory>>();
 		loadFactories(new FileSystemXmlApplicationContext(configFile));
 	}
 	

@@ -16,17 +16,15 @@
  */
 package org.apache.oodt.cas.catalog.util;
 
-//JDK imports
+import org.apache.oodt.cas.catalog.exception.CatalogException;
+import org.apache.oodt.cas.catalog.system.Catalog;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.oodt.cas.catalog.system.Catalog;
-
-//Spring imports
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * @author bfoster
@@ -37,15 +35,17 @@ public class SpringUtils {
 
 	private static Logger LOG = Logger.getLogger(SpringUtils.class.getName());
 	
-	public static HashSet<Catalog> loadCatalogs(String catalogBeanRepo) throws Exception {
+	public static HashSet<Catalog> loadCatalogs(String catalogBeanRepo) throws CatalogException {
         FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(catalogBeanRepo);
         Map<String, Catalog> catalogsMap = appContext.getBeansOfType(Catalog.class);
         HashSet<Catalog> catalogs = new HashSet<Catalog>();
-        for (String key : catalogsMap.keySet()) {
-        	Catalog curCatalog = catalogsMap.get(key);
+        for (Map.Entry<String, Catalog> key : catalogsMap.entrySet()) {
+        	Catalog curCatalog = key.getValue();
         	LOG.log(Level.INFO, "Loading catalog configuration for Catalog: '" + curCatalog + "'");
-        	if (catalogs.contains(curCatalog))
-        		throw new Exception("Catalog URN : '" + curCatalog + "' conflicts with another Catalog's URN.  **NOTE: URNs are created based on the following rule: urn:<namespace>:<id or name (if set)>");
+        	if (catalogs.contains(curCatalog)) {
+			  throw new CatalogException("Catalog URN : '" + curCatalog + "' conflicts with another Catalog's URN.  "
+										 + "**NOTE: URNs are created based on the following rule: urn:<namespace>:<id or name (if set)>");
+			}
         	catalogs.add(curCatalog);
         }
         return catalogs;

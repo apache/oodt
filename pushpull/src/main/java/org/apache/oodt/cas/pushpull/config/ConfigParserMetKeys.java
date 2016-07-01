@@ -28,86 +28,86 @@ package org.apache.oodt.cas.pushpull.config;
  */
 public interface ConfigParserMetKeys {
 
-    public static final String RETRIEVAL_METHOD_TAG = "rtvlMethod";
+    String RETRIEVAL_METHOD_TAG = "rtvlMethod";
 
-    public static final String CLASS_ATTR = "class";
+    String CLASS_ATTR = "class";
 
-    public static final String PARSER_TAG = "parser";
+    String PARSER_TAG = "parser";
 
-    public static final String PROTOCOL_TAG = "protocol";
+    String PROTOCOL_TAG = "protocol";
 
-    public static final String TYPE_ATTR = "type";
+    String TYPE_ATTR = "type";
 
-    public static final String PROTOCOL_FACTORY_TAG = "protocolFactory";
+    String PROTOCOL_FACTORY_TAG = "protocolFactory";
 
-    public static final String ALIAS_SPEC_TAG = "aliasSpec";
+    String ALIAS_SPEC_TAG = "aliasSpec";
 
-    public static final String FILE_ATTR = "file";
+    String FILE_ATTR = "file";
 
-    public static final String DAEMON_TAG = "daemon";
+    String DAEMON_TAG = "daemon";
 
-    public static final String ACTIVE_ATTR = "active";
+    String ACTIVE_ATTR = "active";
 
-    public static final String ALIAS_ATTR = "alias";
+    String ALIAS_ATTR = "alias";
 
-    public static final String RUN_INFO_TAG = "runInfo";
+    String RUN_INFO_TAG = "runInfo";
 
-    public static final String FIRSTRUN_DATETIME_ATTR = "firstRunDateTime";
+    String FIRSTRUN_DATETIME_ATTR = "firstRunDateTime";
 
-    public static final String PERIOD_ATTR = "period";
+    String PERIOD_ATTR = "period";
 
-    public static final String RUNONREBOOT_ATTR = "runOnReboot";
+    String RUNONREBOOT_ATTR = "runOnReboot";
 
-    public static final String EPSILON_ATTR = "epsilon";
+    String EPSILON_ATTR = "epsilon";
 
-    public static final String PROP_INFO_TAG = "propInfo";
+    String PROP_INFO_TAG = "propInfo";
 
-    public static final String DIR_ATTR = "dir";
+    String DIR_ATTR = "dir";
 
-    public static final String PROP_FILES_TAG = "propFiles";
+    String PROP_FILES_TAG = "propFiles";
 
-    public static final String REG_EXP_ATTR = "regExp";
+    String REG_EXP_ATTR = "regExp";
 
-    public static final String PARSER_ATTR = "parser";
+    String PARSER_ATTR = "parser";
 
-    public static final String DOWNLOAD_INFO_TAG = "downloadInfo";
+    String DOWNLOAD_INFO_TAG = "downloadInfo";
 
-    public static final String RENAMING_CONV_ATTR = "renamingConv";
+    String RENAMING_CONV_ATTR = "renamingConv";
 
-    public static final String ALLOW_ALIAS_OVERRIDE_ATTR = "allowAliasOverride";
+    String ALLOW_ALIAS_OVERRIDE_ATTR = "allowAliasOverride";
 
-    public static final String DELETE_FROM_SERVER_ATTR = "deleteFromServer";
+    String DELETE_FROM_SERVER_ATTR = "deleteFromServer";
 
-    public static final String PROP_FILE_TAG = "propFile";
+    String PROP_FILE_TAG = "propFile";
 
-    public static final String PATH_ATTR = "path";
+    String PATH_ATTR = "path";
 
-    public static final String AFTER_USE_TAG = "afterUse";
+    String AFTER_USE_TAG = "afterUse";
 
-    public static final String DELETE_ON_SUCCESS_ATTR = "deleteOnSuccess";
+    String DELETE_ON_SUCCESS_ATTR = "deleteOnSuccess";
 
-    public static final String MOVEON_TO_SUCCESS_ATTR = "moveToOnSuccess";
+    String MOVEON_TO_SUCCESS_ATTR = "moveToOnSuccess";
 
-    public static final String MOVEON_TO_FAIL_ATTR = "moveToOnFail";
+    String MOVEON_TO_FAIL_ATTR = "moveToOnFail";
 
-    public static final String DATA_INFO_TAG = "dataInfo";
+    String DATA_INFO_TAG = "dataInfo";
 
-    public static final String QUERY_ELEM_ATTR = "queryElement";
+    String QUERY_ELEM_ATTR = "queryElement";
 
-    public static final String STAGING_AREA_ATTR = "stagingArea";
+    String STAGING_AREA_ATTR = "stagingArea";
 
-    public static final String SOURCE_TAG = "source";
+    String SOURCE_TAG = "source";
 
-    public static final String HOST_ATTR = "host";
+    String HOST_ATTR = "host";
 
-    public static final String LOGIN_ATTR = "login";
+    String LOGIN_ATTR = "login";
 
-    public static final String USERNAME_TAG = "username";
+    String USERNAME_TAG = "username";
 
-    public static final String PASSWORD_TAG = "password";
+    String PASSWORD_TAG = "password";
     
-    public static final String CD_TEST_DIR_TAG = "cdTestDir";
+    String CD_TEST_DIR_TAG = "cdTestDir";
 
-    public static final String MAX_CONN_TAG = "maxConn";
+    String MAX_CONN_TAG = "maxConn";
 
 }

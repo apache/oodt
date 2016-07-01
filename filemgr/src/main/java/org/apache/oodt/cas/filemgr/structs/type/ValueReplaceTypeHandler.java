@@ -63,10 +63,12 @@ public abstract class ValueReplaceTypeHandler extends TypeHandler {
      */
     @Override
     protected QueryCriteria handleRangeQueryCriteria(RangeQueryCriteria rqc) {
-        if (rqc.getEndValue() != null)
+        if (rqc.getEndValue() != null) {
             rqc.setEndValue(this.getCatalogValue(rqc.getEndValue()));
-        if (rqc.getStartValue() != null)
+        }
+        if (rqc.getStartValue() != null) {
             rqc.setStartValue(this.getCatalogValue(rqc.getStartValue()));
+        }
         return rqc;
     }
 
@@ -75,8 +77,9 @@ public abstract class ValueReplaceTypeHandler extends TypeHandler {
      */
     @Override
     protected QueryCriteria handleTermQueryCriteria(TermQueryCriteria tqc) {
-        if (tqc.getValue() != null)
+        if (tqc.getValue() != null) {
             tqc.setValue(this.getCatalogValue(tqc.getValue()));
+        }
         return tqc;
     }
     
@@ -92,8 +95,6 @@ public abstract class ValueReplaceTypeHandler extends TypeHandler {
     /**
      * Converts the metadata element, for this TypeHandler, value from the 
      * Catalog value to the original value
-     * @param origValue The value for the element which this TypeHandler
-     *  is responsible for
      * @return The original value
      */
     protected abstract String getOrigValue(String databaseValue);

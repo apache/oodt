@@ -85,7 +85,7 @@ public class TestXmlRpcFileManagerClient extends TestCase {
             XmlRpcFileManagerClient fmc = new XmlRpcFileManagerClient(new URL(
                     "http://localhost:" + FM_PORT));
             
-            Metadata reducedMet = null;
+            Metadata reducedMet;
             List pTypes = fmc.getProductTypes();
             assertNotNull(pTypes);
             assertTrue(pTypes.size() > 0);
@@ -100,17 +100,17 @@ public class TestXmlRpcFileManagerClient extends TestCase {
             reducedMet = fmc.getReducedMetadata(product, arrayListElems);
             assertNotNull(reducedMet);
             assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
-            assertEquals(reducedMet.getHashtable().keySet().size(), 1);
+            assertEquals(reducedMet.getMap().keySet().size(), 1);
 
             reducedMet = fmc.getReducedMetadata(product, vectorElemList);
             assertNotNull(reducedMet);
             assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
-            assertEquals(reducedMet.getHashtable().keySet().size(), 1);
+            assertEquals(reducedMet.getMap().keySet().size(), 1);
 
             reducedMet = fmc.getReducedMetadata(product, linkedListElemList);
             assertNotNull(reducedMet);
             assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
-            assertEquals(reducedMet.getHashtable().keySet().size(), 1);
+            assertEquals(reducedMet.getMap().keySet().size(), 1);
             
         } catch (Exception e) {
             fail(e.getMessage());
@@ -142,6 +142,32 @@ public class TestXmlRpcFileManagerClient extends TestCase {
         deleteAllFiles("/tmp/test-type");
     }
 
+    public void testRemoveFile() throws Exception {
+        URL ingestUrl = this.getClass().getResource("/ingest");
+        URL refUrl = this.getClass().getResource("/ingest/test-delete.txt");
+
+        Metadata prodMet = new Metadata();
+        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+            ingestUrl.getFile()).getCanonicalPath());
+        prodMet.addMetadata(CoreMetKeys.FILENAME, "test-delete.txt");
+        prodMet.addMetadata(CoreMetKeys.PRODUCT_NAME, "TestFile");
+        prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+
+        StdIngester ingester = new StdIngester(transferServiceFacClass);
+        String productId = ingester.ingest(
+            new URL("http://localhost:" + FM_PORT),
+            new File(refUrl.getFile()), prodMet);
+        XmlRpcFileManagerClient fmc = new XmlRpcFileManagerClient(new URL(
+            "http://localhost:" + FM_PORT));
+        Metadata m = fmc.getMetadata(fmc.getProductById(productId));
+        assertEquals(m.getMetadata("Filename"), "test-delete.txt");
+        String loc = m.getMetadata("FileLocation");
+        fmc.removeFile(loc+"/"+m.getMetadata("Filename"));
+
+        fmc.getProductById(productId);
+        deleteAllFiles("/tmp/test-type");
+    }
+
     /**
      * @since OODT-404
      *
@@ -151,7 +177,7 @@ public class TestXmlRpcFileManagerClient extends TestCase {
         URL refUrl = this.getClass().getResource("/ingest/test-file-3.txt");
         URL metUrl = this.getClass().getResource("/ingest/test-file-3.txt.met");
 
-        Metadata prodMet = null;
+        Metadata prodMet;
         StdIngester ingester = new StdIngester(transferServiceFacClass);
         prodMet = new SerializableMetadata(new FileInputStream(
             metUrl.getFile()));
@@ -244,8 +270,8 @@ public class TestXmlRpcFileManagerClient extends TestCase {
         File[] delFiles = startDirFile.listFiles();
 
         if (delFiles != null && delFiles.length > 0) {
-            for (int i = 0; i < delFiles.length; i++) {
-                delFiles[i].delete();
+            for (File delFile : delFiles) {
+                delFile.delete();
             }
         }
 
@@ -254,7 +280,7 @@ public class TestXmlRpcFileManagerClient extends TestCase {
     }
 
     private void ingestTestFile() {
-        Metadata prodMet = null;
+        Metadata prodMet;
         StdIngester ingester = new StdIngester(transferServiceFacClass);
 
         try {

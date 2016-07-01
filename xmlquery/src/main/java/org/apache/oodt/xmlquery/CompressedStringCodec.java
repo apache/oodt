@@ -18,19 +18,21 @@
 
 package org.apache.oodt.xmlquery;
 
+import org.apache.oodt.commons.io.Base64DecodingInputStream;
+import org.apache.oodt.commons.io.Base64EncodingOutputStream;
+import org.apache.oodt.commons.util.XML;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import org.apache.oodt.commons.io.Base64DecodingInputStream;
-import org.apache.oodt.commons.io.Base64EncodingOutputStream;
-import org.apache.oodt.commons.util.XML;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /** A result encoder/decoder for compressed strings.
  *
@@ -39,14 +41,17 @@ import org.w3c.dom.Node;
  * @author Kelly
  */
 class CompressedStringCodec implements Codec {
-	public Node encode(Object object, Document doc) throws DOMException {
+
+  public static final int INT = 1024;
+
+  public Node encode(Object object, Document doc) throws DOMException {
 		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
 		try {
 			Base64EncodingOutputStream base64 = new Base64EncodingOutputStream(byteArray);
 			GZIPOutputStream gzip = new GZIPOutputStream(base64);
 			gzip.write(object.toString().getBytes());
 			gzip.close();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		Element value = doc.createElement("resultValue");
 		value.appendChild(doc.createCDATASection(byteArray.toString()));
 		return value;
@@ -54,23 +59,25 @@ class CompressedStringCodec implements Codec {
 
 	public Object decode(Node node) {
 		String encodedValue;
-		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE)
-			encodedValue = node.getFirstChild().getNodeValue();
-		else
-			encodedValue = XML.text(node);
+		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE) {
+		  encodedValue = node.getFirstChild().getNodeValue();
+		} else {
+		  encodedValue = XML.text(node);
+		}
 		String rc = null;
 		try {
 			ByteArrayInputStream byteArray = new ByteArrayInputStream(encodedValue.getBytes());
 			Base64DecodingInputStream base64 = new Base64DecodingInputStream(byteArray);
 			GZIPInputStream gzip = new GZIPInputStream(base64);
-			StringBuffer b = new StringBuffer();
+			StringBuilder b = new StringBuilder();
 			int numRead;
-			byte[] buf = new byte[1024];
-			while ((numRead = gzip.read(buf)) != -1)
-				b.append(new String(buf, 0, numRead));
+			byte[] buf = new byte[INT];
+			while ((numRead = gzip.read(buf)) != -1) {
+			  b.append(new String(buf, 0, numRead));
+			}
 			gzip.close();
 			rc = b.toString();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		return rc;
 	}
 

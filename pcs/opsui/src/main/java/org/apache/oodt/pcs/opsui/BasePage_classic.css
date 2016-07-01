@@ -26,27 +26,27 @@ body{
 }
 
 #opsui_header_tbl{
-  border:0px;
-  border-spacing:0px;
+  border:0;
+  border-spacing:0;
   white-space:nowrap;
-  padding:0px;
+  padding:0;
   width:100%;
 
 }
 
 #opsui_inner_header_tbl{
-  border:0px;
-  border-spacing:0px;
+  border:0;
+  border-spacing:0;
   white-space:nowrap;
-  padding:0px;
+  padding:0;
   width:100%;
 
 }
 
 #menu_inner_tbl{
-  padding:0px;
+  padding:0;
   border-spacing:1px;
-  border:0px;
+  border:0;
   width:100%;
   color:white; 
 }
@@ -59,9 +59,9 @@ body{
 }
 
 #menu_tbl_links{
-  padding:0px;
+  padding:0;
   border-spacing:1px;
-  border:0px;
+  border:0;
   width:100%;
   color:white; 
 }
@@ -98,13 +98,13 @@ body{
 
 #footer_tbl{
   padding:4px;
-  border-spacing:0px;
+  border-spacing:0;
   width:730px;
-  border:0px;
+  border:0;
 }
 
 .banner{
-  border:0px;
+  border:0;
   width:379px;
   height:65px;  
 }
@@ -123,7 +123,7 @@ body{
 .tight-noborder{
   vertical-spacing:0px;
   width:100%;
-  border:0px;
+  border:0;
 }
 
 .white {
@@ -146,13 +146,13 @@ body{
 .firstGovImg{
   height:39px;
   width:136px;
-  border:0px;
+  border:0;
 }
 
 .nasaHomePageImg{
   height:40px;
   width:61px;
-  border:0px;
+  border:0;
 }
 
 .feedback{
@@ -215,8 +215,8 @@ a:hover{
    border-right: 1px;
    padding-right: 1px;
    border-width: 1px;
-   border-top:0px;
-   border-bottom:0px;
+   border-top:0;
+   border-bottom:0;
    border-style:solid;
    border-color:black;	
 }

@@ -33,5 +33,5 @@ public interface JobQueueFactory {
    * 
    * @return New {@link JobQueue} implementations.
    */
-  public JobQueue createQueue();
+  JobQueue createQueue();
 }

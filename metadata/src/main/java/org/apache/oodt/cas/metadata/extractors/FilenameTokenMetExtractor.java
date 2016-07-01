@@ -18,6 +18,10 @@
 package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.commons.date.DateUtils;
+
 import java.io.File;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -26,10 +30,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
-import org.apache.oodt.commons.date.DateUtils;
 
 /**
  * 
@@ -89,7 +89,7 @@ public class FilenameTokenMetExtractor extends CmdLineMetExtractor implements
     }
 
     Metadata commonMet = ((FilenameTokenConfig) this.config).getCommonMet();
-    met.addMetadata(commonMet.getHashtable());
+    met.addMetadata(commonMet.getMap());
     met.addMetadata(((FilenameTokenConfig) this.config)
         .getSubstringOffsetMet(file));
 

@@ -45,8 +45,8 @@ public class GetNextPageCliAction extends WorkflowCliAction {
       Validate.isTrue(pageNum != -1);
 
       try {
-         WorkflowManagerClient client = getClient();
-         WorkflowInstancePage page = null;
+         XmlRpcWorkflowManagerClient client = getClient();
+         WorkflowInstancePage page;
          if (status != null && !status.equals("")) {
             page = client.paginateWorkflowInstances(pageNum + 1, status);
          } else {

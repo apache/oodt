@@ -17,7 +17,6 @@ package org.apache.oodt.commons.util;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.oodt.commons.io.LogEvent;
 import org.apache.oodt.commons.io.LogListener;
@@ -44,31 +43,31 @@ public class LogEventMultiplexer implements LogListener {
 	}
 
 	public void messageLogged(LogEvent event) {
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			LogListener listener = (LogListener) i.next();
-			listener.messageLogged(event);
-		}
+	  for (Object listener1 : listeners) {
+		LogListener listener = (LogListener) listener1;
+		listener.messageLogged(event);
+	  }
 	}
 
 	public void streamStarted(LogEvent event) {
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			LogListener listener = (LogListener) i.next();
-			listener.streamStarted(event);
-		}
+	  for (Object listener1 : listeners) {
+		LogListener listener = (LogListener) listener1;
+		listener.streamStarted(event);
+	  }
 	}
 
 	public void streamStopped(LogEvent event) {
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			LogListener listener = (LogListener) i.next();
-			listener.streamStopped(event);
-		}
+	  for (Object listener1 : listeners) {
+		LogListener listener = (LogListener) listener1;
+		listener.streamStopped(event);
+	  }
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			LogListener listener = (LogListener) i.next();
-			listener.propertyChange(event);
-		}
+	  for (Object listener1 : listeners) {
+		LogListener listener = (LogListener) listener1;
+		listener.propertyChange(event);
+	  }
 	}
 
 	/** List of listeners to which I multiplex events. */

@@ -52,7 +52,7 @@ public class FilemgrUniquenessChecker extends CrawlerAction {
          return !fmClient.hasProduct(productMetadata.getMetadata(PRODUCT_NAME));
       } catch (Exception e) {
          throw new CrawlerActionException("Product failed uniqueness check : ["
-               + product + "] : " + e.getMessage());
+               + product + "] : " + e.getMessage(), e);
       }
    }
 

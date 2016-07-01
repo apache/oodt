@@ -18,12 +18,10 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
 import java.util.*;
 import org.apache.oodt.commons.util.*;
 import junit.framework.*;
 import org.w3c.dom.*;
-import org.xml.sax.*;
 
 /** Unit test the {@link Header} class.
  *
@@ -90,7 +88,7 @@ public class HeaderTest extends TestCase {
 		try {
 			Header h0 = new Header(bogus);
 			fail("Header constructor failed to throw exception when given invalid XML node");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 
 		Header h1 = new Header("name1", "type1", "unit1");
 		Node root = h1.toXML(doc);

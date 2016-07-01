@@ -24,64 +24,64 @@ package org.apache.oodt.opendapps.config;
  */
 public interface OpendapConfigMetKeys {
 
-  public static final String RES_ATTR_SPEC_TYPE = "resAttr";
+  String RES_ATTR_SPEC_TYPE = "resAttr";
 
-  public static final String PROF_ATTR_SPEC_TYPE = "profAttr";
+  String PROF_ATTR_SPEC_TYPE = "profAttr";
 
-  public static final String PROF_ELEM_SPEC_TYPE = "profElem";
+  String PROF_ELEM_SPEC_TYPE = "profElem";
 
-  public static final String ENUM_ELEMENT_TYPE = "EnumeratedProfileElement";
+  String ENUM_ELEMENT_TYPE = "EnumeratedProfileElement";
 
-  public static final String RANGED_ELEMENT_TYPE = "RangedProfileElement";
+  String RANGED_ELEMENT_TYPE = "RangedProfileElement";
 
-  public static final String DAP_ROOT_TAG = "root";
+  String DAP_ROOT_TAG = "root";
 
-  public static final String DATASET_URL_ATTR = "datasetURL";
+  String DATASET_URL_ATTR = "datasetURL";
 
-  public static final String CATALOG_URL_ATTR = "catalogURL";
+  String CATALOG_URL_ATTR = "catalogURL";
 
-  public static final String FILTER_ATTR = "filter";
+  String FILTER_ATTR = "filter";
 
-  public static final String REWRITE_ROOT_TAG = "rewrite";
+  String REWRITE_ROOT_TAG = "rewrite";
 
-  public static final String REWRITE_VAR_TAG = "var";
+  String REWRITE_VAR_TAG = "var";
 
-  public static final String REWRITE_VAR_NAME_ATTR = "name";
+  String REWRITE_VAR_NAME_ATTR = "name";
 
-  public static final String REWRITE_VAR_RENAME_ATTR = "rename";
+  String REWRITE_VAR_RENAME_ATTR = "rename";
 
-  public static final String REWRITE_VAR_TYPE_ATTR = "type";
+  String REWRITE_VAR_TYPE_ATTR = "type";
 
-  public static final String CONSTANT_ROOT_TAG = "constants";
+  String CONSTANT_ROOT_TAG = "constants";
 
-  public static final String CONSTANT_TAG = "const";
+  String CONSTANT_TAG = "const";
 
-  public static final String CONSTANT_NAME_ATTR = "name";
+  String CONSTANT_NAME_ATTR = "name";
 
-  public static final String CONSTANT_TYPE_ATTR = "type";
+  String CONSTANT_TYPE_ATTR = "type";
 
-  public static final String CONSTANT_VALUE_ATTR = "value";
+  String CONSTANT_VALUE_ATTR = "value";
   
-  public static final String DATASET_MET_ROOT_TAG = "datasetMetadata";
+  String DATASET_MET_ROOT_TAG = "datasetMetadata";
   
-  public static final String DATASET_MET_ELEM_TAG = "elem";
+  String DATASET_MET_ELEM_TAG = "elem";
   
-  public static final String DATASET_MET_NAME_ATTR = "name";
+  String DATASET_MET_NAME_ATTR = "name";
   
-  public static final String DATASET_MET_VALUE_ATTR = "value";
+  String DATASET_MET_VALUE_ATTR = "value";
   
-  public static final String RES_LOCATION_ATTR = "resLocation";
+  String RES_LOCATION_ATTR = "resLocation";
   
-  public static final String PROCESSING_INSTRUCTIONS_TAG = "processingInstructions";
+  String PROCESSING_INSTRUCTIONS_TAG = "processingInstructions";
   
-  public static final String PROCESSING_INSTRUCTION_TAG = "processingInstruction";
+  String PROCESSING_INSTRUCTION_TAG = "processingInstruction";
   
-  public static final String PROCESSING_INSTRUCTION_NAME_ATTR = "name";
+  String PROCESSING_INSTRUCTION_NAME_ATTR = "name";
   
-  public static final String PROCESSING_INSTRUCTION_VALUE_ATTR = "value";
+  String PROCESSING_INSTRUCTION_VALUE_ATTR = "value";
   
-  public static final String EXCLUDE_VARIABLES_ATTR = "excludeVariables";
+  String EXCLUDE_VARIABLES_ATTR = "excludeVariables";
   
-  public static final String DATETIME_FORMAT_ATTR = "datetimeFormat";
+  String DATETIME_FORMAT_ATTR = "datetimeFormat";
 
 }

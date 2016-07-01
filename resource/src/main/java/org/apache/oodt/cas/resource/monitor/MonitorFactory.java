@@ -32,5 +32,5 @@ public interface MonitorFactory {
 	/**
 	 * @return A new implementation of the {@link Monitor} interface.
 	 */
-	public Monitor createMonitor();
+	Monitor createMonitor();
 }

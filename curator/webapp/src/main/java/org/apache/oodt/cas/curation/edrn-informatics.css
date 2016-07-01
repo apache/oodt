@@ -1,8 +1,23 @@
 @CHARSET "UTF-8";
-
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 html, body {
-    padding:0px;
-    margin:0px auto;
+    padding:0;
+    margin:0 auto;
     background:transparent url(bg-body.gif) repeat-x scroll 0 0;
     background-color:#fff;
     font-family:"Lucida Grande","Arial","Helvetica","Verdana","sans-serif";
@@ -19,7 +34,7 @@ div#ncibanner {
 }
 div#ncibanner-inner {
     width:974px;
-    margin:0px auto;
+    margin:0 auto;
     position:relative;  
 }
 div.#ncibanner-inner a {
@@ -66,7 +81,7 @@ h2.dcplogo {
 
 div#page, div#footer {
     width:974px;    
-    margin:0px auto;
+    margin:0 auto;
     position:relative;
 }
 
@@ -85,7 +100,7 @@ div#edrninformatics {
  * This is the header that precedes application content. 
  */
 div#edrninformatics.cas-header {
-    background:url(blackfade-syncd.jpg) scroll 0px 0px repeat-x;
+    background:url(blackfade-syncd.jpg) scroll 0 0 repeat-x;
 }
 div#edrninformatics.cas-header div.menu {
     padding-top:50px;   
@@ -115,7 +130,7 @@ div#edrn-dna.cas-logo-right {
 div#edrnlogo {
     height:68px;
     width:974px;
-    margin:0px auto;    
+    margin:0 auto;
 }
 img#edrnlogo-logo {
     width:64px;
@@ -124,7 +139,7 @@ img#edrnlogo-logo {
     margin-right:5px;
     vertical-align:top;
     float:left;
-    border:solid 0px #955;  
+    border:solid 0 #955;
 }
 div#edrnlogo h1.header-title {
     font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -165,8 +180,8 @@ div#edrnlogo span.smaller {
  */
 div#edrn-dna {
     position:absolute;
-    top:0px;
-    right:0px;
+    top:0;
+    right:0;
     height:67px;
     width:290px;
     background:url(edrn_dna-bigger.jpg) scroll left top no-repeat;
@@ -180,12 +195,12 @@ div#edrn-dna {
  */
 h2.app-title {
     position:absolute;
-    top:0px;
-    right:0px;
+    top:0;
+    right:0;
     background-color:transparent;
-    margin:0px;
+    margin:0;
     padding:5px;
-    padding-right:0px;
+    padding-right:0;
     color:#722;
     font-weight:normal;
     font-size:13px;
@@ -260,7 +275,7 @@ div#breadcrumbs {
     padding:4px;
     padding-right:5px;
     padding-left:5px;
-    border-top:solid 0px #700003;
+    border-top:solid 0 #700003;
     border-bottom:solid 1px #700003;
     padding-bottom:5px;
     background-color:#fff;  
@@ -269,8 +284,8 @@ div#breadcrumbs {
 }
 div#breadcrumbs ul {
     list-style:none;
-    margin:0px;
-    padding:0px;
+    margin:0;
+    padding:0;
 }
 div#breadcrumbs ul li {
     display:inline;
@@ -308,7 +323,7 @@ div#footer img {
 h2.title {
     background-color:#555;
     padding:5px;
-    margin:0px;
+    margin:0;
     color:#fff;
     border-top:solid 2px #900;
     border-bottom:solid 1px #300;
@@ -336,7 +351,7 @@ h4 {
  * LOGIN FORM
  */
 form#login-form {
-    border:solid 0px #f66;
+    border:solid 0 #f66;
     background-color:#fff;
     margin:5px;
     padding:3px;
@@ -344,8 +359,8 @@ form#login-form {
 }
 form#login-form h3 {
     color:#333;
-    margin-top:0px;
-    border-bottom:dotted 0px #444;
+    margin-top:0;
+    border-bottom:dotted 0 #444;
         
 }
 form#login-form input[type=text], form#login-form input[type=password] {
@@ -356,7 +371,7 @@ form#login-form input[type=text], form#login-form input[type=password] {
 form#login-form table {
     color:#333;
     margin:5px;
-    margin-top:0px;
+    margin-top:0;
     border:solid 1px #ccc;
     width:242px;
 }
@@ -396,7 +411,7 @@ div.info {
 }
 div.info input[type=button] {
     padding:2px;
-    margin:5px 0px;
+    margin:5px 0;
 }
 
 #centered{

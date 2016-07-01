@@ -25,28 +25,28 @@ package org.apache.oodt.pcs.health;
  */
 public interface PCSHealthMonitorMetKeys {
 
-  public static final String HEADER_AND_FOOTER = "--------------------------------------";
+  String HEADER_AND_FOOTER = "--------------------------------------";
 
-  public static final String SECTION_SEPARATOR = "--------";
+  String SECTION_SEPARATOR = "--------";
 
-  public static final String REPORT_BANNER = "PCS Health Monitor Report";
+  String REPORT_BANNER = "PCS Health Monitor Report";
 
-  public static final String FILE_MANAGER_DAEMON_NAME = "File Manager";
+  String FILE_MANAGER_DAEMON_NAME = "File Manager";
 
-  public static final String WORKFLOW_MANAGER_DAEMON_NAME = "Workflow Manager";
+  String WORKFLOW_MANAGER_DAEMON_NAME = "Workflow Manager";
 
-  public static final String RESOURCE_MANAGER_DAEMON_NAME = "Resource Manager";
+  String RESOURCE_MANAGER_DAEMON_NAME = "Resource Manager";
 
-  public static final String BATCH_STUB_DAEMON_NAME = "batch stub";
+  String BATCH_STUB_DAEMON_NAME = "batch stub";
 
-  public static final String STATUS_UP = "UP";
+  String STATUS_UP = "UP";
 
-  public static final String STATUS_DOWN = "DOWN";
+  String STATUS_DOWN = "DOWN";
 
-  public static final int TOP_N_PRODUCTS = 20;
+  int TOP_N_PRODUCTS = 20;
 
-  public static final int CRAWLER_DOWN_INT = -1;
+  int CRAWLER_DOWN_INT = -1;
 
-  public static final double CRAWLER_DOWN_DOUBLE = -1.0;
+  double CRAWLER_DOWN_DOUBLE = -1.0;
 
 }

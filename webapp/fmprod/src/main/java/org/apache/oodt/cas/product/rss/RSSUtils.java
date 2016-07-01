@@ -49,17 +49,16 @@ public class RSSUtils {
     if (channelLink != null && !channelLink.equals("")) {
       return PathUtils.replaceEnvVariables(channelLink, channelMet);
     } else {
-      String cLink = channelMet.getMetadata("BaseUrl") + "/rdf/dataset?type="
+      return channelMet.getMetadata("BaseUrl") + "/rdf/dataset?type="
       + channelMet.getMetadata("ProductType") + "&typeID="
       + channelMet.getMetadata("ProductTypeId");
-      return cLink;
     }
   }
 
   public static Element emitRSSTag(RSSTag tag, Metadata prodMet, Document doc,
       Element item) {
     String outputTag = tag.getName();
-    if (outputTag.indexOf(" ") != -1) {
+    if (outputTag.contains(" ")) {
       outputTag = StringUtils.join(WordUtils.capitalizeFully(outputTag).split(
           " "));
     }

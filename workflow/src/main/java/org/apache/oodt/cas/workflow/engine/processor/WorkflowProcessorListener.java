@@ -30,6 +30,6 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
  */
 public interface WorkflowProcessorListener {
 
-	public void notifyChange(WorkflowProcessor processor, ChangeType changeType);
+	void notifyChange(WorkflowProcessor processor, ChangeType changeType);
 	
 }

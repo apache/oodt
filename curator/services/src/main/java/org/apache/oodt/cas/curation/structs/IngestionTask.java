@@ -18,9 +18,6 @@
 
 package org.apache.oodt.cas.curation.structs;
 
-//OODT imports
-import org.apache.oodt.cas.filemgr.ingest.Ingester;
-
 //JDK imports
 import java.util.Date;
 import java.util.List;
@@ -28,7 +25,7 @@ import java.util.Vector;
 
 /**
  * 
- * A specification for ingestion using the {@link Ingester} interface in the
+ * A specification for ingestion using the {@link org.apache.oodt.cas.filemgr.ingest.Ingester} interface in the
  * CAS.
  * 
  * @author mattmann

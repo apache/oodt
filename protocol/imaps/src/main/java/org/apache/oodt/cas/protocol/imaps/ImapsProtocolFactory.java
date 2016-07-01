@@ -30,8 +30,9 @@ public class ImapsProtocolFactory implements ProtocolFactory {
     private ImapsProtocol imapsClient;
 
     public ImapsProtocol newInstance() {
-        if (this.imapsClient == null)
+        if (this.imapsClient == null) {
             this.imapsClient = new ImapsProtocol();
+        }
         return this.imapsClient;
     }
 

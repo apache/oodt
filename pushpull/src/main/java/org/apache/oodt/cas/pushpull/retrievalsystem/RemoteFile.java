@@ -80,11 +80,13 @@ public class RemoteFile implements RemoteFileMetKeys {
         try {
             SerializableMetadata sMetadata = new SerializableMetadata("UTF-8",
                     false);
-            for (String metadataKey : metadataToWriteOut)
+            for (String metadataKey : metadataToWriteOut) {
                 if (this.metadata.getMetadata(metadataKey) != null
-                        && !this.metadata.getMetadata(metadataKey).equals(""))
+                    && !this.metadata.getMetadata(metadataKey).equals("")) {
                     sMetadata.addMetadata(metadataKey, this.metadata
-                            .getMetadata(metadataKey));
+                        .getMetadata(metadataKey));
+                }
+            }
             sMetadata.writeMetadataToXmlStream(new FileOutputStream(filePath));
         } catch (Exception e) {
             throw new IOException("Failed to write metadata file for "

@@ -23,30 +23,34 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 public class ExtractorConfigReader {
   public static ExtractorConfig readFromDirectory(File directory,
-      String configId) throws FileNotFoundException, IOException {
+      String configId) throws IOException {
     File propsFileDir = new File(directory, configId);
     Properties props = new Properties();
-    props
-        .load(new FileInputStream(new File(propsFileDir,
-        "config.properties")));
-    
-    String identifier = configId;
+    InputStream is = new FileInputStream(new File(propsFileDir,
+        "config.properties"));
+    try {
+      props.load(is);
+    }
+    finally{
+      is.close();
+    }
+
     String className = props.getProperty(ExtractorConfig.PROP_CLASS_NAME);
     List<File> files = new ArrayList<File>();
     String[] fileList = props.getProperty(ExtractorConfig.PROP_CONFIG_FILES)
         .split(",");
-    for (int i = 0; i < fileList.length; i++) {
+    for (String aFileList : fileList) {
       files.add(new File(PathUtils.replaceEnvVariables(fileList[0])));
     }
     
-    return new ExtractorConfig(identifier, className, files);
+    return new ExtractorConfig(configId, className, files);
   }
 }

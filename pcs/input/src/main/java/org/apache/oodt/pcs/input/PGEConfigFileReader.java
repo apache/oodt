@@ -16,17 +16,18 @@
 package org.apache.oodt.pcs.input;
 
 //JDK imports
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * 
@@ -64,7 +65,7 @@ public class PGEConfigFileReader {
    *           If there is an error reading the url.
    */
   public PGEConfigurationFile read(URL url) throws PGEConfigFileException {
-    PGEConfigurationFile configFile = null;
+    PGEConfigurationFile configFile;
 
     try {
       configFile = read(url.openStream());
@@ -93,11 +94,11 @@ public class PGEConfigFileReader {
    */
   public PGEConfigurationFile read(InputStream is)
       throws PGEConfigFileException {
-    PGEConfigurationFile configFile = null;
+    PGEConfigurationFile configFile;
 
-    DocumentBuilderFactory factory = null;
-    DocumentBuilder parser = null;
-    Document document = null;
+    DocumentBuilderFactory factory;
+    DocumentBuilder parser;
+    Document document;
 
     if (is == null) {
       return null;
@@ -160,18 +161,18 @@ public class PGEConfigFileReader {
 
     PGEGroup pgeGroup = new PGEGroup(group.getAttribute("name"));
 
-    for (Iterator i = scalars.iterator(); i.hasNext();) {
-      PGEScalar s = (PGEScalar) i.next();
+    for (Object scalar : scalars) {
+      PGEScalar s = (PGEScalar) scalar;
       pgeGroup.addScalar(s);
     }
 
-    for (Iterator i = vectors.iterator(); i.hasNext();) {
-      PGEVector v = (PGEVector) i.next();
+    for (Object vector : vectors) {
+      PGEVector v = (PGEVector) vector;
       pgeGroup.addVector(v);
     }
 
-    for (Iterator i = matrixs.iterator(); i.hasNext();) {
-      PGEMatrix m = (PGEMatrix) i.next();
+    for (Object matrix : matrixs) {
+      PGEMatrix m = (PGEMatrix) matrix;
       pgeGroup.addMatrix(m);
     }
 
@@ -179,14 +180,13 @@ public class PGEConfigFileReader {
 
   }
 
-  private void addMonitorLevels(PGEConfigurationFile configFile, Element group)
-      throws PGEConfigFileException {
+  private void addMonitorLevels(PGEConfigurationFile configFile, Element group) {
 
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     if (scalars != null && scalars.size() > 0) {
-      for (Iterator i = scalars.iterator(); i.hasNext();) {
-        PGEScalar scalar = (PGEScalar) i.next();
+      for (Object scalar1 : scalars) {
+        PGEScalar scalar = (PGEScalar) scalar1;
         configFile.getMonitorLevelGroup().addScalar(scalar);
       }
     }
@@ -206,8 +206,8 @@ public class PGEConfigFileReader {
 
     PGEScalar monPath = null, monFilenameFormat = null;
 
-    for (Iterator i = scalars.iterator(); i.hasNext();) {
-      PGEScalar scalar = (PGEScalar) i.next();
+    for (Object scalar1 : scalars) {
+      PGEScalar scalar = (PGEScalar) scalar1;
 
       if (scalar.getName().equals("MonitorPath")) {
         monPath = scalar;
@@ -226,7 +226,7 @@ public class PGEConfigFileReader {
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     // the list should be size 1
-    if (scalars == null || (scalars != null && scalars.size() != 1)) {
+    if (scalars == null || (scalars.size() != 1)) {
       throw new PGEConfigFileException(
           "There is no product path defined in the configuration file, or there is more than one scalar listed in the ProductPathGroup!");
     }
@@ -250,7 +250,7 @@ public class PGEConfigFileReader {
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     // the list should be size 1
-    if (scalars == null || (scalars != null && scalars.size() != 1)) {
+    if (scalars == null || (scalars.size() != 1)) {
       throw new PGEConfigFileException(
           "There is no PGEName defined in the configuration file, or there is more than one scalar listed in the PGENameGroup");
     }
@@ -289,14 +289,13 @@ public class PGEConfigFileReader {
     addScalarFilesToGroup(group, configFile.getRecordedAuxiliaryInputFiles());
   }
 
-  private void addScalarFilesToGroup(Element group, PGEGroup pgeGroup)
-      throws PGEConfigFileException {
+  private void addScalarFilesToGroup(Element group, PGEGroup pgeGroup) {
     // get the scalars, and add them to the group
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     if (scalars != null && scalars.size() > 0) {
-      for (Iterator i = scalars.iterator(); i.hasNext();) {
-        PGEScalar scalar = (PGEScalar) i.next();
+      for (Object scalar1 : scalars) {
+        PGEScalar scalar = (PGEScalar) scalar1;
         pgeGroup.addScalar(scalar);
       }
     }
@@ -308,8 +307,8 @@ public class PGEConfigFileReader {
     List vectors = PGEXMLFileUtils.getVectors(group);
 
     if (vectors != null && vectors.size() > 0) {
-      for (Iterator i = vectors.iterator(); i.hasNext();) {
-        PGEVector vector = (PGEVector) i.next();
+      for (Object vector1 : vectors) {
+        PGEVector vector = (PGEVector) vector1;
         pgeGroup.addVector(vector);
       }
     }

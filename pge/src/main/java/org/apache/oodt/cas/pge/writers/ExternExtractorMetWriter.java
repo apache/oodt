@@ -17,14 +17,19 @@
 
 package org.apache.oodt.cas.pge.writers;
 
-//JDK imports
-import java.io.File;
-
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractorConfigReaderException;
 import org.apache.oodt.cas.metadata.extractors.ExternConfigReader;
 import org.apache.oodt.cas.metadata.extractors.ExternMetExtractor;
-import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
+import org.apache.oodt.commons.exceptions.CommonsException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.ParseException;
+
+
 
 /**
  * 
@@ -35,15 +40,14 @@ import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
 public class ExternExtractorMetWriter extends PcsMetFileWriter {
 
   @Override
-  protected Metadata getSciPgeSpecificMetadata(File sciPgeConfigFilePath,
-      Metadata inputMetadata, Object... customArgs) throws Exception {
+  protected Metadata getSciPgeSpecificMetadata(File sciPgeConfigFilePath, Metadata inputMetadata, Object... customArgs)
+      throws MetExtractorConfigReaderException, MetExtractionException, FileNotFoundException,
+      ParseException, CommonsException, CasMetadataException {
     ExternMetExtractor extractor = new ExternMetExtractor();
     extractor.setConfigFile(new ExternConfigReader().parseConfigFile(new File(
         (String) customArgs[0])));
     Metadata m = new Metadata();
     m.addMetadata(extractor.extractMetadata(sciPgeConfigFilePath)
-        .getHashtable(), true);
-    return m;
-  }
-
+                           .getMap(), true);
+    return m;  }
 }

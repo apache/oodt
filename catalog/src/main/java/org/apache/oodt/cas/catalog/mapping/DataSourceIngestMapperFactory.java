@@ -16,11 +16,11 @@
  */
 package org.apache.oodt.cas.catalog.mapping;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 //Spring imports
 import org.springframework.beans.factory.annotation.Required;
-
-//OODT imports
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 
 /**
  * @author bfoster
@@ -32,7 +32,9 @@ import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
  */
 public class DataSourceIngestMapperFactory implements IngestMapperFactory {
 
-    protected String jdbcUrl;
+  private static Logger LOG = Logger.getLogger(DataSourceIngestMapperFactory.class.getName());
+
+  protected String jdbcUrl;
     protected String user;
     protected String pass;
     protected String driver;
@@ -75,12 +77,13 @@ public class DataSourceIngestMapperFactory implements IngestMapperFactory {
 		this.driver = driver;
 	}
 	
+	@Override
 	public IngestMapper createMapper() {
 		try {
 			return new DataSourceIngestMapper(user, pass,
 	                driver, jdbcUrl);
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
 	}

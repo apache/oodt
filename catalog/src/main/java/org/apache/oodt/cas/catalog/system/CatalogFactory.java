@@ -45,8 +45,9 @@ public class CatalogFactory {
 		Vector<Dictionary> dictionaries = null;
 		if (this.dictionaryFactories != null) {
 			dictionaries = new Vector<Dictionary>();
-			for (DictionaryFactory dictionaryFactory : this.dictionaryFactories)
-				dictionaries.add(dictionaryFactory.createDictionary());
+			for (DictionaryFactory dictionaryFactory : this.dictionaryFactories) {
+			  dictionaries.add(dictionaryFactory.createDictionary());
+			}
 		}
 		return new Catalog(this.catalogId, this.indexFactory.createIndex(), dictionaries, this.restrictQueryPermissions, this.restrictIngestPermissions);
 	}

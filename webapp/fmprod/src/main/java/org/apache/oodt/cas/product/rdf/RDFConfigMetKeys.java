@@ -28,6 +28,6 @@ package org.apache.oodt.cas.product.rdf;
  */
 public interface RDFConfigMetKeys {
   
-  public static final String RDF_CONTEXT_CONF_KEY = "filemgr.rdfconf.file";
+  String RDF_CONTEXT_CONF_KEY = "filemgr.rdfconf.file";
 
 }

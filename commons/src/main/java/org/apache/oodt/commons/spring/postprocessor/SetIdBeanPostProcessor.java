@@ -36,8 +36,9 @@ public class SetIdBeanPostProcessor implements BeanPostProcessor {
 
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
-        if (bean instanceof SpringSetIdInjectionType)
-            ((SpringSetIdInjectionType) bean).setId(beanName);
+        if (bean instanceof SpringSetIdInjectionType) {
+          ((SpringSetIdInjectionType) bean).setId(beanName);
+        }
         return bean;
     }
 

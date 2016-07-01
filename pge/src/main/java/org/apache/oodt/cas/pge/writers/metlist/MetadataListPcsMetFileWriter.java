@@ -19,19 +19,24 @@
 package org.apache.oodt.cas.pge.writers.metlist;
 
 //JDK imports
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.*;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Arrays;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
+import org.apache.oodt.commons.exceptions.CommonsException;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.util.Arrays;
+
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.*;
+
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.commons.xml.XMLUtils;
-import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
 
 /**
  * 
@@ -47,7 +52,8 @@ public class MetadataListPcsMetFileWriter extends PcsMetFileWriter {
 
     @Override
     protected Metadata getSciPgeSpecificMetadata(File sciPgeCreatedDataFile,
-            Metadata inputMetadata, Object... customArgs) throws Exception {
+            Metadata inputMetadata, Object... customArgs)
+        throws FileNotFoundException, ParseException, CommonsException, CasMetadataException {
         Metadata metadata = new Metadata();
         for (Object arg : customArgs) {
             Element root = XMLUtils.getDocumentRoot(
@@ -57,21 +63,25 @@ public class MetadataListPcsMetFileWriter extends PcsMetFileWriter {
             for (int i = 0; i < metadataNodeList.getLength(); i++) {
                 Element metadataElement = (Element) metadataNodeList.item(i);
                 String key = metadataElement.getAttribute(KEY_ATTR);
-                if (key.equals(""))
-                	key = PathUtils.doDynamicReplacement(metadataElement.getAttribute(KEY_GEN_ATTR), inputMetadata);
+                if (key.equals("")) {
+                  key = PathUtils.doDynamicReplacement(metadataElement.getAttribute(KEY_GEN_ATTR), inputMetadata);
+                }
                 String val = metadataElement.getAttribute(VAL_ATTR);
-            	if (val.equals("")) 
-            		val = metadataElement.getTextContent();
+            	if (val.equals("")) {
+                  val = metadataElement.getTextContent();
+                }
                 if (val != null && !val.equals("")) {
-                    if (!metadataElement.getAttribute(ENV_REPLACE_ATTR).toLowerCase().equals("false"))
-                        val = PathUtils.doDynamicReplacement(val, inputMetadata);
-                    String[] vals = null;
+                    if (!metadataElement.getAttribute(ENV_REPLACE_ATTR).toLowerCase().equals("false")) {
+                      val = PathUtils.doDynamicReplacement(val, inputMetadata);
+                    }
+                    String[] vals;
                     if (metadataElement.getAttribute(SPLIT_ATTR).toLowerCase().equals("false")) {
                         vals = new String[] { val };
                     } else {
                         String delimiter = metadataElement.getAttribute("delimiter");
-                        if (delimiter == null || delimiter.equals(""))
-                            delimiter = ",";
+                        if (delimiter == null || delimiter.equals("")) {
+                          delimiter = ",";
+                        }
                         vals = (val + delimiter).split(delimiter);
                     }
                     metadata.replaceMetadata(key, Arrays.asList(vals));

@@ -64,10 +64,7 @@ public class Mapping {
   }
 
   public MappingField getFieldByLocalName(String localName) {
-    if (this.fields == null
-        || (this.fields != null && this.fields.keySet() == null)
-        || (this.fields != null && this.fields.keySet() != null && this.fields
-            .keySet().size() == 0)) {
+    if (this.fields == null || (this.fields.keySet().size() == 0)) {
       return null;
     }
 
@@ -91,10 +88,7 @@ public class Mapping {
       return true; // leave it out
     }
 
-    if (fld.getType() == FieldType.CONSTANT) {
-      return true;
-    } else
-      return false;
+    return fld.getType() == FieldType.CONSTANT;
   }
 
   public int getNumFields() {

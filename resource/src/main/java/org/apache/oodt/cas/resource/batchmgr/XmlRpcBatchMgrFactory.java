@@ -18,7 +18,6 @@
 
 package org.apache.oodt.cas.resource.batchmgr;
 
-import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 
 /**

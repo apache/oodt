@@ -17,13 +17,11 @@
 
 package org.apache.oodt.opendapps.config;
 
-//APACHE imports
-import org.apache.oodt.profile.EnumeratedProfileElement;
 
 /**
  * 
  * Specification for the {@link OpendapConfig} that specifies what THREDDS
- * dataset met to use to create {@link EnumeratedProfileElement}s from.
+ * dataset met to use to create {@link org.apache.oodt.profile.EnumeratedProfileElement}s from.
  * 
  */
 public class DatasetMetElem {

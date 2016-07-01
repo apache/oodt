@@ -18,32 +18,13 @@
 
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import org.apache.oodt.cas.filemgr.browser.controller.TableListener;
+
+import java.awt.*;
 import java.util.Vector;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.border.CompoundBorder;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileFilter;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
-import org.apache.oodt.cas.filemgr.browser.controller.TableListener;
-import org.apache.oodt.cas.filemgr.browser.view.menus.RightClickMenu;
 
 public class TablePane extends JPanel{ 
 	
@@ -154,7 +135,7 @@ public class TablePane extends JPanel{
 		for(int i=1;i<this.getComponentCount();i++){
 			((Row)this.getComponent(i)).hideCol(colNum);
 		}
-		hiddenCols.add(new Integer(colNum));
+		hiddenCols.add(colNum);
 	}
 	
 	public void unhideColumn(int colNum){
@@ -162,7 +143,7 @@ public class TablePane extends JPanel{
 		for(int i=1;i<this.getComponentCount();i++){
 			((Row)this.getComponent(i)).unhideCol(colNum);
 		}
-		hiddenCols.remove(new Integer(colNum));
+		hiddenCols.remove(Integer.valueOf(colNum));
 		
 	}
 

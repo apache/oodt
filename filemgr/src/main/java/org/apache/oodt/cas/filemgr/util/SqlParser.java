@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.util;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
@@ -27,14 +28,16 @@ import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
 import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 
-
-//JDK imports
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+//JDK imports
 
 /**
  * 
@@ -72,30 +75,33 @@ import java.util.regex.Pattern;
  *          </p>
  */
 public class SqlParser {
-    
+
+    private static Logger LOG = Logger.getLogger(SqlParser.class.getName());
     private SqlParser() {
     }
     
     public static ComplexQuery parseSqlQueryMethod(String sqlStringQueryMethod)
             throws QueryFormulationException {
-        if (!Pattern.matches("((?:SQL)|(?:sql))\\s*(.*)\\s*\\{\\s*SELECT.*FROM.*(?:WHERE.*){0,1}\\}", sqlStringQueryMethod))
+        if (!Pattern.matches("((?:SQL)|(?:sql))\\s*(.*)\\s*\\{\\s*SELECT.*FROM.*(?:WHERE.*){0,1}\\}", sqlStringQueryMethod)) {
             throw new QueryFormulationException("Malformed SQL method");
+        }
         
         try {
             ComplexQuery complexQuery = parseSqlQuery(stripOutSqlDefinition(sqlStringQueryMethod));
             
             for (Expression expr : getSqlStatementArgs(sqlStringQueryMethod)) {
-                if (expr.getKey().toUpperCase().equals("FORMAT"))
+                if (expr.getKey().toUpperCase().equals("FORMAT")) {
                     complexQuery.setToStringResultFormat(expr.getValue());
-                else if (expr.getKey().toUpperCase().equals("SORT_BY"))
+                } else if (expr.getKey().toUpperCase().equals("SORT_BY")) {
                     complexQuery.setSortByMetKey(expr.getValue());
-                else if (expr.getKey().toUpperCase().equals("FILTER")) 
+                } else if (expr.getKey().toUpperCase().equals("FILTER")) {
                     complexQuery.setQueryFilter(createFilter(expr));
+                }
             }
             
             return complexQuery;
         }catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new QueryFormulationException("Failed to parse SQL method : " + e.getMessage());
         }
     }
@@ -108,15 +114,18 @@ public class SqlParser {
         String[] fromValues = (splitSqlStatement[2].trim() + ",").split(",");
         ComplexQuery sq = new ComplexQuery();
         List<String> selectValuesList = Arrays.asList(selectValues);
-        if (!selectValuesList.contains("*"))
+        if (!selectValuesList.contains("*")) {
             sq.setReducedMetadata(Arrays.asList(selectValues));
+        }
         List<String> fromValuesList = Arrays.asList(fromValues);
-        if (!fromValuesList.contains("*"))
+        if (!fromValuesList.contains("*")) {
             sq.setReducedProductTypeNames(fromValuesList);
+        }
         
-        if (splitSqlStatement.length > 3)
+        if (splitSqlStatement.length > 3) {
             sq.addCriterion(parseStatement(toPostFix(splitSqlStatement[3]
-                    .trim())));
+                .trim())));
+        }
         return sq;
     }
     
@@ -127,10 +136,12 @@ public class SqlParser {
     
     public static String unparseSqlQuery(ComplexQuery complexQuery) throws QueryFormulationException {
         LinkedList<String> outputArgs = new LinkedList<String>();
-        if (complexQuery.getToStringResultFormat() != null)
+        if (complexQuery.getToStringResultFormat() != null) {
             outputArgs.add("FORMAT = '" + complexQuery.getToStringResultFormat() + "'");
-        if (complexQuery.getSortByMetKey() != null)
+        }
+        if (complexQuery.getSortByMetKey() != null) {
             outputArgs.add("SORT_BY = '" + complexQuery.getSortByMetKey() + "'");
+        }
         if (complexQuery.getQueryFilter() != null) {
             String filterString = "FILTER = '"
                     + complexQuery.getQueryFilter().getStartDateTimeMetKey() + ","
@@ -141,8 +152,9 @@ public class SqlParser {
             outputArgs.add(filterString + "'");
         }
         String sqlQueryString = getInfixCriteriaString(complexQuery.getCriteria());
-        if (sqlQueryString != null && sqlQueryString.startsWith("(") && sqlQueryString.endsWith(")"))
-                sqlQueryString = sqlQueryString.substring(1, sqlQueryString.length() - 1);
+        if (sqlQueryString != null && sqlQueryString.startsWith("(") && sqlQueryString.endsWith(")")) {
+            sqlQueryString = sqlQueryString.substring(1, sqlQueryString.length() - 1);
+        }
         return "SQL ("
                 + listToString(outputArgs)
                 + ") { SELECT " + listToString(complexQuery.getReducedMetadata())
@@ -151,39 +163,42 @@ public class SqlParser {
     }
 
     public static String getInfixCriteriaString(List<QueryCriteria> criteriaList) throws QueryFormulationException {
-        if (criteriaList.size() > 1)
+        if (criteriaList.size() > 1) {
             return getInfixCriteriaString(new BooleanQueryCriteria(criteriaList, BooleanQueryCriteria.AND));
-        else if (criteriaList.size() == 1)
+        } else if (criteriaList.size() == 1) {
             return getInfixCriteriaString(criteriaList.get(0));
-        else 
+        } else {
             return null;
+        }
     }
     
     public static String getInfixCriteriaString(QueryCriteria criteria) {
-        String returnString = "";
+        StringBuilder returnString = new StringBuilder();
         if (criteria instanceof BooleanQueryCriteria) {
             BooleanQueryCriteria bqc = (BooleanQueryCriteria) criteria;
             List<QueryCriteria> terms = bqc.getTerms();
             switch(bqc.getOperator()){
             case 0:
-                returnString = "(" + getInfixCriteriaString((QueryCriteria) terms.get(0));
-                for (int i = 1; i < terms.size(); i++)
-                    returnString += " AND " + getInfixCriteriaString((QueryCriteria) terms.get(i));
-                returnString += ")";
+                returnString.append("(").append(getInfixCriteriaString(terms.get(0)));
+                for (int i = 1; i < terms.size(); i++) {
+                    returnString.append(" AND ").append(getInfixCriteriaString(terms.get(i)));
+                }
+                returnString.append(")");
                 break;
             case 1:
-                returnString = "(" + getInfixCriteriaString((QueryCriteria) terms.get(0));
-                for (int i = 1; i < terms.size(); i++)
-                    returnString += " OR " + getInfixCriteriaString((QueryCriteria) terms.get(i));
-                returnString += ")";
+                returnString.append("(").append(getInfixCriteriaString(terms.get(0)));
+                for (int i = 1; i < terms.size(); i++) {
+                    returnString.append(" OR ").append(getInfixCriteriaString(terms.get(i)));
+                }
+                returnString.append(")");
                 break;
             case 2:
                 QueryCriteria qc = bqc.getTerms().get(0);
                 if (qc instanceof TermQueryCriteria) {
                     TermQueryCriteria tqc = (TermQueryCriteria) qc;
-                    returnString = tqc.getElementName() + " != '" + tqc.getValue() + "'";
+                    returnString.append(tqc.getElementName()).append(" != '").append(tqc.getValue()).append("'");
                 }else {
-                    returnString = "NOT(" + getInfixCriteriaString(qc) + ")";
+                    returnString.append("NOT(").append(getInfixCriteriaString(qc)).append(")");
                 }
                 break;
             }
@@ -192,14 +207,15 @@ public class SqlParser {
             String opString = rqc.getInclusive() ? "=" : "";
             if (rqc.getStartValue() != null) {
                 opString = ">" + opString + " '" + rqc.getStartValue() + "'";
-            }else
+            }else {
                 opString = "<" + opString + " '" + rqc.getEndValue() + "'";
-            returnString = rqc.getElementName() + " " + opString;
+            }
+            returnString.append(rqc.getElementName()).append(" ").append(opString);
         }else if (criteria instanceof TermQueryCriteria) {
             TermQueryCriteria tqc = (TermQueryCriteria) criteria;
-            returnString = tqc.getElementName() + " == '" + tqc.getValue() + "'";
+            returnString.append(tqc.getElementName()).append(" == '").append(tqc.getValue()).append("'");
         }
-        return returnString;
+        return returnString.toString();
     }
     
     private static String stripOutSqlDefinition(String sqlStringQueryMethod) {
@@ -219,8 +235,9 @@ public class SqlParser {
                 if (!inExpr) {
                     String[] args = sqlStringQueryMethod.substring(startArgs, i).trim().split("'\\s*,");
                     LinkedList<Expression> argsList = new LinkedList<Expression>();
-                    for (String arg : args)
+                    for (String arg : args) {
                         argsList.add(new Expression((arg = arg.trim()).endsWith("'") ? arg : (arg + "'")));
+                    }
                     return argsList;
                 } else {
                     break;
@@ -253,29 +270,33 @@ public class SqlParser {
             char curChar = statement.charAt(i);
             switch (curChar) {
             case '(':
-                stack.push(new String("("));
+                stack.push("(");
                 break;
             case ')':
-                String value = null;
-                while (!(value = stack.pop()).equals("("))
+                String value;
+                while (!(value = stack.pop()).equals("(")) {
                     postFix.add(value);
-                if (stack.peek().equals("NOT"))
+                }
+                if (stack.peek().equals("NOT")) {
                     postFix.add(stack.pop());
+                }
                 break;
             case ' ':
                 break;
             default:
                 if (statement.substring(i, i + 3).equals("AND")) {
                     while (!stack.isEmpty()
-                            && (stack.peek().equals("AND")))
+                            && (stack.peek().equals("AND"))) {
                         postFix.add(stack.pop());
+                    }
                     stack.push("AND");
                     i += 2;
                 } else if (statement.substring(i, i + 2).equals("OR")) {
                     while (!stack.isEmpty()
                             && (stack.peek().equals("AND") || stack.peek()
-                                    .equals("OR")))
+                                    .equals("OR"))) {
                         postFix.add(stack.pop());
+                    }
                     stack.push("OR");
                     i += 1;
                 } else if (statement.substring(i, i + 3).equals("NOT")) {
@@ -290,8 +311,9 @@ public class SqlParser {
             }
         }
 
-        while (!stack.isEmpty())
+        while (!stack.isEmpty()) {
             postFix.add(stack.pop());
+        }
 
         return postFix;
     }
@@ -324,13 +346,14 @@ public class SqlParser {
     }
 
     private static String listToString(List<String> list) {
-        String arrayString = "";
+        StringBuilder arrayString = new StringBuilder();
         if (list.size() > 0) {
-            arrayString = list.get(0);
-            for (int i = 1; i < list.size(); i++)
-                arrayString += "," + list.get(i);
-        }  
-        return arrayString;
+            arrayString.append(list.get(0));
+            for (int i = 1; i < list.size(); i++) {
+                arrayString.append(",").append(list.get(i));
+            }
+        }
+        return arrayString.toString();
     }
 
 
@@ -377,13 +400,15 @@ public class SqlParser {
             this.key = expression.substring(0, matcher.start()).trim();
             this.val = this.removeTickBounds(expression.substring(matcher.end()).trim());
             String opString = matcher.group();
-            for (char c : opString.toCharArray())
+            for (char c : opString.toCharArray()) {
                 this.op = this.op | this.getShortValueForOp(c);
+            }
         }
 
         private String removeTickBounds(String value) {
-            if (value.startsWith("'") && value.endsWith("'"))
+            if (value.startsWith("'") && value.endsWith("'")) {
                 value = value.substring(1, value.length() - 1);
+            }
             return value;
         }
 

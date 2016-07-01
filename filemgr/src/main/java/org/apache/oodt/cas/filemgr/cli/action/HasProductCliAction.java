@@ -21,11 +21,10 @@ import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
-import org.apache.oodt.cas.filemgr.structs.Product;
 
 /**
  * A {@link CmdLineAction} which checks if the File Manager has a given
- * {@link Product} ingested.
+ * {@link org.apache.oodt.cas.filemgr.structs.Product} ingested.
  * 
  * @author bfoster (Brian Foster)
  */

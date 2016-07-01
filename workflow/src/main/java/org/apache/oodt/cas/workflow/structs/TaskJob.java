@@ -178,8 +178,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
     private WorkflowManagerClient getWmClientFromMetadata(Metadata met) {
         String workflowMgrUrlStr = met.getMetadata(WORKFLOW_MANAGER_URL);
-        if (workflowMgrUrlStr == null
-                || (workflowMgrUrlStr != null && workflowMgrUrlStr.equals(""))) {
+        if (workflowMgrUrlStr == null || (workflowMgrUrlStr.equals(""))) {
             // try to default to a workflow mgr on localhost
             // most likely won't work, but worth trying
             workflowMgrUrlStr = "http://localhost:9001";
@@ -193,9 +192,8 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
             // Get hostname by textual representation of IP address
             InetAddress addr = InetAddress.getLocalHost();
             // Get the host name
-            String hostname = addr.getHostName();
-            return hostname;
-        } catch (UnknownHostException e) {
+            return addr.getHostName();
+        } catch (UnknownHostException ignored) {
         }
         return null;
     }

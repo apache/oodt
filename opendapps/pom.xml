@@ -17,24 +17,51 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <relativePath>../core/pom.xml</relativePath>
+  </parent>
   <artifactId>opendapps</artifactId>
   <name>Apache OODT Configurable OPeNDAP Profile Server</name>
   <description>A generic, configurable Apache OODT profile server
   implementation that easily connects to OPeNDAP data sources. Connections 
   are configured via an XML configuration file, providing information on how 
-  to extract and translate datasets from OPeNDAP and THREDDS into OODT profiles.
-  </description> 
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/opendapps</url>
-  </scm>
-  <parent>
-    <groupId>org.apache.oodt</groupId>
-    <artifactId>oodt-core</artifactId>
-    <version>0.11-SNAPSHOT</version>
-    <relativePath>../core/pom.xml</relativePath>
-  </parent>
+  to extract and translate datasets from OPeNDAP and THREDDS into OODT profiles.</description>
+  <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
+     Once the dependency is in the core pom, it can then be used in other modules without the version tags.
+     For example, within core/pom.xml:
+
+      <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+     Elsewhere in the platform:
+     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+    </dependency>
+
+     Where possible the same dependency version should be used across the whole platform but if required the version
+     can be overridden in a specific pom and should have a comment explaing why the version has been overridden
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>edu.ucar</groupId>
+      <artifactId>netcdf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-profile</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-xmlquery</artifactId>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -47,31 +74,22 @@
         <!-- enable creation of single jar to use this module stand alone -->
         <executions>
           <execution>
-            <id>make-assembly</id> <!-- this is used for inheritance merges -->
-            <phase>package</phase> <!-- bind to the packaging phase -->
+            <id>make-assembly</id>
+            <!-- bind to the packaging phase -->
             <goals>
               <goal>single</goal>
             </goals>
+            <!-- this is used for inheritance merges -->
+            <phase>package</phase>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-   <dependency>
-     <groupId>edu.ucar</groupId>
-     <artifactId>netcdf</artifactId>
-     <version>4.2</version>
-   </dependency>
-   <dependency>
-    <groupId>org.apache.oodt</groupId>
-    <artifactId>oodt-profile</artifactId>
-    <version>${project.parent.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.apache.oodt</groupId>
-    <artifactId>oodt-xmlquery</artifactId>
-    <version>${project.parent.version}</version>
-   </dependency>
-  </dependencies>
+  <scm>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/opendapps</url>-->
+    <tag>0.13-SNAPSHOT</tag>
+  </scm>
 </project>

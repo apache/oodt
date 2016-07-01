@@ -40,25 +40,25 @@ public final class GenericMetadataObjectFactory {
       .getLogger(GenericMetadataObjectFactory.class.getName());
 
   public static MetExtractor getMetExtractorFromClassName(String className) {
-    Class metExtractorClass = null;
-    MetExtractor extractor = null;
+    Class metExtractorClass;
+    MetExtractor extractor;
 
     try {
       metExtractorClass = Class.forName(className);
       extractor = (MetExtractor) metExtractorClass.newInstance();
       return extractor;
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading met extractor class "
               + className + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading met extractor class "
               + className + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading met extractor class "
               + className + " Message: " + e.getMessage());

@@ -70,7 +70,8 @@ public class GetJobInfoCliAction extends ResourceCliAction {
          return "SCHEDULED";
       } else if (status.equals(JobStatus.KILLED)) {
          return "KILLED";
-      } else
+      } else {
          return null;
+      }
    }
 }

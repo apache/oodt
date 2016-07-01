@@ -16,25 +16,21 @@
  */
 package org.apache.oodt.cas.protocol.ftp;
 
-//JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
-
-
-
-//Globus imports
+//OODT imports
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+
+//Globus imports
 import org.globus.ftp.FTPClient;
 import org.globus.ftp.FileInfo;
-import org.globus.ftp.HostPort;
-import org.globus.ftp.exception.ClientException;
-import org.globus.ftp.exception.ServerException;
+
+//JDK imports
+import java.io.File;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * FTP implementation of a {@link Protocol}
@@ -43,13 +39,14 @@ import org.globus.ftp.exception.ServerException;
  */
 public class CogJGlobusFtpProtocol implements Protocol {
 
+  public static final int PORT = 21;
   private FTPClient ftp;
   private boolean isConnected;
   private int port;
   private String homeDir;
   
   public CogJGlobusFtpProtocol() {
-  	this(21);
+  	this(PORT);
   }
   
   public CogJGlobusFtpProtocol(int port) {

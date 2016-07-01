@@ -17,16 +17,8 @@
 
 package org.apache.oodt.cas.webcomponents.filemgr.browser.product;
 
-//JDK imports
-import java.io.File;
-import java.net.URI;
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
@@ -39,9 +31,19 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.util.ListModel;
 
+//JDK imports
+import java.io.File;
+import java.net.URI;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+
 /**
  *
- * Component responsible for showing a {@link Product}s
+ * Component responsible for showing a {@link org.apache.oodt.cas.filemgr.structs.Product}s
  * {@link List} of {@link Reference}s.
  *
  * @author mattmann

@@ -17,10 +17,6 @@
 
 package org.apache.oodt.cas.webcomponents.workflow.instance;
 
-import java.text.NumberFormat;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.webcomponents.workflow.WorkflowMgrConn;
 import org.apache.oodt.cas.webcomponents.workflow.pagination.WorkflowPagePaginator;
@@ -30,20 +26,23 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.wicket.IResourceListener;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.link.ResourceLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.util.value.ValueMap;
+
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -55,6 +54,7 @@ import org.apache.wicket.util.value.ValueMap;
  */
 public class WorkflowInstancesViewer extends Panel {
 
+  private static Logger LOG = Logger.getLogger(WorkflowInstancesViewer.class.getName());
   private static final long serialVersionUID = -311004303658412137L;
 
   private WorkflowMgrConn wm;
@@ -70,7 +70,16 @@ public class WorkflowInstancesViewer extends Panel {
   private static final int PAGE_SIZE = 20;
 
   /**
-   * @param id
+   * @param id the id
+   * @param workflowUrlStr the workflow url
+   * @param status the status
+   * @param pageNum the page number
+   * @param wStatuses the workflow statuses
+   * @param lifecycleFilePath the lifecycle path
+   * @param metInstanceFilePath the met instance file path
+   * @param workflowViewer the workflow viewer
+   * @param workflowTaskViewer the workflow task viewer
+   * @param workflowInstViewer the workflow instviewer
    */
   public WorkflowInstancesViewer(String id, String workflowUrlStr,
       final String status, int pageNum, List<String> wStatuses,
@@ -81,7 +90,7 @@ public class WorkflowInstancesViewer extends Panel {
     super(id);
     this.wm = new WorkflowMgrConn(workflowUrlStr);
     this.pageNum = pageNum;
-    WorkflowInstancePage page = null;
+    WorkflowInstancePage page;
     System.out.println("STATUS IS "+status);
     if (status.equals("ALL")) {
       page = this.wm.safeGetWorkflowInstPageByStatus(pageNum);
@@ -213,7 +222,7 @@ public class WorkflowInstancesViewer extends Panel {
       this.pageNum = page.getPageNum();
 
       // get the last page
-      WorkflowInstancePage lastPage = null;
+      WorkflowInstancePage lastPage;
       lastPage = wm.safeGetWorkflowInstPageByStatus(page.getTotalPages());
       this.totalWorkflowInsts += lastPage.getPageWorkflows().size();
 
@@ -225,7 +234,7 @@ public class WorkflowInstancesViewer extends Panel {
   }
 
   private String getWorkflowInstMet(WorkflowInstance inst, String metMapFilePath) {
-    WorkflowInstanceMetMap wInstMetMap = null;
+    WorkflowInstanceMetMap wInstMetMap;
     String metString = null;
 
     try {
@@ -237,7 +246,7 @@ public class WorkflowInstancesViewer extends Panel {
           .getWorkflow().getId()) != null ? wInstMetMap
           .getFieldsForWorkflow(inst.getWorkflow().getId()) : wInstMetMap
           .getDefaultFields();
-      StringBuffer metStrBuf = new StringBuffer();
+      StringBuilder metStrBuf = new StringBuilder();
 
       for (String wInstField : wInstFields) {
         metStrBuf.append(wInstField);
@@ -250,7 +259,7 @@ public class WorkflowInstancesViewer extends Panel {
       metString = metStrBuf.toString();
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
 
     return metString;
@@ -269,24 +278,25 @@ public class WorkflowInstancesViewer extends Panel {
     try {
       lifecycleMgr = new WorkflowLifecycleManager(lifecycleFilePath);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
-    return lifecycleMgr
-        .formatPct(lifecycleMgr.getPercentageComplete(inst) * 100.0);
+    return lifecycleMgr != null ? WorkflowLifecycleManager
+        .formatPct((lifecycleMgr.getPercentageComplete(inst)) * 100.0) : null;
   }
   
   private String getTaskNameFromTaskId(WorkflowInstance w, String taskId) {
     if (w.getWorkflow() != null && w.getWorkflow().getTasks() != null
             && w.getWorkflow().getTasks().size() > 0) {
-        for(WorkflowTask task: (List<WorkflowTask>)(List<?>)w.getWorkflow().getTasks()){
+        for(WorkflowTask task: w.getWorkflow().getTasks()){
             if (task.getTaskId().equals(taskId)) {
                 return task.getTaskName();
             }
         }
 
         return null;
-    } else
-        return null;
+    } else {
+      return null;
+    }
 }
 
 }

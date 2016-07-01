@@ -17,12 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.structs.type;
 
-import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.system.FileManagerServer;
-import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-import org.apache.oodt.commons.database.SqlScript;
-import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog;
 import org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory;
@@ -38,6 +32,11 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.database.SqlScript;
+import org.apache.oodt.commons.pagination.PaginationUtils;
+import org.apache.xmlrpc.XmlRpcException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
@@ -46,19 +45,21 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
 public class TestTypeHandler extends TestCase {
-    
+
+    private static Logger LOG = Logger.getLogger(TestTypeHandler.class.getName());
+
     String tmpDirPath;
     
     DataSource publicDataSource;
@@ -92,7 +93,7 @@ public class TestTypeHandler extends TestCase {
 
         // get a temp directory
         File tempDir = null;
-        File tempFile = null;
+        File tempFile;
 
         try {
             tempFile = File.createTempFile("foo", "bar");
@@ -157,7 +158,7 @@ public class TestTypeHandler extends TestCase {
             testProduct.setProductType(fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -189,7 +190,7 @@ public class TestTypeHandler extends TestCase {
             testProduct.setProductType(genericFile = fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
         
@@ -261,8 +262,8 @@ public class TestTypeHandler extends TestCase {
             File[] tmpFiles = tmpDir.listFiles();
 
             if (tmpFiles != null && tmpFiles.length > 0) {
-                for (int i = 0; i < tmpFiles.length; i++) {
-                    tmpFiles[i].delete();
+                for (File tmpFile : tmpFiles) {
+                    tmpFile.delete();
                 }
 
                 tmpDir.delete();
@@ -292,7 +293,7 @@ public class TestTypeHandler extends TestCase {
             coreSchemaScript.loadScript();
             coreSchemaScript.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -335,8 +336,6 @@ public class TestTypeHandler extends TestCase {
             super(ds, valLayer, fieldId, pageSize, cacheUpdateMin);
         }
 
-        private final Logger LOG = Logger
-                .getLogger(HsqlDbFriendlyDataSourceCatalog.class.getName());
 
         /*
          * (non-Javadoc)
@@ -368,8 +367,8 @@ public class TestTypeHandler extends TestCase {
             if (productIds != null && productIds.size() > 0) {
                 List products = new Vector(productIds.size());
 
-                for (Iterator i = productIds.iterator(); i.hasNext();) {
-                    String productId = (String) i.next();
+                for (Object productId1 : productIds) {
+                    String productId = (String) productId1;
                     Product p = getProductById(productId);
                     products.add(p);
                 }
@@ -449,79 +448,80 @@ public class TestTypeHandler extends TestCase {
                         ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
 
-                String getProductSql = "";
+                String getProductSql;
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
-                StringBuffer selectClause = new StringBuffer(
-                        "SELECT DISTINCT p.product_id ");
-                StringBuffer fromClause = new StringBuffer("FROM " + tableName
+                StringBuilder fromClause = new StringBuilder("FROM " + tableName
                         + " p ");
-                StringBuffer whereClause = new StringBuffer("WHERE ");
+                StringBuilder whereClause = new StringBuilder("WHERE ");
 
                 boolean gotFirstClause = false;
                 int clauseNum = 0;
 
                 if (query.getCriteria() != null
                         && query.getCriteria().size() > 0) {
-                    for (Iterator i = query.getCriteria().iterator(); i
-                            .hasNext();) {
-                        QueryCriteria criteria = (QueryCriteria) i.next();
+                    for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;
 
-                        String elementIdStr = null;
+                        String elementIdStr;
 
                         if (fieldIdStringFlag) {
-                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId() + "'";
+                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName())
+                                                     .getElementId() + "'";
                         } else {
-                            elementIdStr = this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
+                            elementIdStr =
+                                this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
                         }
 
-                        String clause = null;
+                        String clause;
 
                         if (!gotFirstClause) {
                             clause = "(p.element_id = " + elementIdStr
-                                    + " AND ";
+                                     + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 clause += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%') ";
+                                          + ((TermQueryCriteria) criteria)
+                                              .getValue() + "%') ";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
                                 boolean inclusive = ((RangeQueryCriteria) criteria)
-                                        .getInclusive();
+                                    .getInclusive();
 
                                 if ((startVal != null && !startVal.equals(""))
-                                        || (endVal != null && !endVal
-                                                .equals(""))) {
+                                    || (endVal != null && !endVal
+                                    .equals(""))) {
                                     clause += " metadata_value ";
 
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
-                                        if (inclusive)
+                                        && !startVal.equals("")) {
+                                        if (inclusive) {
                                             clause += ">= '" + startVal + "'";
-                                        else
+                                        } else {
                                             clause += "> '" + startVal + "'";
+                                        }
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
-                                            if (inclusive)
+                                            if (inclusive) {
                                                 clause += " AND metadata_value <= '"
-                                                        + endVal + "'";
-                                            else
+                                                          + endVal + "'";
+                                            } else {
                                                 clause += " AND metadata_value < '"
-                                                        + endVal + "'";
-                                        } else if (inclusive)
+                                                          + endVal + "'";
+                                            }
+                                        } else if (inclusive) {
                                             clause += "<= '" + endVal + "'";
-                                        else
+                                        } else {
                                             clause += "< '" + endVal + "'";
+                                        }
                                     }
 
                                     clause += ") ";
@@ -533,17 +533,17 @@ public class TestTypeHandler extends TestCase {
                         } else {
                             String subSelectTblName = "p" + clauseNum;
                             String subSelectQuery = subSelectQueryBase
-                                    + "WHERE (element_id = " + elementIdStr
-                                    + " AND ";
+                                                    + "WHERE (element_id = " + elementIdStr
+                                                    + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 subSelectQuery += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%')";
+                                                  + ((TermQueryCriteria) criteria)
+                                                      .getValue() + "%')";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
 
                                 if (startVal != null || endVal != null) {
                                     subSelectQuery += " metadata_value ";
@@ -551,34 +551,34 @@ public class TestTypeHandler extends TestCase {
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
+                                        && !startVal.equals("")) {
                                         subSelectQuery += ">= '" + startVal
-                                                + "'";
+                                                          + "'";
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
                                             subSelectQuery += " AND metadata_value <= '"
-                                                    + endVal + "'";
-                                        } else
+                                                              + endVal + "'";
+                                        } else {
                                             subSelectQuery += "<= '" + endVal
-                                                    + "'";
+                                                              + "'";
+                                        }
                                     }
 
                                     subSelectQuery += ") ";
 
                                 }
                             }
-                            fromClause.append("INNER JOIN (" + subSelectQuery
-                                    + ") " + subSelectTblName + " ON "
-                                    + subSelectTblName
-                                    + ".product_id = p.product_id ");
+                            fromClause.append("INNER JOIN (").append(subSelectQuery).append(") ")
+                                      .append(subSelectTblName).append(" ON ").append(subSelectTblName)
+                                      .append(".product_id = p.product_id ");
 
                         }
                     }
                 }
-                getProductSql = selectClause.toString() + fromClause.toString();
+                getProductSql = "SELECT DISTINCT p.product_id " + fromClause.toString();
                 if (gotFirstClause) {
                     getProductSql += whereClause.toString();
                 }
@@ -599,7 +599,7 @@ public class TestTypeHandler extends TestCase {
                     // must call next first, or else no relative cursor
                     if (rs.next()) {
                         // grab the first one
-                        int numGrabbed = -1;
+                        int numGrabbed;
 
                         if (pageNum == 1) {
                             numGrabbed = 1;
@@ -633,7 +633,7 @@ public class TestTypeHandler extends TestCase {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Exception performing query. Message: "
                         + e.getMessage());
                 try {
@@ -652,7 +652,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    rs = null;
                 }
 
                 if (statement != null) {
@@ -661,7 +660,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    statement = null;
                 }
 
                 if (conn != null) {
@@ -671,7 +669,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    conn = null;
                 }
             }
 
@@ -690,79 +687,80 @@ public class TestTypeHandler extends TestCase {
                 conn = dataSource.getConnection();
                 statement = conn.createStatement();
 
-                String getProductSql = "";
+                String getProductSql;
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
-                StringBuffer selectClause = new StringBuffer(
-                        "SELECT COUNT(DISTINCT p.product_id) AS numResults ");
-                StringBuffer fromClause = new StringBuffer("FROM " + tableName
+                StringBuilder fromClause = new StringBuilder("FROM " + tableName
                         + " p ");
-                StringBuffer whereClause = new StringBuffer("WHERE ");
+                StringBuilder whereClause = new StringBuilder("WHERE ");
 
                 boolean gotFirstClause = false;
                 int clauseNum = 0;
 
                 if (query.getCriteria() != null
                         && query.getCriteria().size() > 0) {
-                    for (Iterator i = query.getCriteria().iterator(); i
-                            .hasNext();) {
-                        QueryCriteria criteria = (QueryCriteria) i.next();
+                    for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;
 
-                        String elementIdStr = null;
+                        String elementIdStr;
 
                         if (fieldIdStringFlag) {
-                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId() + "'";
+                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName())
+                                                     .getElementId() + "'";
                         } else {
-                            elementIdStr = this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
+                            elementIdStr =
+                                this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
                         }
 
-                        String clause = null;
+                        String clause;
 
                         if (!gotFirstClause) {
                             clause = "(p.element_id = " + elementIdStr
-                                    + " AND ";
+                                     + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 clause += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%') ";
+                                          + ((TermQueryCriteria) criteria)
+                                              .getValue() + "%') ";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
                                 boolean inclusive = ((RangeQueryCriteria) criteria)
-                                        .getInclusive();
+                                    .getInclusive();
 
                                 if ((startVal != null && !startVal.equals(""))
-                                        || (endVal != null && !endVal
-                                                .equals(""))) {
+                                    || (endVal != null && !endVal
+                                    .equals(""))) {
                                     clause += " metadata_value ";
 
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
-                                        if (inclusive)
+                                        && !startVal.equals("")) {
+                                        if (inclusive) {
                                             clause += ">= '" + startVal + "'";
-                                        else
+                                        } else {
                                             clause += "> '" + startVal + "'";
+                                        }
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
-                                            if (inclusive)
+                                            if (inclusive) {
                                                 clause += " AND metadata_value <= '"
-                                                        + endVal + "'";
-                                            else
+                                                          + endVal + "'";
+                                            } else {
                                                 clause += " AND metadata_value < '"
-                                                        + endVal + "'";
-                                        } else if (inclusive)
+                                                          + endVal + "'";
+                                            }
+                                        } else if (inclusive) {
                                             clause += "<= '" + endVal + "'";
-                                        else
+                                        } else {
                                             clause += "< '" + endVal + "'";
+                                        }
                                     }
 
                                     clause += ") ";
@@ -773,17 +771,17 @@ public class TestTypeHandler extends TestCase {
                         } else {
                             String subSelectTblName = "p" + clauseNum;
                             String subSelectQuery = subSelectQueryBase
-                                    + "WHERE (element_id = " + elementIdStr
-                                    + " AND ";
+                                                    + "WHERE (element_id = " + elementIdStr
+                                                    + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 subSelectQuery += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%')";
+                                                  + ((TermQueryCriteria) criteria)
+                                                      .getValue() + "%')";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
 
                                 if (startVal != null || endVal != null) {
                                     subSelectQuery += " metadata_value ";
@@ -791,19 +789,20 @@ public class TestTypeHandler extends TestCase {
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
+                                        && !startVal.equals("")) {
                                         subSelectQuery += ">= '" + startVal
-                                                + "'";
+                                                          + "'";
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
                                             subSelectQuery += " AND metadata_value <= '"
-                                                    + endVal + "'";
-                                        } else
+                                                              + endVal + "'";
+                                        } else {
                                             subSelectQuery += "<= '" + endVal
-                                                    + "'";
+                                                              + "'";
+                                        }
                                     }
 
                                     subSelectQuery += ") ";
@@ -811,16 +810,15 @@ public class TestTypeHandler extends TestCase {
                                 }
                             }
 
-                            fromClause.append("INNER JOIN (" + subSelectQuery
-                                    + ") " + subSelectTblName + " ON "
-                                    + subSelectTblName
-                                    + ".product_id = p.product_id ");
+                            fromClause.append("INNER JOIN (").append(subSelectQuery).append(") ")
+                                      .append(subSelectTblName).append(" ON ").append(subSelectTblName)
+                                      .append(".product_id = p.product_id ");
 
                         }
                     }
                 }
 
-                getProductSql = selectClause.toString() + fromClause.toString();
+                getProductSql = "SELECT COUNT(DISTINCT p.product_id) AS numResults " + fromClause.toString();
                 if (gotFirstClause) {
                     getProductSql += whereClause.toString();
                 }
@@ -835,7 +833,7 @@ public class TestTypeHandler extends TestCase {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING,
                         "Exception performing get num results. Message: "
                                 + e.getMessage());
@@ -855,7 +853,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    rs = null;
                 }
 
                 if (statement != null) {
@@ -864,7 +861,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    statement = null;
                 }
 
                 if (conn != null) {
@@ -874,7 +870,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    conn = null;
                 }
             }
 

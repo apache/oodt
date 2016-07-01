@@ -55,7 +55,7 @@ public class BranchRedirector implements WorkflowTaskInstance {
   @Override
   public void run(Metadata metadata, WorkflowTaskConfiguration config)
       throws WorkflowTaskInstanceException {
-    WorkflowManagerClient wm = null;
+    XmlRpcWorkflowManagerClient wm;
 
     try {
       wm = RpcCommunicationFactory.createClient(new URL(

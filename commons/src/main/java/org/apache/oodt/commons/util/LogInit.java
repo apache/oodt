@@ -15,9 +15,13 @@
 
 package org.apache.oodt.commons.util;
 
-import java.util.*;
-import org.apache.oodt.commons.io.*;
+import org.apache.oodt.commons.io.Log;
+import org.apache.oodt.commons.io.LogFilter;
+import org.apache.oodt.commons.io.LogListener;
+
 import java.beans.PropertyChangeEvent;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
 	The <code>LogInit</code> class is intended to be used to initialize
@@ -51,7 +55,8 @@ public class LogInit {
 		@param source The default source to be included in messages.
 		@throws Exception If the logging capability cannot be initialized.
 	*/
-	public static void init(Properties props, String source) throws Exception {
+	public static void init(Properties props, String source)
+		throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 		// Set up the log event pipeline: filter -> multiplexer -> memory
 		// log/user-specified log.  First the multiplexer.
 		LogEventMultiplexer mux = new LogEventMultiplexer();
@@ -61,15 +66,17 @@ public class LogInit {
 
 		// Another destination is any user-specified logger.
 		String userSpecifiedListener = props.getProperty("org.apache.oodt.commons.util.LogInit.listener");
-		if (userSpecifiedListener != null)
-			mux.addListener((LogListener) Class.forName(userSpecifiedListener).newInstance());
+		if (userSpecifiedListener != null) {
+		  mux.addListener((LogListener) Class.forName(userSpecifiedListener).newInstance());
+		}
 
 		// Ahead of the multiplexer is the filter.
 		String categoryList = props.getProperty("org.apache.oodt.commons.util.LogInit.categories", "");
 		StringTokenizer tokens = new StringTokenizer(categoryList);
 		Object[] categories = new Object[tokens.countTokens()];
-		for (int i = 0; i < categories.length; ++i)
-			categories[i] = tokens.nextToken();
+		for (int i = 0; i < categories.length; ++i) {
+		  categories[i] = tokens.nextToken();
+		}
 		EnterpriseLogFilter filter = new EnterpriseLogFilter(mux, true, categories);
 		Log.addLogListener(filter);
 

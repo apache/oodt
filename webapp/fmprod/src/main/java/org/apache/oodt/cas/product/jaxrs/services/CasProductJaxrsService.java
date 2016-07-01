@@ -17,6 +17,21 @@
 
 package org.apache.oodt.cas.product.jaxrs.services;
 
+import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.product.exceptions.CasProductException;
+import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
+import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
+import org.apache.oodt.cas.product.jaxrs.resources.DatasetResource;
+import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
+import org.apache.oodt.cas.product.jaxrs.resources.ReferenceResource;
+import org.apache.oodt.cas.product.jaxrs.resources.TransferResource;
+import org.apache.oodt.cas.product.jaxrs.resources.TransfersResource;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,20 +45,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
-import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
-import org.apache.oodt.cas.product.jaxrs.resources.DatasetResource;
-import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
-import org.apache.oodt.cas.product.jaxrs.resources.ReferenceResource;
-import org.apache.oodt.cas.product.jaxrs.resources.TransferResource;
-import org.apache.oodt.cas.product.jaxrs.resources.TransfersResource;
 
 /**
  * Service class that handles HTTP requests and returns file manager entities
@@ -329,8 +330,7 @@ public class CasProductJaxrsService
    * @throws Exception if an object cannot be retrieved from the context
    * attribute
    */
-  public File getContextWorkingDir() throws Exception
-  {
+  public File getContextWorkingDir() throws CasProductException {
     Object workingDirObject = context.getAttribute("workingDir");
     if (workingDirObject != null && workingDirObject instanceof File)
     {
@@ -340,7 +340,7 @@ public class CasProductJaxrsService
     String message = "Unable to get the file manager's working "
       + "directory from the servlet context.";
     LOGGER.log(Level.WARNING, message);
-    throw new Exception(message);
+    throw new CasProductException(message);
   }
 
 
@@ -351,9 +351,8 @@ public class CasProductJaxrsService
    * @throws Exception if an object cannot be retrieved from the context
    * attribute
    */
-  public FileManagerClient getContextClient()
-    throws Exception
-  {
+  public XmlRpcFileManagerClient getContextClient()
+      throws CasProductException {
     // Get the file manager client from the servlet context.
     Object clientObject = context.getAttribute("client");
     if (clientObject != null &&
@@ -365,6 +364,6 @@ public class CasProductJaxrsService
     String message = "Unable to get the file manager client from the "
       + "servlet context.";
     LOGGER.log(Level.WARNING, message);
-    throw new Exception(message);
+    throw new CasProductException(message);
   }
 }

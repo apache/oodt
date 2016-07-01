@@ -36,7 +36,7 @@ public interface DaemonRmiInterface extends Remote {
      * 
      * @return Always true -- done because of XmlRpc communication
      */
-    public void resume() throws RemoteException;
+    void resume() throws RemoteException;
 
     /**
      * Will terminate the CrawlDaemon. If its Crawler is crawling a site when
@@ -45,7 +45,7 @@ public interface DaemonRmiInterface extends Remote {
      * 
      * @return
      */
-    public void quit() throws RemoteException;
+    void quit() throws RemoteException;
 
     /**
      * Can be used to determine if Crawler is presently running
@@ -53,35 +53,35 @@ public interface DaemonRmiInterface extends Remote {
      * @return true if Crawler is runnning
      * @uml.property name="isRunning"
      */
-    public boolean isRunning() throws RemoteException;
+    boolean isRunning() throws RemoteException;
 
     /**
      * Average runtime for the Crawler
      * 
      * @return average runtime for the Crawler
      */
-    public long getAverageRunTime() throws RemoteException;
+    long getAverageRunTime() throws RemoteException;
 
     /**
      * Gets the total crawling time of the Crawler
      * 
      * @return Total crawling time of Crawler
      */
-    public long getMillisCrawling() throws RemoteException;
+    long getMillisCrawling() throws RemoteException;
 
     /**
      * Gets the time between the start of Crawler executions
      * 
      * @return Time interval between Crawler start times
      */
-    public long getTimeInterval() throws RemoteException;
+    long getTimeInterval() throws RemoteException;
 
     /**
      * Gets the total number of times the Crawler has been run
      * 
      * @return The number of times Crawler has run
      */
-    public int getNumCrawls() throws RemoteException;
+    int getNumCrawls() throws RemoteException;
 
     /**
      * Gets the time in milliseconds for when the CrawlDaemon constructor was
@@ -90,8 +90,8 @@ public interface DaemonRmiInterface extends Remote {
      * @return
      * @uml.property name="daemonCreationTime"
      */
-    public long getDaemonCreationTime() throws RemoteException;
+    long getDaemonCreationTime() throws RemoteException;
 
-    public boolean getHasBeenToldToQuit() throws RemoteException;
+    boolean getHasBeenToldToQuit() throws RemoteException;
 
 }

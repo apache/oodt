@@ -16,7 +16,13 @@
 package org.apache.oodt.cas.metadata;
 
 //JDK imports
+
 import org.apache.oodt.commons.xml.XMLUtils;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +30,8 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,11 +42,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * @author mattmann
@@ -51,6 +54,7 @@ import org.xml.sax.InputSource;
  */
 public class SerializableMetadata extends Metadata implements Serializable {
 
+    private static Logger LOG = Logger.getLogger(SerializableMetadata.class.getName());
     private static final long serialVersionUID = 6863087581652632499L;
 
     private String xmlEncoding;
@@ -78,8 +82,9 @@ public class SerializableMetadata extends Metadata implements Serializable {
     public SerializableMetadata(String xmlEncoding, boolean useCDATA)
             throws InstantiationException {
         super();
-        if (xmlEncoding == null)
+        if (xmlEncoding == null) {
             throw new InstantiationException("xmlEncoding cannot be null");
+        }
         this.xmlEncoding = xmlEncoding;
         this.useCDATA = useCDATA;
     }
@@ -157,7 +162,7 @@ public class SerializableMetadata extends Metadata implements Serializable {
             xformer.transform(source, result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new IOException("Error generating metadata xml file!: "
                     + e.getMessage());
         }
@@ -178,10 +183,11 @@ public class SerializableMetadata extends Metadata implements Serializable {
             for (String key : this.getAllKeys()) {
                 Element metadataElem = document.createElement("keyval");
                 Element keyElem = document.createElement("key");
-                if (this.useCDATA)
+                if (this.useCDATA) {
                     keyElem.appendChild(document.createCDATASection(key));
-                else
+                } else {
                     keyElem.appendChild(document.createTextNode(URLEncoder.encode(key, this.xmlEncoding)));
+                }
                 
                 metadataElem.appendChild(keyElem);
 
@@ -191,22 +197,22 @@ public class SerializableMetadata extends Metadata implements Serializable {
                     Element valElem = document.createElement("val");
                     if (value == null) {
                         throw new Exception("Attempt to write null value "
-                                + "for property: [" + key + "]: val: ["
-                                + value + "]");
+                                + "for property: [" + key + "]: val: [null]");
                     }
-                    if (this.useCDATA)
+                    if (this.useCDATA) {
                         valElem.appendChild(document
-                                .createCDATASection(value));
-                    else
+                            .createCDATASection(value));
+                    } else {
                         valElem.appendChild(document.createTextNode(URLEncoder
-                                .encode(value, this.xmlEncoding)));
+                            .encode(value, this.xmlEncoding)));
+                    }
                     metadataElem.appendChild(valElem);
                 }
                 root.appendChild(metadataElem);
             }
             return document;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new IOException(
                     "Failed to create XML DOM Document for SerializableMetadata : "
                             + e.getMessage());
@@ -257,7 +263,7 @@ public class SerializableMetadata extends Metadata implements Serializable {
      */
     public Metadata getMetadata() {
         Metadata metadata = new Metadata();
-        metadata.addMetadata(this.getHashtable());
+        metadata.addMetadata(this.getMap());
         return metadata;
     }
 

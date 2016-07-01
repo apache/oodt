@@ -381,7 +381,7 @@ public class FilemgrIngestStepDialog extends BaseStepDialog implements StepDialo
 		}
 
 	  } catch (KettleStepException e) {
-		e.printStackTrace();
+		LOG.log(Level.SEVERE, e.getMessage());
 	  }
 	}
   }

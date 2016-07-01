@@ -38,10 +38,10 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
  */
 public class PagedQueryCliAction extends CatalogServiceCliAction {
 
-   protected int pageNum = -1;
-   protected int pageSize = -1;
-   protected String query;
-   protected Set<String> catalogIds;
+   private int pageNum = -1;
+   private int pageSize = -1;
+   private String query;
+   private Set<String> catalogIds;
 
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
@@ -52,7 +52,7 @@ public class PagedQueryCliAction extends CatalogServiceCliAction {
 
          QueryExpression queryExpression = QueryParser
                .parseQueryExpression(query);
-         Page page = null;
+         Page page;
          if (catalogIds == null) {
             page = getClient().getPage(new PageInfo(pageSize, pageNum),
                   queryExpression);
@@ -65,12 +65,10 @@ public class PagedQueryCliAction extends CatalogServiceCliAction {
          for (TransactionalMetadata tMet : transactionMetadatas) {
             printer.print("ID: " + tMet.getTransactionId() + " ; CatalogIDs: "
                   + tMet.getCatalogIds() + " ; Metadata: (");
-            StringBuffer sb = new StringBuffer("");
-            for (Object metKey : tMet.getMetadata().getHashtable().keySet()) {
-               sb.append(metKey
-                     + "="
-                     + tMet.getMetadata().getAllMetadata((String) metKey)
-                           .toString().replaceAll("[\\[\\]]", "'") + ", ");
+            StringBuilder sb = new StringBuilder("");
+            for (Object metKey : tMet.getMetadata().getMap().keySet()) {
+               sb.append(metKey).append("=").append(tMet.getMetadata().getAllMetadata((String) metKey)
+                                                        .toString().replaceAll("[\\[\\]]", "'")).append(", ");
             }
             printer.println(sb.substring(0, sb.length() - 2) + ")");
          }
@@ -94,5 +92,25 @@ public class PagedQueryCliAction extends CatalogServiceCliAction {
 
    public void setCatalogIds(List<String> catalogIds) {
       this.catalogIds = new HashSet<String>(catalogIds);
+   }
+
+   public int getPageNum() {
+      return pageNum;
+   }
+
+   public int getPageSize() {
+      return pageSize;
+   }
+
+   public String getQuery() {
+      return query;
+   }
+
+   public Set<String> getCatalogIds() {
+      return catalogIds;
+   }
+
+   public void setCatalogIds(Set<String> catalogIds) {
+      this.catalogIds = catalogIds;
    }
 }

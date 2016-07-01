@@ -20,7 +20,7 @@ package org.apache.oodt.cas.resource.mux;
 //OODT imports
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class TestQueueMuxMonitor extends TestCase {
     protected void setUp() {
         try {
             //Map monitor to nodes list
-            map = new HashMap<MockMonitor,List<ResourceNode>>();
+            map = new ConcurrentHashMap<MockMonitor,List<ResourceNode>>();
             List<ResourceNode> nodes1 = getNodesList("mock-1");
             List<ResourceNode> nodes2 = getNodesList("mock-2");
             //Backend Manager setup
@@ -136,7 +136,7 @@ public class TestQueueMuxMonitor extends TestCase {
             try {
                 monitor.reduceLoad(superfluous, 2);
                 TestCase.fail("Exception not thrown for unknown queue.");
-            } catch (MonitorException e) {}
+            } catch (MonitorException ignored) {}
         } catch(MonitorException e) {
             TestCase.fail("Unanticipated monitor exception caught: "+e.getMessage());
         }
@@ -151,7 +151,7 @@ public class TestQueueMuxMonitor extends TestCase {
             try {
                 monitor.assignLoad(superfluous, 2);
                 TestCase.fail("Exception not thrown for unknown queue.");
-            } catch (MonitorException e) {}
+            } catch (MonitorException ignored) {}
         } catch(MonitorException e) {
             TestCase.fail("Unanticipated monitor exception caught: "+e.getMessage());
         }

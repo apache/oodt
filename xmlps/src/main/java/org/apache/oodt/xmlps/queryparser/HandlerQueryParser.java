@@ -20,17 +20,16 @@ package org.apache.oodt.xmlps.queryparser;
 //JDK imports
 import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
+import org.apache.oodt.xmlquery.QueryElement;
 
 import java.util.List;
 import java.util.Stack;
 
 //OODT imports
-import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * 
- * Parsers the {@link XMLQuery} and its @link XMLQuery#getWhereElementSet()}
+ * Parsers the {@link org.apache.oodt.xmlquery.XMLQuery} and its @link XMLQuery#getWhereElementSet()}
  * into an {@link Expression} tree.
  */
 public class HandlerQueryParser implements ParseConstants {
@@ -38,7 +37,7 @@ public class HandlerQueryParser implements ParseConstants {
   /**
    * Calls {@link #parse(Stack, Mapping)} with a null mapping.
    * 
-   * @param queryStack The {@link XMLQuery#getWhereElementSet()}.
+   * @param queryStack The {@link org.apache.oodt.xmlquery.XMLQuery#getWhereElementSet()}.
    * @return The parsed {@link Expression} tree.
    */
   public static Expression parse(Stack<QueryElement> queryStack) {
@@ -47,21 +46,22 @@ public class HandlerQueryParser implements ParseConstants {
 
   /**
    * 
-   * Parses the {@link XMLQuery#getWhereElementSet()} using the provided
+   * Parses the {@link org.apache.oodt.xmlquery.XMLQuery#getWhereElementSet()} using the provided
    * <param>map</param>.
    * 
-   * @param queryStack The {@link XMLQuery#getWhereElementSet()}
+   * @param queryStack The {@link org.apache.oodt.xmlquery.XMLQuery#getWhereElementSet()}
    * @param map The provided ontological mapping.
    * @return The parsed {@link Expression} tree.
    */
   public static Expression parse(Stack<QueryElement> queryStack, Mapping map) {
 
-    QueryElement qe = null;
+    QueryElement qe;
 
     if (!queryStack.empty()) {
       qe = (QueryElement) queryStack.pop();
-    } else
+    } else {
       return null;
+    }
 
     if (qe.getRole().equalsIgnoreCase(XMLQUERY_LOGOP)) {
 
@@ -70,8 +70,9 @@ public class HandlerQueryParser implements ParseConstants {
         return new AndExpression(parse(queryStack, map), parse(queryStack, map));
       } else if (logOpType.equalsIgnoreCase(XMLQUERY_OR)) {
         return new OrExpression(parse(queryStack, map), parse(queryStack, map));
-      } else
+      } else {
         return null;
+      }
 
     } else if (qe.getRole().equalsIgnoreCase(XMLQUERY_RELOP)) {
       String relOpType = qe.getValue();
@@ -104,13 +105,15 @@ public class HandlerQueryParser implements ParseConstants {
         return new LessThanExpression(lhsVal, new Literal(rhsVal));
       } else if (relOpType.equalsIgnoreCase(XMLQUERY_LESS_THAN_OR_EQUAL_TO)) {
         return new LessThanEqualsExpression(lhsVal, new Literal(rhsVal));
-      } else
+      } else {
         return null;
+      }
 
     } else if (qe.getRole().equalsIgnoreCase(XMLQUERY_LITERAL)) {
       return new Literal(qe.getValue());
-    } else
+    } else {
       return null;
+    }
 
   }
 
@@ -118,8 +121,8 @@ public class HandlerQueryParser implements ParseConstants {
 
     Stack<QueryElement> ret = new Stack<QueryElement>();
 
-    for (int i = 0; i < l.size(); i++) {
-      ret.push(l.get(i));
+    for (QueryElement aL : l) {
+      ret.push(aL);
     }
 
     return ret;

@@ -64,7 +64,7 @@ public class TestStdIngester extends TestCase {
     }
 
     public void testIngest() {
-        Metadata prodMet = null;
+        Metadata prodMet;
 
         try {
             URL ingestUrl = this.getClass().getResource("/ingest");
@@ -90,7 +90,6 @@ public class TestStdIngester extends TestCase {
             assertNotNull(p);
             assertEquals(Product.STATUS_RECEIVED, p.getTransferStatus());
             assertTrue(fmClient.hasProduct("test.txt"));
-            fmClient = null;
         } catch (Exception e){
             fail(e.getMessage());
         }
@@ -129,8 +128,8 @@ public class TestStdIngester extends TestCase {
         File[] delFiles = startDirFile.listFiles();
 
         if (delFiles != null && delFiles.length > 0) {
-            for (int i = 0; i < delFiles.length; i++) {
-                delFiles[i].delete();
+            for (File delFile : delFiles) {
+                delFile.delete();
             }
         }
 

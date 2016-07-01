@@ -77,14 +77,13 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -92,7 +91,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -124,14 +122,13 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
         productType = DbStructFactory.toScienceDataProductType(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -139,7 +136,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -147,7 +143,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -179,14 +174,13 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
         productType = DbStructFactory.toScienceDataProductType(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -194,7 +188,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -202,7 +195,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -231,14 +223,13 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
         productTypes.add(DbStructFactory.toScienceDataProductType(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -246,7 +237,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -254,7 +244,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
@@ -283,14 +272,13 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -298,7 +286,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -325,14 +312,13 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -340,7 +326,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }

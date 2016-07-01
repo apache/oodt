@@ -219,8 +219,9 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     protected String getProductTypeTableName(String origName) {
         if (typeMap != null && typeMap.containsKey(origName)) {
             return typeMap.getProperty(origName);
-        } else
+        } else {
             return origName;
+        }
     }
 
 }

@@ -29,8 +29,7 @@ import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 /**
  * Application object for your web application. If you want to run this
  * application without deploying, run the Start class.
- * 
- * @see org.apache.oodt.cas.filemgr.webapp.browser.Start#main(String[])
+ *
  */
 public class FMBrowserApp extends FMBrowserAppBase {
 
@@ -38,9 +37,7 @@ public class FMBrowserApp extends FMBrowserAppBase {
       .getName());
 
   /**
-   * 
-   * @param fmUrlStr
-   *          The String URL of the file manager to connect to.
+   *
    */
   public FMBrowserApp() {
     MixedParamUrlCodingStrategy types = new MixedParamUrlCodingStrategy(

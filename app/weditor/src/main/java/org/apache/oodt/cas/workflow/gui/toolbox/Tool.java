@@ -75,11 +75,12 @@ public abstract class Tool extends JPanel {
   public void setSelected(boolean selected) {
     if (image != null) {
       Tool.this.removeAll();
-      if (this.selected = selected)
+      if (this.selected = selected) {
         Tool.this.add(new JLabel(new ImageIcon(selectedImage)),
             BorderLayout.CENTER);
-      else
+      } else {
         Tool.this.add(new JLabel(new ImageIcon(image)), BorderLayout.CENTER);
+      }
       Tool.this.revalidate();
     }
   }

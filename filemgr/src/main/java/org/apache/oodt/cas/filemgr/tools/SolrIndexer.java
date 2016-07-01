@@ -18,21 +18,6 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Logger;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -59,6 +44,22 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.util.StringUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Indexes products from the File Manager catalog to a Solr instance. Uses an
@@ -93,7 +94,7 @@ public class SolrIndexer {
 	public SolrIndexer(String solrUrl, String fmUrl)
 	    throws InstantiationException {
 		InputStream input = null;
-		String filename = null;
+		String filename;
 
 		try {
 			LOG.info("System property " + SOLR_INDEXER_CONFIG + " set to "
@@ -205,8 +206,8 @@ public class SolrIndexer {
 	 *           When an error occurs communicating with the Solr server instance.
 	 */
 	public void indexMetFile(File file, boolean delete)
-	    throws InstantiationException, FileNotFoundException, IOException,
-	    SolrServerException {
+	    throws
+		SolrServerException {
 		LOG.info("Attempting to index product from metadata file.");
 		try {
 			SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
@@ -494,7 +495,7 @@ public class SolrIndexer {
 	 * @throws IOException
 	 * @throws SolrServerException
 	 */
-	public void deleteProductByName(String productName) throws IOException, SolrServerException {
+	public void deleteProductByName(String productName) {
 		LOG.info("Attempting to delete product: " + productName);
 
 		try {
@@ -557,8 +558,9 @@ public class SolrIndexer {
 	private String formatDate(SimpleDateFormat format, String value)
 	    throws java.text.ParseException {
 		// Ignore formating if its an ignore value
-		if (config.getIgnoreValues().contains(value.trim()))
-			return value;
+		if (config.getIgnoreValues().contains(value.trim())) {
+		  return value;
+		}
 		return solrFormat.format(format.parse(value));
 	}
 
@@ -616,7 +618,7 @@ public class SolrIndexer {
 	 * @param args
 	 *          Command-line arguments.
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args)  {
 		Options options = SolrIndexer.buildCommandLine();
 		CommandLineParser parser = new GnuParser();
 		CommandLine line = null;
@@ -633,7 +635,7 @@ public class SolrIndexer {
 		} else if (line.hasOption("all") || line.hasOption("product")
 		    || line.hasOption("metFile") || line.hasOption("read")
 		    || line.hasOption("types") || line.hasOption("deleteAll")) {
-			SolrIndexer indexer = null;
+			SolrIndexer indexer;
 			String solrUrl = null;
 			String fmUrl = null;
 			if (line.hasOption("solrUrl")) {
@@ -681,7 +683,7 @@ public class SolrIndexer {
 	 */
 	private static List<String> readProductIdsFromStdin() {
 		List<String> productIds = new ArrayList<String>();
-		BufferedReader br = null;
+		BufferedReader br;
 
 		br = new BufferedReader(new InputStreamReader(System.in));
 		String line = null;
@@ -694,13 +696,10 @@ public class SolrIndexer {
 			LOG.severe("Error reading product id: line: [" + line + "]: Message: "
 			    + e.getMessage());
 		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (Exception ignore) {
-				}
-				br = null;
-			}
+		  try {
+              br.close();
+          } catch (Exception ignore) {
+          }
 		}
 		return productIds;
 	}
@@ -745,25 +744,19 @@ public class SolrIndexer {
 			if (properties.getProperty(IGNORE_TYPES) != null) {
 				String[] values = properties.getProperty(IGNORE_TYPES).trim()
 				    .split(",");
-				for (String value : values) {
-					ignoreTypes.add(value);
-				}
+			  Collections.addAll(ignoreTypes, values);
 			}
 
 			if (properties.getProperty(IGNORE_VALUES) != null) {
 				String[] values = properties.getProperty(IGNORE_VALUES).trim().split(
 				    ",");
-				for (String value : values) {
-					ignoreValues.add(value);
-				}
+			  Collections.addAll(ignoreValues, values);
 			}
 
 			if (properties.getProperty(REPLACEMENT_KEYS) != null) {
 				String[] values = properties.getProperty(REPLACEMENT_KEYS).trim()
 				    .split(",");
-				for (String value : values) {
-					replacementKeys.add(value);
-				}
+			  Collections.addAll(replacementKeys, values);
 			}
 		}
 

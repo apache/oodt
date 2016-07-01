@@ -20,7 +20,6 @@ package org.apache.oodt.commons.activity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -135,17 +134,17 @@ public class SQLDatabaseStorage implements Storage {
     try {
       conn = this.ds.getConnection();
       statement = conn.createStatement();
-      for (Iterator i = incidents.iterator(); i.hasNext();) {
-        Incident incident = (Incident) i.next();
+      for (Object incident1 : incidents) {
+        Incident incident = (Incident) incident1;
         statement
             .executeUpdate("insert into incidents (activityID, className, occurTime, detail) values ('"
-                + id
-                + "', '"
-                + incident.getClass().getName()
-                + "', "
-                + incident.getTime().getTime()
-                + ", '"
-                + escapeSingleQuote(incident.toString()) + "')");
+                           + id
+                           + "', '"
+                           + incident.getClass().getName()
+                           + "', "
+                           + incident.getTime().getTime()
+                           + ", '"
+                           + escapeSingleQuote(incident.toString()) + "')");
       }
     } catch (SQLException e) {
       System.err
@@ -159,7 +158,6 @@ public class SQLDatabaseStorage implements Storage {
           statement.close();
         } catch (SQLException ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -167,8 +165,6 @@ public class SQLDatabaseStorage implements Storage {
           conn.close();
         } catch (SQLException ignore) {
         }
-        conn = null;
-        conn = null;
       }
     }
   }

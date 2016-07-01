@@ -41,5 +41,5 @@ public interface WorkflowTaskInstance {
      *            
      * @param config The static configuration metadata for this task.
      */
-    public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException;
+    void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException;
 }

@@ -46,7 +46,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public interface Catalog extends Pagination {
 
-    public final static String X_POINT_ID = Catalog.class.getName();
+    String X_POINT_ID = Catalog.class.getName();
 
     /**
      * <p>
@@ -61,7 +61,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any general error occurs.
      */
-    public void addMetadata(Metadata m, Product product)
+    void addMetadata(Metadata m, Product product)
             throws CatalogException;
 
     /**
@@ -77,7 +77,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any general error occurs.
      */
-    public void removeMetadata(Metadata m, Product product)
+    void removeMetadata(Metadata m, Product product)
             throws CatalogException;
 
     /**
@@ -90,7 +90,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs during the add.
      */
-    public void addProduct(Product product) throws CatalogException;
+    void addProduct(Product product) throws CatalogException;
 
     /**
      * <p>
@@ -103,7 +103,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public void modifyProduct(Product product) throws CatalogException;
+    void modifyProduct(Product product) throws CatalogException;
 
     /**
      * <p>
@@ -115,7 +115,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public void removeProduct(Product product) throws CatalogException;
+    void removeProduct(Product product) throws CatalogException;
 
     /**
      * <p>
@@ -127,7 +127,7 @@ public interface Catalog extends Pagination {
      *            caller should make sure that the product ID field is set.
      * @throws CatalogException
      */
-    public void setProductTransferStatus(Product product)
+    void setProductTransferStatus(Product product)
             throws CatalogException;
 
     /**
@@ -143,7 +143,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If anything goes wrong.
      */
-    public void addProductReferences(Product product) throws CatalogException;
+    void addProductReferences(Product product) throws CatalogException;
 
     /**
      * <p>
@@ -158,7 +158,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public Product getProductById(String productId) throws CatalogException;
+    Product getProductById(String productId) throws CatalogException;
 
     /**
      * <p>
@@ -172,7 +172,7 @@ public interface Catalog extends Pagination {
      *         populated as well.
      * @throws CatalogException
      */
-    public Product getProductByName(String productName) throws CatalogException;
+    Product getProductByName(String productName) throws CatalogException;
 
     /**
      * <p>
@@ -185,7 +185,7 @@ public interface Catalog extends Pagination {
      *         specified Product.
      * @throws CatalogException
      */
-    public List<Reference> getProductReferences(Product product) throws CatalogException;
+    List getProductReferences(Product product) throws CatalogException;
 
     /**
      * <p>
@@ -196,7 +196,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public List<Product> getProducts() throws CatalogException;
+    List<Product> getProducts() throws CatalogException;
 
     /**
      * <p>
@@ -211,7 +211,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public List<Product> getProductsByProductType(ProductType type)
+    List<Product> getProductsByProductType(ProductType type)
             throws CatalogException;
 
     /**
@@ -226,7 +226,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public Metadata getMetadata(Product product) throws CatalogException;
+    Metadata getMetadata(Product product) throws CatalogException;
 
     /**
      * <p>
@@ -241,7 +241,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public Metadata getReducedMetadata(Product product, List<String> elements)
+    Metadata getReducedMetadata(Product product, List<String> elements)
             throws CatalogException;
 
     /**
@@ -258,7 +258,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public List<String> query(Query query, ProductType type) throws CatalogException;
+    List<String> query(Query query, ProductType type) throws CatalogException;
 
     /**
      * <p>
@@ -282,7 +282,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
+    ProductPage pagedQuery(Query query, ProductType type, int pageNum)
             throws CatalogException;
 
     /**
@@ -298,7 +298,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public List<Product> getTopNProducts(int n) throws CatalogException;
+    List<Product> getTopNProducts(int n) throws CatalogException;
 
     /**
      * <p>
@@ -315,7 +315,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public List<Product> getTopNProducts(int n, ProductType type)
+    List<Product> getTopNProducts(int n, ProductType type)
             throws CatalogException;
 
     /**
@@ -324,7 +324,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs (e.g., the layer isn't initialized).
      */
-    public ValidationLayer getValidationLayer() throws CatalogException;
+    ValidationLayer getValidationLayer();
 
     /**
      * 
@@ -335,6 +335,6 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs.
      */
-    public int getNumProducts(ProductType type) throws CatalogException;
+    int getNumProducts(ProductType type) throws CatalogException;
 
 }

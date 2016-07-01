@@ -19,31 +19,29 @@ package org.apache.oodt.cas.filemgr.datatransfer;
 
 //APACHE Imports
 import org.apache.commons.io.FileUtils;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
 
-//JDK imports
-import java.io.IOException;
 import java.io.File;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
+//JDK imports
 
 /**
  * @author mattmann
@@ -87,7 +85,7 @@ public class LocalDataTransferer implements DataTransfer {
          LOG.log(Level.INFO, "Local Data Transfer to: ["
                + client.getFileManagerUrl().toString() + "] enabled");
       } catch (ConnectionException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
       }
    }
 
@@ -109,7 +107,7 @@ public class LocalDataTransferer implements DataTransfer {
             LOG.log(
                   Level.WARNING,
                   "URI Syntax Exception when moving dir "
-                        + ((Reference) product.getProductReferences().get(0))
+                        + product.getProductReferences().get(0)
                               .getOrigReference() + ": Message: "
                         + e.getMessage());
             throw new DataTransferException(e);
@@ -151,7 +149,7 @@ public class LocalDataTransferer implements DataTransfer {
             LOG.log(
                   Level.WARNING,
                   "URI Syntax Exception when moving dir "
-                        + ((Reference) product.getProductReferences().get(0))
+                        + product.getProductReferences().get(0)
                               .getDataStoreReference() + ": Message: "
                         + e.getMessage());
             throw new DataTransferException(e);
@@ -178,7 +176,14 @@ public class LocalDataTransferer implements DataTransfer {
    @Override
    public void deleteProduct(Product product) throws DataTransferException, IOException {
      for (Reference ref : product.getProductReferences()) {
-       File dataFile = new File(URI.create(ref.getDataStoreReference()).toURL().getPath());
+       String u;
+       try {
+          u = URI.create(ref.getDataStoreReference()).toURL().getPath();
+       }
+       catch (IllegalArgumentException e) {
+         u = URI.create("file://"+ref.getDataStoreReference()).toURL().getPath();
+       }
+       File dataFile = new File(u);
        if (!dataFile.delete()) {
         throw new IOException(String.format("Failed to delete file %s - delete returned false",
             dataFile));
@@ -199,7 +204,7 @@ public class LocalDataTransferer implements DataTransfer {
                .create(System
                      .getProperty("org.apache.oodt.cas.filemgr.mime.type.repository"));
       } catch (MimeTypeException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          throw new IOException(e.getMessage());
       }
 
@@ -236,11 +241,10 @@ public class LocalDataTransferer implements DataTransfer {
          }
       }
 
-      if (transferType == null
-            || (transferType != null && ((transferType.equals("dir") && dirReference == null)
-                  || (transferType.equals("files") && fileReferences == null)
-                  || (transferType != null && !(transferType.equals("dir") || transferType
-                        .equals("files"))) || productName == null || productRepo == null))) {
+      if (transferType == null || (((transferType.equals("dir") && dirReference == null) || (
+          transferType.equals("files") && fileReferences == null) || (!(
+          transferType.equals("dir") || transferType
+              .equals("files"))) || productName == null || productRepo == null))) {
          System.err.println(usage);
          System.exit(1);
       }
@@ -275,48 +279,45 @@ public class LocalDataTransferer implements DataTransfer {
 
    private void copyDirToDir(Product product, File directory)
          throws IOException, URISyntaxException {
-      Reference dirRef = (Reference) product.getProductReferences().get(0);
+      Reference dirRef = product.getProductReferences().get(0);
       LOG.log(
             Level.INFO,
             "LocalDataTransferer: Staging Directory: "
                   + dirRef.getDataStoreReference() + " into directory "
                   + directory.getAbsolutePath());
 
-      for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-            .hasNext();) {
-         Reference r = i.next();
-         File fileRef = new File(new URI(r.getDataStoreReference()));
+     for (Reference r : product.getProductReferences()) {
+       File fileRef = new File(new URI(r.getDataStoreReference()));
 
-         if (fileRef.isFile()) {
-            copyFile(r, directory);
-         } else if (fileRef.isDirectory()
-               && (fileRef.list() != null && fileRef.list().length == 0)) {
-            // if it's a directory and it doesn't exist yet, we should
-            // create it
-             // just in case there's no files in it
-             File dest = new File(directory, fileRef.getName());
-             if (!new File(new URI(dest.getAbsolutePath())).exists()) {
-                 LOG.log(Level.FINER, "Directory: [" + dest.getAbsolutePath()
-                         + "] doesn't exist: creating it");
-                 try {
-                     FileUtils.forceMkdir(new File(new URI(dest.getAbsolutePath())));
-                 }
-                 catch(IOException e){
-                     LOG.log(
-                             Level.WARNING,
-                             "Unable to create directory: ["
-                                     + dest.getAbsolutePath()
-                                     + "] in local data transferer");
+       if (fileRef.isFile()) {
+         copyFile(r, directory);
+       } else if (fileRef.isDirectory()
+                  && (fileRef.list() != null && fileRef.list().length == 0)) {
+         // if it's a directory and it doesn't exist yet, we should
+         // create it
+         // just in case there's no files in it
+         File dest = new File(directory, fileRef.getName());
+         if (!new File(new URI(dest.getAbsolutePath())).exists()) {
+           LOG.log(Level.FINER, "Directory: [" + dest.getAbsolutePath()
+                                + "] doesn't exist: creating it");
+           try {
+             FileUtils.forceMkdir(new File(new URI(dest.getAbsolutePath())));
+           } catch (IOException e) {
+             LOG.log(
+                 Level.WARNING,
+                 "Unable to create directory: ["
+                 + dest.getAbsolutePath()
+                 + "] in local data transferer");
 
-                 }
-             }
+           }
          }
-      }
+       }
+     }
    }
 
    private void moveDirToProductRepo(Product product) throws IOException,
          URISyntaxException {
-      Reference dirRef = (Reference) product.getProductReferences().get(0);
+      Reference dirRef = product.getProductReferences().get(0);
       LOG.log(
             Level.INFO,
             "LocalDataTransferer: Moving Directory: "
@@ -326,34 +327,31 @@ public class LocalDataTransferer implements DataTransfer {
       // notify the file manager that we started
       quietNotifyTransferProduct(product);
 
-      for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-            .hasNext();) {
-         Reference r = i.next();
-         File fileRef = new File(new URI(r.getOrigReference()));
+     for (Reference r : product.getProductReferences()) {
+       File fileRef = new File(new URI(r.getOrigReference()));
 
-         if (fileRef.isFile()) {
-            moveFile(r, false);
-         } else if (fileRef.isDirectory()
-               && (fileRef.list() != null && fileRef.list().length == 0)) {
-            // if it's a directory and it doesn't exist yet, we should
-            // create it
-            // just in case there's no files in it
-             if (!new File(new URI(r.getDataStoreReference())).exists()) {
-                 LOG.log(Level.FINER, "Directory: [" + r.getDataStoreReference()
-                         + "] doesn't exist: creating it");
-                 try {
-                     FileUtils.forceMkdir(new File(new URI(r.getDataStoreReference())));
-                 }
-                 catch(IOException e){
-                     LOG.log(
-                             Level.WARNING,
-                             "Unable to create directory: ["
-                                     + r.getDataStoreReference()
-                                     + "] in local data transferer");
-                 }
-             }
+       if (fileRef.isFile()) {
+         moveFile(r, false);
+       } else if (fileRef.isDirectory()
+                  && (fileRef.list() != null && fileRef.list().length == 0)) {
+         // if it's a directory and it doesn't exist yet, we should
+         // create it
+         // just in case there's no files in it
+         if (!new File(new URI(r.getDataStoreReference())).exists()) {
+           LOG.log(Level.FINER, "Directory: [" + r.getDataStoreReference()
+                                + "] doesn't exist: creating it");
+           try {
+             FileUtils.forceMkdir(new File(new URI(r.getDataStoreReference())));
+           } catch (IOException e) {
+             LOG.log(
+                 Level.WARNING,
+                 "Unable to create directory: ["
+                 + r.getDataStoreReference()
+                 + "] in local data transferer");
+           }
          }
-      }
+       }
+     }
 
       // notify the file manager that we're done
       quietNotifyProductTransferComplete(product);
@@ -367,10 +365,9 @@ public class LocalDataTransferer implements DataTransfer {
       // notify the file manager that we started
       quietNotifyTransferProduct(product);
 
-      for (Iterator<Reference> i = refs.iterator(); i.hasNext();) {
-         Reference r = (Reference) i.next();
-         moveFile(r, true);
-      }
+     for (Reference r : refs) {
+       moveFile(r, true);
+     }
 
       // notify the file manager that we're done
       quietNotifyProductTransferComplete(product);
@@ -379,10 +376,9 @@ public class LocalDataTransferer implements DataTransfer {
    private void copyFilesToDir(Product product, File directory)
          throws IOException, URISyntaxException {
       List<Reference> refs = product.getProductReferences();
-      for (Iterator<Reference> i = refs.iterator(); i.hasNext();) {
-         Reference r = (Reference) i.next();
-         copyFile(r, directory);
-      }
+     for (Reference r : refs) {
+       copyFile(r, directory);
+     }
    }
 
    private void moveFile(Reference r, boolean log) throws IOException,
@@ -418,11 +414,10 @@ public class LocalDataTransferer implements DataTransfer {
       try {
          client.transferringProduct(p);
       } catch (DataTransferException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer initiation for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
-         return;
       }
    }
 
@@ -436,11 +431,10 @@ public class LocalDataTransferer implements DataTransfer {
       try {
          client.removeProductTransferStatus(p);
       } catch (DataTransferException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer completion for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
-         return;
       }
    }
 }

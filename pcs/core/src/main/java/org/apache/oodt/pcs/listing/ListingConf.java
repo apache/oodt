@@ -17,6 +17,11 @@
 
 package org.apache.oodt.pcs.listing;
 
+//OODT imports
+import org.apache.oodt.pcs.input.PGEConfigFileException;
+import org.apache.oodt.pcs.input.PGEConfigFileReader;
+import org.apache.oodt.pcs.input.PGEConfigurationFile;
+
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,16 +29,12 @@ import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
-//OODT imports
-import org.apache.oodt.pcs.input.PGEConfigFileException;
-import org.apache.oodt.pcs.input.PGEConfigFileReader;
-import org.apache.oodt.pcs.input.PGEConfigurationFile;
-import org.apache.oodt.pcs.tools.PCSLongLister; //for javadoc
 import static org.apache.oodt.pcs.listing.ListingConfKeys.*;
+
 
 /**
  * 
- * The configuration for the {@link PCSLongLister}.
+ * The configuration for the {@link org.apache.oodt.pcs.tools.PCSLongLister}.
  * 
  * @author mattmann
  * @version $Revision$
@@ -57,13 +58,12 @@ public class ListingConf {
       InstantiationException {
     try {
       this.conf = new PGEConfigFileReader().read(new FileInputStream(file));
-    } catch (FileNotFoundException e) {
-      throw e;
     } catch (PGEConfigFileException e) {
       throw new InstantiationException(e.getMessage());
     } finally {
-      if (this.conf == null)
+      if (this.conf == null) {
         throw new InstantiationException("Configuration is null!");
+      }
     }
   }
 

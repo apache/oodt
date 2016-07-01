@@ -124,10 +124,9 @@ public class WorkflowViewer extends Panel {
   private String summarizeWords(String orig, int wordThreshhold,
       int maxLengthTotal) {
     String[] words = orig.split(" ");
-    StringBuffer summarizedString = new StringBuffer();
+    StringBuilder summarizedString = new StringBuilder();
 
-    for (int i = 0; i < words.length; i++) {
-      String word = words[i];
+    for (String word : words) {
       summarizedString.append(word.substring(0, Math.min(wordThreshhold, word
           .length())));
       summarizedString.append(" ");
@@ -136,9 +135,10 @@ public class WorkflowViewer extends Panel {
     // add '...' to end of summarized string if applicable
     if (summarizedString.length() > maxLengthTotal) {
     	return summarizedString.substring(0,
-    	        Math.min(maxLengthTotal, summarizedString.length()) - 3).toString() + "...";
-    } else
-    	return summarizedString.toString();
+            Math.min(maxLengthTotal, summarizedString.length()) - 3) + "...";
+    } else {
+      return summarizedString.toString();
+    }
   }
 
 }

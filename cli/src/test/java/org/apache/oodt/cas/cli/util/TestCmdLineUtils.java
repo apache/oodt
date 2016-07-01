@@ -51,11 +51,9 @@ import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cli.option.GroupSubOption;
 import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
-import org.apache.oodt.cas.cli.option.SimpleCmdLineOption;
 import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
 import org.apache.oodt.cas.cli.option.validator.AllowedArgsCmdLineOptionValidator;
 import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator;
-import org.apache.oodt.cas.cli.test.util.TestUtils;
 import org.apache.oodt.cas.cli.util.CmdLineUtils;
 
 //Google imports

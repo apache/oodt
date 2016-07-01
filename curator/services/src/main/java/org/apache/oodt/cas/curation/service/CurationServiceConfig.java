@@ -20,7 +20,6 @@ package org.apache.oodt.cas.curation.service;
 
 //OODT imports
 import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
-import org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
@@ -28,7 +27,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 //JDK imports
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,8 +58,7 @@ import javax.servlet.ServletContext;
  */
 public class CurationServiceConfig implements CuratorConfMetKeys {
   private static CurationServiceConfig instance;
-
-  private final Map<String, String> parameters = new HashMap<String, String>();
+  private final Map<String, String> parameters = new ConcurrentHashMap<String, String>();
 
   private XmlRpcFileManagerClient fmClient = null;
 
@@ -75,8 +73,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
    *          The {@link ServletConfig} read on startup of the webapp. This is
    *          typically specified in a <code>context.xml</code> file, but can
    *          also be specified in <code>web.xml</code>.
-   * @return A singleton instance of the global {@link link
-   *         CurationServiceConfig}.
+   * @return A singleton instance of the global {@link CurationServiceConfig}.
    * @throws InstantiationException
    *           If there is any error constructing the config.
    */
@@ -131,7 +128,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
     try {
       return new XmlRpcFileManagerClient(new URL(this.getFileMgrURL()));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -163,7 +160,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
 
   /**
    * 
-   * @return The default CAS File Manager {@link DataTransferFactory} classname.
+   * @return The default CAS File Manager {@link org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory} classname.
    */
   public String getDefaultTransferFactory() {
     return this.evaluateParameter(DEFAULT_TRANSFER_FACTORY);
@@ -195,7 +192,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
     try {
       fmClient = new XmlRpcFileManagerClient(new URL(this.getFileMgrURL()));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to build CurationServiceConfig: Message: " + e.getMessage());
     }
   }

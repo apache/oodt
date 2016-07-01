@@ -37,6 +37,11 @@ public class CatalogException extends Exception {
         super(message);
     }
 
+    public CatalogException(Throwable t){
+        super(t);
+
+    }
+
     public CatalogException(String message, Throwable t) {
         super(message, t);
     }

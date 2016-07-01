@@ -38,14 +38,14 @@
 	border: solid 1px #FFF;
 	border-bottom: solid 1px #999;
 	cursor: default;
-	padding: 0em;
-	margin: 0em;
+	padding: 0;
+	margin: 0;
 }
 
 #popup_content {
 	background: 16px 16px no-repeat url(../../images/info.gif);
 	padding: 1em 1.75em;
-	margin: 0em;
+	margin: 0;
 }
 
 #popup_content.alert {
@@ -66,12 +66,12 @@
 
 #popup_panel {
 	text-align: center;
-	margin: 1em 0em 0em 1em;
+	margin: 1em 0 0 1em;
 }
 
 #popup_prompt {
-	margin: .5em 0em;
+	margin: .5em 0;
 }
 .popup_multiPrompt {
-	margin: 0.5em 0em;
+	margin: 0.5em 0;
 }

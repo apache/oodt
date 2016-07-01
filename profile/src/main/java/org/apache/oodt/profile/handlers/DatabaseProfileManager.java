@@ -15,17 +15,21 @@
 
 package org.apache.oodt.profile.handlers;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.sql.*;
-import java.util.*;
-import org.apache.oodt.commons.Configuration;
-import org.apache.oodt.commons.util.DOMParser;
-import org.apache.oodt.commons.util.*;
-import org.apache.oodt.xmlquery.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import org.apache.oodt.profile.*;
+import org.apache.oodt.commons.util.XML;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.profile.ProfileSQLException;
+import org.apache.oodt.xmlquery.XMLQuery;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 /**********************************************************************************
 **
@@ -49,7 +53,9 @@ public abstract class DatabaseProfileManager implements ProfileManager
 	 * @throws DOMException If an error occurs.
 	 */
 	private static void add(Node node, String name, String value) throws DOMException {
-		if (value == null) return;
+		if (value == null) {
+		  return;
+		}
 		XML.add(node, name, value.trim());
 	}
 
@@ -60,7 +66,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 	 * @return The profiles in the database, as a list.
 	 * @throws ProfileException If an error occurs.
 	 */
-	public abstract List getProfiles(Connection conn) throws ProfileException;
+	public abstract List getProfiles(Connection conn);
 
     	Connection conn;
    	Properties props;
@@ -73,7 +79,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
     	 **
     	***********************************************************************/	
 
-    	public DatabaseProfileManager(Properties props) throws SQLException, Exception {
+    	public DatabaseProfileManager(Properties props) throws Exception {
 		this(props, openConnection(props));
     	}
 
@@ -103,7 +109,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 		}
     	}
 
-    	public abstract List findProfiles(Connection conn, XMLQuery query) throws DOMException, ProfileException;
+    	public abstract List findProfiles(Connection conn, XMLQuery query) throws DOMException;
 
 
 	public void add(Profile profile) throws ProfileException {
@@ -118,7 +124,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 			throw new ProfileSQLException (e);
 		}
 	}
-	public abstract void add(Connection conn, Profile profile) throws ProfileException ;
+	public abstract void add(Connection conn, Profile profile);
 	
 
 	public void addAll(Collection collection) throws ProfileException
@@ -139,9 +145,9 @@ public abstract class DatabaseProfileManager implements ProfileManager
                 }
 	}
 
-	public abstract void addAll(Connection conn,Collection collection) throws ProfileException;
+	public abstract void addAll(Connection conn,Collection collection);
 
-	public abstract void clear(Connection conn) throws ProfileException ;
+	public abstract void clear(Connection conn);
 
 	public void clear() throws ProfileException 
 	{
@@ -157,42 +163,35 @@ public abstract class DatabaseProfileManager implements ProfileManager
 			throw new ProfileSQLException (e);
 		}
 	}
-	public boolean contains(Profile profile) throws ProfileException {
+	public boolean contains(Profile profile) {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	public boolean containsAll(Collection collection) throws ProfileException {
+	public boolean containsAll(Collection collection) {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
-	public abstract Profile get(Connection conn, String profID) throws ProfileException;
+	public abstract Profile get(Connection conn, String profID);
 
 	public Profile get(String profId) throws ProfileException {
 		// Create database connection
 
-		try
-		{ 
-			return(get(conn, profId));
-		}
-		catch (ProfileException e)
-		{
-			throw e;
-		}
+	  return(get(conn, profId));
 	}
 
-	public Collection getAll() throws ProfileException {
+	public Collection getAll() {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	public boolean isEmpty() throws ProfileException {
+	public boolean isEmpty() {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	public Iterator iterator() throws ProfileException {
+	public Iterator iterator() {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
 	public abstract boolean remove(Connection conn, String profId, String version)
-		 throws ProfileException;
+		;
 
-	public abstract boolean remove(Connection conn, String profId) throws ProfileException;
+	public abstract boolean remove(Connection conn, String profId);
 
 
 	public boolean remove(String profId, String version) throws ProfileException 
@@ -226,19 +225,12 @@ public abstract class DatabaseProfileManager implements ProfileManager
 		}
 	}
 
-	public int size() throws ProfileException {
-		try
-		{
-			return(size(conn));
-		}
-		catch (ProfileException e)
-		{
-			throw e;
-		}
+	public int size() {
+	  return(size(conn));
 
 	}
 
-	public abstract int size(Connection conn) throws ProfileException ;
+	public abstract int size(Connection conn);
 
 	public void replace(Profile profile) throws ProfileException {
 		// Create database connection
@@ -253,7 +245,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 			throw new ProfileException(e.getMessage());
 		}
 	}
-	public abstract void replace(Connection conn, Profile profile) throws ProfileException ;
+	public abstract void replace(Connection conn, Profile profile);
 
 	protected  static Connection openConnection(Properties props) throws SQLException, ProfileException
 	{
@@ -270,7 +262,9 @@ public abstract class DatabaseProfileManager implements ProfileManager
 		// get connection
 		String url = props.getProperty("org.apache.oodt.util.JDBC_DB.url", "jdbc:oracle:@");
 		String database = props.getProperty("org.apache.oodt.util.JDBC_DB.database");
-		if(database != null) url += database;
+		if(database != null) {
+		  url += database;
+		}
 
                 Connection conn = DriverManager.getConnection(url,
                         		props.getProperty("org.apache.oodt.util.JDBC_DB.user"),

@@ -31,8 +31,6 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -113,7 +111,7 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         // get a temp directory
 
         File tempDir = null;
-        File tempFile = null;
+        File tempFile;
 
         try {
             tempFile = File.createTempFile("foo", "bar");
@@ -221,8 +219,8 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         assertNotNull(foundInst);
         assertEquals(foundInst.getId(), wInstId);
         assertNotNull(foundInst.getSharedContext());
-        assertNotNull(foundInst.getSharedContext().getHashtable());
-        assertEquals(2, foundInst.getSharedContext().getHashtable().keySet()
+        assertNotNull(foundInst.getSharedContext().getMap());
+        assertEquals(2, foundInst.getSharedContext().getMap().keySet()
                 .size());
         assertNotNull(foundInst.getSharedContext().getAllMetadata("TestKey1"));
         assertEquals(2, foundInst.getSharedContext().getAllMetadata("TestKey1")
@@ -230,9 +228,8 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
 
         boolean gotVal1 = false, gotVal2 = false;
 
-        for (Iterator i = foundInst.getSharedContext().getAllMetadata(
-                "TestKey1").iterator(); i.hasNext();) {
-            String val = (String) i.next();
+        for (String val : foundInst.getSharedContext().getAllMetadata(
+            "TestKey1")) {
             if (val.equals("TestVal1")) {
                 gotVal1 = true;
             } else if (val.equals("TestVal2")) {

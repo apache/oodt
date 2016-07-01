@@ -24,7 +24,6 @@
 package org.apache.oodt.profile.gui.pstructs;
 
 import org.apache.oodt.profile.ResourceAttributes;
-import java.util.Iterator;
 
 /**
  * @author mattmann
@@ -51,82 +50,69 @@ public class ResourceAttributesPrinter {
 	public ResourceAttributes getResourceAttributes(){return resAttr;}
 	
 	public String toXMLString(){
-		String rStr="";
+		StringBuilder rStr=new StringBuilder();
 		
-		   rStr+="<resAttributes>\n";
+		   rStr.append("<resAttributes>\n");
 		   
-		   rStr+="\t<Identifier>"+resAttr.getIdentifier()+"</Identifier>\n";
-		   rStr+="\t<Title>"+resAttr.getTitle()+"</Title>\n";
-		   rStr+="\t<resClass>"+resAttr.getResClass()+"</resClass>\n";
-		   rStr+="\t<resAggregation>"+resAttr.getResAggregation()+"</resAggregation>\n";
+		   rStr.append("\t<Identifier>").append(resAttr.getIdentifier()).append("</Identifier>\n");
+		   rStr.append("\t<Title>").append(resAttr.getTitle()).append("</Title>\n");
+		   rStr.append("\t<resClass>").append(resAttr.getResClass()).append("</resClass>\n");
+		   rStr.append("\t<resAggregation>").append(resAttr.getResAggregation()).append("</resAggregation>\n");
 
-		   for(Iterator i = resAttr.getRights().iterator(); i.hasNext(); ){
-		   	String theRight = (String)i.next();
-		   	rStr+="\t<Right>"+theRight+"</Right>\n";
-		   }
+	  for (String theRight : resAttr.getRights()) {
+		rStr.append("\t<Right>").append(theRight).append("</Right>\n");
+	  }
+
+	  for (String theSource : resAttr.getSources()) {
+		rStr.append("\t<Source>").append(theSource).append("</Source>\n");
+	  }
+
+	  for (String theSubject : resAttr.getSubjects()) {
+		rStr.append("\t<Subject>").append(theSubject).append("</Subject>\n");
+	  }
+
+	  for (String theFormat : resAttr.getFormats()) {
+		rStr.append("\t<Format>").append(theFormat).append("</Format>\n");
+	  }
+
+	  for (String theCreator : resAttr.getCreators()) {
+		rStr.append("\t<Creator>").append(theCreator).append("</Creator>\n");
+	  }
+
+	  for (String thePublisher : resAttr.getPublishers()) {
+		rStr.append("\t<Publisher>").append(thePublisher).append("</Publisher>\n");
+	  }
+
+	  for (String theType : resAttr.getTypes()) {
+		rStr.append("\t<Type>").append(theType).append("</Type>\n");
+	  }
+
+	  for (String theContext : resAttr.getResContexts()) {
+		rStr.append("\t<resContext>").append(theContext).append("</resContext>\n");
+	  }
+
+	  for (String theLocation : resAttr.getResLocations()) {
+		rStr.append("\t<resLocation>").append(theLocation).append("</resLocation>\n");
+	  }
+
+	  for (String theContributor : resAttr.getContributors()) {
+		rStr.append("\t<Contributor>").append(theContributor).append("</Contributor>\n");
+	  }
+
+	  for (String theCoverage : resAttr.getCoverages()) {
+		rStr.append("\t<Coverage>").append(theCoverage).append("</Coverage>\n");
+	  }
+
+	  for (String theLang : resAttr.getLanguages()) {
+		rStr.append("\t<Language>").append(theLang).append("</Language>\n");
+	  }
+
+	  for (String theRelation : resAttr.getRelations()) {
+		rStr.append("\t<Relation>").append(theRelation).append("</Relation>\n");
+	  }
 		   
-		   for(Iterator i = resAttr.getSources().iterator(); i.hasNext(); ){
-		   	String theSource = (String)i.next();
-		   	rStr+="\t<Source>"+theSource+"</Source>\n";
-		   }
+		   rStr.append("</resAttributes>\n");
 		   
-		   for(Iterator i = resAttr.getSubjects().iterator(); i.hasNext(); ){
-		   	String theSubject = (String)i.next();
-		   	rStr+="\t<Subject>"+theSubject+"</Subject>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getFormats().iterator(); i.hasNext(); ){
-		   	String theFormat = (String)i.next();
-		   	rStr+="\t<Format>"+theFormat+"</Format>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getCreators().iterator(); i.hasNext(); ){
-		   	String theCreator = (String)i.next();
-		   	rStr+="\t<Creator>"+theCreator+"</Creator>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getPublishers().iterator(); i.hasNext(); ){
-		   	String thePublisher = (String)i.next();
-		   	rStr+="\t<Publisher>"+thePublisher+"</Publisher>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getTypes().iterator(); i.hasNext(); ){
-		   	String theType = (String)i.next();
-		   	rStr+="\t<Type>"+theType+"</Type>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getResContexts().iterator(); i.hasNext(); ){
-		   	String theContext = (String)i.next();
-		   	rStr+="\t<resContext>"+theContext+"</resContext>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getResLocations().iterator(); i.hasNext(); ){
-		   	String theLocation = (String)i.next();
-		   	rStr+="\t<resLocation>"+theLocation+"</resLocation>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getContributors().iterator(); i.hasNext(); ){
-		   	String theContributor = (String)i.next();
-		   	rStr+="\t<Contributor>"+theContributor+"</Contributor>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getCoverages().iterator(); i.hasNext(); ){
-		   	String theCoverage = (String)i.next();
-		   	rStr+="\t<Coverage>"+theCoverage+"</Coverage>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getLanguages().iterator(); i.hasNext(); ){
-		   	String theLang = (String)i.next();
-		   	rStr+="\t<Language>"+theLang+"</Language>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getRelations().iterator(); i.hasNext(); ){
-		   	String theRelation = (String)i.next();
-		   	rStr+="\t<Relation>"+theRelation+"</Relation>\n";
-		   }
-		   
-		   rStr+="</resAttributes>\n";
-		   
-		return rStr;
+		return rStr.toString();
 	}
 }

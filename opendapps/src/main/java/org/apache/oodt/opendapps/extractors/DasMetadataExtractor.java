@@ -18,6 +18,15 @@
 package org.apache.oodt.opendapps.extractors;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.opendapps.config.OpendapConfigMetKeys;
+import org.apache.oodt.opendapps.config.OpendapProfileMetKeys;
+import org.apache.oodt.opendapps.config.ProcessingInstructions;
+import org.apache.oodt.opendapps.util.ProfileUtils;
+
+import org.springframework.util.StringUtils;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,21 +36,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-//OPENDAP imports
 import opendap.dap.Attribute;
 import opendap.dap.AttributeTable;
 import opendap.dap.DAS;
 import opendap.dap.DConnect;
 
+//OPENDAP imports
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.opendapps.config.OpendapConfig;
-import org.apache.oodt.opendapps.config.OpendapConfigMetKeys;
-import org.apache.oodt.opendapps.config.OpendapProfileMetKeys;
-import org.apache.oodt.opendapps.config.ProcessingInstructions;
-import org.apache.oodt.opendapps.util.ProfileUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Implementation of {@link MetadataExtractor} to extract metadata from an
@@ -154,12 +155,7 @@ public class DasMetadataExtractor implements MetadataExtractor {
 	      			ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.COORDINATES, attName);
 	      		}
 	        	
-	      	} else if (attName.toLowerCase().startsWith("time_") || attName.toLowerCase().endsWith("_time")) {
-	      		
-	      		// ignore for now - it's not a coordinate neither a variable you would want to search on
-	      		
-	        // NetCDF variables
-	      	} else {
+				} else {
 	      		
 	      		if (!excludedVariables.contains(attName)) {
 	          	// store variable name

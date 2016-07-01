@@ -33,17 +33,17 @@ import java.util.logging.Logger;
  * @author bfoster (Brian Foster)
  */
 public final class ExecUtils {
-
+   private static Logger LOG = Logger.getLogger(ExecUtils.class.getName());
    private ExecUtils() throws InstantiationException {
       throw new InstantiationException("Don't construct utility classes!");
    }
 
    public static String printCommandLine(String[] args) {
-      StringBuffer cmdLine = new StringBuffer();
+      StringBuilder cmdLine = new StringBuilder();
 
       if (args != null && args.length > 0) {
-         for (int i = 0; i < args.length; i++) {
-            cmdLine.append(args[i]);
+         for (String arg : args) {
+            cmdLine.append(arg);
             cmdLine.append(" ");
          }
       }
@@ -74,8 +74,16 @@ public final class ExecUtils {
       } catch (Exception e) {
          throw new IOException(e);
       } finally {
-         try { loggerInfoStream.close(); } catch (Exception e) {}
-         try { loggerSevereStream.close(); } catch (Exception e) {}
+         try {
+            if (loggerInfoStream != null) {
+               loggerInfoStream.close();
+            }
+         } catch (Exception ignored) {}
+         try {
+            if (loggerSevereStream != null) {
+               loggerSevereStream.close();
+            }
+         } catch (Exception ignored) {}
       }
    }
 
@@ -97,7 +105,7 @@ public final class ExecUtils {
          returnVal = progProcess.waitFor();
          return returnVal;
       } catch (Exception e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          throw new IOException("Failed to run '" + commandLine
                + "' -- return val = " + returnVal + " : " + e.getMessage());
       } finally {
@@ -107,9 +115,21 @@ public final class ExecUtils {
          if (outputGobbler != null) {
             outputGobbler.stopGobblingAndDie();
          }
-         try { progProcess.getErrorStream().close(); } catch (Exception e) {}
-         try { progProcess.getInputStream().close(); } catch (Exception e) {}
-         try { progProcess.getOutputStream().close(); } catch (Exception e) {}
+         try {
+            if (progProcess != null) {
+               progProcess.getErrorStream().close();
+            }
+         } catch (Exception ignored) {}
+         try {
+            if (progProcess != null) {
+               progProcess.getInputStream().close();
+            }
+         } catch (Exception ignored) {}
+         try {
+            if (progProcess != null) {
+               progProcess.getOutputStream().close();
+            }
+         } catch (Exception ignored) {}
       }
    }
 
@@ -142,14 +162,12 @@ public final class ExecUtils {
       } catch (InterruptedException ignore) {
       } finally {
          // first stop the threads
-         if (outputGobbler != null && outputGobbler.isAlive()) {
+         if (outputGobbler.isAlive()) {
             outputGobbler.stopGobblingAndDie();
-            outputGobbler = null;
          }
 
-         if (errorGobbler != null && errorGobbler.isAlive()) {
+         if (errorGobbler.isAlive()) {
             errorGobbler.stopGobblingAndDie();
-            errorGobbler = null;
          }
 
          try { p.getErrorStream().close(); } catch (Exception ignore) {}

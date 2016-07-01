@@ -49,8 +49,9 @@ public class ToggleAction extends CrawlerAction {
                      && (currentAction = toggle.getCrawlerAction())
                            .performAction(product, productMetadata)) {
                   globalSuccess = true;
-                  if (this.shortCircuit)
+                  if (this.shortCircuit) {
                      return true;
+                  }
                }
             } catch (Exception e) {
                LOG.log(Level.WARNING, "Failed to run toggle action '"

@@ -4,18 +4,18 @@ package org.apache.oodt.cas.catalog.query.parser;
 
 public interface QueryParserTreeConstants
 {
-  public int JJTPARSEINPUT = 0;
-  public int JJTQUERY = 1;
-  public int JJTQUERYEXPRESSION = 2;
-  public int JJTSTDQUERYEXPRESSION = 3;
-  public int JJTCOMPARISONQUERYEXPRESSION = 4;
-  public int JJTPRIORITYQUERYEXPRESSION = 5;
-  public int JJTCUSTOMQUERYEXPRESSION = 6;
-  public int JJTGETVALUES = 7;
-  public int JJTGETPROPERTIES = 8;
+  int JJTPARSEINPUT = 0;
+  int JJTQUERY = 1;
+  int JJTQUERYEXPRESSION = 2;
+  int JJTSTDQUERYEXPRESSION = 3;
+  int JJTCOMPARISONQUERYEXPRESSION = 4;
+  int JJTPRIORITYQUERYEXPRESSION = 5;
+  int JJTCUSTOMQUERYEXPRESSION = 6;
+  int JJTGETVALUES = 7;
+  int JJTGETPROPERTIES = 8;
 
 
-  public String[] jjtNodeName = {
+  String[] jjtNodeName = {
     "parseInput",
     "Query",
     "QueryExpression",

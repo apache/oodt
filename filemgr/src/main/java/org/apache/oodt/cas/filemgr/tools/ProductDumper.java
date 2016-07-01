@@ -70,7 +70,7 @@ public final class ProductDumper {
     }
 
     private Product getProduct(String productId) {
-        Product product = null;
+        Product product;
 
         try {
             product = this.fmClient.getProductById(productId);
@@ -100,7 +100,7 @@ public final class ProductDumper {
     }
 
     private Metadata getMetadata(Product product) {
-        Metadata met = null;
+        Metadata met;
 
         try {
             met = this.fmClient.getMetadata(product);
@@ -152,7 +152,7 @@ public final class ProductDumper {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InstantiationException {
         String fileManagerUrlStr = null, productId = null, outDirPath = null;
         String usage = "ProductDumper --url <filemgr url> --productId <id> [--out <dir path>]\n";
 
@@ -174,8 +174,9 @@ public final class ProductDumper {
         ProductDumper dumper = new ProductDumper(fileManagerUrlStr);
         if (outDirPath != null) {
             dumper.dumpProduct(productId, outDirPath);
-        } else
+        } else {
             dumper.dumpProduct(productId);
+        }
     }
 
 }

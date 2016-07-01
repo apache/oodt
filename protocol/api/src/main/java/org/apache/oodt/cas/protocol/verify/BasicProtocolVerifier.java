@@ -66,16 +66,17 @@ public class BasicProtocolVerifier implements ProtocolVerifier {
             protocol.cdHome();
             
             // Verify again at home directory
-            if (home == null || !home.equals(protocol.pwd()))
-                throw new ProtocolException(
-                        "Home directory not the same after cd");
+            if (home == null || !home.equals(protocol.pwd())) {
+              throw new ProtocolException(
+                  "Home directory not the same after cd");
+            }
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Protocol "
                     + protocol.getClass().getCanonicalName()
                     + " failed compatibility test : " + e.getMessage(), e);
             return false;
         } finally {
-        	try { protocol.close(); } catch (Exception e) {}
+        	try { protocol.close(); } catch (Exception ignored) {}
         }
         return true;
     }

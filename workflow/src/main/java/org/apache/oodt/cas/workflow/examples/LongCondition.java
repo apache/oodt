@@ -57,7 +57,9 @@ public class LongCondition implements WorkflowConditionInstance {
 			timesFalse++;
 			return false;			
 		}
-		else return true;
+		else {
+		  return true;
+		}
 	}
 
 }

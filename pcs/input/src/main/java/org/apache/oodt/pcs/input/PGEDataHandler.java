@@ -16,12 +16,13 @@
 package org.apache.oodt.pcs.input;
 
 //JDK imports
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -40,13 +41,13 @@ public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
       .getName());
 
   /* scalars to be set as tags are encountered */
-  private Map scalars = new HashMap();
+  private Map scalars = new ConcurrentHashMap();
 
   /* vectors to be set as tags are encountered */
-  private Map vectors = new HashMap();
+  private Map vectors = new ConcurrentHashMap();
 
   /* matrices to be set as tags are encountered */
-  private Map matrices = new HashMap();
+  private Map matrices = new ConcurrentHashMap();
 
   /* the status of the parse handler */
   private int parseStatus = UNSET;
@@ -166,10 +167,6 @@ public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
    * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
    */
   public void characters(char[] ch, int start, int length) throws SAXException {
-    /*
-     * String val = new String(ch, start, length).trim(); if(!val.equals("")){
-     * this.charBuf.append(val); }
-     */
     if (isParsingScalar() || isParsingVectorElement()
         || isParsingMatrixElement()) {
       this.charBuf.append(ch, start, length);

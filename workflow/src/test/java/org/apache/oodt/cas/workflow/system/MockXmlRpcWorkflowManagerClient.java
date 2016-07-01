@@ -17,12 +17,8 @@
 package org.apache.oodt.cas.workflow.system;
 
 //JDK imports
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Vector;
+import com.google.common.collect.Lists;
 
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.repository.MockWorkflowRepository;
 import org.apache.oodt.cas.workflow.structs.Workflow;
@@ -30,9 +26,15 @@ import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Vector;
+
+//OODT imports
 //Google imports
-import com.google.common.collect.Lists;
 
 /**
  * A Mock {@link XmlRpcWorkflowManagerClient}.
@@ -55,19 +57,19 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public String executeDynamicWorkflow(List<String> taskIds, Metadata metadata)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails("executeDynamicWorkflow",
             Lists.newArrayList(taskIds, metadata));
       return "TestId1";
    }
 
-   public List<String> getRegisteredEvents() throws Exception {
+   public List<String> getRegisteredEvents() throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails("getRegisteredEvents",
             Lists.newArrayList());
       return workflowRepo.getRegisteredEvents();
    }
 
-   public WorkflowInstancePage getFirstPage() throws Exception {
+   public WorkflowInstancePage getFirstPage(){
       lastMethodCallDetails = new MethodCallDetails("getFirstPage",
             Lists.newArrayList());
       WorkflowInstancePage page = new WorkflowInstancePage();
@@ -79,7 +81,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public WorkflowInstancePage getNextPage(WorkflowInstancePage currentPage)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails("getNextPage",
             Lists.newArrayList((Object) currentPage));
       WorkflowInstancePage page = new WorkflowInstancePage();
@@ -91,7 +93,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public WorkflowInstancePage getPrevPage(WorkflowInstancePage currentPage)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails("getPrevPage",
             Lists.newArrayList((Object) currentPage));
       WorkflowInstancePage page = new WorkflowInstancePage();
@@ -102,7 +104,7 @@ public class MockXmlRpcWorkflowManagerClient extends
       return page;
    }
 
-   public WorkflowInstancePage getLastPage() throws Exception {
+   public WorkflowInstancePage getLastPage()  {
       lastMethodCallDetails = new MethodCallDetails("getLastPage", null);
       WorkflowInstancePage page = new WorkflowInstancePage();
       page.setPageNum(1);
@@ -113,7 +115,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public WorkflowInstancePage paginateWorkflowInstances(int pageNum,
-         String status) throws Exception {
+         String status)  {
       lastMethodCallDetails = new MethodCallDetails("paginateWorkflowInstances",
             Lists.newArrayList(pageNum, (Object) status));
       WorkflowInstancePage page = new WorkflowInstancePage();
@@ -125,7 +127,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public WorkflowInstancePage paginateWorkflowInstances(int pageNum)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails("paginateWorkflowInstances",
             Lists.newArrayList((Object) pageNum));
       WorkflowInstancePage page = new WorkflowInstancePage();
@@ -136,20 +138,20 @@ public class MockXmlRpcWorkflowManagerClient extends
       return page;
    }
 
-   public List<Workflow> getWorkflowsByEvent(String eventName) throws Exception {
+   public List<Workflow> getWorkflowsByEvent(String eventName) throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails("getWorkflowsByEvent",
             Lists.newArrayList((Object) eventName));
       return workflowRepo.getWorkflowsForEvent(eventName);
    }
 
-   public Metadata getWorkflowInstanceMetadata(String wInstId) throws Exception {
+   public Metadata getWorkflowInstanceMetadata(String wInstId)  {
       lastMethodCallDetails = new MethodCallDetails("getWorkflowInstanceMetadata",
             Lists.newArrayList((Object) wInstId));
       return new Metadata();
    }
 
    public synchronized boolean setWorkflowInstanceCurrentTaskStartDateTime(
-         String wInstId, String startDateTimeIsoStr) throws Exception {
+         String wInstId, String startDateTimeIsoStr)  {
       lastMethodCallDetails = new MethodCallDetails(
             "setWorkflowInstanceCurrentTaskStartDateTime",
             Lists.newArrayList((Object) wInstId, startDateTimeIsoStr));
@@ -157,7 +159,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public double getWorkflowCurrentTaskWallClockMinutes(String workflowInstId)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowCurrentTaskWallClockMinutes",
             Lists.newArrayList((Object) workflowInstId));
@@ -165,7 +167,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public double getWorkflowWallClockMinutes(String workflowInstId)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowWallClockMinutes",
             Lists.newArrayList((Object) workflowInstId));
@@ -173,7 +175,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public synchronized boolean stopWorkflowInstance(String workflowInstId)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails(
             "stopWorkflowInstance",
             Lists.newArrayList((Object) workflowInstId));
@@ -181,7 +183,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public synchronized boolean pauseWorkflowInstance(String workflowInstId)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails(
             "pauseWorkflowInstance",
             Lists.newArrayList((Object) workflowInstId));
@@ -189,7 +191,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public synchronized boolean resumeWorkflowInstance(String workflowInstId)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails(
             "resumeWorkflowInstance",
             Lists.newArrayList((Object) workflowInstId));
@@ -197,7 +199,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public synchronized boolean setWorkflowInstanceCurrentTaskEndDateTime(
-         String wInstId, String endDateTimeIsoStr) throws Exception {
+         String wInstId, String endDateTimeIsoStr)  {
       lastMethodCallDetails = new MethodCallDetails(
             "setWorkflowInstanceCurrentTaskEndDateTime",
             Lists.newArrayList((Object) wInstId, endDateTimeIsoStr));
@@ -205,7 +207,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public synchronized boolean updateWorkflowInstanceStatus(
-         String workflowInstId, String status) throws Exception {
+         String workflowInstId, String status)  {
       lastMethodCallDetails = new MethodCallDetails(
             "updateWorkflowInstanceStatus",
             Lists.newArrayList((Object) workflowInstId, status));
@@ -213,7 +215,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public synchronized boolean updateWorkflowInstance(WorkflowInstance instance)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails(
             "updateWorkflowInstance",
             Lists.newArrayList((Object) instance));
@@ -221,7 +223,7 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public synchronized boolean updateMetadataForWorkflow(String workflowInstId,
-         Metadata metadata) throws Exception {
+         Metadata metadata)  {
       lastMethodCallDetails = new MethodCallDetails(
             "updateMetadataForWorkflow",
             Lists.newArrayList((Object) workflowInstId, metadata));
@@ -229,30 +231,28 @@ public class MockXmlRpcWorkflowManagerClient extends
    }
 
    public boolean sendEvent(String eventName, Metadata metadata)
-         throws Exception {
+          {
       lastMethodCallDetails = new MethodCallDetails(
             "sendEvent",
             Lists.newArrayList((Object) eventName, metadata));
       return true;
    }
 
-   public WorkflowTask getTaskById(String taskId) throws Exception {
+   public WorkflowTask getTaskById(String taskId) throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails(
             "getTaskById",
             Lists.newArrayList((Object) taskId));
       return workflowRepo.getWorkflowTaskById(taskId);
    }
 
-   public WorkflowCondition getConditionById(String conditionId)
-         throws Exception {
+   public WorkflowCondition getConditionById(String conditionId) throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails(
             "getConditionById",
             Lists.newArrayList((Object) conditionId));
       return workflowRepo.getWorkflowConditionById(conditionId);
    }
 
-   public WorkflowInstance getWorkflowInstanceById(String wInstId)
-         throws Exception {
+   public WorkflowInstance getWorkflowInstanceById(String wInstId) throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowInstanceById",
             Lists.newArrayList((Object) wInstId));
@@ -265,42 +265,42 @@ public class MockXmlRpcWorkflowManagerClient extends
       return wInst;
    }
 
-   public Workflow getWorkflowById(String workflowId) throws Exception {
+   public Workflow getWorkflowById(String workflowId) throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowById",
             Lists.newArrayList((Object) workflowId));
       return workflowRepo.getWorkflowById(workflowId);
    }
 
-   public Vector<Workflow> getWorkflows() throws Exception {
+   public List<Workflow> getWorkflows() throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflows",
             Lists.newArrayList());
       return new Vector<Workflow>(workflowRepo.getWorkflows());
    }
 
-   public int getNumWorkflowInstancesByStatus(String status) throws Exception {
+   public int getNumWorkflowInstancesByStatus(String status) {
       lastMethodCallDetails = new MethodCallDetails(
             "getNumWorkflowInstancesByStatus",
             Lists.newArrayList((Object) status));
       return 1;
    }
 
-   public int getNumWorkflowInstances() throws Exception {
+   public int getNumWorkflowInstances()  {
       lastMethodCallDetails = new MethodCallDetails(
             "getNumWorkflowInstances",
             Lists.newArrayList());
       return 1;
    }
 
-   public Vector<WorkflowInstance> getWorkflowInstancesByStatus(String status) throws Exception {
+   public List<WorkflowInstance> getWorkflowInstancesByStatus(String status)  {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowInstancesByStatus",
             Lists.newArrayList((Object) status));
       return new Vector<WorkflowInstance>();
    }
 
-   public Vector<WorkflowInstance> getWorkflowInstances() throws Exception {
+   public List<WorkflowInstance> getWorkflowInstances() {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowInstances",
             Lists.newArrayList());

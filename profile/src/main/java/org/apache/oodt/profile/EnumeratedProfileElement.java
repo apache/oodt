@@ -27,7 +27,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 
 import java.net.URI;
-import java.util.Iterator;
 
 import org.w3c.dom.Element;
 
@@ -65,8 +64,9 @@ public class EnumeratedProfileElement extends ProfileElement {
 	public EnumeratedProfileElement(Profile profile, String name, String id, String desc, String type, String unit,
 		List<?> synonyms, boolean obligation, int maxOccurrence, String comment, List<?> values) {
 		super(profile, name, id, desc, type, unit, synonyms, obligation, maxOccurrence, comment);
-		if (values.contains(null))
-			throw new IllegalArgumentException("Null item in 'values' not allowed for enumerated profile elements");
+		if (values.contains(null)) {
+		  throw new IllegalArgumentException("Null item in 'values' not allowed for enumerated profile elements");
+		}
 		this.values = values;
 	}
 
@@ -75,12 +75,14 @@ public class EnumeratedProfileElement extends ProfileElement {
 	}
 
 	protected void addValues(Node node) throws DOMException {
-		if (values == null) return;
-		for (Iterator<?> i = values.iterator(); i.hasNext();) {
-			Element e = node.getOwnerDocument().createElement("elemValue");
-			e.appendChild(node.getOwnerDocument().createCDATASection((String) i.next()));
-			node.appendChild(e);
+		if (values == null) {
+		  return;
 		}
+	  for (Object value : values) {
+		Element e = node.getOwnerDocument().createElement("elemValue");
+		e.appendChild(node.getOwnerDocument().createCDATASection((String) value));
+		node.appendChild(e);
+	  }
 	}
 
 	public String getMinValue() {

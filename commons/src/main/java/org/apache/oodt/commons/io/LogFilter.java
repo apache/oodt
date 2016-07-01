@@ -15,7 +15,8 @@
 
 package org.apache.oodt.commons.io;
 
-import java.util.Hashtable;
+
+import java.util.HashMap;
 
 /** A filter for log messages.
  *
@@ -50,13 +51,17 @@ public class LogFilter implements LogListener {
 	 * is false).
 	 */
 	public LogFilter(LogListener listener, boolean passThrough, Object[] categories) {
-		if (listener == null)
-			throw new IllegalArgumentException("Can't filter messages to a null listener");
+		if (listener == null) {
+		  throw new IllegalArgumentException("Can't filter messages to a null listener");
+		}
 		this.listener = listener;
 		this.passThrough = passThrough;
-		if (categories == null) return;
-		for (int i = 0; i < categories.length; ++i)
-			this.categories.put(categories[i], DUMMY);
+		if (categories == null) {
+		  return;
+		}
+	  for (Object category : categories) {
+		this.categories.put(category, DUMMY);
+	  }
 	}
 
 	/** Create a log filter.
@@ -115,8 +120,9 @@ public class LogFilter implements LogListener {
 	 */
 	public void messageLogged(LogEvent event) {
 		boolean found = categories.containsKey(event.getCategory());
-		if ((passThrough && !found) || (!passThrough && found))
-			listener.messageLogged(event);
+		if ((passThrough && !found) || (!passThrough && found)) {
+		  listener.messageLogged(event);
+		}
 	}
 
 	/** Ignore this event.
@@ -132,7 +138,7 @@ public class LogFilter implements LogListener {
 	 * This table maps all values to {@link #DUMMY}.  In Java2, we can get rid of
 	 * <code>DUMMY</code> and use a {@link java.util.HashSet} instead.
 	 */
-	protected Hashtable categories = new Hashtable();
+	protected HashMap categories = new HashMap();
 
 	/** The DUMMY value for all mappings in the {@link #categories} table.
 	 */

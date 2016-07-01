@@ -34,14 +34,17 @@ import java.util.Date;
  * @author Kelly
  */
 public class LogWriter extends java.io.Writer {
-	/** Constructor.
+
+  public static final int CAPACITY = 80;
+
+  /** Constructor.
 	 *
 	 * @param timestamp The time for messages logged with the returned writer.
 	 * @param source The source of the log message.
 	 * @param category The messages' category.
 	 */
 	LogWriter(Date timestamp, String source, Object category) {
-		buf = new StringBuffer(/*length*/ 80);
+		buf = new StringBuffer(/*length*/  CAPACITY);
 		lock = buf;
 		this.timestamp = timestamp;
 		this.source = source;
@@ -58,7 +61,9 @@ public class LogWriter extends java.io.Writer {
 	 * @param c The character to write.
 	 */
 	public void write(int c) {
-		if (buf == null) return;
+		if (buf == null) {
+		  return;
+		}
 		buf.append((char) c);
 	}
 
@@ -71,10 +76,13 @@ public class LogWriter extends java.io.Writer {
 	 * @param length How many characters to write.
 	 */
 	public void write(char[] array, int offset, int length) {
-		if (buf == null || length == 0) return;
-		if (offset < 0 || offset > array.length || length < 0 || (offset+length) > array.length || (offset+length) < 0)
-			throw new IndexOutOfBoundsException("Can't write " + length + " characters at " + offset
-				+ " from array whose length is " + array.length);
+		if (buf == null || length == 0) {
+		  return;
+		}
+		if (offset < 0 || offset > array.length || length < 0 || (offset+length) > array.length || (offset+length) < 0) {
+		  throw new IndexOutOfBoundsException("Can't write " + length + " characters at " + offset
+											  + " from array whose length is " + array.length);
+		}
 		buf.append(array, offset, length);
 	}
 
@@ -98,7 +106,9 @@ public class LogWriter extends java.io.Writer {
 	 * @param length How many characters to write.
 	 */
 	public void write(String string, int offset, int length) {
-		if (buf == null || length == 0) return;
+		if (buf == null || length == 0) {
+		  return;
+		}
 		buf.append(string.substring(offset, offset + length));
 	}
 
@@ -117,7 +127,9 @@ public class LogWriter extends java.io.Writer {
 	 * This sends any text sent to the writer on its way to the logging facility, and beyond.
 	 */
 	public void flush() {
-		if (buf == null) return;
+		if (buf == null) {
+		  return;
+		}
 		Log.logMessage(timestamp, source, category, buf.toString());
 		buf.setLength(0);
 		flushed = true;
@@ -203,7 +215,9 @@ public class LogWriter extends java.io.Writer {
 	 * @param s The <code>String</code> to print.
 	 */
 	public void print(String s) {
-		if (s == null) s = "null";
+		if (s == null) {
+		  s = "null";
+		}
 		write(s);
 	}
 
@@ -312,17 +326,15 @@ public class LogWriter extends java.io.Writer {
 	}
 
 	public void println(Throwable t) {
-		if (t == null) 
-			println("Null throwable");
-		else {
+		if (t == null) {
+		  println("Null throwable");
+		} else {
 			StackTraceElement[] frames = t.getStackTrace();
-			if (frames == null)
-				println("Null stack trace in " + t.getClass().getName());
-			else {
 				println(t.getClass().getName() + ":");
-				for (int i = 0; i < frames.length; ++i)
-					println(frames[i]);
-			}
+			  for (StackTraceElement frame : frames) {
+				println(frame);
+			  }
+
 		}
 	}
 

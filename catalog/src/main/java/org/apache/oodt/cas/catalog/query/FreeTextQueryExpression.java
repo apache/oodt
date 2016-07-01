@@ -58,14 +58,15 @@ public class FreeTextQueryExpression extends TermQueryExpression {
 
         // tokenize string using default delimiters
         StringTokenizer tok = new StringTokenizer(text);
-        String token = null;
+        String token;
 
         // filter noise words and add to values vector
         List<String> values = new Vector<String>();
         while (tok.hasMoreElements()) {
             token = tok.nextToken();
-            if (!noiseWordHash.contains(token))
-                values.add(token);
+            if (!noiseWordHash.contains(token)) {
+              values.add(token);
+            }
         }
         if (values.size() > 0) {
         	values.addAll(this.term.getValues());
@@ -81,11 +82,13 @@ public class FreeTextQueryExpression extends TermQueryExpression {
      * @return The query as a String.
      */
     public String toString() {
-        String serial = "({" + this.bucketNames + "} " + this.term.getName() + " :|";
-        for (String value : this.term.getValues())
-            serial += "+" + value;
-        serial += "|: )";
-        return serial;
+        StringBuilder serial = new StringBuilder();
+        serial.append("({").append(this.bucketNames).append("} ").append(this.term.getName()).append(" :|");
+        for (String value : this.term.getValues()) {
+            serial.append("+").append(value);
+            serial.append("|: )");
+        }
+        return serial.toString();
     }
     
 	@Override

@@ -18,8 +18,10 @@
 package org.apache.oodt.xmlps.product;
 
 //OODT imports
+
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.QueryHandler;
+import org.apache.oodt.xmlps.exceptions.XmlpsException;
 import org.apache.oodt.xmlps.mapping.DatabaseTable;
 import org.apache.oodt.xmlps.mapping.FieldScope;
 import org.apache.oodt.xmlps.mapping.Mapping;
@@ -101,9 +103,9 @@ public class XMLPSProductHandler implements QueryHandler {
                         .load(new FileInputStream(dbPropFilePath));
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new InstantiationException(e.getMessage());
             }
 
@@ -132,7 +134,7 @@ public class XMLPSProductHandler implements QueryHandler {
         return query;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InstantiationException, ProductException {
         String usage = "XMLPSProductHandler <query>\n";
 
         if (args.length != 1) {
@@ -148,15 +150,15 @@ public class XMLPSProductHandler implements QueryHandler {
 
     protected List<QueryElement> getElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
-        if (origSet == null || (origSet != null && origSet.size() == 0))
+        if (origSet == null || (origSet.size() == 0)) {
             return Collections.emptyList();
+        }
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
-        for (Iterator<QueryElement> i = origSet.iterator(); i.hasNext();) {
-            QueryElement elem = i.next();
+        for (QueryElement elem : origSet) {
             if (elem.getRole().equals(XMLQueryHelper.ROLE_ELEMNAME)
-                    && !mapping.constantField(elem.getValue())) {
+                && !mapping.constantField(elem.getValue())) {
                 newSet.add(elem);
 
             }
@@ -169,15 +171,15 @@ public class XMLPSProductHandler implements QueryHandler {
 
     protected List<QueryElement> getConstElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
-        if (origSet == null || (origSet != null && origSet.size() == 0))
+        if (origSet == null || (origSet.size() == 0)) {
             return Collections.emptyList();
+        }
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
-        for (Iterator<QueryElement> i = origSet.iterator(); i.hasNext();) {
-            QueryElement elem = i.next();
+        for (QueryElement elem : origSet) {
             if (elem.getRole().equals(XMLQueryHelper.ROLE_ELEMNAME)
-                    && mapping.constantField(elem.getValue())) {
+                && mapping.constantField(elem.getValue())) {
                 newSet.add(elem);
             }
         }
@@ -195,7 +197,7 @@ public class XMLPSProductHandler implements QueryHandler {
 
         String querySelectNames = toSQLSelectColumns(selectNames);
 
-        StringBuffer sqlBuf = new StringBuffer("SELECT ");
+        StringBuilder sqlBuf = new StringBuilder("SELECT ");
         sqlBuf.append(querySelectNames);
         sqlBuf.append(" FROM ");
         sqlBuf.append(mapping.getDefaultTable());
@@ -234,7 +236,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 res.setConstValues(getConstValuesForQuery(query));
                 query.getResults().add(res);
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Error executing sql: ["
                         + sqlBuf.toString() + "]: Message: " + e.getMessage());
             }
@@ -258,8 +260,9 @@ public class XMLPSProductHandler implements QueryHandler {
     }
 
     private String toSQLSelectColumns(List<QueryElement> elems) {
-        if (elems == null || (elems != null && elems.size() == 0))
+        if (elems == null || (elems.size() == 0)) {
             return null;
+        }
 
         StringBuilder buf = new StringBuilder();
         for (QueryElement qe : elems) {
@@ -278,7 +281,7 @@ public class XMLPSProductHandler implements QueryHandler {
     }
 
     protected void translateToDomain(List<QueryElement> elemSet,
-            boolean selectSet) throws Exception {
+            boolean selectSet) throws XmlpsException {
         // go through each query element: use the mapping fields
         // to translate the names
 
@@ -316,20 +319,19 @@ public class XMLPSProductHandler implements QueryHandler {
                         && fld.getFuncs().size() > 0) {
                     // the next query element should be
                     // XMLQueryHelper.ROLE_LITERAL
-                    if (!i.hasNext())
+                    if (!i.hasNext()) {
                         break;
+                    }
                     QueryElement litElem = i.next();
                     if (!litElem.getRole().equals(XMLQueryHelper.ROLE_LITERAL)) {
-                        throw new Exception("next query element not "
+                        throw new XmlpsException("next query element not "
                                 + XMLQueryHelper.ROLE_LITERAL + "! role is "
                                 + litElem.getRole() + " instead!");
                     }
 
-                    for (Iterator<MappingFunc> j = fld.getFuncs().iterator(); j
-                            .hasNext();) {
-                        MappingFunc func = j.next();
+                    for (MappingFunc func : fld.getFuncs()) {
                         CDEValue origVal = new CDEValue(fld.getName(),
-                                litElem.getValue());
+                            litElem.getValue());
                         CDEValue newVal = func.inverseTranslate(origVal);
                         litElem.setValue(newVal.getVal());
                     }

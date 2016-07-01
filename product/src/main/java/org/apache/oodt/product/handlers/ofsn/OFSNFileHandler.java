@@ -18,35 +18,32 @@
 
 package org.apache.oodt.product.handlers.ofsn;
 
-//JDK imports
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//APACHE imports
-import org.apache.tika.mime.MediaType;
-import org.apache.tika.mime.MimeTypesFactory;
-
-//OODT imports
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.apache.oodt.product.LargeProductQueryHandler;
+import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLConfigMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.XMLQueryMetKeys;
 import org.apache.oodt.product.handlers.ofsn.util.OFSNObjectFactory;
 import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
-import org.apache.oodt.product.LargeProductQueryHandler;
-import org.apache.oodt.product.ProductException;
 import org.apache.oodt.xmlquery.LargeResult;
 import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.mime.MimeTypesFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * 
@@ -74,7 +71,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
 
   private OFSNFileHandlerConfiguration conf;
 
-  private static Map<String, Object> HANDLER_CACHE;
+  private Map<String, Object> HANDLER_CACHE;
 
   public OFSNFileHandler() throws InstantiationException {
     // init conf here
@@ -103,7 +100,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     }
 
     // used to cache handlers -- map of RT type to Get/List handler instance
-    HANDLER_CACHE = new HashMap<String, Object>();
+    HANDLER_CACHE = new ConcurrentHashMap<String, Object>();
   }
 
   /*
@@ -171,7 +168,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
    * 
    * @see org.apache.oodt.product.LargeProductQueryHandler#close(java.lang.String)
    */
-  public void close(String id) throws ProductException {
+  public void close(String id) {
     // nothing to do
   }
 
@@ -203,8 +200,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
   }
 
   private void validate(String ofsn, String cmd) throws ProductException {
-    if (ofsn == null || cmd == null || (ofsn != null && ofsn.equals(""))
-        || (cmd != null && cmd.equals(""))) {
+    if (ofsn == null || cmd == null || (ofsn.equals("")) || (cmd.equals(""))) {
       throw new ProductException("must specify OFSN and RT parameters!");
     } else if (!OFSNUtils.validateOFSN(ofsn)) {
       throw new ProductException("OFSN is invalid");
@@ -247,19 +243,13 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
       throw new ProductException("Unrecognized command: [" + cmd + "]!");
     }
 
-    if (cfg.getType().equals(LISTING_CMD)) {
-      return true;
-    } else
-      return false;
+    return cfg.getType().equals(LISTING_CMD);
   }
 
-  private boolean isGetCmd(String cmd) throws ProductException {
+  private boolean isGetCmd(String cmd) {
     OFSNHandlerConfig cfg = this.conf.getHandlerConfig(cmd);
 
-    if (cfg.getType().equals(GET_CMD)) {
-      return true;
-    } else
-      return false;
+    return cfg.getType().equals(GET_CMD);
   }
 
 }

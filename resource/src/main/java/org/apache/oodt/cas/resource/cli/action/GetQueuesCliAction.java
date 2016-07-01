@@ -35,8 +35,9 @@ public class GetQueuesCliAction extends ResourceCliAction {
       try {
          List<String> queueNames = getClient().getQueues();
          printer.println("Queues:");
-         for (String queueName : queueNames)
-            printer.println(" - " + queueName);
+         for (String queueName : queueNames) {
+           printer.println(" - " + queueName);
+         }
          printer.println();
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get queues : "

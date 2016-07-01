@@ -16,6 +16,8 @@
  */
 package org.apache.oodt.cas.crawl;
 
+import com.google.common.annotations.VisibleForTesting;
+
 //OODT imports
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.action.CrawlerActionRepo;
@@ -23,12 +25,8 @@ import org.apache.oodt.cas.crawl.config.ProductCrawlerBean;
 import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 
-import com.google.common.annotations.VisibleForTesting;
-
-//JDK imports
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
@@ -38,6 +36,7 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * An abstract base class for Product Crawling. This class provides methods to
@@ -97,22 +96,20 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
          File dir = (File) stack.pop();
          LOG.log(Level.INFO, "Crawling " + dir);
 
-         File[] productFiles = null;
-         if (isCrawlForDirs()) {
-            productFiles = dir.listFiles(DIR_FILTER);
-         } else {
-            productFiles = dir.listFiles(FILE_FILTER);
-         }
+         File[] productFiles;
+         productFiles = isCrawlForDirs() ? dir.listFiles(DIR_FILTER) : dir.listFiles(FILE_FILTER);
 
-         for (int j = 0; j < productFiles.length; j++) {
-            ingestStatus.add(handleFile(productFiles[j]));
+         if(productFiles!=null) {
+            for (File productFile : productFiles) {
+               ingestStatus.add(handleFile(productFile));
+            }
          }
 
          if (!isNoRecur()) {
             File[] subdirs = dir.listFiles(DIR_FILTER);
             if (subdirs != null) {
-               for (int j = 0; j < subdirs.length; j++) {
-                  stack.push(subdirs[j]);
+               for (File subdir : subdirs) {
+                  stack.push(subdir);
                }
             }
          }
@@ -232,13 +229,12 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
    }
 
    @VisibleForTesting void validateActions() {
-      StringBuffer actionErrors = new StringBuffer("");
+      StringBuilder actionErrors = new StringBuilder("");
       for (CrawlerAction action : actionRepo.getActions()) {
          try {
             action.validate();
          } catch (Exception e) {
-            actionErrors.append(" " + action.getId() + ": " + e.getMessage()
-                  + "\n");
+            actionErrors.append(" ").append(action.getId()).append(": ").append(e.getMessage()).append("\n");
          }
       }
       if (actionErrors.length() > 0) {

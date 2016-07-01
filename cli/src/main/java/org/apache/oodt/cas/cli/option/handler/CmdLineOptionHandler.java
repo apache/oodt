@@ -35,10 +35,10 @@ public interface CmdLineOptionHandler {
     * is also called when help is run so allows registration to take
     * place if necessary for help analysis.
     */
-   public abstract void initialize(CmdLineOption option);
+   void initialize(CmdLineOption option);
 
-   public abstract void handleOption(CmdLineAction selectedAction,
-         CmdLineOptionInstance optionInstance);
+   void handleOption(CmdLineAction selectedAction,
+                     CmdLineOptionInstance optionInstance);
 
    /**
     * Gets the {@link CmdLineOptionHandler}s help message when associated with
@@ -49,13 +49,13 @@ public interface CmdLineOptionHandler {
     *           {@link CmdLineOptionHandler} was associated with
     * @return The help message for this {@link CmdLineOptionHandler}
     */
-   public abstract String getHelp(CmdLineOption option);
+   String getHelp(CmdLineOption option);
 
    /**
     * If this handler causes the argument descriptor to be different for
     * certain {@link CmdLineAction}s, then should return the arg
     * description here.
     */
-   public abstract String getArgDescription(CmdLineAction action,
-         CmdLineOption option);
+   String getArgDescription(CmdLineAction action,
+                            CmdLineOption option);
 }

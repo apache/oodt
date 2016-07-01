@@ -26,7 +26,6 @@ package org.apache.oodt.profile.gui.pstructs;
 
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileElement;
-import java.util.Iterator;
 
 
 /**
@@ -52,29 +51,27 @@ public class ProfilePrinter {
 	}
 	
 	public String toXMLString(){
-		String rStr = "<?xml version=\"1.0\" ?>\n";
-		rStr+="<!DOCTYPE profile SYSTEM \""+dtdUrl+"\">\n\n";
-		rStr+="<profile>\n";
+		StringBuilder rStr = new StringBuilder("<?xml version=\"1.0\" ?>\n");
+		rStr.append("<!DOCTYPE profile SYSTEM \"").append(dtdUrl).append("\">\n\n");
+		rStr.append("<profile>\n");
 
 		
 		ProfileAttributesPrinter pap = new ProfileAttributesPrinter(myProfile.getProfileAttributes());
-		rStr+=pap.toXMLString();
+		rStr.append(pap.toXMLString());
 		
 		
 		ResourceAttributesPrinter rap = new ResourceAttributesPrinter(myProfile.getResourceAttributes());
-		rStr+=rap.toXMLString();
+		rStr.append(rap.toXMLString());
 
+
+	  for (String profElemName : myProfile.getProfileElements().keySet()) {
+		ProfileElement pe = (ProfileElement) myProfile.getProfileElements().get(profElemName);
+		ProfileElementPrinter pPrinter = new ProfileElementPrinter(pe);
+		rStr.append(pPrinter.toXMLString());
+	  }
 		
-		for(Iterator i = myProfile.getProfileElements().keySet().iterator(); i.hasNext(); ){
-			String profElemName = (String)i.next();
-			
-			ProfileElement pe = (ProfileElement)myProfile.getProfileElements().get(profElemName);
-			ProfileElementPrinter pPrinter = new ProfileElementPrinter(pe);
-			rStr+=pPrinter.toXMLString();
-		}
+		rStr.append("</profile>\n");
 		
-		rStr+="</profile>\n";
-		
-		return rStr;
+		return rStr.toString();
 	}
 }

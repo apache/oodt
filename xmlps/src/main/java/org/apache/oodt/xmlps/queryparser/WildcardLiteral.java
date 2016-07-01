@@ -40,7 +40,9 @@ public class WildcardLiteral extends Literal {
         if(val.startsWith("'")){
           return "'%"+val.substring(1, val.length()-1)+"%'";
         }
-        else return "%" + val + "%";
+        else {
+            return "%" + val + "%";
+        }
     }
 
 }

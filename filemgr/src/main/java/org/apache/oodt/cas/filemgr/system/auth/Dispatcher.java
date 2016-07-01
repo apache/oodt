@@ -45,6 +45,6 @@ public interface Dispatcher {
      * @throws Exception
      *             If any error occurs.
      */
-    public Result handleRequest(String methodSpecifier, List params,
-            String user, String password) throws Exception;
+    Result handleRequest(String methodSpecifier, List params,
+                         String user, String password);
 }

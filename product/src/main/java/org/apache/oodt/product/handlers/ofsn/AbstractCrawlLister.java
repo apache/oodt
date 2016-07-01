@@ -19,8 +19,11 @@
 package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
+import org.apache.oodt.product.ProductException;
+
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
@@ -29,7 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.product.ProductException;
 
 /**
  * 
@@ -48,19 +50,13 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
 
   protected static final FileFilter FILE_FILTER = new FileFilter() {
     public boolean accept(File pathname) {
-      if (pathname.isFile()) {
-        return true;
-      } else
-        return false;
+      return pathname.isFile();
     }
   };
 
   protected static final FileFilter DIR_FILTER = new FileFilter() {
     public boolean accept(File pathname) {
-      if (pathname.isDirectory()) {
-        return true;
-      } else
-        return false;
+      return pathname.isDirectory();
     }
   };
 
@@ -84,9 +80,10 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
 
   protected File[] crawlFiles(File dirRoot, boolean recur,
       boolean crawlForDirs) {
-    if (dirRoot == null || ((dirRoot != null && !dirRoot.exists())))
+    if (dirRoot == null || ((!dirRoot.exists()))) {
       throw new IllegalArgumentException("dir root: [" + dirRoot
-          + "] is null or non existant!");
+                                         + "] is null or non existant!");
+    }
 
     List<File> fileList = new Vector<File>();
 
@@ -97,22 +94,19 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
       File dir = (File) stack.pop();
       LOG.log(Level.INFO, "OFSN: Crawling " + dir);
 
-      File[] productFiles = null;
-      if (crawlForDirs) {
-        productFiles = dir.listFiles(DIR_FILTER);
-      } else {
-        productFiles = dir.listFiles(FILE_FILTER);
-      }
+      File[] productFiles;
+      productFiles = crawlForDirs ? dir.listFiles(DIR_FILTER) : dir.listFiles(FILE_FILTER);
 
-      for (int j = 0; j < productFiles.length; j++) {
-        fileList.add(productFiles[j]);
+      if(productFiles!=null) {
+        Collections.addAll(fileList, productFiles);
       }
-
       if (recur) {
         File[] subdirs = dir.listFiles(DIR_FILTER);
-        if (subdirs != null)
-          for (int j = 0; j < subdirs.length; j++)
-            stack.push(subdirs[j]);
+        if (subdirs != null) {
+          for (File subdir : subdirs) {
+            stack.push(subdir);
+          }
+        }
       }
     }
 

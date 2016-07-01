@@ -36,7 +36,9 @@ import javax.sql.DataSource;
  * 
  */
 public class DataSourceCatalogFactory implements CatalogFactory {
-    /* our data source */
+  public static final int VAL = 20;
+  public static final long VAL1 = 5L;
+  /* our data source */
     protected DataSource dataSource = null;
 
     /* our validation layer */
@@ -71,7 +73,7 @@ public class DataSourceCatalogFactory implements CatalogFactory {
     public DataSourceCatalogFactory() {
     	
     	  // instantiate data source
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = PathUtils
                 .replaceEnvVariables(System
@@ -127,13 +129,13 @@ public class DataSourceCatalogFactory implements CatalogFactory {
       	.getBoolean("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields");
 
 			pageSize = Integer
-			      .getInteger(
-			              "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
-			              20).intValue();
+                .getInteger(
+                    "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
+                    VAL);
 			cacheUpdateMinutes = Long
-			      .getLong(
-			              "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
-			              5L).longValue();
+                .getLong(
+                    "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
+                    VAL1);
 			
 			productIdString = Boolean.parseBoolean( 
 				System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.productId.string", "false") );
@@ -148,7 +150,7 @@ public class DataSourceCatalogFactory implements CatalogFactory {
      */
     public Catalog createCatalog() {
     	if (validationLayer==null) {
-    			return new LenientDataSourceCatalog(dataSource, validationLayer, fieldIdStr,
+    			return new LenientDataSourceCatalog(dataSource, null, fieldIdStr,
 							    pageSize, cacheUpdateMinutes, productIdString, orderedValues);
     	} else {
         return new DataSourceCatalog(dataSource, validationLayer, fieldIdStr,

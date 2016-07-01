@@ -76,17 +76,17 @@ public final class GenericResourceManagerObjectFactory {
       Class inputClass = Class.forName(className);
       return (JobInput) inputClass.newInstance();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading job input class " + className
               + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading job input class " + className
               + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading job input class " + className
               + " Message: " + e.getMessage());
@@ -109,17 +109,17 @@ public final class GenericResourceManagerObjectFactory {
       Class instClass = Class.forName(className);
       return (JobInstance) instClass.newInstance();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading job instance class " + className
               + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading job instance class " + className
               + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading job instance class " + className
               + " Message: " + e.getMessage());
@@ -132,31 +132,28 @@ public final class GenericResourceManagerObjectFactory {
    * Creates a new {@link QueueRepository} implementation from the given
    * {@link QueueRepositoryFactory} class name.
    *
-   * @param serviceFactory
-   *          The class name of the {@link QueueRepositoryFactory} to use to create new
-   *          {@link QueueRepository}s.
    * @return A new implementation of a {@link QueueRepository}.
    */
   public static QueueRepository getQueueRepositoryFromFactory(String queueRepositoryFactory) {
-    Class clazz = null;
-    QueueRepositoryFactory factory = null;
+    Class clazz;
+    QueueRepositoryFactory factory;
 
     try {
       clazz = Class.forName(queueRepositoryFactory);
       factory = (QueueRepositoryFactory) clazz.newInstance();
       return factory.createQueueRepository();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading queue repository factory class "
               + queueRepositoryFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading queue repository factory class "
               + queueRepositoryFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading queue repository factory class "
               + queueRepositoryFactory + " Message: " + e.getMessage());
@@ -174,25 +171,25 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new implementation of a {@link BackendRepository}.
    */
   public static BackendRepository getBackendRepositoryFromFactory(String backendRepositoryFactory) {
-    Class clazz = null;
-    BackendRepositoryFactory factory = null;
+    Class clazz;
+    BackendRepositoryFactory factory;
 
     try {
       clazz = Class.forName(backendRepositoryFactory);
       factory = (BackendRepositoryFactory) clazz.newInstance();
       return factory.createBackendRepository();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading backend repository factory class "
               + backendRepositoryFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading backend repository factory class "
               + backendRepositoryFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading backend repository factory class "
               + backendRepositoryFactory + " Message: " + e.getMessage());
@@ -204,31 +201,28 @@ public final class GenericResourceManagerObjectFactory {
    * Creates a new {@link NodeRepository} implementation from the given
    * {@link QueueRepositoryFactory} class name.
    *
-   * @param serviceFactory
-   *          The class name of the {@link NodeRepositoryFactory} to use to create new
-   *          {@link QueueRepository}s.
    * @return A new implementation of a {@link NodeRepository}.
    */
   public static NodeRepository getNodeRepositoryFromFactory(String nodeRepositoryFactory) {
-    Class clazz = null;
-    NodeRepositoryFactory factory = null;
+    Class clazz;
+    NodeRepositoryFactory factory;
 
     try {
       clazz = Class.forName(nodeRepositoryFactory);
       factory = (NodeRepositoryFactory) clazz.newInstance();
       return factory.createNodeRepository();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading node repository factory class "
               + nodeRepositoryFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading node repository factory class "
               + nodeRepositoryFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading node repository factory class "
               + nodeRepositoryFactory + " Message: " + e.getMessage());
@@ -247,25 +241,25 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new implementation of a {@link JobQueue}.
    */
   public static JobQueue getJobQueueServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    JobQueueFactory factory = null;
+    Class clazz;
+    JobQueueFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
       factory = (JobQueueFactory) clazz.newInstance();
       return factory.createQueue();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading jobqueue factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading jobqueue factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading jobqueue factory class "
               + serviceFactory + " Message: " + e.getMessage());
@@ -284,25 +278,25 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link Batchmgr} implementation.
    */
   public static Batchmgr getBatchmgrServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    BatchmgrFactory factory = null;
+    Class clazz;
+    BatchmgrFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
       factory = (BatchmgrFactory) clazz.newInstance();
       return factory.createBatchmgr();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading batchmgr factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading batchmgr factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading batchmgr factory class "
               + serviceFactory + " Message: " + e.getMessage());
@@ -321,25 +315,25 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link Monitor} implementation.
    */
   public static Monitor getMonitorServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    MonitorFactory factory = null;
+    Class clazz;
+    MonitorFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
       factory = (MonitorFactory) clazz.newInstance();
       return factory.createMonitor();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading monitor factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading monitor factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading monitor factory class "
               + serviceFactory + " Message: " + e.getMessage());
@@ -359,25 +353,25 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link Scheduler} implementation.
    */
   public static Scheduler getSchedulerServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    SchedulerFactory factory = null;
+    Class clazz;
+    SchedulerFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
       factory = (SchedulerFactory) clazz.newInstance();
       return factory.createScheduler();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading scheduler factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading scheduler factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading scheduler factory class "
               + serviceFactory + " Message: " + e.getMessage());
@@ -394,25 +388,25 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link JobRepository} from the given service factory.
    */
   public static JobRepository getJobRepositoryFromServiceFactory(String serviceFactory) {
-    Class clazz = null;
-    JobRepositoryFactory factory = null;
+    Class clazz;
+    JobRepositoryFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
       factory = (JobRepositoryFactory) clazz.newInstance();
       return factory.createRepository();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading job repo factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading job rep factory class "
               + serviceFactory + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading job repo factory class "
               + serviceFactory + " Message: " + e.getMessage());
@@ -439,17 +433,17 @@ public final class GenericResourceManagerObjectFactory {
             factory = (LoadCalculatorFactory) clazz.newInstance();
             return factory.createLoadCalculator();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading load calculator factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading load calculator factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading load calculator factory class "
                             + serviceFactory + " Message: " + e.getMessage());

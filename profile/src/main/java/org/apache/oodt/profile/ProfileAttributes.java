@@ -18,20 +18,13 @@
 
 package org.apache.oodt.profile;
 
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
+import org.w3c.dom.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.oodt.commons.util.Documentable;
-import org.apache.oodt.commons.util.XML;
-import org.apache.oodt.commons.Configuration;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import java.io.IOException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXException;
 
 /**
  * Profile attributes.
@@ -63,24 +56,25 @@ public class ProfileAttributes implements Serializable, Cloneable, Comparable, D
 		NodeList childNodes = root.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); ++i) {
 			Node node = childNodes.item(i);
-			if ("profId".equals(node.getNodeName()))
-				id = XML.unwrappedText(node);
-			else if ("profVersion".equals(node.getNodeName()))
-				version = XML.unwrappedText(node);
-			else if ("profType".equals(node.getNodeName()))
-				type = XML.unwrappedText(node);
-			else if ("profStatusId".equals(node.getNodeName()))
-				statusID = XML.unwrappedText(node);
-			else if ("profSecurityType".equals(node.getNodeName()))
-				securityType = XML.unwrappedText(node);
-			else if ("profParentId".equals(node.getNodeName()))
-				parent = XML.unwrappedText(node);
-			else if ("profChildId".equals(node.getNodeName()))
-				children.add(XML.unwrappedText(node));
-			else if ("profRegAuthority".equals(node.getNodeName()))
-				regAuthority = XML.unwrappedText(node);
-			else if ("profRevisionNote".equals(node.getNodeName()))
-				revisionNotes.add(XML.unwrappedText(node));
+			if ("profId".equals(node.getNodeName())) {
+			  id = XML.unwrappedText(node);
+			} else if ("profVersion".equals(node.getNodeName())) {
+			  version = XML.unwrappedText(node);
+			} else if ("profType".equals(node.getNodeName())) {
+			  type = XML.unwrappedText(node);
+			} else if ("profStatusId".equals(node.getNodeName())) {
+			  statusID = XML.unwrappedText(node);
+			} else if ("profSecurityType".equals(node.getNodeName())) {
+			  securityType = XML.unwrappedText(node);
+			} else if ("profParentId".equals(node.getNodeName())) {
+			  parent = XML.unwrappedText(node);
+			} else if ("profChildId".equals(node.getNodeName())) {
+			  children.add(XML.unwrappedText(node));
+			} else if ("profRegAuthority".equals(node.getNodeName())) {
+			  regAuthority = XML.unwrappedText(node);
+			} else if ("profRevisionNote".equals(node.getNodeName())) {
+			  revisionNotes.add(XML.unwrappedText(node));
+			}
 		}
 	}
 
@@ -115,8 +109,12 @@ public class ProfileAttributes implements Serializable, Cloneable, Comparable, D
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof ProfileAttributes)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof ProfileAttributes)) {
+		  return false;
+		}
 		return ((ProfileAttributes) rhs).id.equals(id);
 	}
 
@@ -133,7 +131,7 @@ public class ProfileAttributes implements Serializable, Cloneable, Comparable, D
 		Object clone = null;
 		try {
 			clone = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return clone;
 	}
 

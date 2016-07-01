@@ -29,10 +29,10 @@ package org.apache.oodt.cas.metadata.extractors;
  */
 public interface ExternMetExtractorMetKeys {
 
-    public static final String DATA_FILE_PLACE_HOLDER = "<DATA_FILE_PLACE_HOLDER>";
+    String DATA_FILE_PLACE_HOLDER = "<DATA_FILE_PLACE_HOLDER>";
 
-    public static final String MET_FILE_PLACE_HOLDER = "<MET_FILE_PLACE_HOLDER>";
+    String MET_FILE_PLACE_HOLDER = "<MET_FILE_PLACE_HOLDER>";
 
-    public static final String DEFAULT_MET_FILE_EXTENSION = "met";
+    String DEFAULT_MET_FILE_EXTENSION = "met";
 
 }

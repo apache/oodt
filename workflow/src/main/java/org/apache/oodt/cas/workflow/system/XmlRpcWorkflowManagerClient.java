@@ -19,26 +19,29 @@
 package org.apache.oodt.cas.workflow.system;
 
 //APACHE imports
+
+import org.apache.oodt.cas.cli.CmdLineUtility;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
-//JDK imports
-import java.net.URL;
-import java.util.Hashtable;
-import java.util.Vector;
-import java.util.List;
-import java.util.Iterator;
-import java.util.logging.Logger;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+//JDK imports
 //OODT imports
-import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * @author mattmann
@@ -77,94 +80,60 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
     
     @Override
     public boolean refreshRepository()
-        throws Exception {
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.refreshRepository", new Vector()))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+        throws XmlRpcException, IOException {
+            return (Boolean) client.execute(
+                "workflowmgr.refreshRepository", new Vector());
+
     }
 
   @Override
   public String executeDynamicWorkflow(List<String> taskIds, Metadata metadata)
-      throws Exception {
+      throws XmlRpcException, IOException {
     Vector argList = new Vector();
     Vector<String> taskIdVector = new Vector<String>();
     taskIdVector.addAll(taskIds);
-    String instId = null;
+    String instId;
     
     argList.add(taskIdVector);
-    argList.add(metadata.getHashtable());
+    argList.add(metadata.getHashTable());
 
-    try {
       instId = (String) client.execute("workflowmgr.executeDynamicWorkflow",
           argList);
-    } catch (XmlRpcException e) {
-      e.printStackTrace();
-      throw new Exception(e.getMessage());
-    } catch (IOException e) {
-      throw new Exception(e.getMessage());
-    }
+
 
     return instId;
 
   }
 
-    @Override
-    public List getRegisteredEvents() throws Exception {
+    public List getRegisteredEvents() throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
 
-        try {
             return (List) client.execute("workflowmgr.getRegisteredEvents",
                     argList);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+
     }
 
-    @Override
-    public WorkflowInstancePage getFirstPage() throws Exception {
+    public WorkflowInstancePage getFirstPage() throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        Hashtable pageHash = null;
+        Map pageHash;
 
-        try {
-            pageHash = (Hashtable) client.execute("workflowmgr.getFirstPage",
+            pageHash = (Map) client.execute("workflowmgr.getFirstPage",
                     argList);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
 
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
     }
 
     @Override
     public WorkflowInstancePage getNextPage(WorkflowInstancePage currentPage)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory
                 .getXmlRpcWorkflowInstancePage(currentPage));
-        Hashtable pageHash = null;
+        Map pageHash;
 
-        try {
-            pageHash = (Hashtable) client.execute("workflowmgr.getNextPage",
+            pageHash = (Map) client.execute("workflowmgr.getNextPage",
                     argList);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+
 
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
     }
@@ -175,13 +144,13 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory
                 .getXmlRpcWorkflowInstancePage(currentPage));
-        Hashtable pageHash = null;
+        Map pageHash;
 
         try {
-            pageHash = (Hashtable) client.execute("workflowmgr.getPrevPage",
+            pageHash = (Map) client.execute("workflowmgr.getPrevPage",
                     argList);
         } catch (XmlRpcException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new Exception(e.getMessage());
         } catch (IOException e) {
             throw new Exception(e.getMessage());
@@ -190,531 +159,353 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
     }
 
-    @Override
-    public WorkflowInstancePage getLastPage() throws Exception {
+    public WorkflowInstancePage getLastPage() throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        Hashtable pageHash = null;
+        Map pageHash;
 
-        try {
-            pageHash = (Hashtable) client.execute("workflowmgr.getLastPage",
+            pageHash = (Map) client.execute("workflowmgr.getLastPage",
                     argList);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+
 
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
     }
 
     @Override
     public WorkflowInstancePage paginateWorkflowInstances(int pageNum,
-            String status) throws Exception {
+            String status) throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        argList.add(new Integer(pageNum));
+        argList.add(pageNum);
         argList.add(status);
-        Hashtable pageHash = null;
+        Map pageHash;
 
-        try {
-            pageHash = (Hashtable) client.execute(
+            pageHash = (Map) client.execute(
                     "workflowmgr.paginateWorkflowInstances", argList);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+
 
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
     }
 
     @Override
     public WorkflowInstancePage paginateWorkflowInstances(int pageNum)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        argList.add(new Integer(pageNum));
-        Hashtable pageHash = null;
+        argList.add(pageNum);
+        Map pageHash;
 
-        try {
-            pageHash = (Hashtable) client.execute(
+            pageHash = (Map) client.execute(
                     "workflowmgr.paginateWorkflowInstances", argList);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+
 
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
     }
 
-    @Override
-    public List getWorkflowsByEvent(String eventName) throws Exception {
+    public List getWorkflowsByEvent(String eventName) throws XmlRpcException, IOException, RepositoryException {
         List workflows = new Vector();
-        Vector workflowVector = new Vector();
+        Vector workflowVector;
         Vector argList = new Vector();
         argList.add(eventName);
 
-        try {
+
             workflowVector = (Vector) client.execute(
                     "workflowmgr.getWorkflowsByEvent", argList);
 
             if (workflowVector != null) {
-                for (Iterator i = workflowVector.iterator(); i.hasNext();) {
-                    Hashtable workflowHash = (Hashtable) i.next();
-                    Workflow w = XmlRpcStructFactory
-                            .getWorkflowFromXmlRpc(workflowHash);
-                    workflows.add(w);
-                }
+              for (Object aWorkflowVector : workflowVector) {
+                Map workflowHash = (Map) aWorkflowVector;
+                Workflow w = XmlRpcStructFactory
+                    .getWorkflowFromXmlRpc(workflowHash);
+                workflows.add(w);
+              }
             }
 
             return workflows;
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+
     }
 
-    @Override
-    public Metadata getWorkflowInstanceMetadata(String wInstId) throws Exception {
+    public Metadata getWorkflowInstanceMetadata(String wInstId) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(wInstId);
-        Metadata met = null;
+        Metadata met;
 
-        try {
-            Hashtable instMetHash = (Hashtable) client.execute(
+            Map instMetHash = (Map) client.execute(
                     "workflowmgr.getWorkflowInstanceMetadata", argList);
             met = new Metadata();
             met.addMetadata(instMetHash);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+
 
         return met;
     }
 
     @Override
     public synchronized boolean setWorkflowInstanceCurrentTaskStartDateTime(
-            String wInstId, String startDateTimeIsoStr) throws Exception {
+            String wInstId, String startDateTimeIsoStr) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(wInstId);
         argList.add(startDateTimeIsoStr);
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.setWorkflowInstanceCurrentTaskStartDateTime",
-                    argList)).booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client.execute(
+                "workflowmgr.setWorkflowInstanceCurrentTaskStartDateTime",
+                argList);
+
 
     }
 
     @Override
     public double getWorkflowCurrentTaskWallClockMinutes(String workflowInstId)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
 
-        try {
-            return ((Double) client.execute(
-                    "workflowmgr.getWorkflowCurrentTaskWallClockMinutes",
-                    argList)).doubleValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Double) client.execute(
+                "workflowmgr.getWorkflowCurrentTaskWallClockMinutes",
+                argList);
+
     }
 
     @Override
     public double getWorkflowWallClockMinutes(String workflowInstId)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
 
-        try {
-            return ((Double) client.execute(
-                    "workflowmgr.getWorkflowWallClockMinutes", argList))
-                    .doubleValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Double) client.execute(
+                "workflowmgr.getWorkflowWallClockMinutes", argList);
+
     }
 
     @Override
     public synchronized boolean stopWorkflowInstance(String workflowInstId)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.stopWorkflowInstance", argList))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client.execute(
+                "workflowmgr.stopWorkflowInstance", argList);
+
     }
 
     @Override
     public synchronized boolean pauseWorkflowInstance(String workflowInstId)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.pauseWorkflowInstance", argList))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client.execute(
+                "workflowmgr.pauseWorkflowInstance", argList);
+
     }
 
     @Override
     public synchronized boolean resumeWorkflowInstance(String workflowInstId)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.resumeWorkflowInstance", argList))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client.execute(
+                "workflowmgr.resumeWorkflowInstance", argList);
+
     }
 
     @Override
     public synchronized boolean setWorkflowInstanceCurrentTaskEndDateTime(
-            String wInstId, String endDateTimeIsoStr) throws Exception {
+            String wInstId, String endDateTimeIsoStr) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(wInstId);
         argList.add(endDateTimeIsoStr);
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.setWorkflowInstanceCurrentTaskEndDateTime",
-                    argList)).booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client.execute(
+                "workflowmgr.setWorkflowInstanceCurrentTaskEndDateTime",
+                argList);
+
 
     }
 
     @Override
     public synchronized boolean updateWorkflowInstanceStatus(
-            String workflowInstId, String status) throws Exception {
+            String workflowInstId, String status) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
         argList.add(status);
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.updateWorkflowInstanceStatus", argList))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client.execute(
+                "workflowmgr.updateWorkflowInstanceStatus", argList);
+
 
     }
 
     @Override
     public synchronized boolean updateWorkflowInstance(WorkflowInstance instance)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory.getXmlRpcWorkflowInstance(instance));
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.updateWorkflowInstance", argList))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+      return (Boolean) client.execute(
+                "workflowmgr.updateWorkflowInstance", argList);
+
     }
 
     @Override
     public synchronized boolean updateMetadataForWorkflow(
-            String workflowInstId, Metadata metadata) throws Exception {
+            String workflowInstId, Metadata metadata) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
-        argList.add(metadata.getHashtable());
+        argList.add(metadata.getHashTable());
 
-        try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.updateMetadataForWorkflow", argList))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client.execute(
+                "workflowmgr.updateMetadataForWorkflow", argList);
+
 
     }
 
     @Override
     public boolean sendEvent(String eventName, Metadata metadata)
-            throws Exception {
+        throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(eventName);
-        argList.add(metadata.getHashtable());
+        argList.add(metadata.getHashTable());
 
-        try {
-            return ((Boolean) client
-                    .execute("workflowmgr.handleEvent", argList))
-                    .booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+            return (Boolean) client
+                .execute("workflowmgr.handleEvent", argList);
+
     }
 
-    @Override
-    public WorkflowTask getTaskById(String taskId) throws Exception {
+    public WorkflowTask getTaskById(String taskId) throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(taskId);
 
-        try {
-            Hashtable t = (Hashtable) client.execute("workflowmgr.getTaskById",
+            Map t = (Map) client.execute("workflowmgr.getTaskById",
                     argList);
             return XmlRpcStructFactory.getWorkflowTaskFromXmlRpc(t);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+
     }
 
     @Override
     public WorkflowCondition getConditionById(String conditionId)
-            throws Exception {
+        throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(conditionId);
 
-        try {
-            Hashtable c = (Hashtable) client.execute(
+            Map c = (Map) client.execute(
                     "workflowmgr.getConditionById", argList);
             return XmlRpcStructFactory.getWorkflowConditionFromXmlRpc(c);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+
     }
 
     @Override
     public WorkflowInstance getWorkflowInstanceById(String wInstId)
-            throws Exception {
+        throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(wInstId);
 
-        try {
-            Hashtable workflowInstance = (Hashtable) client.execute(
+            Map workflowInstance = (Map) client.execute(
                     "workflowmgr.getWorkflowInstanceById", argList);
-            WorkflowInstance wInst = XmlRpcStructFactory
-                    .getWorkflowInstanceFromXmlRpc(workflowInstance);
-            return wInst;
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+          return XmlRpcStructFactory
+                  .getWorkflowInstanceFromXmlRpc(workflowInstance);
 
     }
 
-    @Override
-    public Workflow getWorkflowById(String workflowId) throws Exception {
+    public Workflow getWorkflowById(String workflowId) throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(workflowId);
 
-        try {
-            Hashtable workflow = (Hashtable) client.execute(
+            Map workflow = (Map) client.execute(
                     "workflowmgr.getWorkflowById", argList);
-            Workflow w = XmlRpcStructFactory.getWorkflowFromXmlRpc(workflow);
-            return w;
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+          return XmlRpcStructFactory.getWorkflowFromXmlRpc(workflow);
+
     }
 
-    @Override
-    public Vector getWorkflows() throws Exception {
+    public List getWorkflows() throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
-        Vector works = null;
-        Vector workflows = null;
+        Vector works;
+        Vector workflows;
 
-        try {
             works = (Vector) client
                     .execute("workflowmgr.getWorkflows", argList);
 
             if (works != null) {
                 workflows = new Vector(works.size());
 
-                for (Iterator i = works.iterator(); i.hasNext();) {
-                    Hashtable workflw = (Hashtable) i.next();
-                    Workflow w = XmlRpcStructFactory
-                            .getWorkflowFromXmlRpc(workflw);
-                    workflows.add(w);
-                }
+              for (Object work : works) {
+                Map workflw = (Map) work;
+                Workflow w = XmlRpcStructFactory
+                    .getWorkflowFromXmlRpc(workflw);
+                workflows.add(w);
+              }
 
                 return workflows;
-            } else
-                return null;
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+            } else {
+              return null;
+            }
+
 
     }
 
-    @Override
-    public int getNumWorkflowInstancesByStatus(String status) throws Exception{
+    public int getNumWorkflowInstancesByStatus(String status) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(status);
-        int numInsts = -1;
+        int numInsts;
 
-        try {
-            numInsts = ((Integer)client.execute(
-                    "workflowmgr.getNumWorkflowInstancesByStatus", argList)).intValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+            numInsts = (Integer) client.execute(
+                "workflowmgr.getNumWorkflowInstancesByStatus", argList);
+
 
         return numInsts;
     }
 
-    @Override
-    public int getNumWorkflowInstances() throws Exception{
+    public int getNumWorkflowInstances() throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        int numInsts = -1;
+        int numInsts;
 
-        try {
-            numInsts = ((Integer)client.execute(
-                    "workflowmgr.getNumWorkflowInstances", argList)).intValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+            numInsts = (Integer) client.execute(
+                "workflowmgr.getNumWorkflowInstances", argList);
+
 
         return numInsts;
     }
 
-    @Override
-    public Vector getWorkflowInstancesByStatus(String status) throws Exception {
+    public List getWorkflowInstancesByStatus(String status) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(status);
-        Vector insts = null;
-        Vector instsUnpacked = null;
+        Vector insts;
+        Vector instsUnpacked;
 
-        try {
             insts = (Vector) client.execute(
                     "workflowmgr.getWorkflowInstancesByStatus", argList);
             if (insts != null) {
                 instsUnpacked = new Vector(insts.size());
-                for (Iterator i = insts.iterator(); i.hasNext();) {
-                    Hashtable hWinst = (Hashtable) i.next();
-                    WorkflowInstance inst = XmlRpcStructFactory
-                            .getWorkflowInstanceFromXmlRpc(hWinst);
-                    instsUnpacked.add(inst);
-                }
+              for (Object inst1 : insts) {
+                Map hWinst = (Map) inst1;
+                WorkflowInstance inst = XmlRpcStructFactory
+                    .getWorkflowInstanceFromXmlRpc(hWinst);
+                instsUnpacked.add(inst);
+              }
                 return instsUnpacked;
-            } else
-                return null;
+            } else {
+              return null;
+            }
 
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+
     }
 
-    @Override
-    public Vector getWorkflowInstances() throws Exception {
+    public List getWorkflowInstances() throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        Vector insts = null;
-        Vector instsUnpacked = null;
+        Vector insts;
+        Vector instsUnpacked;
 
-        try {
-            insts = (Vector) client.execute("workflowmgr.getWorkflowInstances",
-                    argList);
-            if (insts != null) {
-                instsUnpacked = new Vector(insts.size());
-                for (Iterator i = insts.iterator(); i.hasNext();) {
-                    Hashtable hWinst = (Hashtable) i.next();
-                    WorkflowInstance inst = XmlRpcStructFactory
-                            .getWorkflowInstanceFromXmlRpc(hWinst);
-                    instsUnpacked.add(inst);
-                }
-                return instsUnpacked;
-            } else
-                return null;
-
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
+          insts = (Vector) client.execute("workflowmgr.getWorkflowInstances",
+              argList);
+          if (insts != null) {
+            instsUnpacked = new Vector(insts.size());
+            for (Object inst1 : insts) {
+              Map hWinst = (Map) inst1;
+              WorkflowInstance inst = XmlRpcStructFactory
+                  .getWorkflowInstanceFromXmlRpc(hWinst);
+              instsUnpacked.add(inst);
+            }
+            return instsUnpacked;
+          } else {
+            return null;
+          }
     }
 
     /**

@@ -46,16 +46,16 @@ public class TestContextTest extends TestCase {
 	 * @throws NamingException if an error occurs.
 	 */
 	public void testTestContext() throws NamingException {
-		TestContext ctx = new TestContext("urn:x:");			       // Make it
+		TContext ctx = new TContext("urn:x:");			       // Make it
 		try {
 			ctx.lookup("urn:x:y");					       // Lookup a nonexistent binding
 			fail("Got a binding that doesn't exist");		       // Got something?  Yikes.
-		} catch (NameNotFoundException ex) {}
+		} catch (NameNotFoundException ignored) {}
 
 		try {
 			ctx.bind("urn:y:z", this);				       // Bind an invalid prefix
 			fail("Bound an invalid prefix");			       // Worked?  Dang.
-		} catch (InvalidNameException ex) {}
+		} catch (InvalidNameException ignored) {}
 
 		ctx.bind("urn:x:a", this);					       // Bind something.
 		assertSame(this, ctx.lookup("urn:x:a"));			       // Look it up
@@ -63,7 +63,7 @@ public class TestContextTest extends TestCase {
 		try {
 			ctx.bind("urn:x:a", getClass());			       // Bind it again
 			fail("Able to re-bind");				       // Worked?  Crap.
-		} catch (NameAlreadyBoundException ex) {}
+		} catch (NameAlreadyBoundException ignored) {}
 
 		ctx.rebind("urn:x:a", getClass());				       // Rebind it again
 		assertSame(getClass(), ctx.lookup("urn:x:a"));			       // Look it up

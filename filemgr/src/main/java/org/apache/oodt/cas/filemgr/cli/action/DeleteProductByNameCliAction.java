@@ -22,6 +22,10 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+
+import java.net.MalformedURLException;
 
 /**
  * A {@link CmdLineAction} which deletes a {@link Product} by name.
@@ -34,7 +38,8 @@ public class DeleteProductByNameCliAction extends
    private String productName;
 
    @Override
-   protected Product getProductToDelete() throws Exception {
+   protected Product getProductToDelete()
+       throws CmdLineActionException, MalformedURLException, ConnectionException, CatalogException {
       Validate.notNull(productName, "Must specify productName");
 
       Product p = getClient().getProductByName(productName);

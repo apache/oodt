@@ -17,15 +17,13 @@
 
 package org.apache.oodt.cas.filemgr.metadata;
 
-//OODT imports
-import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * 
  * Met key field names used to augment {@link Product} {@link Metadata} in
- * {@link FileManagerClient#getMetadata(org.apache.oodt.cas.filemgr.structs.Product)}
+ * {@link org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient#getMetadata(org.apache.oodt.cas.filemgr.structs.Product)}
  * and in
- * {@link FileManagerClient#getReducedMetadata(org.apache.oodt.cas.filemgr.structs.Product, java.util.List)}
+ * {@link org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient#getReducedMetadata(org.apache.oodt.cas.filemgr.structs.Product, java.util.List)}
  * .
  * 
  * @see http://issues.apache.org/jira/browse/OODT-72
@@ -33,22 +31,22 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
  */
 public interface ProductMetKeys {
 
-  public static final String PRODUCT_ID = "ProductId";
+  String PRODUCT_ID = "ProductId";
 
-  public static final String PRODUCT_NAME = "ProductName";
+  String PRODUCT_NAME = "ProductName";
 
-  public static final String PRODUCT_STRUCTURE = "ProductStructure";
+  String PRODUCT_STRUCTURE = "ProductStructure";
 
-  public static final String PRODUCT_TRANSFER_STATUS = "ProductTransferStatus";
+  String PRODUCT_TRANSFER_STATUS = "ProductTransferStatus";
 
-  public static final String PRODUCT_ROOT_REFERENCE = "ProductRootReference";
+  String PRODUCT_ROOT_REFERENCE = "ProductRootReference";
 
-  public static final String PRODUCT_DATASTORE_REFS = "ProductDataStoreReferences";
+  String PRODUCT_DATASTORE_REFS = "ProductDataStoreReferences";
 
-  public static final String PRODUCT_ORIG_REFS = "ProductOrigReferences";
+  String PRODUCT_ORIG_REFS = "ProductOrigReferences";
 
-  public static final String PRODUCT_MIME_TYPES = "ProductMimeType";
+  String PRODUCT_MIME_TYPES = "ProductMimeType";
 
-  public static final String PRODUCT_FILE_SIZES = "ProductFileSize";
+  String PRODUCT_FILE_SIZES = "ProductFileSize";
 
 }

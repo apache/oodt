@@ -130,8 +130,9 @@ public class DaemonLauncher implements DaemonLauncherMBean {
     }
 
     private synchronized int getNextDaemonId() {
-        while (this.dm.getUsedIDs().contains(++this.nextDaemonId))
-            ;
+        while (this.dm.getUsedIDs().contains(++this.nextDaemonId)) {
+
+        }
         return this.nextDaemonId;
     }
 
@@ -147,8 +148,9 @@ public class DaemonLauncher implements DaemonLauncherMBean {
         LOG.log(Level.INFO, "Killing current Daemons . . .");
         this.nextDaemonId = 0;
         for (Daemon daemon : this.activeDaemonList) {
-            if (!daemon.getHasBeenToldToQuit())
+            if (!daemon.getHasBeenToldToQuit()) {
                 daemon.quit();
+            }
         }
         activeDaemonList.clear();
     }
@@ -169,12 +171,13 @@ public class DaemonLauncher implements DaemonLauncherMBean {
         LinkedList<File> sitesFiles = new LinkedList<File>();
 
         for (int i = 0; i < args.length; ++i) {
-            if (args[i].equals("--rmiRegistryPort"))
+            if (args[i].equals("--rmiRegistryPort")) {
                 rmiRegPort = Integer.parseInt(args[++i]);
-            else if (args[i].equals("--propertiesFile"))
+            } else if (args[i].equals("--propertiesFile")) {
                 propertiesFile = new File(args[++i]);
-            else if (args[i].equals("--remoteSpecsFile"))
+            } else if (args[i].equals("--remoteSpecsFile")) {
                 sitesFiles.add(new File(args[++i]));
+            }
         }
 
         DaemonLauncher daemonLauncher = new DaemonLauncher(rmiRegPort,
@@ -184,7 +187,7 @@ public class DaemonLauncher implements DaemonLauncherMBean {
         synchronized (daemonLauncher) {
             try {
                 daemonLauncher.wait();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }

@@ -22,6 +22,18 @@
 
 package org.apache.oodt.xmlquery;
 
+import org.apache.oodt.commons.util.EnterpriseEntityResolver;
+import org.apache.oodt.commons.util.XML;
+import org.apache.oodt.product.Retriever;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.SAXException;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileReader;
@@ -30,9 +42,9 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,16 +54,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.oodt.product.Retriever;
-import org.apache.oodt.commons.util.EnterpriseEntityResolver;
-import org.apache.oodt.commons.util.XML;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.SAXException;
 
 /**
  * EDA XML query class. Parses a DIS style keyword query and creates query 
@@ -180,20 +182,32 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 			mimeAccept = new ArrayList();
 			mimeAccept.add("*/*");
 		}
-		if (keywordQuery == null) keywordQuery = "UNKNOWN";
+		if (keywordQuery == null) {
+		  keywordQuery = "UNKNOWN";
+		}
 		// init query header (object attributes)
-		if (id == null) id = new String("UNKNOWN");
-		if (title == null) title = new String("UNKNOWN");
-		if (desc == null) desc = new String("UNKNOWN");
-		if (ddId == null) ddId = new String("UNKNOWN");
+		if (id == null) {
+		  id = "UNKNOWN";
+		}
+		if (title == null) {
+		  title = "UNKNOWN";
+		}
+		if (desc == null) {
+		  desc = "UNKNOWN";
+		}
+		if (ddId == null) {
+		  ddId = "UNKNOWN";
+		}
 		queryHeader = new QueryHeader(id, title, desc, /*type*/"QUERY", /*status*/"ACTIVE", /*security*/"UNKNOWN",
 			/*revision*/"1999-12-12 JSH V1.0 Under Development", ddId);
 
 		// init query attributes
-		if (resultModeId == null) resultModeId = new String("ATTRIBUTE");
+		if (resultModeId == null) {
+		  resultModeId = "ATTRIBUTE";
+		}
 		if (propType == null) {
-			propType = new String("BROADCAST");
-			propLevels = new String("N/A");
+			propType = "BROADCAST";
+			propLevels = "N/A";
 		}
 		this.resultModeId = resultModeId;
 		this.propogationType = propType;
@@ -224,7 +238,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      * @param xmlQueryString  The XML query structure in string format.
      */
 	public XMLQuery (String xmlQueryString) throws SAXException {
-		if (xmlQueryString == null) xmlQueryString = BLANK;
+		if (xmlQueryString == null) {
+		  xmlQueryString = BLANK;
+		}
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setCoalescing(false);
@@ -419,12 +435,8 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
             tokens.whitespaceChars(0, ' ');
             tokens.quoteChar('"');
             tokens.quoteChar('\'');
-	    
-	    if (kqOrParse ()){
-	        return true;
-	    } else {
-	        return false;
-	    }
+
+	  return kqOrParse();
 	}
 
     /**
@@ -535,13 +547,11 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      */
     private static boolean isFromToken (String s1)
 	{
-		String tmpStr = s1;
-	    for (int i = 0; i < FROM_TOKENS.length; i++)
-	    {
-	        if (tmpStr.compareTo(FROM_TOKENS[i]) == 0) {
-	            return true;
-	        }
-	    }
+	  for (String FROM_TOKEN : FROM_TOKENS) {
+		if (s1.compareTo(FROM_TOKEN) == 0) {
+		  return true;
+		}
+	  }
 	    return false;
 	}
 
@@ -567,10 +577,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      */
     private boolean isTokenEqual (String s1) {
 	    String ts;
-	    boolean rc = false;
+	    boolean rc;
 
-	    ts = previous_token;
-       	    if (previous_token.compareTo("") == 0) {
+	  if (previous_token.compareTo("") == 0) {
        	        ts = getNextTokenFromStream ();
 		if (ts.compareTo("") == 0) {
                     rc = false;
@@ -599,7 +608,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      */
    private String getNextTokenFromStream () {
             int c, c2;
-	    String rc = "";
+	    String rc;
             try {
                 switch (c=tokens.nextToken()) {
                     case StreamTokenizer.TT_EOF:
@@ -673,21 +682,21 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
     private String replaceCharWithString (String s1, char c, String rs)
 	{
         int p1, p2, s1l;
-    	String s2;
+    	StringBuilder s2;
     	
-    	p1 = 0; p2 = 0;
-    	s1l = s1.length();
-    	s2 = "";
+    	p1 = 0;
+	  s1l = s1.length();
+    	s2 = new StringBuilder();
     	p2 = s1.indexOf(c, p1);
     	while (p2 >= 0) {
-    	    s2 += s1.substring (p1, p2) + rs;
+    	    s2.append(s1.substring(p1, p2)).append(rs);
             p1 = p2 + 1;
             p2 = s1.indexOf(c, p1);
         }
         if (p1 < s1l) {
-            s2 += s1.substring(p1, s1l);
+            s2.append(s1.substring(p1, s1l));
         }
-        return s2;
+        return s2.toString();
 	}       
        
     /**
@@ -719,36 +728,36 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 	    // create and load queryStatistics
             elem = doc.createElement("queryStatistics");
             query.appendChild(elem);
-            for (Iterator i = statistics.iterator(); i.hasNext();) {
-            Statistic s = (Statistic) i.next();
-            elem.appendChild(s.toXML(doc));
-            }
+	  for (Object statistic : statistics) {
+		Statistic s = (Statistic) statistic;
+		elem.appendChild(s.toXML(doc));
+	  }
 
 	    // create and load querySelectSet
 	    elem = doc.createElement("querySelectSet");
 	    query.appendChild(elem);
 
-	    for (Iterator i = selectElementSet.iterator(); i.hasNext();) {
-		    QueryElement queryElement = (QueryElement) i.next();
-		    elem.appendChild(queryElement.toXML(doc));
-	    }
+	  for (Object aSelectElementSet : selectElementSet) {
+		QueryElement queryElement = (QueryElement) aSelectElementSet;
+		elem.appendChild(queryElement.toXML(doc));
+	  }
 
 	    // create and load queryFromSet
 	    elem = doc.createElement("queryFromSet");
 	    query.appendChild(elem);
 
-	    for (Iterator i = fromElementSet.iterator(); i.hasNext();) {
-		    QueryElement queryElement = (QueryElement) i.next();
-		    elem.appendChild(queryElement.toXML(doc));
-	    }
+	  for (Object aFromElementSet : fromElementSet) {
+		QueryElement queryElement = (QueryElement) aFromElementSet;
+		elem.appendChild(queryElement.toXML(doc));
+	  }
 
 	    // create and load queryWhereSet
 	    elem = doc.createElement("queryWhereSet");
 	    query.appendChild(elem);
-	    for (Iterator i = whereElementSet.iterator(); i.hasNext();) {
-		    QueryElement queryElement = (QueryElement) i.next();
-		    elem.appendChild(queryElement.toXML(doc));
-	    }
+	  for (Object aWhereElementSet : whereElementSet) {
+		QueryElement queryElement = (QueryElement) aWhereElementSet;
+		elem.appendChild(queryElement.toXML(doc));
+	  }
 
 	    query.appendChild(result.toXML(doc));
     }
@@ -810,8 +819,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
                     }
                 }
             }
-            return;
-    }
+	}
 
     /**
      * Replace the dictionary keyword value with the DOM text node value.
@@ -825,8 +833,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
         } else {
                 map.put(nodeName, "UNKNOWN");            
         }
-        return;
-    }
+	}
 
     /**
      * Scan the DOM structure for the SELECT, FROM, or WHERE set.
@@ -838,8 +845,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 	    NodeList children = node.getChildNodes();
 	    for (int i = 0; i < children.getLength(); ++i) {
 		    Node n = children.item(i);
-		    if (n.getNodeType() == Node.ELEMENT_NODE)
-			    list.add(new QueryElement(n));
+		    if (n.getNodeType() == Node.ELEMENT_NODE) {
+			  list.add(new QueryElement(n));
+			}
 	    }
     }
 
@@ -864,8 +872,12 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof XMLQuery)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof XMLQuery)) {
+		  return false;
+		}
 		XMLQuery obj = (XMLQuery) rhs;
 		return resultModeId.equals(obj.resultModeId) && propogationType.equals(obj.propogationType)
 			&& propogationLevels.equals(obj.propogationLevels) && maxResults == obj.maxResults
@@ -879,7 +891,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 		Object rc = null;
 		try {
 			rc = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return rc;
 	}
 
@@ -914,21 +926,25 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 
 		XMLQuery q;
 		if (argv[0].equals("-expr")) {
-			StringBuffer expr = new StringBuffer();
-			for (int i = 1; i < argv.length; ++i)
-				expr.append(argv[i]).append(' ');
+			StringBuilder expr = new StringBuilder();
+			for (int i = 1; i < argv.length; ++i) {
+			  expr.append(argv[i]).append(' ');
+			}
 			q = new XMLQuery(expr.toString().trim(), "expr1", "Command-line Expression Query",
 				"The expression for this query came from the command-line", /*ddId*/ null,
 				/*resultModeId*/ null, /*propType*/ null, /*propLevels*/ null, XMLQuery.DEFAULT_MAX_RESULTS);
 		} else if (argv[0].equals("-file")) {
 			BufferedReader reader = new BufferedReader(new FileReader(argv[1]));
-			StringBuffer str = new StringBuffer();
+			StringBuilder str = new StringBuilder();
 			String line;
-			while ((line = reader.readLine()) != null)
-				str.append(line).append('\n');
+			while ((line = reader.readLine()) != null) {
+			  str.append(line).append('\n');
+			}
 			reader.close();
 			q = new XMLQuery(str.toString());
-		} else throw new IllegalStateException("Can't get here; only -expr or -file allowed, but got \"" + argv[0] + "\"");
+		} else {
+		  throw new IllegalStateException("Can't get here; only -expr or -file allowed, but got \"" + argv[0] + "\"");
+		}
 				
 		System.out.println("kwdQueryString: " + q.getKwdQueryString());
 		System.out.println("fromElementSet: " + q.getFromElementSet());

@@ -18,36 +18,32 @@
 
 package org.apache.oodt.cas.resource.system;
 
-//APACHE imports
-import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 
 //OODTimports
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
-import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.JobStatus;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
-import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
-import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
-import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
-import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
-import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+import org.apache.oodt.cas.resource.structs.exceptions.*;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 
+//APACHE imports
+import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
+
 //JDK imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.FileInputStream;
-import java.io.File;
-import java.io.IOException;
+
 
 /**
  * @author mattmann
@@ -60,6 +56,10 @@ import java.io.IOException;
  */
 public class XmlRpcResourceManagerClient {
 
+    public static final int VAL = 20;
+    public static final int INT = 60;
+    public static final int VAL1 = 60;
+    public static final int INT1 = 60;
     /* our xml rpc client */
     private XmlRpcClient client = null;
 
@@ -101,15 +101,15 @@ public class XmlRpcResourceManagerClient {
         CommonsXmlRpcTransportFactory transportFactory = new CommonsXmlRpcTransportFactory(
                 url);
         int connectionTimeoutMins = Integer
-                .getInteger(
-                        "org.apache.oodt.cas.resource.system.xmlrpc.connectionTimeout.minutes",
-                        20).intValue();
-        int connectionTimeout = connectionTimeoutMins * 60 * 1000;
+            .getInteger(
+                "org.apache.oodt.cas.resource.system.xmlrpc.connectionTimeout.minutes",
+                VAL);
+        int connectionTimeout = connectionTimeoutMins * INT * 1000;
         int requestTimeoutMins = Integer
-                .getInteger(
-                        "org.apache.oodt.cas.resource.system.xmlrpc.requestTimeout.minutes",
-                        60).intValue();
-        int requestTimeout = requestTimeoutMins * 60 * 1000;
+            .getInteger(
+                "org.apache.oodt.cas.resource.system.xmlrpc.requestTimeout.minutes",
+                VAL1);
+        int requestTimeout = requestTimeoutMins * INT1 * 1000;
         transportFactory.setConnectionTimeout(connectionTimeout);
         transportFactory.setTimeout(requestTimeout);
         client = new XmlRpcClient(url, transportFactory);
@@ -125,11 +125,11 @@ public class XmlRpcResourceManagerClient {
         Vector argList = new Vector();
         argList.add(jobId);
 
-        boolean complete = false;
+        boolean complete;
 
         try {
-            complete = ((Boolean) client.execute("resourcemgr.isJobComplete",
-                    argList)).booleanValue();
+            complete = (Boolean) client.execute("resourcemgr.isJobComplete",
+                argList);
         } catch (XmlRpcException e) {
             throw new JobRepositoryException(e.getMessage(), e);
         } catch (IOException e) {
@@ -143,10 +143,10 @@ public class XmlRpcResourceManagerClient {
         Vector argList = new Vector();
         argList.add(jobId);
 
-        Hashtable jobHash = null;
+        Map jobHash;
 
         try {
-            jobHash = (Hashtable) client.execute("resourcemgr.getJobInfo",
+            jobHash = (Map) client.execute("resourcemgr.getJobInfo",
                     argList);
         } catch (XmlRpcException e) {
             throw new JobRepositoryException(e.getMessage(), e);
@@ -161,8 +161,7 @@ public class XmlRpcResourceManagerClient {
         Vector argList = new Vector();
 
         try {
-            return ((Boolean) client.execute("resourcemgr.isAlive", argList))
-                    .booleanValue();
+            return (Boolean) client.execute("resourcemgr.isAlive", argList);
         } catch (XmlRpcException e) {
             return false;
         } catch (IOException e) {
@@ -204,8 +203,7 @@ public class XmlRpcResourceManagerClient {
         argList.add(jobId);
 
         try {
-            return ((Boolean) client.execute("resourcemgr.killJob", argList))
-                    .booleanValue();
+            return (Boolean) client.execute("resourcemgr.killJob", argList);
         } catch (XmlRpcException e) {
             return false;
         } catch (IOException e) {
@@ -233,7 +231,7 @@ public class XmlRpcResourceManagerClient {
 
         LOG.log(Level.FINEST, argList.toString());
 
-        String jobId = null;
+        String jobId;
 
         try {
             jobId = (String) client.execute("resourcemgr.handleJob", argList);
@@ -254,11 +252,11 @@ public class XmlRpcResourceManagerClient {
         argList.add(in.write());
         argList.add(hostUrl.toString());
 
-        boolean success = false;
+        boolean success;
 
         try {
-            success = ((Boolean) client.execute("resourcemgr.handleJob",
-                    argList)).booleanValue();
+            success = (Boolean) client.execute("resourcemgr.handleJob",
+                argList);
         } catch (XmlRpcException e) {
             throw new JobExecutionException(e.getMessage(), e);
         } catch (IOException e) {
@@ -272,7 +270,7 @@ public class XmlRpcResourceManagerClient {
     public List getNodes() throws MonitorException {
         Vector argList = new Vector();
 
-        Vector nodeVector = null;
+        Vector nodeVector;
 
         try {
             nodeVector = (Vector) client.execute("resourcemgr.getNodes",
@@ -291,10 +289,10 @@ public class XmlRpcResourceManagerClient {
         Vector argList = new Vector();
         argList.add(nodeId);
 
-        Hashtable resNodeHash = null;
+        Map resNodeHash;
 
         try {
-            resNodeHash = (Hashtable) client.execute("resourcemgr.getNodeById",
+            resNodeHash = (Map) client.execute("resourcemgr.getNodeById",
                     argList);
         } catch (XmlRpcException e) {
             throw new MonitorException(e.getMessage(), e);
@@ -385,7 +383,7 @@ public class XmlRpcResourceManagerClient {
     	try{
     		Vector<Object> argList = new Vector<Object>();
             argList.add(nodeId);
-            argList.add(new Integer(capacity));
+            argList.add(capacity);
             client.execute("resourcemgr.setNodeCapacity", argList);
     	}catch (Exception e){
     		throw new MonitorException(e.getMessage(), e);
@@ -489,7 +487,7 @@ public class XmlRpcResourceManagerClient {
     }
 
    public List getQueuedJobs() throws JobQueueException{
-        Vector queuedJobs = null;
+        Vector queuedJobs;
            
         try{
 	   queuedJobs = (Vector)client.execute("resourcemgr.getQueuedJobs", new Vector<Object>());
@@ -501,7 +499,7 @@ public class XmlRpcResourceManagerClient {
   }  
 
     public String getNodeReport() throws MonitorException{
-	String report = null;
+	String report;
 	
 	try{
 	    report = (String)client.execute("resourcemgr.getNodeReport", new Vector<Object>());
@@ -514,7 +512,7 @@ public class XmlRpcResourceManagerClient {
 
 
     public String getExecReport() throws JobRepositoryException{
-	String report = null;
+	String report;
 	
 	try{
 	    report = (String)client.execute("resourcemgr.getExecutionReport", new Vector<Object>());
@@ -539,6 +537,8 @@ public class XmlRpcResourceManagerClient {
     } else if (status.equals(JobStatus.KILLED)) {
       return "KILLED";
     }
-    else return null;
+    else {
+        return null;
+    }
   }
 }

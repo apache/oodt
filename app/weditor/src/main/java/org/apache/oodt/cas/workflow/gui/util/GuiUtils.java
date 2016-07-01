@@ -45,17 +45,24 @@ public class GuiUtils {
   protected static AtomicInteger dummyUntitledIter = new AtomicInteger(0);
 
   public static boolean isSubGraph(ModelGraph graph, ModelGraph subGraph) {
-    if (graph.equals(subGraph))
+    if (graph.equals(subGraph)) {
       return true;
-    for (ModelGraph child : graph.getChildren())
-      if (isSubGraph(child, subGraph))
+    }
+    for (ModelGraph child : graph.getChildren()) {
+      if (isSubGraph(child, subGraph)) {
         return true;
-    if (graph.getPreConditions() != null)
-      if (isSubGraph(graph.getPreConditions(), subGraph))
+      }
+    }
+    if (graph.getPreConditions() != null) {
+      if (isSubGraph(graph.getPreConditions(), subGraph)) {
         return true;
-    if (graph.getPostConditions() != null)
-      if (isSubGraph(graph.getPostConditions(), subGraph))
+      }
+    }
+    if (graph.getPostConditions() != null) {
+      if (isSubGraph(graph.getPostConditions(), subGraph)) {
         return true;
+      }
+    }
     return false;
   }
 
@@ -75,8 +82,9 @@ public class GuiUtils {
   public static void addChild(List<ModelGraph> graphs, String parentId,
       ModelGraph child) {
     ModelGraph parent = find(graphs, parentId);
-    if (parent != null)
+    if (parent != null) {
       parent.addChild(child);
+    }
   }
 
   public static List<ModelGraph> findRootGraphs(List<ModelGraph> graphs) {
@@ -112,8 +120,9 @@ public class GuiUtils {
         return rootGraph;
       } else if (graph.getParent() != null) {
         ModelGraph root = findRoot(rootGraphs, graph.getParent());
-        if (root != null)
+        if (root != null) {
           return root;
+        }
       }
     }
     return null;
@@ -123,8 +132,9 @@ public class GuiUtils {
     Vector<ModelGraph> foundGraphs = new Vector<ModelGraph>();
     for (String id : ids) {
       ModelGraph graph = find(graphs, id);
-      if (graph != null)
+      if (graph != null) {
         foundGraphs.add(graph);
+      }
     }
     return foundGraphs;
   }
@@ -132,8 +142,9 @@ public class GuiUtils {
   public static ModelGraph find(List<ModelGraph> graphs, String id) {
     for (ModelGraph graph : graphs) {
       ModelGraph found = graph.recursiveFind(id);
-      if (found != null)
+      if (found != null) {
         return found;
+      }
     }
     return null;
   }
@@ -144,8 +155,9 @@ public class GuiUtils {
         return graphs.remove(i);
       } else {
         ModelGraph graph = removeNode(graphs.get(i), node);
-        if (graph != null)
+        if (graph != null) {
           return graph;
+        }
       }
     }
     return null;
@@ -161,10 +173,12 @@ public class GuiUtils {
         return curGraph;
       } else {
         stack.addAll(curGraph.getChildren());
-        if (curGraph.getPreConditions() != null)
+        if (curGraph.getPreConditions() != null) {
           stack.add(curGraph.getPreConditions());
-        if (curGraph.getPostConditions() != null)
+        }
+        if (curGraph.getPostConditions() != null) {
           stack.add(curGraph.getPostConditions());
+        }
       }
     }
     return null;
@@ -172,8 +186,9 @@ public class GuiUtils {
 
   public static List<Line> findSequentialLines(List<ModelGraph> graphs) {
     Vector<Line> lines = new Vector<Line>();
-    for (ModelGraph graph : graphs)
+    for (ModelGraph graph : graphs) {
       lines.addAll(findSequentialLines(graph));
+    }
     return lines;
   }
 
@@ -185,9 +200,10 @@ public class GuiUtils {
       while (!stack.empty()) {
         ModelGraph curGraph = stack.pop();
         if (curGraph.getModel().getExecutionType().equals("sequential")) {
-          for (int i = 0; i < curGraph.getChildren().size() - 1; i++)
+          for (int i = 0; i < curGraph.getChildren().size() - 1; i++) {
             lines.add(new Line(curGraph.getChildren().get(i).getModel(),
                 curGraph.getChildren().get(i + 1).getModel()));
+          }
         }
         stack.addAll(curGraph.getChildren());
       }
@@ -197,8 +213,9 @@ public class GuiUtils {
 
   public static List<Line> findLines(final List<ModelGraph> graphs) {
     Vector<Line> lines = new Vector<Line>();
-    for (ModelGraph graph : graphs)
+    for (ModelGraph graph : graphs) {
       lines.addAll(findLines(graph));
+    }
     return lines;
   }
 
@@ -211,8 +228,9 @@ public class GuiUtils {
         ModelGraph curGraph = graphs.pop();
         if (curGraph.getModel().isParentType()) {
 
-          if (curGraph.getChildren().size() == 0)
+          if (curGraph.getChildren().size() == 0) {
             curGraph.addChild(new ModelGraph(createDummyNode()));
+          }
 
           List<Line> relaventLines = getRelaventLines(lines, curGraph
               .getModel().getId());
@@ -222,43 +240,49 @@ public class GuiUtils {
                 .equals("sequential")) {
               lines.remove(index);
               if (curGraph.getChildren().size() > 0) {
-                if (relaventLine.getFromModel().equals(curGraph.getModel()))
+                if (relaventLine.getFromModel().equals(curGraph.getModel())) {
                   lines.add(new Line(curGraph.getChildren()
-                      .get(curGraph.getChildren().size() - 1).getModel(),
+                                             .get(curGraph.getChildren().size() - 1).getModel(),
                       relaventLine.getToModel()));
-                else
+                } else {
                   lines.add(new Line(relaventLine.getFromModel(), curGraph
                       .getChildren().get(0).getModel()));
+                }
               }
             } else if (curGraph.getModel().getExecutionType().toLowerCase()
                 .equals("parallel")) {
               lines.remove(index);
-              if (relaventLine.getFromModel().equals(curGraph.getModel()))
-                for (ModelGraph child : curGraph.getChildren())
+              if (relaventLine.getFromModel().equals(curGraph.getModel())) {
+                for (ModelGraph child : curGraph.getChildren()) {
                   lines.add(new Line(child.getModel(), relaventLine
                       .getToModel()));
-              else
-                for (ModelGraph child : curGraph.getChildren())
+                }
+              } else {
+                for (ModelGraph child : curGraph.getChildren()) {
                   lines.add(new Line(relaventLine.getFromModel(), child
                       .getModel()));
+                }
+              }
             }
           }
 
           if (curGraph.getModel().getExecutionType().toLowerCase()
               .equals("sequential")) {
             for (int i = 0; i < curGraph.getChildren().size(); i++) {
-              if (i == curGraph.getChildren().size() - 1)
+              if (i == curGraph.getChildren().size() - 1) {
                 lines.add(new Line(curGraph.getChildren().get(i).getModel(),
                     null));
-              else
+              } else {
                 lines.add(new Line(curGraph.getChildren().get(i).getModel(),
                     curGraph.getChildren().get(i + 1).getModel()));
+              }
             }
           } else if (curGraph.getModel().getExecutionType().toLowerCase()
               .equals("parallel")) {
-            for (int i = 0; i < curGraph.getChildren().size(); i++)
+            for (int i = 0; i < curGraph.getChildren().size(); i++) {
               lines
                   .add(new Line(curGraph.getChildren().get(i).getModel(), null));
+            }
           }
           graphs.addAll(curGraph.getChildren());
         }
@@ -299,44 +323,54 @@ public class GuiUtils {
 
   public static Line getLine(List<Line> lines, ModelNode fromModel,
       ModelNode toModel) {
-    for (Line line : lines)
+    for (Line line : lines) {
       if (line.getFromModel().equals(fromModel)
-          && line.getToModel().equals(toModel))
+          && line.getToModel().equals(toModel)) {
         return line;
+      }
+    }
     return null;
   }
 
   public static List<Line> getRelaventLines(List<Line> lines, String id) {
     List<Line> relaventLines = new Vector<Line>();
-    for (Line line : lines)
+    for (Line line : lines) {
       if ((line.getFromModel() != null && line.getFromModel().getId()
-          .equals(id))
-          || (line.getToModel() != null && line.getToModel().getId().equals(id)))
+                                              .equals(id))
+          || (line.getToModel() != null && line.getToModel().getId().equals(id))) {
         relaventLines.add(line);
+      }
+    }
     return relaventLines;
   }
 
   public static List<Line> getChildrenLines(List<Line> lines, String id) {
     List<Line> relaventLines = new Vector<Line>();
-    for (Line line : lines)
-      if (line.getFromModel().getId().equals(id))
+    for (Line line : lines) {
+      if (line.getFromModel().getId().equals(id)) {
         relaventLines.add(line);
+      }
+    }
     return relaventLines;
   }
 
   public static List<Line> getParentLines(List<Line> lines, String id) {
     List<Line> relaventLines = new Vector<Line>();
-    for (Line line : lines)
-      if (line.getToModel().getId().equals(id))
+    for (Line line : lines) {
+      if (line.getToModel().getId().equals(id)) {
         relaventLines.add(line);
+      }
+    }
     return relaventLines;
   }
 
   public static List<Line> getStartingLines(List<Line> lines) {
     Vector<Line> startingLines = new Vector<Line>();
-    for (Line line : lines)
-      if (getParentLines(lines, line.getFromModel().getId()).size() == 0)
+    for (Line line : lines) {
+      if (getParentLines(lines, line.getFromModel().getId()).size() == 0) {
         startingLines.add(line);
+      }
+    }
     return startingLines;
   }
 

@@ -15,9 +15,6 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
-
 /** LDAP services.
  *
  * This class provides LDAP convenience services.
@@ -32,7 +29,7 @@ public class LDAP {
 	 * @return An escaped, LDAP-safe string.
 	 */
 	public static String toLDAPString(String str) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
 			switch (ch) {

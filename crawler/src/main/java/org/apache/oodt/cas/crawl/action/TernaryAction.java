@@ -50,13 +50,13 @@ public class TernaryAction extends CrawlerAction {
       if (passedCondition) {
          LOG.info("Performing action (id = " + successAction.getId()
                + " : description = " + successAction.getDescription() + ")");
-         return (successAction == null) ? true : successAction.performAction(
-               product, metadata);
+         return (successAction == null) || successAction.performAction(
+             product, metadata);
       } else {
          LOG.info("Performing action (id = " + failureAction.getId()
                + " : description = " + failureAction.getDescription() + ")");
-         return (failureAction == null) ? true : failureAction.performAction(
-               product, metadata);
+         return (failureAction == null) || failureAction.performAction(
+             product, metadata);
       }
    }
 

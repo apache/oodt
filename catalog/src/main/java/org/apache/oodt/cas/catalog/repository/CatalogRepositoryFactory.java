@@ -29,6 +29,6 @@ import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
  */
 public interface CatalogRepositoryFactory {
 
-	public CatalogRepository createRepository() throws CatalogRepositoryException;
+	CatalogRepository createRepository() throws CatalogRepositoryException;
 	
 }

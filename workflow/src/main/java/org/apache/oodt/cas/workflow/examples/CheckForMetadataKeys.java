@@ -28,8 +28,9 @@ public class CheckForMetadataKeys implements WorkflowConditionInstance {
         String[] reqMetKeys = (config.getProperty("reqMetKeys") + ",")
                 .split(",");
         for (String reqMetKey : reqMetKeys) {
-            if (!metadata.containsKey(reqMetKey))
-                return false;
+            if (!metadata.containsKey(reqMetKey)) {
+              return false;
+            }
         }
         return true;
     }

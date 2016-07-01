@@ -38,8 +38,8 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
  */
 public class QueryCliAction  extends CatalogServiceCliAction {
 
-   protected String query;
-   protected Set<String> catalogIds;
+   private String query;
+   private Set<String> catalogIds;
 
    @Override
    public void execute(ActionMessagePrinter printer)
@@ -49,7 +49,7 @@ public class QueryCliAction  extends CatalogServiceCliAction {
 
          QueryExpression queryExpression = QueryParser
                .parseQueryExpression(query);
-         QueryPager queryPager = null;
+         QueryPager queryPager;
          if (catalogIds == null) {
             queryPager = getClient().query(queryExpression);
          } else {
@@ -60,12 +60,10 @@ public class QueryCliAction  extends CatalogServiceCliAction {
          for (TransactionalMetadata tMet : transactionMetadatas) {
             printer.print("ID: " + tMet.getTransactionId() + " ; CatalogIDs: "
                   + tMet.getCatalogIds() + " ; Metadata: (");
-            StringBuffer sb = new StringBuffer("");
-            for (Object metKey : tMet.getMetadata().getHashtable().keySet()) {
-               sb.append(metKey
-                     + "="
-                     + tMet.getMetadata().getAllMetadata((String) metKey)
-                           .toString().replaceAll("[\\[\\]]", "'") + ", ");
+            StringBuilder sb = new StringBuilder("");
+            for (Object metKey : tMet.getMetadata().getMap().keySet()) {
+               sb.append(metKey).append("=").append(tMet.getMetadata().getAllMetadata((String) metKey)
+                                                        .toString().replaceAll("[\\[\\]]", "'")).append(", ");
             }
             printer.println(sb.substring(0, sb.length() - 2) + ")");
          }
@@ -81,5 +79,17 @@ public class QueryCliAction  extends CatalogServiceCliAction {
 
    public void setCatalogIds(List<String> catalogIds) {
       this.catalogIds = new HashSet<String>(catalogIds);
+   }
+
+   public String getQuery() {
+      return query;
+   }
+
+   public Set<String> getCatalogIds() {
+      return catalogIds;
+   }
+
+   public void setCatalogIds(Set<String> catalogIds) {
+      this.catalogIds = catalogIds;
    }
 }

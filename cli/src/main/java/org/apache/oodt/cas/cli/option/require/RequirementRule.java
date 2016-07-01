@@ -27,10 +27,10 @@ import org.apache.oodt.cas.cli.action.CmdLineAction;
  */
 public interface RequirementRule {
 
-   public enum Relation {
+   enum Relation {
       REQUIRED, OPTIONAL, NONE
    }
 
-   public Relation getRelation(CmdLineAction action);
+   Relation getRelation(CmdLineAction action);
 
 }

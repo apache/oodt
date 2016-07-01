@@ -47,12 +47,17 @@ public class ObjectTimeEvent<objType> extends TimeEvent {
         if (obj instanceof ObjectTimeEvent) {
             ObjectTimeEvent<?> ote = (ObjectTimeEvent<?>) obj;
             return super.equals(obj) && this.timeObj.equals(ote.timeObj);
-        } else
+        } else {
             return false;
+        }
     }
 
     public String toString() {
         return super.toString() + " - " + timeObj;
     }
 
+    @Override
+    public int hashCode() {
+        return timeObj != null ? timeObj.hashCode() : 0;
+    }
 }

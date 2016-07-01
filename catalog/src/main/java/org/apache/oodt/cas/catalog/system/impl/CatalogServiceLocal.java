@@ -16,38 +16,11 @@
  */
 package org.apache.oodt.cas.catalog.system.impl;
 
-//JDK imports
-import java.io.File;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Vector;
-import java.util.Map.Entry;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.exception.CatalogException;
-import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.mapping.IngestMapper;
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
-import org.apache.oodt.cas.catalog.page.CatalogReceipt;
-import org.apache.oodt.cas.catalog.page.Page;
-import org.apache.oodt.cas.catalog.page.PageInfo;
-import org.apache.oodt.cas.catalog.page.ProcessedPageInfo;
-import org.apache.oodt.cas.catalog.page.QueryPager;
-import org.apache.oodt.cas.catalog.page.TransactionReceipt;
+import org.apache.oodt.cas.catalog.page.*;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
 import org.apache.oodt.cas.catalog.query.WrapperQueryExpression;
@@ -61,6 +34,17 @@ import org.apache.oodt.cas.catalog.system.CatalogService;
 import org.apache.oodt.cas.catalog.util.PluginURL;
 import org.apache.oodt.cas.catalog.util.QueryUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+
+//JDK imports
+import java.io.File;
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * @author bfoster
@@ -104,7 +88,7 @@ public class CatalogServiceLocal implements CatalogService {
 			this.disableIntersectingCrossCatalogQueries = disableIntersectingCrossCatalogQueries;
 			this.crossCatalogResultSortingThreshold = crossCatalogResultSortingThreshold;
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE,e.getMessage());
 			throw new InstantiationException(e.getMessage());
 		}
 	}
@@ -112,7 +96,6 @@ public class CatalogServiceLocal implements CatalogService {
 	/**
 	 * Set the CatalogRepository for this CatalogService, with replace existing CatalogRepository
 	 * and immediately load all Catalogs from it.
-	 * @param repository The CatalogRepository to be used by this CatalogService
 	 * @throws CatalogServiceException On Error loading given CatalogRepository
 	 */
 	protected void setCatalogRepository(CatalogRepository catalogRepository) throws CatalogServiceException {
@@ -196,8 +179,7 @@ public class CatalogServiceLocal implements CatalogService {
 	}
 
 	/**
-	 * 
-	 * @param transactionIdClass
+	 *
 	 */
 	protected void setTransactionIdFactory(
 			TransactionIdFactory transactionIdFactory) {
@@ -208,7 +190,7 @@ public class CatalogServiceLocal implements CatalogService {
 		if (!this.containsCatalog(catalogId)) {
 			try {
 				this.replaceCatalog(new Catalog(catalogId, index, null, false, false));
-			}catch (Exception e) {
+			}catch (Exception ignored) {
 				
 			}
 		} else {
@@ -220,7 +202,7 @@ public class CatalogServiceLocal implements CatalogService {
 		if (!this.containsCatalog(catalogId)) {
 			try {
 				this.replaceCatalog(new Catalog(catalogId, index, dictionaries, false, false));
-			}catch (Exception e) {
+			}catch (Exception ignored) {
 				
 			}
 		} else {
@@ -232,7 +214,7 @@ public class CatalogServiceLocal implements CatalogService {
 		if (!this.containsCatalog(catalogId)) {
 			try {
 				this.replaceCatalog(new Catalog(catalogId, index, dictionaries, restrictQueryPermission, restrictIngestPermission));
-			}catch (Exception e) {
+			}catch (Exception ignored) {
 				
 			}
 		} else {
@@ -288,14 +270,18 @@ public class CatalogServiceLocal implements CatalogService {
 				backupCatalogs = new HashSet<Catalog>(this.catalogs);
 				for (Catalog catalog : this.catalogs) {
 					if (catalog.getId().equals(catalogId)) {
-						if (dictionaries != null)
-							catalog.setDictionaries(dictionaries);
-						if (index != null)
-							catalog.setIndex(index);
-						if (restrictQueryPermission != null)
-							catalog.setRestrictQueryPermissions(restrictQueryPermissions);
-						if (restrictIngestPermission != null)
-							catalog.setRestrictIngestPermissions(restrictIngestPermissions);
+						if (dictionaries != null) {
+						  catalog.setDictionaries(dictionaries);
+						}
+						if (index != null) {
+						  catalog.setIndex(index);
+						}
+						if (restrictQueryPermission != null) {
+						  catalog.setRestrictQueryPermissions(restrictQueryPermissions);
+						}
+						if (restrictIngestPermission != null) {
+						  catalog.setRestrictIngestPermissions(restrictIngestPermissions);
+						}
 						this.catalogRepository.serializeCatalog(catalog);
 						break;
 					}
@@ -328,16 +314,17 @@ public class CatalogServiceLocal implements CatalogService {
 	 * URNs equals that of an existing Catalog. 
 	 */	
 	public void addCatalog(Catalog catalog) throws CatalogServiceException {
-		if (!this.containsCatalog(catalog.getId()))
-			this.replaceCatalog(catalog);
-		else
-			LOG.log(Level.WARNING, "Attempt to override an existing catalog '" + catalog + "' already used in CatalogService, remedy and retry add -- no changes took place!");
+		if (!this.containsCatalog(catalog.getId())) {
+		  this.replaceCatalog(catalog);
+		} else {
+		  LOG.log(Level.WARNING, "Attempt to override an existing catalog '" + catalog
+								 + "' already used in CatalogService, remedy and retry add -- no changes took place!");
+		}
 	}
 	
 	/**
 	 * Ability to dynamically add a Catalog to this CatalogService for managing
 	 * @param catalog Catalog for this CatalogService to manage
-	 * @param allowOverride True to allow adding Catalog to override existing Catalog with same URN
 	 * @throws CatalogServiceException When allowOverride=false and one of the adding Catalog
 	 * URNs equals that of an existing Catalog. 
 	 */
@@ -363,7 +350,6 @@ public class CatalogServiceLocal implements CatalogService {
 	
 	/**
 	 * 
-	 * @param catalogUrn
 	 * @throws CatalogServiceException
 	 */
 	public void removeCatalog(String catalogId, boolean preserveMapping) throws CatalogServiceException {
@@ -393,9 +379,7 @@ public class CatalogServiceLocal implements CatalogService {
 						try {
 							LOG.log(Level.INFO, "Deleting all index mappings for catalog '" + rmCatalog + "'");
 							this.ingestMapper.deleteAllMappingsForCatalog(catalogId);
-						}catch (Exception e) {
-							throw e;
-						}finally {
+						} finally {
 							this.ingestMapperLock.writeLock().unlock();
 						}
 					}
@@ -459,9 +443,11 @@ public class CatalogServiceLocal implements CatalogService {
 	protected Catalog getCatalog(String catalogUrn) throws CatalogServiceException {
 		this.catalogsLock.readLock().lock();
 		try {
-			for (Catalog catalog : this.catalogs)
-				if (catalog.getId().equals(catalogUrn))
-					return catalog;
+			for (Catalog catalog : this.catalogs) {
+			  if (catalog.getId().equals(catalogUrn)) {
+				return catalog;
+			  }
+			}
 			return null;
 		}catch (Exception e) {
 			throw new CatalogServiceException("Failed to get catalog catalog '" +  catalogUrn + "' : " + e.getMessage(), e);
@@ -479,8 +465,9 @@ public class CatalogServiceLocal implements CatalogService {
 		this.catalogsLock.readLock().lock();
 		try {
 			Set<String> catalogIds = new HashSet<String>();
-			for (Catalog catalog : this.catalogs) 
-				catalogIds.add(catalog.getId());
+			for (Catalog catalog : this.catalogs) {
+			  catalogIds.add(catalog.getId());
+			}
 			return catalogIds;
 		}catch (Exception e) {
 			throw new CatalogServiceException("Failed to get current catalog ids list : " + e.getMessage(), e);
@@ -490,13 +477,17 @@ public class CatalogServiceLocal implements CatalogService {
 	}
 		
 	public TransactionReceipt ingest(Metadata metadata) throws CatalogServiceException {
-		if (this.restrictIngestPermissions) 
-			throw new CatalogServiceException("Ingest permissions are restricted for this CatalogService -- request denied");
+		if (this.restrictIngestPermissions) {
+		  throw new CatalogServiceException(
+			  "Ingest permissions are restricted for this CatalogService -- request denied");
+		}
 		try {	
-			boolean performUpdate = false;
+			boolean performUpdate;
 			TransactionId<?> catalogServiceTransactionId = this.getCatalogServiceTransactionId(metadata);
-			if (performUpdate = this.ingestMapper.hasCatalogServiceTransactionId(catalogServiceTransactionId)) 
-				LOG.log(Level.INFO, "TransactionId '" + catalogServiceTransactionId + "' is an existing TransactionId, switching to update mode");
+			if (performUpdate = this.ingestMapper.hasCatalogServiceTransactionId(catalogServiceTransactionId)) {
+			  LOG.log(Level.INFO, "TransactionId '" + catalogServiceTransactionId
+								  + "' is an existing TransactionId, switching to update mode");
+			}
 			List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
 			for (Catalog catalog : this.getFilteredCatalogList(metadata)) {			
 				if (catalog.isIngestable()) {
@@ -504,8 +495,11 @@ public class CatalogServiceLocal implements CatalogService {
 					try {
 						// perform update
 						if (performUpdate) {
-							if (!Boolean.parseBoolean(metadata.getMetadata(ENABLE_UPDATE_MET_KEY)))
-								throw new CatalogServiceException("TransactionId '" + catalogServiceTransactionId + "' already exists -- enable update by setting metadata key '" + ENABLE_UPDATE_MET_KEY + "'=true");
+							if (!Boolean.parseBoolean(metadata.getMetadata(ENABLE_UPDATE_MET_KEY))) {
+							  throw new CatalogServiceException("TransactionId '" + catalogServiceTransactionId
+																+ "' already exists -- enable update by setting metadata key '"
+																+ ENABLE_UPDATE_MET_KEY + "'=true");
+							}
 							TransactionId<?> catalogTransactionId = this.ingestMapper.getCatalogTransactionId(catalogServiceTransactionId, catalog.getId());
 							if (catalogTransactionId != null) {
 								CatalogReceipt catalogReceipt = catalog.update(catalogTransactionId, metadata);
@@ -536,8 +530,10 @@ public class CatalogServiceLocal implements CatalogService {
 						}
 					}catch (Exception e) {
 						LOG.log(Level.WARNING, "Failed to add metadata to catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
-						if (this.oneCatalogFailsAllFail)
-							throw new CatalogServiceException("Failed to add metadata to catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
+						if (this.oneCatalogFailsAllFail) {
+						  throw new CatalogServiceException(
+							  "Failed to add metadata to catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
+						}
 					}finally {
 						this.ingestMapperLock.writeLock().unlock();
 					}
@@ -557,8 +553,10 @@ public class CatalogServiceLocal implements CatalogService {
 	 * @throws CatalogServiceException
 	 */
 	public void delete(Metadata metadata) throws CatalogServiceException {
-		if (this.restrictIngestPermissions)
-			throw new CatalogServiceException("Delete permissions are restricted for this CatalogService -- request denied");
+		if (this.restrictIngestPermissions) {
+		  throw new CatalogServiceException(
+			  "Delete permissions are restricted for this CatalogService -- request denied");
+		}
 		TransactionId<?> catalogServiceTransactionId = this.getCatalogServiceTransactionId(metadata, false);
 		if (catalogServiceTransactionId != null) {
 			for (Catalog catalog : this.getFilteredCatalogList(metadata)) {
@@ -588,8 +586,11 @@ public class CatalogServiceLocal implements CatalogService {
 						}
 					}catch (Exception e) {
 						LOG.log(Level.WARNING, "Error occured while deleting metadata for TransactionId [id = " + catalogServiceTransactionId + "] : " + e.getMessage(), e);
-						if (this.oneCatalogFailsAllFail)
-							throw new CatalogServiceException("Error occured while deleting metadata for TransactionId [id = " + catalogServiceTransactionId + "] : " + e.getMessage(), e);
+						if (this.oneCatalogFailsAllFail) {
+						  throw new CatalogServiceException(
+							  "Error occured while deleting metadata for TransactionId [id = "
+							  + catalogServiceTransactionId + "] : " + e.getMessage(), e);
+						}
 					}finally {
 						this.ingestMapperLock.writeLock().unlock();
 					}
@@ -603,9 +604,12 @@ public class CatalogServiceLocal implements CatalogService {
 	}
 	
 	protected boolean doReduce(Metadata metadata) {
-		for (String key : metadata.getAllKeys())
-			if (!(key.equals(CATALOG_SERVICE_TRANSACTION_ID_MET_KEY) || key.equals(CATALOG_IDS_MET_KEY) || key.equals(CATALOG_TRANSACTION_ID_MET_KEY) || key.equals(CATALOG_ID_MET_KEY)))
-				return true;
+		for (String key : metadata.getAllKeys()) {
+		  if (!(key.equals(CATALOG_SERVICE_TRANSACTION_ID_MET_KEY) || key.equals(CATALOG_IDS_MET_KEY) || key
+			  .equals(CATALOG_TRANSACTION_ID_MET_KEY) || key.equals(CATALOG_ID_MET_KEY))) {
+			return true;
+		  }
+		}
 		return false;
 	}
 	
@@ -614,13 +618,19 @@ public class CatalogServiceLocal implements CatalogService {
 		for (Catalog catalog : this.getCurrentCatalogList()) {
 			try {
 				String val = catalog.getProperty(key);
-				if (val != null)
-					vals.add(val);
+				if (val != null) {
+				  vals.add(val);
+				}
 			}catch (Exception e) {
-				if (this.oneCatalogFailsAllFail)
-					throw new CatalogServiceException("Failed to get catalog property '" + key + "' from catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
-				else
-					LOG.log(Level.WARNING, "Failed to get catalog property '" + key + "' from catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
+				if (this.oneCatalogFailsAllFail) {
+				  throw new CatalogServiceException(
+					  "Failed to get catalog property '" + key + "' from catalog '" + catalog.getId() + "' : " + e
+						  .getMessage(), e);
+				} else {
+				  LOG.log(Level.WARNING,
+					  "Failed to get catalog property '" + key + "' from catalog '" + catalog.getId() + "' : " + e
+						  .getMessage(), e);
+				}
 			}
 		}
 		return vals;
@@ -633,17 +643,21 @@ public class CatalogServiceLocal implements CatalogService {
 				Properties catalogProperties = catalog.getProperties();
 				for (Object key : catalogProperties.keySet()) {
 					String value = properties.getProperty((String) key);
-					if (value != null)
-						value += "," + catalogProperties.getProperty((String) key);
-					else 
-						value = catalogProperties.getProperty((String) key);
+					if (value != null) {
+					  value += "," + catalogProperties.getProperty((String) key);
+					} else {
+					  value = catalogProperties.getProperty((String) key);
+					}
 					properties.setProperty((String) key, value);
 				}
 			}catch (Exception e) {
-				if (this.oneCatalogFailsAllFail)
-					throw new CatalogServiceException("Failed to get catalog properties from catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
-				else
-					LOG.log(Level.WARNING, "Failed to get catalog properties from catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
+				if (this.oneCatalogFailsAllFail) {
+				  throw new CatalogServiceException(
+					  "Failed to get catalog properties from catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
+				} else {
+				  LOG.log(Level.WARNING,
+					  "Failed to get catalog properties from catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
+				}
 			}
 		}
 		return properties;
@@ -652,10 +666,11 @@ public class CatalogServiceLocal implements CatalogService {
 	public Properties getCalalogProperties(String catalogUrn) throws CatalogServiceException {
 		try {
 			Catalog catalog = this.getCatalog(catalogUrn);
-			if (catalog != null)
-				return catalog.getProperties();
-			else 
-				return null;
+			if (catalog != null) {
+			  return catalog.getProperties();
+			} else {
+			  return null;
+			}
 		}catch (Exception e) {
 			throw new CatalogServiceException("Failed to get catalog properties from catalog '" + catalogUrn + "' : " + e.getMessage(), e);
 		}
@@ -692,8 +707,9 @@ public class CatalogServiceLocal implements CatalogService {
 					for (String catalogId : catalogToSizeOfMap.keySet()) {
 						Catalog catalog = this.getCatalog(catalogId);
 						QueryExpression qe = this.reduceToUnderstoodExpressions(catalog, queryExpression);
-						if (qe != null)
-							catalogReceipts.addAll(catalog.query(qe));
+						if (qe != null) {
+						  catalogReceipts.addAll(catalog.query(qe));
+						}
 					}
 					List<TransactionReceipt> transactionReceipts = this.getPossiblyUnindexedTransactionReceipts(catalogReceipts);
 					LOG.log(Level.INFO, "Sorting Query Results . . . ");
@@ -717,8 +733,9 @@ public class CatalogServiceLocal implements CatalogService {
 							if (qe != null) {
 								List<CatalogReceipt> receipts = catalog.query(qe, desiredStartingIndex - currentIndex, Math.min((desiredStartingIndex - currentIndex) + pageInfo.getPageSize(), entry.getValue()));
 								pageOfReceipts.addAll(receipts);
-								if (pageOfReceipts.size() >= pageInfo.getPageSize())
-									break;
+								if (pageOfReceipts.size() >= pageInfo.getPageSize()) {
+								  break;
+								}
 							}
 						}else {
 							currentIndex += entry.getValue();
@@ -755,13 +772,14 @@ public class CatalogServiceLocal implements CatalogService {
 	/**
 	 * 
 	 * @param queryExpression
-	 * @param indexPage
 	 * @return
 	 * @throws CatalogServiceException
 	 */
 	public List<TransactionReceipt> _query(QueryExpression queryExpression, Set<String> catalogIds) throws CatalogServiceException {
-		if (this.restrictQueryPermissions)
-			throw new CatalogServiceException("Query permissions are restricted for this CatalogService -- request denied");
+		if (this.restrictQueryPermissions) {
+		  throw new CatalogServiceException(
+			  "Query permissions are restricted for this CatalogService -- request denied");
+		}
 		try {
 			LOG.log(Level.INFO, "Recieved query '" + queryExpression + "'");
 			if (this.simplifyQueries) {
@@ -780,10 +798,15 @@ public class CatalogServiceLocal implements CatalogService {
 							catalogReceipts.addAll(catalog.query(reducedExpression));
 						}
 					}catch (Exception e) {
-						if (this.oneCatalogFailsAllFail)
-							throw new CatalogServiceException("Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : " + e.getMessage(), e);
-						else
-							LOG.log(Level.WARNING, "Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : " + e.getMessage(), e);
+						if (this.oneCatalogFailsAllFail) {
+						  throw new CatalogServiceException(
+							  "Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : "
+							  + e.getMessage(), e);
+						} else {
+						  LOG.log(Level.WARNING,
+							  "Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : "
+							  + e.getMessage(), e);
+						}
 					}	
 				}
 			}
@@ -799,7 +822,7 @@ public class CatalogServiceLocal implements CatalogService {
 			LOG.log(Level.INFO, "Query returned " + transactionReceipts.size() + " results");
 			return transactionReceipts;
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogServiceException("Failed to get TransactionId to Metadata map for query '" + queryExpression + "' : " + e.getMessage(), e);
 		}
 	}
@@ -812,16 +835,18 @@ public class CatalogServiceLocal implements CatalogService {
  				TransactionId<?> catalogServiceTransactionId = this.getCatalogServiceTransactionId(catalogReceipt.getTransactionId(), catalogReceipt.getCatalogId());
  				if (catalogServiceTransactionId != null) {
  					List<CatalogReceipt> found = existing.get(catalogServiceTransactionId);
- 					if (found == null) 
- 						found = new Vector<CatalogReceipt>();
+ 					if (found == null) {
+					  found = new Vector<CatalogReceipt>();
+					}
  					found.add(catalogReceipt);	
  					existing.put(catalogServiceTransactionId, found);
  				}else {
  					returnList.add(new TransactionReceipt(null, Collections.singletonList(catalogReceipt)));
  				}
  			}
- 			for (TransactionId<?> transactionId : existing.keySet())
- 				returnList.add(new TransactionReceipt(transactionId, existing.get(transactionId)));
+ 			for (Map.Entry<TransactionId<?>, List<CatalogReceipt>> transactionId : existing.entrySet()) {
+			  returnList.add(new TransactionReceipt(transactionId.getKey(), existing.get(transactionId.getKey())));
+			}
  			return returnList;
 		}catch (Exception e) {
 			throw new CatalogServiceException(e.getMessage(), e);
@@ -832,10 +857,11 @@ public class CatalogServiceLocal implements CatalogService {
 		List<TransactionReceipt> indexedReceipts = new Vector<TransactionReceipt>();
 		for (TransactionReceipt transactionReceipt : transactionReceipts) {
 			try {
-//				for (CatalogReceipt catalogReceipt : transactionReceipt.getCatalogReceipts()) {
-					if (transactionReceipt.getTransactionId() == null)
-						transactionReceipt = new TransactionReceipt(this.getCatalogServiceTransactionId(transactionReceipt.getCatalogReceipts().get(0), true), transactionReceipt.getCatalogReceipts());
-//				}
+					if (transactionReceipt.getTransactionId() == null) {
+					  transactionReceipt = new TransactionReceipt(
+						  this.getCatalogServiceTransactionId(transactionReceipt.getCatalogReceipts().get(0), true),
+						  transactionReceipt.getCatalogReceipts());
+					}
 				indexedReceipts.add(transactionReceipt);
 			}catch(Exception e) {
 				throw new CatalogServiceException(e.getMessage(), e);
@@ -862,8 +888,9 @@ public class CatalogServiceLocal implements CatalogService {
 	
 	public List<TransactionalMetadata> getMetadataFromTransactionIdStrings(List<String> catalogServiceTransactionIdStrings) throws CatalogServiceException {
 		List<TransactionId<?>> catalogServiceTransactionIds = new Vector<TransactionId<?>>();
-		for (String catalogServiceTransactionIdString : catalogServiceTransactionIdStrings) 
-			catalogServiceTransactionIds.add(this.generateTransactionId(catalogServiceTransactionIdString));
+		for (String catalogServiceTransactionIdString : catalogServiceTransactionIdStrings) {
+		  catalogServiceTransactionIds.add(this.generateTransactionId(catalogServiceTransactionIdString));
+		}
 		return this.getMetadataFromTransactionIds(catalogServiceTransactionIds);
 	}
 	
@@ -878,14 +905,21 @@ public class CatalogServiceLocal implements CatalogService {
 					metadata.addMetadata(catalog.getMetadata(catalogReceipt.getTransactionId()));
 					successfulCatalogReceipts.add(catalogReceipt);
 				}catch (Exception e) {
-					if (this.oneCatalogFailsAllFail)
-						throw new CatalogServiceException("Failed to get metadata for transaction ids for catalog '" + catalogReceipt.getCatalogId() + "' : " + e.getMessage(), e);
-					else
-						LOG.log(Level.WARNING, "Failed to get metadata for transaction ids for catalog '" + catalogReceipt.getCatalogId() + "' : " + e.getMessage(), e);
+					if (this.oneCatalogFailsAllFail) {
+					  throw new CatalogServiceException(
+						  "Failed to get metadata for transaction ids for catalog '" + catalogReceipt.getCatalogId()
+						  + "' : " + e.getMessage(), e);
+					} else {
+					  LOG.log(Level.WARNING,
+						  "Failed to get metadata for transaction ids for catalog '" + catalogReceipt.getCatalogId()
+						  + "' : " + e.getMessage(), e);
+					}
 				}
 			}
-			if (metadata.getHashtable().keySet().size() > 0)
-				metadataSet.add(new TransactionalMetadata(new TransactionReceipt(transactionReceipt.getTransactionId(), successfulCatalogReceipts), metadata));
+			if (metadata.getMap().keySet().size() > 0) {
+			  metadataSet.add(new TransactionalMetadata(
+				  new TransactionReceipt(transactionReceipt.getTransactionId(), successfulCatalogReceipts), metadata));
+			}
 		}
 		return new Vector<TransactionalMetadata>(metadataSet);
 	}
@@ -899,18 +933,26 @@ public class CatalogServiceLocal implements CatalogService {
 				try {
 					CatalogReceipt catalogReceipt = this.ingestMapper.getCatalogReceipt(catalogServiceTransactionId, catalog.getId());
 					if (catalogReceipt != null) {
-						metadata.addMetadata(catalog.getMetadata(catalogReceipt.getTransactionId()).getHashtable());
+						metadata.addMetadata(catalog.getMetadata(catalogReceipt.getTransactionId()).getMap());
 						catalogReceipts.add(catalogReceipt);
 					}
 				}catch (Exception e) {
-					if (this.oneCatalogFailsAllFail)
-						throw new CatalogServiceException("Failed to get metadata for transaction ids for catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
-					else
-						LOG.log(Level.WARNING, "Failed to get metadata for transaction ids for catalog '" + catalog.getId() + "' : " + e.getMessage(), e);
+					if (this.oneCatalogFailsAllFail) {
+					  throw new CatalogServiceException(
+						  "Failed to get metadata for transaction ids for catalog '" + catalog.getId() + "' : " + e
+							  .getMessage(), e);
+					} else {
+					  LOG.log(Level.WARNING,
+						  "Failed to get metadata for transaction ids for catalog '" + catalog.getId() + "' : " + e
+							  .getMessage(), e);
+					}
 				}
 			}
-			if (metadata.getHashtable().keySet().size() > 0)
-				metadataSet.add(new TransactionalMetadata(new TransactionReceipt(catalogServiceTransactionId, catalogReceipts), metadata));
+			if (metadata.getMap().keySet().size() > 0) {
+			  metadataSet.add(
+				  new TransactionalMetadata(new TransactionReceipt(catalogServiceTransactionId, catalogReceipts),
+					  metadata));
+			}
 		}
 		return new Vector<TransactionalMetadata>(metadataSet);
 	}
@@ -975,7 +1017,7 @@ public class CatalogServiceLocal implements CatalogService {
 	}
 	
 	// check if transaction id was specified by user, otherwise generate a new one
-	protected TransactionId<?> getCatalogServiceTransactionId(Metadata metadata) throws Exception {
+	protected TransactionId<?> getCatalogServiceTransactionId(Metadata metadata) throws CatalogServiceException {
 		return this.getCatalogServiceTransactionId(metadata, true);
 	}
 	
@@ -989,8 +1031,11 @@ public class CatalogServiceLocal implements CatalogService {
 				if (catalog != null) {
 					TransactionId<?> catalogTransactionId = catalog.getTransactionIdFromString(metadata.getMetadata(CatalogServiceLocal.CATALOG_TRANSACTION_ID_MET_KEY));
 					TransactionId<?> catalogServiceTransactionId = this.ingestMapper.getCatalogServiceTransactionId(catalogTransactionId, catalogId);
-					if (catalogServiceTransactionId == null)
-						throw new CatalogServiceException("CatalogService's Catalog '" + catalog.getId() + "' is not aware of TransactionId '" + catalogTransactionId + "'s");
+					if (catalogServiceTransactionId == null) {
+					  throw new CatalogServiceException(
+						  "CatalogService's Catalog '" + catalog.getId() + "' is not aware of TransactionId '"
+						  + catalogTransactionId + "'s");
+					}
 					return catalogServiceTransactionId;
 				}else {
 					throw new CatalogServiceException("This CatalogService has no Catalog with ID = '" + catalogId + "'");
@@ -1009,18 +1054,22 @@ public class CatalogServiceLocal implements CatalogService {
 		try {
 			if (metadata.containsKey(CATALOG_ID_MET_KEY)) {
 				Catalog catalog = this.getCatalog(metadata.getMetadata(CATALOG_ID_MET_KEY));
-				if (catalog == null)
-					throw new CatalogServiceException("Catalog '" + metadata.getMetadata(CATALOG_ID_MET_KEY) + "' is not managed by this CatalogService");
-				else
-					return Collections.singleton(catalog);
+				if (catalog == null) {
+				  throw new CatalogServiceException("Catalog '" + metadata.getMetadata(CATALOG_ID_MET_KEY)
+													+ "' is not managed by this CatalogService");
+				} else {
+				  return Collections.singleton(catalog);
+				}
 			}else if (metadata.containsKey(CATALOG_IDS_MET_KEY)) {
 				HashSet<Catalog> filteredCatalogList = new HashSet<Catalog>();
 				for (Object catalogUrn : metadata.getAllMetadata(CATALOG_IDS_MET_KEY)) {
 					Catalog catalog = this.getCatalog((String) catalogUrn);
-					if (catalog == null)
-						throw new CatalogServiceException("Catalog '" + metadata.getMetadata(CATALOG_ID_MET_KEY) + "' is not managed by this CatalogService");
-					else
-						filteredCatalogList.add(catalog);
+					if (catalog == null) {
+					  throw new CatalogServiceException("Catalog '" + metadata.getMetadata(CATALOG_ID_MET_KEY)
+														+ "' is not managed by this CatalogService");
+					} else {
+					  filteredCatalogList.add(catalog);
+					}
 				}
 				return filteredCatalogList;
 			}else {
@@ -1037,33 +1086,38 @@ public class CatalogServiceLocal implements CatalogService {
 			
 			// get children query results
 			List<QueryResult> childrenQueryResults = new Vector<QueryResult>();
-			for (QueryExpression subQueryExpression : ((QueryLogicalGroup) queryExpression).getExpressions()) 
-				childrenQueryResults.add(queryRecur(subQueryExpression, restrictToCatalogIds));
-			
-			// if (QueryLogicalGroup's operator is AND and is unbalanced or a child contains query results)
+			for (QueryExpression subQueryExpression : ((QueryLogicalGroup) queryExpression).getExpressions()) {
+			  childrenQueryResults.add(queryRecur(subQueryExpression, restrictToCatalogIds));
+			}
+
 			if ((((QueryLogicalGroup) queryExpression).getOperator().equals(QueryLogicalGroup.Operator.AND) && containsUnbalancedCatalogInterest(childrenQueryResults)) || containsTranactionReceipts(childrenQueryResults)) {
-				
-				for (int i = 0; i < childrenQueryResults.size(); i++) {
-					QueryResult childQueryResult = childrenQueryResults.get(i);
-					
-					// if childQueryResult has not been used, use it
-					if (childQueryResult.getCatalogReceipts() == null) { 
-						List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
-						for (Catalog catalog : this.getCurrentCatalogList()) {
-							try {
-								if (childQueryResult.getInterestedCatalogs().contains(catalog.getId())) 
-									catalogReceipts.addAll(catalog.query(this.reduceToUnderstoodExpressions(catalog, childQueryResult.getQueryExpression())));
-							}catch (Exception e) {
-								if (this.oneCatalogFailsAllFail)
-									throw new CatalogServiceException("Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : " + e.getMessage(), e);
-								else
-									LOG.log(Level.WARNING, "Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : " + e.getMessage(), e);
-							}
-						}
-						childQueryResult.setCatalogReceipts(catalogReceipts);
+
+			  for (QueryResult childQueryResult : childrenQueryResults) {
+				// if childQueryResult has not been used, use it
+				if (childQueryResult.getCatalogReceipts() == null) {
+				  List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
+				  for (Catalog catalog : this.getCurrentCatalogList()) {
+					try {
+					  if (childQueryResult.getInterestedCatalogs().contains(catalog.getId())) {
+						catalogReceipts.addAll(catalog
+							.query(this.reduceToUnderstoodExpressions(catalog, childQueryResult.getQueryExpression())));
+					  }
+					} catch (Exception e) {
+					  if (this.oneCatalogFailsAllFail) {
+						throw new CatalogServiceException(
+							"Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : "
+							+ e.getMessage(), e);
+					  } else {
+						LOG.log(Level.WARNING,
+							"Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : "
+							+ e.getMessage(), e);
+					  }
 					}
-					
+				  }
+				  childQueryResult.setCatalogReceipts(catalogReceipts);
 				}
+
+			  }
 				
 				// get intersection of results
 	   			QueryResult queryResult = new QueryResult(queryExpression);
@@ -1073,8 +1127,9 @@ public class CatalogServiceLocal implements CatalogService {
 				// get merge of results
 				QueryResult queryResult = new QueryResult(queryExpression);
 				HashSet<String> interestedCatalogs = new HashSet<String>();
-				for (QueryResult childQueryResult : childrenQueryResults)
-					interestedCatalogs.addAll(childQueryResult.getInterestedCatalogs());
+				for (QueryResult childQueryResult : childrenQueryResults) {
+				  interestedCatalogs.addAll(childQueryResult.getInterestedCatalogs());
+				}
 				queryResult.setInterestedCatalogs(interestedCatalogs);
 				return queryResult;
 			}
@@ -1084,7 +1139,7 @@ public class CatalogServiceLocal implements CatalogService {
 			restrictToCatalogIds.retainAll(getInterestedCatalogs(queryExpression, restrictToCatalogIds));
 			
 			// check for catalogs interested in wrapped query expression
-			QueryResult wrapperExprQueryResult = null;
+			QueryResult wrapperExprQueryResult;
 			QueryExpression wrapperQE = ((WrapperQueryExpression) queryExpression).getQueryExpression();
 			if (wrapperQE instanceof QueryLogicalGroup) {
 				wrapperExprQueryResult = this.queryRecur((QueryLogicalGroup) wrapperQE, restrictToCatalogIds);
@@ -1112,8 +1167,9 @@ public class CatalogServiceLocal implements CatalogService {
 				QueryResult qr = queryResults.get(i);
 TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
 					for (CatalogReceipt compCatalogReceipt : catalogReceipts) {
-						if (catalogReceipt.getTransactionId().equals(compCatalogReceipt.getTransactionId()))
-							continue TR;
+						if (catalogReceipt.getTransactionId().equals(compCatalogReceipt.getTransactionId())) {
+						  continue TR;
+						}
 					}
 					catalogReceipts.remove(catalogReceipt);
 				}
@@ -1122,7 +1178,8 @@ TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
 		return catalogReceipts;
 	}
 
-	protected QueryExpression reduceToUnderstoodExpressions(Catalog catalog, QueryExpression queryExpression) throws CatalogDictionaryException, CatalogException {
+	protected QueryExpression reduceToUnderstoodExpressions(Catalog catalog, QueryExpression queryExpression) throws
+		CatalogException {
 		if (queryExpression instanceof QueryLogicalGroup) {
         	QueryLogicalGroup queryLogicalGroup = (QueryLogicalGroup) queryExpression;
         	List<QueryExpression> restrictedExpressions = new Vector<QueryExpression>();
@@ -1132,8 +1189,9 @@ TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
         			restrictedExpressions.clear();
         			break;
         		}
-        		if (restrictedQE != null)
-        			restrictedExpressions.add(restrictedQE);
+        		if (restrictedQE != null) {
+				  restrictedExpressions.add(restrictedQE);
+				}
         	}
         	if (restrictedExpressions.size() > 0) {
         		if (restrictedExpressions.size() == 1) {
@@ -1173,9 +1231,11 @@ TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
 	}
 	
 	protected boolean containsTranactionReceipts(List<QueryResult> queryResults) {
-		for (QueryResult queryResult : queryResults)
-			if (queryResult.getCatalogReceipts() != null)
-				return true;
+		for (QueryResult queryResult : queryResults) {
+		  if (queryResult.getCatalogReceipts() != null) {
+			return true;
+		  }
+		}
 		return false;
 	}
 
@@ -1184,8 +1244,9 @@ TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
 			QueryResult firstQueryResult = queryResults.get(0);
 			for (int i = 1; i < queryResults.size(); i++) {
 				QueryResult queryResult = queryResults.get(i);
-				if (!(queryResult.interestedCatalogs.containsAll(firstQueryResult.interestedCatalogs) && firstQueryResult.interestedCatalogs.containsAll(queryResult.interestedCatalogs)))
-					return true;
+				if (!(queryResult.interestedCatalogs.containsAll(firstQueryResult.interestedCatalogs) && firstQueryResult.interestedCatalogs.containsAll(queryResult.interestedCatalogs))) {
+				  return true;
+				}
 			}
 			return false;
 		}else {
@@ -1198,14 +1259,20 @@ TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
 		for (Catalog catalog : this.getCurrentCatalogList()) {
 			try {
 				if (restrictToCatalogIds.contains(catalog.getId())) {
-					if (catalog.isInterested(queryExpression))
-						interestedCatalogs.add(catalog.getId());
+					if (catalog.isInterested(queryExpression)) {
+					  interestedCatalogs.add(catalog.getId());
+					}
 				}
 			}catch (Exception e) {
-				if (this.oneCatalogFailsAllFail)
-					throw new CatalogException("Failed to determine if Catalog '" + catalog.getId() + "' is interested in query expression '" + queryExpression + "' : " + e.getMessage(), e);
-				else
-					LOG.log(Level.WARNING, "Failed to determine if Catalog '" + catalog.getId() + "' is interested in query expression '" + queryExpression + "' : " + e.getMessage(), e);
+				if (this.oneCatalogFailsAllFail) {
+				  throw new CatalogException(
+					  "Failed to determine if Catalog '" + catalog.getId() + "' is interested in query expression '"
+					  + queryExpression + "' : " + e.getMessage(), e);
+				} else {
+				  LOG.log(Level.WARNING,
+					  "Failed to determine if Catalog '" + catalog.getId() + "' is interested in query expression '"
+					  + queryExpression + "' : " + e.getMessage(), e);
+				}
 			}
 		}
 		return interestedCatalogs;

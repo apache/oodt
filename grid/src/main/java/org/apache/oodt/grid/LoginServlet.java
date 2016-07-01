@@ -38,7 +38,9 @@ public class LoginServlet extends GridServlet {
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		Configuration config = getConfiguration();			       // Get configuration
-		if (!approveAccess(config, req, res)) return;			       // Do https, localhost checking first
+		if (!approveAccess(config, req, res)) {
+		  return;                   // Do https, localhost checking first
+		}
 
 		ConfigBean cb = getConfigBean(req);				       // Get bean
 		if (cb.isAuthentic()) {						       // Already authentic?
@@ -47,7 +49,9 @@ public class LoginServlet extends GridServlet {
 		}
 
 		String password = req.getParameter("password");			       // Get submitted password
-		if (password == null) password = "";				       // If none, use an empty string
+		if (password == null) {
+		  password = "";                       // If none, use an empty string
+		}
 		byte[] bytes = password.getBytes();				       // Get the bytes
 		if (!Arrays.equals(config.getPassword(), bytes)) {		       // Compare to stored password bytes 
 			cb.setMessage("Password incorrect");			       // Not equal!  Set message.

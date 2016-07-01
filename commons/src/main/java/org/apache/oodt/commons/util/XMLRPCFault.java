@@ -15,12 +15,6 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
-import java.text.ParseException;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-
 /** XML-RPC fault.
  *
  * This exception is thrown when a fault is returned from an XML-RPC call.

@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.product.jaxrs.filters;
 
 import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +60,7 @@ public class BackwardsCompatibleInterceptor extends
     // Parse the query string into a map of parameters.
     // [Note: this will overwrite multiple parameters that have the same name.]
     List<NameValuePair> params = URLEncodedUtils.parse(query, Charset.forName("UTF-8"));
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new ConcurrentHashMap<String, String>();
     for (NameValuePair pair : params)
     {
       map.put(pair.getName(), pair.getValue());

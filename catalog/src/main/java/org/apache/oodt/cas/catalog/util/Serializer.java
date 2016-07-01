@@ -43,10 +43,11 @@ public class Serializer {
 	}
 	
 	public void refreshClassLoader() {
-		if (usePluginUrls)
-			this.classLoader = new PluginClassLoader();
-		else
-			this.classLoader = Serializer.class.getClassLoader();
+		if (usePluginUrls) {
+		  this.classLoader = new PluginClassLoader();
+		} else {
+		  this.classLoader = Serializer.class.getClassLoader();
+		}
 	}
 	
 	public void setUsePluginUrls(boolean usePluginUrls) {

@@ -19,15 +19,6 @@
 package org.apache.oodt.cas.resource.system.extern;
 
 //JDK imports
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobInstance;
@@ -35,18 +26,26 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
-
-//APACHE imports
 import org.apache.xmlrpc.WebServer;
+
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
+//APACHE imports
 
 /**
  * @author woollard
  * @version $Revision$
- * 
+ *
  * <p>
  * An XML RPC-based Batch Submission System.
  * </p>
- * 
+ *
  */
 public class XmlRpcBatchStub {
 
@@ -58,11 +57,11 @@ public class XmlRpcBatchStub {
 
     /* our log stream */
     private static Logger LOG = Logger.getLogger(XmlRpcBatchStub.class
-            .getName());
+        .getName());
 
-    private static Map jobThreadMap = null;
+    private Map jobThreadMap = null;
 
-    public XmlRpcBatchStub(int port) throws Exception {
+    public XmlRpcBatchStub(int port) {
         webServerPort = port;
 
         // start up the web server
@@ -70,57 +69,57 @@ public class XmlRpcBatchStub {
         webServer.addHandler("batchstub", this);
         webServer.start();
 
-        jobThreadMap = new HashMap();
+        jobThreadMap = new ConcurrentHashMap();
 
         LOG.log(Level.INFO, "XmlRpc Batch Stub started by "
-                + System.getProperty("user.name", "unknown"));
+                            + System.getProperty("user.name", "unknown"));
     }
 
     public boolean isAlive() {
         return true;
     }
 
-    public boolean executeJob(Hashtable jobHash, Hashtable jobInput)
-            throws JobException {
+    public boolean executeJob(Map jobHash, Map jobInput)
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, Date jobInput)
-            throws JobException {
+    public boolean executeJob(Map jobHash, Date jobInput)
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, double jobInput)
-            throws JobException {
-        return genericExecuteJob(jobHash, new Double(jobInput));
-    }
-
-    public boolean executeJob(Hashtable jobHash, int jobInput)
-            throws JobException {
-        return genericExecuteJob(jobHash, new Integer(jobInput));
-    }
-
-    public boolean executeJob(Hashtable jobHash, boolean jobInput)
-            throws JobException {
-        return genericExecuteJob(jobHash, new Boolean(jobInput));
-    }
-
-    public boolean executeJob(Hashtable jobHash, Vector jobInput)
-            throws JobException {
+    public boolean executeJob(Map jobHash, double jobInput)
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, byte[] jobInput)
-            throws JobException {
+    public boolean executeJob(Map jobHash, int jobInput)
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public synchronized boolean killJob(Hashtable jobHash) {
+    public boolean executeJob(Map jobHash, boolean jobInput)
+        throws JobException {
+        return genericExecuteJob(jobHash, jobInput);
+    }
+
+    public boolean executeJob(Map jobHash, Vector jobInput)
+        throws JobException {
+        return genericExecuteJob(jobHash, jobInput);
+    }
+
+    public boolean executeJob(Map jobHash, byte[] jobInput)
+        throws JobException {
+        return genericExecuteJob(jobHash, jobInput);
+    }
+
+    public synchronized boolean killJob(Map jobHash) {
         Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
         Thread jobThread = (Thread) jobThreadMap.get(job.getId());
         if (jobThread == null) {
             LOG.log(Level.WARNING, "Job: [" + job.getId()
-                    + "] not managed by this batch stub");
+                                   + "] not managed by this batch stub");
             return false;
         }
 
@@ -129,20 +128,19 @@ public class XmlRpcBatchStub {
         return true;
     }
 
-    private boolean genericExecuteJob(Hashtable jobHash, Object jobInput)
-            throws JobException {
+    private boolean genericExecuteJob(Map jobHash, Object jobInput) {
         JobInstance exec = null;
         JobInput in = null;
         try {
             Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
 
             LOG.log(Level.INFO, "stub attempting to execute class: ["
-                    + job.getJobInstanceClassName() + "]");
+                                + job.getJobInstanceClassName() + "]");
 
             exec = GenericResourceManagerObjectFactory
-                    .getJobInstanceFromClassName(job.getJobInstanceClassName());
+                .getJobInstanceFromClassName(job.getJobInstanceClassName());
             in = GenericResourceManagerObjectFactory
-                    .getJobInputFromClassName(job.getJobInputClassName());
+                .getJobInputFromClassName(job.getJobInputClassName());
 
             // load the input obj
             in.read(jobInput);
@@ -159,29 +157,31 @@ public class XmlRpcBatchStub {
                 threadRunner.join();
             } catch (InterruptedException e) {
                 LOG.log(Level.INFO, "Current job: [" + job.getName()
-                        + "]: killed: exiting gracefully");
+                                    + "]: killed: exiting gracefully");
                 synchronized (jobThreadMap) {
                     Thread endThread = (Thread) jobThreadMap.get(job.getId());
-                    if (endThread != null)
+                    if (endThread != null) {
                         endThread = null;
+                    }
                 }
                 return false;
             }
 
             synchronized (jobThreadMap) {
                 Thread endThread = (Thread) jobThreadMap.get(job.getId());
-                if (endThread != null)
+                if (endThread != null) {
                     endThread = null;
+                }
             }
 
             return runner.wasSuccessful();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return false;
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
         int portNum = -1;
         String usage = "XmlRpcBatchStub --portNum <port number for xml rpc service>\n";
 
@@ -198,11 +198,12 @@ public class XmlRpcBatchStub {
 
         XmlRpcBatchStub stub = new XmlRpcBatchStub(portNum);
 
-        for (;;)
+        for (;;) {
             try {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {
             }
+        }
     }
 
     private class RunnableJob implements Runnable {
@@ -212,7 +213,7 @@ public class XmlRpcBatchStub {
         private JobInstance job;
 
         private boolean successful;
-        
+
         public RunnableJob(JobInstance job, JobInput in) {
             this.job = job;
             this.in = in;
@@ -228,14 +229,14 @@ public class XmlRpcBatchStub {
             try {
                 this.successful = job.execute(in);
             } catch (JobInputException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 this.successful = false;
             }
 
         }
 
         public boolean wasSuccessful() {
-        	return this.successful;
+            return this.successful;
         }
     }
 }

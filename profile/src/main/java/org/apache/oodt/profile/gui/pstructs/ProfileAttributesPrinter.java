@@ -25,7 +25,6 @@ package org.apache.oodt.profile.gui.pstructs;
 
 
 import org.apache.oodt.profile.ProfileAttributes;
-import java.util.Iterator;
 
 /**
  * @author mattmann
@@ -46,31 +45,31 @@ public class ProfileAttributesPrinter {
 	}
 	
 	public String toXMLString(){
-		String rStr="";
+		StringBuilder rStr= new StringBuilder();
 		
-		rStr+="<profAttributes>\n";
-		rStr+="\t<profId>"+myProfAttributes.getID()+"</profId>\n";
-		rStr+="\t<profType>"+myProfAttributes.getType()+"</profType>\n";
-		rStr+="\t<profVersion>"+myProfAttributes.getVersion()+"</profVersion>\n";
-		rStr+="\t<profStatusId>"+myProfAttributes.getStatusID()+"</profStatusId>\n";
-		rStr+="\t<profSecurityType>"+myProfAttributes.getSecurityType()+"</profSecurityType>\n";
-		rStr+="\t<profParentId>"+myProfAttributes.getParent()+"</profParentId>\n";
+		rStr.append("<profAttributes>\n");
+		rStr.append("\t<profId>").append(myProfAttributes.getID()).append("</profId>\n");
+		rStr.append("\t<profType>").append(myProfAttributes.getType()).append("</profType>\n");
+		rStr.append("\t<profVersion>").append(myProfAttributes.getVersion()).append("</profVersion>\n");
+		rStr.append("\t<profStatusId>").append(myProfAttributes.getStatusID()).append("</profStatusId>\n");
+		rStr.append("\t<profSecurityType>").append(myProfAttributes.getSecurityType()).append("</profSecurityType>\n");
+		rStr.append("\t<profParentId>").append(myProfAttributes.getParent()).append("</profParentId>\n");
+
+	  for (Object o1 : myProfAttributes.getChildren()) {
+		String theChild = (String) o1;
+		rStr.append("\t<profChildId>").append(theChild).append("</profChildId>\n");
+	  }
 		
-		for(Iterator i = myProfAttributes.getChildren().iterator(); i.hasNext(); ){
-			String theChild = (String)i.next();
-			rStr+="\t<profChildId>"+theChild+"</profChildId>\n";
-		}
+		rStr.append("\t<profRegAuthority>").append(myProfAttributes.getRegAuthority()).append("</profRegAuthority>\n");
+
+	  for (Object o : myProfAttributes.getRevisionNotes()) {
+		String theNote = (String) o;
+		rStr.append("\t<profRevisionNote>").append(theNote).append("</profRevisionNote>\n");
+	  }
 		
-		rStr+="\t<profRegAuthority>"+myProfAttributes.getRegAuthority()+"</profRegAuthority>\n";
-		
-		for(Iterator i = myProfAttributes.getRevisionNotes().iterator(); i.hasNext(); ){
-			String theNote = (String)i.next();
-			rStr+="\t<profRevisionNote>"+theNote+"</profRevisionNote>\n";
-		}
-		
-		rStr+="</profAttributes>\n\n";
+		rStr.append("</profAttributes>\n\n");
 		
 
-		return rStr;
+		return rStr.toString();
 	}
 }

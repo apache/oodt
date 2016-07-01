@@ -296,13 +296,8 @@ public class ThreddsMetadataExtractor implements MetadataExtractor {
 	 * @return
 	 */
 	private String encodeXlinkTuple(final String href, final String title, final String type) {
-	    final StringBuilder tuple = new StringBuilder();
-      tuple.append(href)
-           .append(ProfileUtils.CHAR)
-           .append(StringUtils.hasText(title) ? title : "Reference" )
-           .append(ProfileUtils.CHAR)
-           .append(StringUtils.hasText(type) ? type : "HTML" );
-      return tuple.toString();
+      return href + ProfileUtils.CHAR + (StringUtils.hasText(title) ? title : "Reference") + ProfileUtils.CHAR + (
+          StringUtils.hasText(type) ? type : "HTML");
 	}
 	
 	/**
@@ -313,13 +308,8 @@ public class ThreddsMetadataExtractor implements MetadataExtractor {
 	 * @return
 	 */
 	private String encodeAccessTuple(final String url, final String type, final String name) {
-    final StringBuilder tuple = new StringBuilder();
-    tuple.append(url)
-         .append(ProfileUtils.CHAR)
-         .append(StringUtils.hasText(type) ? type : "")
-         .append(ProfileUtils.CHAR)
-         .append(StringUtils.hasText(name) ? name : "");
-    return tuple.toString();
+      return url + ProfileUtils.CHAR + (StringUtils.hasText(type) ? type : "") + ProfileUtils.CHAR + (
+          StringUtils.hasText(name) ? name : "");
 	}
 
 }

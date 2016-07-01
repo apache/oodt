@@ -18,16 +18,8 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
-import java.io.BufferedReader;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 
-//APACHE imports
 import org.apache.commons.io.FileUtils;
-
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.runner.AsynchronousLocalEngineRunner;
@@ -35,12 +27,23 @@ import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
-//JODA imports
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 
-//Junit imports
+import java.io.BufferedReader;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//APACHE imports
+//OODT imports
+//JODA imports
+//Junit imports
 
 /**
  * 
@@ -51,7 +54,7 @@ import junit.framework.TestCase;
  * 
  */
 public class TestAsynchronousLocalEngineRunner extends TestCase {
-
+  private static Logger LOG = Logger.getLogger(TestAsynchronousLocalEngineRunner.class.getName());
   private AsynchronousLocalEngineRunner runner;
 
   protected File testDir;
@@ -82,7 +85,7 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
       runner.execute(taskProcessor2);
       assertTrue(ranFast());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
   }
@@ -105,7 +108,7 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
               + ": seconds elapsed: [" + seconds.getSeconds() + "]");
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         fail(e.getMessage());
         ranFast = false;
       } finally {
@@ -115,7 +118,6 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
           } catch (Exception ignore) {
           }
 
-          br = null;
         }
       }
     }
@@ -160,8 +162,8 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     File[] delFiles = startDirFile.listFiles();
 
     if (delFiles != null && delFiles.length > 0) {
-      for (int i = 0; i < delFiles.length; i++) {
-        delFiles[i].delete();
+      for (File delFile : delFiles) {
+        delFile.delete();
       }
     }
 

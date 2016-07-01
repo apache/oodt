@@ -28,26 +28,26 @@ package org.apache.oodt.cas.metadata.extractors;
  */
 public interface ExternConfigReaderMetKeys {
 
-    public static final String EXEC_TAG = "exec";
+    String EXEC_TAG = "exec";
 
-    public static final String WORKING_DIR_ATTR = "workingDir";
+    String WORKING_DIR_ATTR = "workingDir";
 
-    public static final String MET_FILE_EXT_ATTR = "metFileExt";
+    String MET_FILE_EXT_ATTR = "metFileExt";
 
-    public static final String EXTRACTOR_BIN_PATH_TAG = "extractorBinPath";
+    String EXTRACTOR_BIN_PATH_TAG = "extractorBinPath";
 
-    public static final String ENV_REPLACE_ATTR = "envReplace";
+    String ENV_REPLACE_ATTR = "envReplace";
 
-    public static final String ARGS_TAG = "args";
+    String ARGS_TAG = "args";
 
-    public static final String ARG_TAG = "arg";
+    String ARG_TAG = "arg";
 
-    public static final String IS_DATA_FILE_ATTR = "isDataFile";
+    String IS_DATA_FILE_ATTR = "isDataFile";
 
-    public static final String IS_MET_FILE_ATTR = "isMetFile";
+    String IS_MET_FILE_ATTR = "isMetFile";
 
-    public static final String APPEND_EXT_ATTR = "appendExt";
+    String APPEND_EXT_ATTR = "appendExt";
 
-    public static final String IS_PATH_ATTR = "isPath";
+    String IS_PATH_ATTR = "isPath";
 
 }

@@ -39,7 +39,7 @@ public class GetWorkflowInstMetCliAction extends WorkflowCliAction {
 
       try {
          Metadata met = getClient().getWorkflowInstanceMetadata(instanceId);
-         printer.println("[id=" + instanceId + ", met=" + met.getHashtable()
+         printer.println("[id=" + instanceId + ", met=" + met.getMap()
                + "]");
       } catch (Exception e) {
          throw new CmdLineActionException(

@@ -21,31 +21,37 @@ package org.apache.oodt.cas.curation.util;
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 import java.util.Iterator;
 
 public class ExtractorConfigWriter {
   
   public static void saveToDirectory(ExtractorConfig config, File dir)
-      throws FileNotFoundException, IOException {
+      throws IOException {
     Properties props = new Properties();
     props.setProperty(ExtractorConfig.PROP_CLASS_NAME, config.getClassName());
     File configDir = new File(dir, config.getIdentifier());
     configDir.mkdirs();
-    StringBuffer files = new StringBuffer();
+    StringBuilder files = new StringBuilder();
     for (Iterator<File> i = config.getConfigFiles().iterator(); i.hasNext();) {
       File file = i.next();
       files.append(file.toURI());
-      if (i.hasNext())
+      if (i.hasNext()) {
         files.append(",");
+      }
     }
     props.setProperty(ExtractorConfig.PROP_CONFIG_FILES, files.toString());
-    props
-        .store(new FileOutputStream(new File(configDir, "config.properties")),
-        "");
+    OutputStream os = new FileOutputStream(new File(configDir, "config.properties"));
+    try {
+      props
+          .store(os, "");
+    }
+    finally{
+      os.close();
+    }
   }
 
 }

@@ -39,7 +39,7 @@ public class CodecFactoryTest extends TestCase {
 		try {
 			Codec codec = CodecFactory.createCodec("unknown.class.name");
 			fail("CodecFactory somehow created an object of an unknown class");
-		} catch (RuntimeException good) {}
+		} catch (RuntimeException ignored) {}
 	}
 
 	public void testValidCodec() {

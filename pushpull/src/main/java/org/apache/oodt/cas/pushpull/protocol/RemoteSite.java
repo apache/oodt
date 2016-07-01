@@ -19,7 +19,10 @@
 package org.apache.oodt.cas.pushpull.protocol;
 
 //JDK imports
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -31,7 +34,11 @@ import java.net.URL;
  * </p>.
  */
 public class RemoteSite {
-    
+
+    /* our log stream */
+    private final static Logger LOG = Logger.getLogger(RemoteSite.class
+        .getName());
+
     private String alias, username, password, cdTestDir;
     private int maxConnections;
     private URL url;
@@ -90,16 +97,37 @@ public class RemoteSite {
     public boolean equals(Object obj) {
         if (obj instanceof RemoteSite) {
             RemoteSite rs = (RemoteSite) obj;
-            return (rs.alias.equals(this.alias) && rs.url.equals(this.url)
-                    && rs.username.equals(this.username) && rs.password
-                    .equals(this.password) && rs.maxConnections == this.maxConnections);
-        } else
+            try {
+                return (rs.alias.equals(this.alias) && rs.url.toURI().equals(this.url.toURI())
+                        && rs.username.equals(this.username) && rs.password
+                        .equals(this.password) && rs.maxConnections == this.maxConnections);
+            } catch (URISyntaxException e) {
+                LOG.log(Level.SEVERE, "Could not convert URL to URL: Message: "+e.getMessage());
+            }
+        } else {
             return false;
+        }
+        return false;
     }
 
     public String toString() {
         return "RemoteSite: alias = '" + this.alias + "'  url = '" + this.url
                 + "'  username = '" + this.username + "' cdTestDir = '" 
                 + this.cdTestDir + "' maxConnections = '" + this.maxConnections + "'";
+    }
+
+    @Override
+    public int hashCode() {
+        int result = alias != null ? alias.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (cdTestDir != null ? cdTestDir.hashCode() : 0);
+        result = 31 * result + maxConnections;
+        try {
+            result = 31 * result + (url != null ? url.toURI().hashCode() : 0);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

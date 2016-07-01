@@ -17,25 +17,26 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-//JDK imports
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
-import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * @author mattmann
@@ -48,10 +49,11 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public class MetadataBasedProductMover {
 
+    public static final double DOUBLE = 1000.0;
     /*
-     * the metadata path sepc string, e.g.,
-     * /path/to/final/loc/[LocalDay]/[Filename]
-     */
+             * the metadata path sepc string, e.g.,
+             * /path/to/final/loc/[LocalDay]/[Filename]
+             */
     private String pathSpec = null;
 
     /* the client to the file manager */
@@ -84,7 +86,7 @@ public class MetadataBasedProductMover {
         }
     }
 
-    public void moveProducts(ProductType type) throws Exception {
+    public void moveProducts(ProductType type) throws CatalogException, URISyntaxException, DataTransferException {
         // paginate through the product list
 
         ProductPage page = fmgrClient.getFirstPage(type);
@@ -92,31 +94,30 @@ public class MetadataBasedProductMover {
         for (int i = 0; i < page.getTotalPages(); i++) {
             if (page.getPageProducts() != null
                     && page.getPageProducts().size() > 0) {
-                for (Iterator j = page.getPageProducts().iterator(); j
-                        .hasNext();) {
-                    Product p = (Product) j.next();
+                for (Product p : page.getPageProducts()) {
                     p.setProductReferences(fmgrClient.getProductReferences(p));
                     Metadata met = fmgrClient.getMetadata(p);
                     Reference r = ((Reference) p.getProductReferences().get(0));
                     String newLocPath = PathUtils.replaceEnvVariables(
-                            this.pathSpec, met);
-                    
+                        this.pathSpec, met);
+
                     if (locationsMatch(r.getDataStoreReference(), newLocPath)) {
-                    	LOG.log(Level.INFO, "Current and New locations match. "+p.getProductName()+" was not moved.");
-                    	continue;
+                        LOG.log(Level.INFO,
+                            "Current and New locations match. " + p.getProductName() + " was not moved.");
+                        continue;
                     }
-                    
+
                     LOG.log(Level.INFO, "Moving product: ["
-                            + p.getProductName() + "] from: ["
-                            + new File(new URI(r.getDataStoreReference()))
-                            + "] to: [" + newLocPath + "]");
+                                        + p.getProductName() + "] from: ["
+                                        + new File(new URI(r.getDataStoreReference()))
+                                        + "] to: [" + newLocPath + "]");
                     long timeBefore = System.currentTimeMillis();
                     fmgrClient.moveProduct(p, newLocPath);
                     long timeAfter = System.currentTimeMillis();
-                    double seconds = ((timeAfter - timeBefore) * 1.0) / (1000.0);
+                    double seconds = ((timeAfter - timeBefore) * 1.0) / DOUBLE;
                     LOG.log(Level.INFO, "Product: [" + p.getProductName()
-                            + "] move successful: took: [" + seconds
-                            + "] seconds");
+                                        + "] move successful: took: [" + seconds
+                                        + "] seconds");
                 }
 
                 if (!page.isLastPage()) {
@@ -130,23 +131,21 @@ public class MetadataBasedProductMover {
     	String currentLocationURI = new URI(currentLocation).getSchemeSpecificPart();
     	String newLocationURI = new URI(newLocation).getSchemeSpecificPart();
 
-    	if (currentLocationURI.equals(newLocationURI)) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
+        return currentLocationURI.equals(newLocationURI);
     	
     }
     
-    public void moveProducts(String typeName) throws Exception {
+    public void moveProducts(String typeName)
+        throws RepositoryManagerException, CatalogException, DataTransferException, URISyntaxException {
         moveProducts(fmgrClient.getProductTypeByName(typeName));
     }
 
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+        throws URISyntaxException, CatalogException, RepositoryManagerException, DataTransferException,
+        InstantiationException {
         String typeName = null, pathSpec = null, fmUrlStr = null;
         String usage = "MetadataBasedProductMover [options]\n"
                 + "--typeName <product type>\n"

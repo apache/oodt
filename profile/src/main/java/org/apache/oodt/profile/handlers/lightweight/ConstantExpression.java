@@ -40,10 +40,11 @@ class ConstantExpression implements WhereExpression {
 	}
 
 	public Result result(SearchableResourceAttributes resAttr, Map elements) {
-		if (value)
-			return new MatchingResult(new HashSet(elements.values()));
-		else
-			return FalseResult.INSTANCE;
+		if (value) {
+		  return new MatchingResult(new HashSet(elements.values()));
+		} else {
+		  return FalseResult.INSTANCE;
+		}
 	}
 
 	public WhereExpression simplify() {

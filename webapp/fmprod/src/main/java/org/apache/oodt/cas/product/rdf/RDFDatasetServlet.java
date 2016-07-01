@@ -19,11 +19,32 @@
 package org.apache.oodt.cas.product.rdf;
 
 //JDK imports
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -31,30 +52,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
-import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
  * 
@@ -73,7 +72,7 @@ public class RDFDatasetServlet extends HttpServlet {
   private static final long serialVersionUID = -3660991271642533985L;
 
   /* our client to the file manager */
-  private static FileManagerClient fClient = null;
+  private XmlRpcFileManagerClient fClient = null;
 
   /* our log stream */
   private Logger LOG = Logger.getLogger(RDFProductServlet.class.getName());
@@ -98,21 +97,16 @@ public class RDFDatasetServlet extends HttpServlet {
     try {
       this.rdfConf = RDFUtils.initRDF(config);
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new ServletException(e.getMessage());
     }
 
-    String fileManagerUrl = null;
+    String fileManagerUrl;
     try {
       fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
           "filemgr.url") );
     } catch (Exception e) {
       throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
-    }    
-    
-    if (fileManagerUrl == null) {
-      // try the default port
-      fileManagerUrl = "http://localhost:9000";
     }
 
     fClient = null;
@@ -142,13 +136,13 @@ public class RDFDatasetServlet extends HttpServlet {
   }
 
   public void doIt(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, java.io.IOException {
+      throws ServletException {
 
     // need to know the type of product to get products for
     String productTypeName = req.getParameter("type");
     String productTypeId = req.getParameter("typeID");
     ProductTypeFilter filter = new ProductTypeFilter(req.getParameter("filter"));
-    ProductType type = null;
+    ProductType type;
 
     List<ProductType> productTypes = new Vector<ProductType>();
 
@@ -202,38 +196,32 @@ public class RDFDatasetServlet extends HttpServlet {
       Element rdf = XMLUtils.addNode(doc, doc, "rdf:RDF");
       RDFUtils.addNamespaces(doc, rdf, this.rdfConf);
 
-      for (Iterator<ProductType> i = productTypes.iterator(); i.hasNext();) {
-        ProductType type = i.next();
-        
+      for (ProductType type : productTypes) {
         Element productTypeRdfDesc = XMLUtils.addNode(doc, rdf, this.rdfConf
-            .getTypeNs(type.getName())
-            + ":" + type.getName());
+                                                                    .getTypeNs(type.getName())
+                                                                + ":" + type.getName());
         XMLUtils.addAttribute(doc, productTypeRdfDesc, "rdf:about", base
-            + "?typeID=" + type.getProductTypeId());
+                                                                    + "?typeID=" + type.getProductTypeId());
 
         // for all of its metadata keys and values, loop through them
         // and add RDF nodes underneath the RdfDesc for this product
 
         if (type.getTypeMetadata() != null) {
-          for (Iterator<String> j = type.getTypeMetadata().getHashtable().keySet()
-              .iterator(); j.hasNext();) {
-            String key = (String) j.next();
-
+          for (String key : type.getTypeMetadata().getMap().keySet()) {
             List<String> vals = type.getTypeMetadata().getAllMetadata(key);
 
             if (vals != null && vals.size() > 0) {
 
-              for (Iterator<String> k = vals.iterator(); k.hasNext();) {
-                String val = (String) k.next();
+              for (String val : vals) {
                 //OODT-665 fix, take keys like 
                 //PRODUCT Experiment Type
                 //and transform it into ProductExperimentType
                 String outputKey = key;
-                if (outputKey.indexOf(" ") != -1) {
+                if (outputKey.contains(" ")) {
                   outputKey = StringUtils.join(WordUtils.capitalizeFully(outputKey).split(
                       " "));
                 }
-                
+
                 val = StringEscapeUtils.escapeXml(val);
                 Element rdfElem = RDFUtils.getRDFElement(outputKey, val,
                     this.rdfConf, doc);
@@ -269,7 +257,7 @@ public class RDFDatasetServlet extends HttpServlet {
     try {
       types = fClient.getProductTypes();
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error retrieving product types: Message: "
           + e.getMessage());
     }

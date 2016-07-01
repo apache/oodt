@@ -98,9 +98,9 @@ public class TestCDEResultInputStream extends TestCase {
   
   public void testReadCharArrayIntInt() {
     byte[] buf = new byte[128];
-    int n = 0;
-    int length = 0;
-    String expected = null;
+    int n;
+    int length;
+    String expected;
     
     try {
       expected = ID + FS + LAST;

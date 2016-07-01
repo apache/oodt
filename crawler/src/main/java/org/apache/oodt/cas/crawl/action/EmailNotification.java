@@ -17,9 +17,18 @@
 package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
+import com.google.common.collect.Lists;
+
+import org.apache.commons.lang.Validate;
+import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.springframework.beans.factory.annotation.Required;
+
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -28,19 +37,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 //Spring imports
-import org.springframework.beans.factory.annotation.Required;
-
 //Apache imports
-import org.apache.commons.lang.Validate;
-
 //OODT imports
-import org.apache.oodt.cas.crawl.action.CrawlerAction;
-import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-
 //Google imports
-import com.google.common.collect.Lists;
 
 /**
  * This action sends an email notification. It performs metadata and system
@@ -151,7 +150,7 @@ public class EmailNotification extends CrawlerAction {
       this.ignoreInvalidAddresses = ignoreInvalidAddresses;
    }
 
-   public static void main(String[] args) throws Exception {
+   public static void main(String[] args) throws CrawlerActionException {
       if (args.length != 5) {
          System.out.println("Usage: java " + EmailNotification.class.getName()
                + " <mailhost> <sender> <recipients> <subject> <message>");

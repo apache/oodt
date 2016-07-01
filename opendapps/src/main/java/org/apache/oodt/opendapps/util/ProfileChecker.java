@@ -56,9 +56,9 @@ public class ProfileChecker {
 		
 		// profile passes by default
 		boolean ok = true;
-		sb.append("\nChecking profile="+profile.getProfileAttributes().getID());
+		sb.append("\nChecking profile=").append(profile.getProfileAttributes().getID());
 		
-		ok = ok && checkResourceAttribute("Identifier", profile.getResourceAttributes().getIdentifier(), true, sb);
+		ok = checkResourceAttribute("Identifier", profile.getResourceAttributes().getIdentifier(), true, sb);
 		
 		ok = ok && checkResourceAttribute("Title", profile.getResourceAttributes().getTitle(), true, sb);
 		
@@ -100,9 +100,11 @@ public class ProfileChecker {
 	 * @return
 	 */
 	private static boolean checkResourceAttribute(String name, String value, boolean mandatory, StringBuilder sb) {
-		sb.append("\n\tResource Attribute '" + name + "' = ");
+		sb.append("\n\tResource Attribute '").append(name).append("' = ");
 		if (!StringUtils.hasText(value) || value.equalsIgnoreCase("null")) {
-				if (mandatory) return false; // bad value
+				if (mandatory) {
+				  return false; // bad value
+				}
 		} else {
 			sb.append(value);
 		}
@@ -120,7 +122,7 @@ public class ProfileChecker {
 	 */
 	private static boolean checkProfileElement(Profile profile, String name, boolean mandatory, StringBuilder sb) {
 		
-		sb.append("\n\tProfile Element '" + name + "' = ");
+		sb.append("\n\tProfile Element '").append(name).append("' = ");
 	  // profile element is valid by default
 		boolean ok = true; 
 	
@@ -133,19 +135,27 @@ public class ProfileChecker {
   				boolean first = true;
   				for (String value : values) {
   					if (!StringUtils.hasText(value) || value.equalsIgnoreCase("null")) {
-  						if (mandatory) ok = false; // invalid value for this profile element
+  						if (mandatory) {
+						  ok = false; // invalid value for this profile element
+						}
   					} else {
-  						if (!first) sb.append(", ");
+  						if (!first) {
+						  sb.append(", ");
+						}
   						sb.append(value);
   						first = false;
   					}
   				}
   			} else {
-  				if (mandatory) ok = false; // no values found for this profile element
+  				if (mandatory) {
+				  ok = false; // no values found for this profile element
+				}
   			}
 		
 		} else {
-			if (mandatory) ok = false; // no profile element found
+			if (mandatory) {
+			  ok = false; // no profile element found
+			}
 		}
 		
 		return ok;
@@ -163,7 +173,9 @@ public class ProfileChecker {
 		
 		for (String resLocation : resLocations) {
 			String[] parts = resLocation.split("\\|"); // regular expression of ProfileUtils.CHAR
-			if (parts[1].equals(mimeType)) return parts[0];
+			if (parts[1].equals(mimeType)) {
+			  return parts[0];
+			}
 		}
 		
 		// resource location not found

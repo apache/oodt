@@ -28,7 +28,8 @@ package org.apache.oodt.cas.workflow.instrepo;
  */
 public class MemoryWorkflowInstanceRepositoryFactory implements
         WorkflowInstanceRepositoryFactory {
-    
+
+    public static final int VAL = 20;
     private int pageSize = -1;
 
     /**
@@ -38,8 +39,7 @@ public class MemoryWorkflowInstanceRepositoryFactory implements
      */
     public MemoryWorkflowInstanceRepositoryFactory() {
         pageSize = Integer.getInteger(
-                "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20)
-                .intValue();
+            "org.apache.oodt.cas.workflow.instanceRep.pageSize", VAL);
     }
 
     /*

@@ -26,7 +26,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
 //JDK imports
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
+
 import javax.servlet.ServletConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,7 +52,7 @@ public final class RDFUtils {
 
     // does this tag have a namespace? if not, use the default
     String ns = conf.getKeyNs(key);
-    Element elem = null;
+    Element elem;
     // is this a resource link?
     if (conf.getResLinkMap().containsKey(key)) {
       elem = doc.createElement(ns + ":" + tagName);
@@ -68,9 +68,7 @@ public final class RDFUtils {
   }
 
   public static void addNamespaces(Document doc, Element rdf, RDFConfig rdfConf) {
-    for (Iterator<String> i = rdfConf.getNsMap().keySet().iterator(); i
-        .hasNext();) {
-      String nsName = i.next();
+    for (String nsName : rdfConf.getNsMap().keySet()) {
       String nsUrl = rdfConf.getNsMap().get(nsName);
 
       XMLUtils.addAttribute(doc, rdf, "xmlns:" + nsName, nsUrl);

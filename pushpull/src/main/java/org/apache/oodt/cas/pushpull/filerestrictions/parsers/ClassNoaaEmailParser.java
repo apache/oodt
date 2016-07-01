@@ -19,20 +19,23 @@
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
 //OODT imports
+
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
-import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 
-
-//JDK imports
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+//JDK imports
 
 /**
  * 
@@ -42,7 +45,7 @@ import java.util.regex.Pattern;
  * <p>Describe your class here</p>.
  */
 public class ClassNoaaEmailParser implements Parser {
-
+  private static Logger LOG = Logger.getLogger(ClassNoaaEmailParser.class.getName());
     public ClassNoaaEmailParser() {}
 
     public VirtualFileStructure parse(FileInputStream emailFile, Metadata metadata)
@@ -51,19 +54,21 @@ public class ClassNoaaEmailParser implements Parser {
             VirtualFile root = VirtualFile.createRootDir();
             Scanner s = new Scanner(emailFile);
             StringBuffer sb = new StringBuffer("");
-            while (s.hasNextLine())
-                sb.append(s.nextLine() + "\n");
+            while (s.hasNextLine()) {
+              sb.append(s.nextLine()).append("\n");
+            }
 
-            if (!validEmail(sb.toString()))
-                throw new ParserException(
-                        "Email not a IASI data processed notification email");
+            if (!validEmail(sb.toString())) {
+              throw new ParserException(
+                  "Email not a IASI data processed notification email");
+            }
 
             Pattern cdPattern = Pattern.compile("\\s*cd\\s{1,}.{1,}?(?:\\s|$)");
             Matcher cdMatcher = cdPattern.matcher(sb);
             Pattern getPattern = Pattern.compile("\\s*get\\s{1,}.{1,}?(?:\\s|$)");
             Matcher getMatcher = getPattern.matcher(sb);
             
-            VirtualFile vf = null;
+            VirtualFile vf;
             while (cdMatcher.find() && getMatcher.find()) {
                 String cdCommand = sb.substring(cdMatcher.start(), cdMatcher.end());
                 String directory = cdCommand.trim().split(" ")[1];
@@ -98,7 +103,7 @@ public class ClassNoaaEmailParser implements Parser {
 
             return new VirtualFileStructure(remoteSite, "/", root);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ParserException("Failed to parse IASI email : "
                     + e.getMessage());
         }
@@ -108,9 +113,11 @@ public class ClassNoaaEmailParser implements Parser {
         String[] containsStrings = (System.getProperties()
                 .getProperty("org.apache.oodt.cas.pushpull.filerestrictions.parsers.class.noaa.email.parser.contains.exprs")
                 + ",").split(",");
-        for (String containsString : containsStrings)
-            if (!email.contains(containsString))
-                return false;
+        for (String containsString : containsStrings) {
+          if (!email.contains(containsString)) {
+            return false;
+          }
+        }
         return true;
     }
 }

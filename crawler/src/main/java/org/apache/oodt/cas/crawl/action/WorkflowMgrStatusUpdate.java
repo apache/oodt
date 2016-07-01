@@ -57,7 +57,7 @@ public class WorkflowMgrStatusUpdate extends CrawlerAction implements
                + ingestSuffix, productMetadata);
       } catch (Exception e) {
          throw new CrawlerActionException(
-               "Failed to update workflow manager : " + e.getMessage());
+               "Failed to update workflow manager : " + e.getMessage(), e);
       }
    }
 

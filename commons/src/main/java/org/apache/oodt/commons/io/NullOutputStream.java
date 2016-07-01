@@ -16,7 +16,6 @@
 package org.apache.oodt.commons.io;
 
 import java.io.*;
-import java.util.*;
 
 /** A null output stream.
  *
@@ -48,12 +47,13 @@ public class NullOutputStream extends OutputStream {
 	 * @throws IOException If the stream is closed.
 	 */
 	public void write(byte[] a, int offset, int length) throws IOException {
-		if (a == null)
-			throw new NullPointerException("Can't write a null array");
-		else if ((offset < 0) || (offset > a.length) || (length < 0) || ((offset + length) > a.length)
-			|| ((offset + length) < 0))
-			throw new IndexOutOfBoundsException("Offset " + offset + " and length " + length
-				+ " not in array of length " + a.length);
+		if (a == null) {
+		  throw new NullPointerException("Can't write a null array");
+		} else if ((offset < 0) || (offset > a.length) || (length < 0) || ((offset + length) > a.length)
+			|| ((offset + length) < 0)) {
+		  throw new IndexOutOfBoundsException("Offset " + offset + " and length " + length
+											  + " not in array of length " + a.length);
+		}
 		checkOpen();
 	}
 
@@ -79,7 +79,9 @@ public class NullOutputStream extends OutputStream {
 	 * @throws IOException If we're not open.
 	 */
 	private void checkOpen() throws IOException {
-		if (!open) throw new IOException("Stream closed");
+		if (!open) {
+		  throw new IOException("Stream closed");
+		}
 	}
 
 	/** Is the output stream open? */

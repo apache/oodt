@@ -28,5 +28,5 @@ package org.apache.oodt.cas.filemgr.repository;
  */
 public interface RepositoryManagerFactory {
 
-    public RepositoryManager createRepositoryManager();
+    RepositoryManager createRepositoryManager();
 }

@@ -20,12 +20,12 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-xmlquery</artifactId>
-  <name>Query Expression</name>
   <packaging>jar</packaging>
+  <name>Query Expression</name>
   <description>This component provides a way to express queries in a generic
     manner.  Its centerpiece is a class called XMLQuery that uses
     boolean postfix expressions to capture the domain, range, and
@@ -34,11 +34,38 @@
     query.  It's used by many other components as the standard way to
     pass a query and its results between servers, clients, nodes, and
     other components.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
-  </scm>
+  <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
+     Once the dependency is in the core pom, it can then be used in other modules without the version tags.
+     For example, within core/pom.xml:
+
+      <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+     Elsewhere in the platform:
+     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+    </dependency>
+
+     Where possible the same dependency version should be used across the whole platform but if required the version
+     can be overridden in a specific pom and should have a comment explaing why the version has been overridden
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+  </dependencies>
   <build>
     <resources>
       <resource>
@@ -63,6 +90,12 @@
       </plugin>
     </plugins>
   </build>
+  <scm>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>-->
+    <tag>0.13-SNAPSHOT</tag>
+  </scm>
   <profiles>
     <profile>
       <id>audit</id>
@@ -81,10 +114,10 @@
             </configuration>
             <executions>
               <execution>
-                <phase>verify</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
@@ -92,17 +125,4 @@
       </build>
     </profile>
   </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

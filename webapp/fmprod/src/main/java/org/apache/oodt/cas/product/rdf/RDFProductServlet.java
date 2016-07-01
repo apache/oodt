@@ -19,11 +19,37 @@
 package org.apache.oodt.cas.product.rdf;
 
 //JDK imports
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -31,34 +57,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
-import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.commons.xml.XMLUtils;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 
 /**
  * 
@@ -78,7 +78,7 @@ public class RDFProductServlet extends HttpServlet {
   private static final long serialVersionUID = -3660991271646533985L;
 
   /* our client to the file manager */
-  private static FileManagerClient fClient = null;
+  private XmlRpcFileManagerClient fClient = null;
 
   /* our log stream */
   private Logger LOG = Logger.getLogger(RDFProductServlet.class.getName());
@@ -103,11 +103,11 @@ public class RDFProductServlet extends HttpServlet {
     try {
       this.rdfConf = RDFUtils.initRDF(config);
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new ServletException(e.getMessage());
     }
 
-    String fileManagerUrl = null;
+    String fileManagerUrl;
     try {
       fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
           "filemgr.url") );
@@ -146,14 +146,14 @@ public class RDFProductServlet extends HttpServlet {
   }
 
   public void doIt(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, java.io.IOException {
+      throws ServletException {
 
     // need to know the type of product to get products for
     String productTypeName = req.getParameter("type");
     String productTypeId = req.getParameter("id");
     ProductType type = null;
 
-    List<Product> products = null;
+    List<Product> products;
 
     try {
       if (productTypeName.equals("ALL")) {
@@ -173,7 +173,7 @@ public class RDFProductServlet extends HttpServlet {
       }
 
     } catch (CatalogException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG
           .log(Level.WARNING,
               "Exception getting products from Catalog: Message: "
@@ -207,11 +207,9 @@ public class RDFProductServlet extends HttpServlet {
       Element rdf = XMLUtils.addNode(doc, doc, "rdf:RDF");
       RDFUtils.addNamespaces(doc, rdf, this.rdfConf);
 
-      for (Iterator<Product> i = products.iterator(); i.hasNext();) {
-        Product p = i.next();
-
+      for (Product p : products) {
         String productTypeIdStr = p.getProductType().getProductTypeId();
-        ProductType productType = null;
+        ProductType productType;
 
         if (type != null) {
           productType = type;
@@ -219,11 +217,11 @@ public class RDFProductServlet extends HttpServlet {
           try {
             productType = fClient.getProductTypeById(productTypeIdStr);
           } catch (RepositoryManagerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.SEVERE,
                 "Unable to obtain product type from product type id: ["
-                    + ((Product) products.get(0)).getProductType()
-                        .getProductTypeId() + "]: Message: " + e.getMessage());
+                + ((Product) products.get(0)).getProductType()
+                                             .getProductTypeId() + "]: Message: " + e.getMessage());
             return;
           }
         }
@@ -231,10 +229,10 @@ public class RDFProductServlet extends HttpServlet {
         p.setProductType(productType);
 
         Element productRdfDesc = XMLUtils.addNode(doc, rdf, this.rdfConf
-            .getTypeNs(productType.getName())
-            + ":" + productType.getName());
+                                                                .getTypeNs(productType.getName())
+                                                            + ":" + productType.getName());
         XMLUtils.addAttribute(doc, productRdfDesc, "rdf:about", base
-            + "?productID=" + p.getProductId());
+                                                                + "?productID=" + p.getProductId());
 
         // now add all its metadata
         Metadata prodMetadata = safeGetMetadata(p);
@@ -243,22 +241,18 @@ public class RDFProductServlet extends HttpServlet {
         // and add RDF nodes underneath the RdfDesc for this product
 
         if (prodMetadata != null) {
-          for (Iterator<String> j = prodMetadata.getHashtable().keySet()
-              .iterator(); j.hasNext();) {
-            String key = (String) j.next();
-
+          for (String key : prodMetadata.getMap().keySet()) {
             List<String> vals = prodMetadata.getAllMetadata(key);
 
             if (vals != null && vals.size() > 0) {
 
-              for (Iterator<String> k = vals.iterator(); k.hasNext();) {
-                String val = (String) k.next();
+              for (String val : vals) {
                 String outputKey = key;
-                if (outputKey.indexOf(" ") != -1) {
+                if (outputKey.contains(" ")) {
                   outputKey = StringUtils.join(WordUtils.capitalizeFully(outputKey).split(
                       " "));
-                }                
-                
+                }
+
                 val = StringEscapeUtils.escapeXml(val);
                 Element rdfElem = RDFUtils.getRDFElement(outputKey, val,
                     this.rdfConf, doc);
@@ -294,10 +288,8 @@ public class RDFProductServlet extends HttpServlet {
 
     if (types != null && types.size() > 0) {
       products = new Vector<Product>();
-      for (Iterator<ProductType> i = types.iterator(); i.hasNext();) {
-        ProductType type = i.next();
-
-        ProductPage page = null;
+      for (ProductType type : types) {
+        ProductPage page;
 
         try {
           page = fClient.getFirstPage(type);
@@ -308,8 +300,9 @@ public class RDFProductServlet extends HttpServlet {
               products.addAll(page.getPageProducts());
               if (!page.isLastPage()) {
                 page = fClient.getNextPage(type, page);
-              } else
+              } else {
                 break;
+              }
             }
           }
         } catch (Exception ignore) {
@@ -327,7 +320,7 @@ public class RDFProductServlet extends HttpServlet {
     try {
       met = fClient.getMetadata(p);
     } catch (CatalogException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error retrieving metadata for product: ["
           + p.getProductId() + "]: Message: " + e.getMessage());
     }
@@ -341,7 +334,7 @@ public class RDFProductServlet extends HttpServlet {
     try {
       types = fClient.getProductTypes();
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error retrieving product types: Message: "
           + e.getMessage());
     }

@@ -19,6 +19,10 @@
 package org.apache.oodt.cas.workflow.examples;
 
 //Java imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * @author davoodi
@@ -68,7 +69,7 @@ public class ExternScriptTaskInstance implements WorkflowTaskInstance {
         String shellType = config.getProperty("ShellType"); // e.g. /bin/sh/
 
         // joining the argument list's elements to a string
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         Iterator iter = args.iterator();
         while (iter.hasNext()) {
             buffer.append(iter.next());
@@ -88,37 +89,49 @@ public class ExternScriptTaskInstance implements WorkflowTaskInstance {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        InputStream inputstream = proc.getInputStream();
-        InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-        BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
+        InputStream inputstream = null;
+        if (proc != null) {
+            inputstream = proc.getInputStream();
+        }
+        InputStreamReader inputstreamreader = null;
+        if (inputstream != null) {
+            inputstreamreader = new InputStreamReader(inputstream);
+        }
+        BufferedReader bufferedreader = null;
+        if (inputstreamreader != null) {
+            bufferedreader = new BufferedReader(inputstreamreader);
+        }
 
         // sending the script's output result to System.out to be printed
         String cmdlnOutput;
         try {
-            while ((cmdlnOutput = bufferedreader.readLine()) != null) {
-                System.out.println(cmdlnOutput);
+            if (bufferedreader != null) {
+                while ((cmdlnOutput = bufferedreader.readLine()) != null) {
+                    System.out.println(cmdlnOutput);
+                }
             }
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         try {
-            if (proc.waitFor() != 0) {
-                System.err
-                        .println("the process did not terminate normally exit code: ["
-                                + proc.exitValue() + "]");
+            if (proc != null) {
+                if (proc.waitFor() != 0) {
+                    System.err
+                            .println("the process did not terminate normally exit code: ["
+                                     + proc.exitValue() + "]");
+                }
             }
         } catch (InterruptedException e) {
-            System.err.println(e);
+            System.err.println(e.getLocalizedMessage());
         } finally {
-            if (bufferedreader != null) {
-                try {
+            try {
+                if (bufferedreader != null) {
                     bufferedreader.close();
-                } catch (Exception ignore) {
                 }
-
-                bufferedreader = null;
+            } catch (Exception ignore) {
             }
+
         }
 
     }

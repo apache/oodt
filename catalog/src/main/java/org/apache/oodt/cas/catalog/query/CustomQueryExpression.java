@@ -39,10 +39,11 @@ public class CustomQueryExpression extends QueryExpression {
 	public CustomQueryExpression(String name, Properties properties) {
 		super();
 		this.name = name;
-		if (properties != null)
-			this.properties = properties;
-		else 
-			this.properties = new Properties();
+		if (properties != null) {
+		  this.properties = properties;
+		} else {
+		  this.properties = new Properties();
+		}
 	}
 	
 	public String getName() {

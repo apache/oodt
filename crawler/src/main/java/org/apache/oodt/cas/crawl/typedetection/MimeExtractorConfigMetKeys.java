@@ -29,36 +29,36 @@ package org.apache.oodt.cas.crawl.typedetection;
  */
 public interface MimeExtractorConfigMetKeys {
 
-    public static final String MAGIC_ATTR = "magic";
+    String MAGIC_ATTR = "magic";
 
-    public static final String MIME_REPO_ATTR = "mimeRepo";
+    String MIME_REPO_ATTR = "mimeRepo";
 
-    public static final String DEFAULT_EXTRACTOR_TAG = "default";
+    String DEFAULT_EXTRACTOR_TAG = "default";
 
-    public static final String EXTRACTOR_TAG = "extractor";
+    String EXTRACTOR_TAG = "extractor";
 
-    public static final String NAMING_CONVENTION_TAG = "namingConvention";
+    String NAMING_CONVENTION_TAG = "namingConvention";
 
-    public static final String EXTRACTOR_CLASS_TAG = "extractorClass";
+    String EXTRACTOR_CLASS_TAG = "extractorClass";
 
-    public static final String EXTRACTOR_CONFIG_TAG = "config";
+    String EXTRACTOR_CONFIG_TAG = "config";
 
-    public static final String EXTRACTOR_PRECONDITIONS_TAG = "preconditions";
+    String EXTRACTOR_PRECONDITIONS_TAG = "preconditions";
 
-    public static final String MIME_TAG = "mime";
+    String MIME_TAG = "mime";
 
-    public static final String MIME_TYPE_ATTR = "type";
+    String MIME_TYPE_ATTR = "type";
 
-    public static final String CLASS_ATTR = "class";
+    String CLASS_ATTR = "class";
 
-    public static final String FILE_ATTR = "file";
+    String FILE_ATTR = "file";
 
-    public static final String ENV_REPLACE_ATTR = "envReplace";
+    String ENV_REPLACE_ATTR = "envReplace";
     
-    public static final String PRECONDITION_COMPARATORS_TAG = "preCondComparators";
+    String PRECONDITION_COMPARATORS_TAG = "preCondComparators";
     
-    public static final String PRECONDITION_COMPARATOR_TAG = "preCondComparator";
+    String PRECONDITION_COMPARATOR_TAG = "preCondComparator";
     
-    public static final String ID_ATTR = "id";
+    String ID_ATTR = "id";
     	
 }

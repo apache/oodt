@@ -44,10 +44,13 @@ public class Base64EncodingOutputStream extends FilterOutputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void write(int b) throws IOException {
-		if (buffer == null)
-			throw new IOException("Can't write onto a closed stream");
+		if (buffer == null) {
+		  throw new IOException("Can't write onto a closed stream");
+		}
 		buffer[index++] = (byte) b;
-		if (index == buffer.length) shipout();
+		if (index == buffer.length) {
+		  shipout();
+		}
 	}
 
 	/** Write a bunch of bytes.
@@ -60,15 +63,22 @@ public class Base64EncodingOutputStream extends FilterOutputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void write(byte[] b, int offset, int length) throws IOException {
-		if (b == null) throw new IllegalArgumentException("Can't write a null array");
-		if (offset < 0 || offset >= b.length)
-			throw new IndexOutOfBoundsException("Can't get bytes at " + offset + " in array with indexes 0.."
-				+ (b.length - 1));
-		if (length < 0) throw new IllegalArgumentException("Can't write a negative amount of bytes");
-		if (offset + length > b.length)
-			throw new IndexOutOfBoundsException("Can't get bytes beyond edge of array");
-		if (buffer == null)
-			throw new IOException("Can't write onto a closed stream");
+		if (b == null) {
+		  throw new IllegalArgumentException("Can't write a null array");
+		}
+		if (offset < 0 || offset >= b.length) {
+		  throw new IndexOutOfBoundsException("Can't get bytes at " + offset + " in array with indexes 0.."
+											  + (b.length - 1));
+		}
+		if (length < 0) {
+		  throw new IllegalArgumentException("Can't write a negative amount of bytes");
+		}
+		if (offset + length > b.length) {
+		  throw new IndexOutOfBoundsException("Can't get bytes beyond edge of array");
+		}
+		if (buffer == null) {
+		  throw new IOException("Can't write onto a closed stream");
+		}
 		while (length > 0) {
 			int avail = buffer.length - index;
 			int amount = avail < length? avail : length;
@@ -76,7 +86,9 @@ public class Base64EncodingOutputStream extends FilterOutputStream {
 			index += amount;
 			offset += amount;
 			length -= amount;
-			if (index == buffer.length) shipout();
+			if (index == buffer.length) {
+			  shipout();
+			}
 		}
 	}
 
@@ -88,8 +100,9 @@ public class Base64EncodingOutputStream extends FilterOutputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void flush() throws IOException {
-		if (buffer == null)
-			throw new IOException("Can't flush a closed stream");
+		if (buffer == null) {
+		  throw new IOException("Can't flush a closed stream");
+		}
 		shipout();
 		out.flush();
 	}
@@ -102,8 +115,9 @@ public class Base64EncodingOutputStream extends FilterOutputStream {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void close() throws IOException {
-		if (buffer == null)
-			throw new IOException("Can't close an already closed stream");
+		if (buffer == null) {
+		  throw new IOException("Can't close an already closed stream");
+		}
 		flush();
 		out.close();
 		out = null;

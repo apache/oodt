@@ -19,19 +19,21 @@
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Properties;
 
-
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Properties;
+
+//OODT imports
 
 /**
  * @author mattmann
@@ -89,16 +91,16 @@ public class TaskJobInput implements JobInput {
    * @see org.apache.oodt.cas.resource.util.XmlRpcWriteable#read(java.lang.Object)
    */
   public void read(Object in) {
-    if (!(in instanceof Hashtable)) {
+    if (!(in instanceof Map)) {
       return;
     }
 
-    Hashtable inHash = (Hashtable) in;
+    Map inHash = (Map) in;
 
     this.taskConfig = XmlRpcStructFactory
-        .getWorkflowTaskConfigurationFromXmlRpc((Hashtable) inHash
+        .getWorkflowTaskConfigurationFromXmlRpc((Map) inHash
             .get("task.config"));
-    this.dynMetadata.addMetadata((Hashtable) inHash.get("task.metadata"));
+    this.dynMetadata.addMetadata((Map) inHash.get("task.metadata"));
     this.workflowTaskInstanceClassName = (String)inHash.get("task.instance.class");
 
   }
@@ -109,11 +111,11 @@ public class TaskJobInput implements JobInput {
    * @see org.apache.oodt.cas.resource.util.XmlRpcWriteable#write()
    */
   public Object write() {
-    // need to create a hashtable with the task metadata and the task config
-    Hashtable outHash = new Hashtable();
+    // need to create a Map with the task metadata and the task config
+    Map outHash = new ConcurrentHashMap();
     outHash.put("task.config", XmlRpcStructFactory
         .getXmlRpcWorkflowTaskConfiguration(this.taskConfig));
-    outHash.put("task.metadata", this.dynMetadata.getHashtable());
+    outHash.put("task.metadata", this.dynMetadata.getMap());
     outHash.put("task.instance.class", this.workflowTaskInstanceClassName);
     return outHash;
   }
@@ -183,9 +185,12 @@ public class TaskJobInput implements JobInput {
         throw ex;
       } catch (Exception ignore) {
       } finally {
-        if (in != null) try {
-          in.close();
-        } catch (IOException ignore) {}
+        if (in != null) {
+          try {
+            in.close();
+          } catch (IOException ignore) {
+          }
+        }
       }
     }
 

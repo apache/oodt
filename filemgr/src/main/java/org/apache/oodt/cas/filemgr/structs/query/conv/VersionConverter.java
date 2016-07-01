@@ -28,6 +28,6 @@ package org.apache.oodt.cas.filemgr.structs.query.conv;
  */
 public interface VersionConverter {
 
-    public double convertToPriority(String version) throws Exception;
+    double convertToPriority(String version) throws Exception;
     
 }

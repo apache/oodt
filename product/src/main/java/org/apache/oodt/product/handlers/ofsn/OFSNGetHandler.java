@@ -47,7 +47,7 @@ public interface OFSNGetHandler {
    * @throws ProductException
    *           If any error occurs.
    */
-  public byte[] retrieveChunk(String filepath, long offset, int length)
+  byte[] retrieveChunk(String filepath, long offset, int length)
       throws ProductException;
 
   /**
@@ -59,7 +59,7 @@ public interface OFSNGetHandler {
    * @return The size of the remote file, potentially after a remote
    *         transformation has occured.
    */
-  public long sizeOf(String filepath);
+  long sizeOf(String filepath);
 
   /**
    * Configures this handler with the provided configuration stored in a
@@ -68,6 +68,6 @@ public interface OFSNGetHandler {
    * @param conf
    *          The configuration for this list handler.
    */
-  public void configure(Properties conf);
+  void configure(Properties conf);
 
 }

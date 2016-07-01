@@ -15,7 +15,7 @@
 
 package org.apache.oodt.commons.object.jndi;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,13 +40,14 @@ import javax.naming.OperationNotSupportedException;
  * @author Kelly
  * @version $Revision: 1.1 $
  */
-class TestContext implements Context {
-	/**
+public class TContext implements Context {
+
+  /**
 	 * Creates a new <code>TestContext</code> instance.
 	 *
 	 * @param prefix What every name must start with.
 	 */
-	public TestContext(String prefix) {
+	public TContext(String prefix) {
 		this.prefix = prefix;
 	}
 
@@ -193,7 +194,7 @@ class TestContext implements Context {
 	}
 
 	/** What holds the bindings.  Keys are {@link String}s, values are {@link Object}s. */
-	Map bindings = new HashMap();
+	Map bindings = new ConcurrentHashMap();
 
 	/** What every key must start with. */
 	private String prefix;

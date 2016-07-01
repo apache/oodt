@@ -17,10 +17,15 @@
 package org.apache.oodt.cas.catalog.util;
 
 //OODT imports
+
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
-//Spring imports
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//Spring imports
 
 /**
  * 
@@ -32,6 +37,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 public class CasPropertyPlaceholderConfigurer extends
         PropertyPlaceholderConfigurer {
 
+  private static Logger LOG = Logger.getLogger(CasPropertyPlaceholderConfigurer.class.getName());
     @Override
     protected String convertPropertyValue(String value) {
         try {
@@ -42,12 +48,13 @@ public class CasPropertyPlaceholderConfigurer extends
         		defaultValue = splitValue[1];
         	}
             String result = PathUtils.doDynamicReplacement(value);
-            if (result.equals("null"))
-            	return defaultValue;
-            else
-            	return result;
+            if (result.equals("null")) {
+              return defaultValue;
+            } else {
+              return result;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return value;
         }
     }

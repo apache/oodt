@@ -26,7 +26,7 @@ package org.apache.oodt.cas.catalog.query;
  */
 public class ComparisonQueryExpression extends TermQueryExpression {
 
-	public static enum Operator { EQUAL_TO("=="), LESS_THAN_EQUAL_TO("<="), GREATER_THAN_EQUAL_TO(">="), LESS_THAN("<"), GREATER_THAN(">"), LIKE("LIKE"); 
+	public enum Operator { EQUAL_TO("=="), LESS_THAN_EQUAL_TO("<="), GREATER_THAN_EQUAL_TO(">="), LESS_THAN("<"), GREATER_THAN(">"), LIKE("LIKE");
 	
 		private String value;
 		
@@ -35,20 +35,21 @@ public class ComparisonQueryExpression extends TermQueryExpression {
 		}
 		
 		public static Operator getOperatorBySign(String sign) {
-			if (EQUAL_TO.value.equals(sign))
-				return EQUAL_TO;
-			else if (LESS_THAN_EQUAL_TO.value.equals(sign))
-				return LESS_THAN_EQUAL_TO;
-			else if (GREATER_THAN_EQUAL_TO.value.equals(sign))
-				return GREATER_THAN_EQUAL_TO;
-			else if (LESS_THAN.value.equals(sign))
-				return LESS_THAN;
-			else if (GREATER_THAN.value.equals(sign))
-				return GREATER_THAN;
-			else if (LIKE.value.equals(sign))
-				return LIKE;
-			else
-				throw new IllegalArgumentException("Not matching operator for '" + sign + "'");
+			if (EQUAL_TO.value.equals(sign)) {
+			  return EQUAL_TO;
+			} else if (LESS_THAN_EQUAL_TO.value.equals(sign)) {
+			  return LESS_THAN_EQUAL_TO;
+			} else if (GREATER_THAN_EQUAL_TO.value.equals(sign)) {
+			  return GREATER_THAN_EQUAL_TO;
+			} else if (LESS_THAN.value.equals(sign)) {
+			  return LESS_THAN;
+			} else if (GREATER_THAN.value.equals(sign)) {
+			  return GREATER_THAN;
+			} else if (LIKE.value.equals(sign)) {
+			  return LIKE;
+			} else {
+			  throw new IllegalArgumentException("Not matching operator for '" + sign + "'");
+			}
 		}
 		
 		public String toString() {

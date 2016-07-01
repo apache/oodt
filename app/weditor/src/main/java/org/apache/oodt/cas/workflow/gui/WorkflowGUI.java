@@ -17,28 +17,9 @@
 
 package org.apache.oodt.cas.workflow.gui;
 
-//JDK imports
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
+//Commons import
 
-//OODT imports
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.workflow.gui.menu.EditMenu;
 import org.apache.oodt.cas.workflow.gui.menu.FileMenu;
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
@@ -52,8 +33,31 @@ import org.apache.oodt.cas.workflow.gui.toolbox.Tool;
 import org.apache.oodt.cas.workflow.gui.toolbox.ToolBox;
 import org.apache.oodt.cas.workflow.gui.util.IconLoader;
 
-//Commons import
-import org.apache.commons.lang.StringUtils;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+//OODT imports
+//JDK imports
 
 /**
  * 
@@ -65,7 +69,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  */
 public class WorkflowGUI extends JFrame {
-
+  private static Logger LOG = Logger.getLogger(WorkflowGUI.class.getName());
   private static final long serialVersionUID = -8217540440195126377L;
 
   private ToolBox toolbox;
@@ -80,17 +84,20 @@ public class WorkflowGUI extends JFrame {
 
   private XmlWorkflowModelRepository repo;
 
-  public WorkflowGUI() throws Exception {
+  public WorkflowGUI() throws IOException, IllegalAccessException, InstantiationException {
 
     this.addWindowFocusListener(new WindowFocusListener() {
 
       public void windowGainedFocus(WindowEvent e) {
-        if (menu != null)
+        if (menu != null) {
           menu.revalidate();
-        if (toolbox != null)
+        }
+        if (toolbox != null) {
           toolbox.revalidate();
-        if (perspective != null)
+        }
+        if (perspective != null) {
           perspective.refresh();
+        }
       }
 
       public void windowLostFocus(WindowEvent e) {
@@ -163,10 +170,11 @@ public class WorkflowGUI extends JFrame {
   }
 
   private void updateWorkspaceText() {
-    if (this.workspace == null)
+    if (this.workspace == null) {
       this.setTitle(null);
-    else
+    } else {
       this.setTitle(StringUtils.leftPad("Workspace: " + this.workspace, 100));
+    }
   }
 
   private void loadProjects() {
@@ -178,15 +186,17 @@ public class WorkflowGUI extends JFrame {
           "parallel", "task", "condition")));
       for (File file : repo.getFiles()) {
         List<ModelGraph> graphs = new Vector<ModelGraph>();
-        for (ModelGraph graph : repo.getGraphs())
-          if (graph.getModel().getFile().equals(file))
+        for (ModelGraph graph : repo.getGraphs()) {
+          if (graph.getModel().getFile().equals(file)) {
             graphs.add(graph);
+          }
+        }
         System.out.println(graphs);
         perspective.addState(new ViewState(file, null, graphs, repo
             .getGlobalConfigGroups()));
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
   }
 
@@ -227,8 +237,9 @@ public class WorkflowGUI extends JFrame {
 
       public void actionPerformed(ActionEvent event) {
         try {
-          if (workspace == null)
+          if (workspace == null) {
             return;
+          }
           JFileChooser chooser = new JFileChooser(new File("."));
           int value = chooser.showOpenDialog(WorkflowGUI.this);
           if (value == JFileChooser.APPROVE_OPTION) {
@@ -242,7 +253,7 @@ public class WorkflowGUI extends JFrame {
             }
           }
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
         }
       }
 
@@ -276,7 +287,7 @@ public class WorkflowGUI extends JFrame {
       	try {
       		repo.save();
       	} catch (Exception e) {
-      		e.printStackTrace();
+      		LOG.log(Level.SEVERE, e.getMessage());
       	}
       }
     });
@@ -287,7 +298,7 @@ public class WorkflowGUI extends JFrame {
         try {
           perspective.undo();
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
         }
       }
     });
@@ -305,7 +316,7 @@ public class WorkflowGUI extends JFrame {
           gui.pack();
           gui.setVisible(true);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
         }
       }
     });

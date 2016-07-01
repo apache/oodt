@@ -19,17 +19,18 @@
 package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
-//OODT static imports
-import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
-
-//OODT imports
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 import org.apache.oodt.commons.exec.ExecUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
+
+//OODT static imports
+//OODT imports
 
 
 /**
@@ -63,7 +64,7 @@ public class ExternPreconditionComparator extends PreConditionComparator<Long> {
     protected int performCheck(File product, Long compareItem)
         throws PreconditionComparatorException {
 			
-        String envReplacedExecuteCommand = "";
+        String envReplacedExecuteCommand;
 
         try {
             envReplacedExecuteCommand = doDynamicReplacement( executeCommand ) +
@@ -80,7 +81,7 @@ public class ExternPreconditionComparator extends PreConditionComparator<Long> {
         // Determine working directory
         String workingDirPath = product.getParentFile().getAbsolutePath();
         File workingDir = new File(workingDirPath);
-        int status = -1;
+        int status;
 
         try {
             status = ExecUtils.callProgram(envReplacedExecuteCommand, workingDir);
@@ -93,7 +94,7 @@ public class ExternPreconditionComparator extends PreConditionComparator<Long> {
             return 1; 
         }
 		
-        return new Long(status).compareTo(compareItem);
+        return Long.valueOf(status).compareTo(compareItem);
     }
 }
 

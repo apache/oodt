@@ -26,11 +26,10 @@ import org.apache.oodt.commons.util.DateConvert;
 //JDK imports
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +47,7 @@ public class MemoryWorkflowInstanceRepository extends
         AbstractPaginatibleInstanceRepository {
 
     /* our workflow instance map: maps workfllowInstId to WorkflowInstance */
-    private HashMap workflowInstMap = null;
+    private ConcurrentHashMap workflowInstMap = null;
 
     /* our log stream */
     private static final Logger LOG = Logger
@@ -60,7 +59,7 @@ public class MemoryWorkflowInstanceRepository extends
      * </p>
      */
     public MemoryWorkflowInstanceRepository(int pageSize) {
-        workflowInstMap = new HashMap();
+        workflowInstMap = new ConcurrentHashMap();
         this.pageSize = pageSize;
     }
 
@@ -137,10 +136,10 @@ public class MemoryWorkflowInstanceRepository extends
             throws InstanceRepositoryException {
         List instances = new Vector();
 
-        for (Iterator i = workflowInstMap.keySet().iterator(); i.hasNext();) {
-            String workflowInstId = (String) i.next();
+        for (Object o : workflowInstMap.keySet()) {
+            String workflowInstId = (String) o;
             WorkflowInstance inst = (WorkflowInstance) workflowInstMap
-                    .get(workflowInstId);
+                .get(workflowInstId);
             if (inst.getStatus().equals(status)) {
                 instances.add(inst);
             }
@@ -205,14 +204,11 @@ public class MemoryWorkflowInstanceRepository extends
             throws InstanceRepositoryException {
         int cnt = 0;
 
-        if (this.workflowInstMap != null
-                && this.workflowInstMap.keySet() != null
-                && this.workflowInstMap.keySet().size() > 0) {
-            for (Iterator i = this.workflowInstMap.keySet().iterator(); i
-                    .hasNext();) {
-                String wInstId = (String) i.next();
+        if (this.workflowInstMap != null && this.workflowInstMap.keySet().size() > 0) {
+            for (Object o : this.workflowInstMap.keySet()) {
+                String wInstId = (String) o;
                 WorkflowInstance inst = (WorkflowInstance) this.workflowInstMap
-                        .get(wInstId);
+                    .get(wInstId);
                 if (inst.getStatus().equals(status)) {
                     cnt++;
                 }

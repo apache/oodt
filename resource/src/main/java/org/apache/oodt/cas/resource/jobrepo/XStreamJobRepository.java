@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,7 +55,7 @@ public class XStreamJobRepository implements JobRepository {
 	public XStreamJobRepository(File workingDir, int maxHistory) {
 		this.workingDir = workingDir;
 		this.maxHistory = Math.max(maxHistory == -1 ? Integer.MAX_VALUE : maxHistory, 1);
-		this.jobMap = Collections.synchronizedMap(new HashMap<String, String>());
+		this.jobMap = Collections.synchronizedMap(new ConcurrentHashMap<String, String>());
 		this.jobPrecedence = new Vector<String>();
 	}
 	
@@ -63,13 +63,16 @@ public class XStreamJobRepository implements JobRepository {
 	    XStream xstream = new XStream();
 	    FileOutputStream os = null;
 		try {
-			if (this.jobMap.size() >= this.maxHistory)
-				FileUtils.forceDelete(new File(jobMap.remove(jobPrecedence.remove(0))));
+			if (this.jobMap.size() >= this.maxHistory) {
+			  FileUtils.forceDelete(new File(jobMap.remove(jobPrecedence.remove(0))));
+			}
 			
-			if (spec.getJob().getId() == null)
-			    spec.getJob().setId(UUID.randomUUID().toString());
-			else if (this.jobMap.containsKey(spec.getJob().getId()))
-				throw new JobRepositoryException("JobId '" + spec.getJob().getId() + "' already in use -- must pick unique JobId");
+			if (spec.getJob().getId() == null) {
+			  spec.getJob().setId(UUID.randomUUID().toString());
+			} else if (this.jobMap.containsKey(spec.getJob().getId())) {
+			  throw new JobRepositoryException(
+				  "JobId '" + spec.getJob().getId() + "' already in use -- must pick unique JobId");
+			}
 			
 			File file = this.generateFilePath(spec.getJob().getId());
 			os = new FileOutputStream(file);
@@ -82,7 +85,7 @@ public class XStreamJobRepository implements JobRepository {
 		}finally {
 			try {
 				os.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 
@@ -97,7 +100,7 @@ public class XStreamJobRepository implements JobRepository {
 		}finally {
 			try {
 				is.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 
@@ -132,7 +135,7 @@ public class XStreamJobRepository implements JobRepository {
 		}finally {
 			try {
 				os.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 	

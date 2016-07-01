@@ -32,6 +32,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
  */
 public class ConditionProcessor extends TaskProcessor {
 
+  public static final double DOUBLE = 0.1;
+
   public ConditionProcessor(WorkflowLifecycleManager lifecycleManager, WorkflowInstance inst) {
     super(lifecycleManager, inst);
   }
@@ -56,7 +58,7 @@ public class ConditionProcessor extends TaskProcessor {
   @Override
   public void setWorkflowInstance(WorkflowInstance instance) {
     instance.setPriority(Priority
-        .getPriority(instance.getPriority().getValue() - 0.1));
+        .getPriority(instance.getPriority().getValue() - DOUBLE));
     super.setWorkflowInstance(instance);
   }
 

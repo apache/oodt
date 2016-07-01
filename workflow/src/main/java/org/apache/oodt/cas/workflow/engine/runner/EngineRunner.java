@@ -17,15 +17,13 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 
 /**
  *
- * Obfuscates the underlying substrate on which a {@link WorkflowTask} should
- * run. In short, executes a {@link WorkflowTask} for the Workflow Engine.
+ * Obfuscates the underlying substrate on which a {@link org.apache.oodt.cas.workflow.structs.WorkflowTask} should
+ * run. In short, executes a {@link org.apache.oodt.cas.workflow.structs.WorkflowTask} for the Workflow Engine.
  *
  * @author bfoster
  * @author mattmann
@@ -46,7 +44,7 @@ public abstract class EngineRunner {
    *           If any error occurs.
    */
   public abstract void execute(TaskProcessor taskProcessor)
-      throws Exception;
+  ;
 
   /**
    * Shuts this runner down and frees its resources.
@@ -55,17 +53,17 @@ public abstract class EngineRunner {
    *           If any error occurs while freeing resources.
    *
    */
-  public abstract void shutdown() throws Exception;
+  public abstract void shutdown();
   
   /**
    * Decides whether or not there are available slots within this runner
    * to execute the provided {@link TaskProcessor}.
    * 
-   * @param workflowTask The {@link TaskProcessor} to execute.
+   * @param taskProcessor The {@link TaskProcessor} to execute.
    * @return True if there is an open slot, false otherwise.
    * @throws Exception If any error occurs.
    */
-  public abstract boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception;  
+  public abstract boolean hasOpenSlots(TaskProcessor taskProcessor);
   
   
   public abstract void setInstanceRepository(WorkflowInstanceRepository instRep);

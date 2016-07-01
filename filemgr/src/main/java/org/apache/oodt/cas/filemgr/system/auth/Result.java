@@ -38,8 +38,9 @@ public class Result {
         if (kind != null) {
             java.lang.reflect.Constructor ctor = kind.getConstructor(ARGS);
             this.value = ctor.newInstance(new Object[] { value });
-        } else
+        } else {
             this.value = value;
+        }
     }
 
     /**

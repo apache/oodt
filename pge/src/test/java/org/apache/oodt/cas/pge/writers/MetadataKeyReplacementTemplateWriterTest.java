@@ -18,16 +18,19 @@
 package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Logger;
 
-//OODT imports
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//Junit imports
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//OODT imports
+//Junit imports
 
 /**
  * 
@@ -65,7 +68,7 @@ public class MetadataKeyReplacementTemplateWriterTest extends TestCase {
     try {
       writer.generateFile(outPath, met, LOG, templateSourcePath);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 

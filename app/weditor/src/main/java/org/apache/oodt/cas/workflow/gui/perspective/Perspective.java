@@ -64,8 +64,9 @@ public abstract class Perspective extends JPanel implements ViewListener {
   }
 
   public void save() {
-    if (this.state != null)
+    if (this.state != null) {
       this.state.save();
+    }
   }
 
   public void undo() {

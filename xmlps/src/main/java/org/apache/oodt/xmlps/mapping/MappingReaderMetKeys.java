@@ -26,40 +26,40 @@ package org.apache.oodt.xmlps.mapping;
  */
 public interface MappingReaderMetKeys {
 
-    public static final String FIELD_TAG = "field";
+    String FIELD_TAG = "field";
 
-    public static final String TABLES_OUTER_TAG = "tables";
+    String TABLES_OUTER_TAG = "tables";
 
-    public static final String TABLE_TAG = "table";
+    String TABLE_TAG = "table";
 
-    public static final String TABLE_ATTR_JOIN_FLD = "join";
+    String TABLE_ATTR_JOIN_FLD = "join";
 
-    public static final String TABLE_ATTR_BASE_TBL_JOIN_TABLE = "to";
+    String TABLE_ATTR_BASE_TBL_JOIN_TABLE = "to";
 
-    public static final String TABLE_ATTR_BASE_TBL_JOIN_FLD = "tofld";
+    String TABLE_ATTR_BASE_TBL_JOIN_FLD = "tofld";
 
-    public static final String TABLE_ATTR_NAME = "name";
+    String TABLE_ATTR_NAME = "name";
 
-    public static final String FIELD_ATTR_TYPE = "type";
+    String FIELD_ATTR_TYPE = "type";
 
-    public static final String FIELD_ATTR_NAME = "name";
+    String FIELD_ATTR_NAME = "name";
 
-    public static final String FIELD_ATTR_DBNAME = "dbname";
+    String FIELD_ATTR_DBNAME = "dbname";
 
-    public static final String FIELD_ATTR_SCOPE = "scope";
+    String FIELD_ATTR_SCOPE = "scope";
 
-    public static final String FIELD_ATTR_VALUE = "value";
+    String FIELD_ATTR_VALUE = "value";
 
-    public static final String FIELD_ATTR_TABLE = "table";
+    String FIELD_ATTR_TABLE = "table";
 
-    public static final String FIELD_ATTR_STRING = "string";
+    String FIELD_ATTR_STRING = "string";
 
-    public static final String FIELD_TRANSLATE_TAG = "translate";
+    String FIELD_TRANSLATE_TAG = "translate";
 
-    public static final String FUNC_TAG = "func";
+    String FUNC_TAG = "func";
 
-    public static final String FUNC_ATTR_CLASS = "class";
+    String FUNC_ATTR_CLASS = "class";
 
-    public static final String FIELD_ATTR_APPEND_TABLE_NAME = "appendTableName";
+    String FIELD_ATTR_APPEND_TABLE_NAME = "appendTableName";
 
 }

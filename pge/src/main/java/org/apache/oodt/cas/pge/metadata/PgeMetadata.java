@@ -51,7 +51,7 @@ import com.google.common.collect.Sets;
 public class PgeMetadata {
 
    public enum Type {
-      STATIC, DYNAMIC, LOCAL;
+      STATIC, DYNAMIC, LOCAL
    }
    public static final List<Type> DEFAULT_COMBINE_ORDER = Lists
          .newArrayList(Type.LOCAL, Type.DYNAMIC, Type.STATIC);
@@ -298,8 +298,9 @@ public class PgeMetadata {
       Validate.notNull(key, "key cannot be null");
 
       List<String> keyPath = Lists.newArrayList();
-      while (keyLinkMap.containsKey(key))
+      while (keyLinkMap.containsKey(key)) {
          keyPath.add(key = keyLinkMap.get(key));
+      }
       return keyPath;
    }
 

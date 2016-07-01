@@ -19,22 +19,26 @@
 package org.apache.oodt.cas.resource.util;
 
 //JDK imports
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.logging.Logger;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
-//OODT imports
-import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.commons.xml.XMLUtils;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * @author woollard
@@ -70,15 +74,12 @@ public final class XmlStructFactory {
 					.getAttribute("envReplace")) ? PathUtils
 					.doDynamicReplacement(resourceNodeRoot.getAttribute("ip"))
 					: resourceNodeRoot.getAttribute("ip"));
-            capacity = new Integer(resourceNodeRoot.getAttribute("capacity"))
-                    .intValue();
+            capacity = Integer.valueOf(resourceNodeRoot.getAttribute("capacity"));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
-        ResourceNode resource = new ResourceNode(id, ip, capacity);
-
-        return resource;
+        return new ResourceNode(id, ip, capacity);
     }
 
     public static List getQueueAssignment(Node node) {
@@ -110,8 +111,8 @@ public final class XmlStructFactory {
                 jobNodeElem);
         String instClass = instClassElem.getAttribute("name");
         String queue = XMLUtils.getElementText("queue", jobNodeElem);
-        Integer load = new Integer(Integer.parseInt(XMLUtils.getElementText(
-                "load", jobNodeElem)));
+        Integer load = Integer.parseInt(XMLUtils.getElementText(
+            "load", jobNodeElem));
 
         Element inputClass = XMLUtils
                 .getFirstElement("inputClass", jobNodeElem);
@@ -154,9 +155,7 @@ public final class XmlStructFactory {
             in.configure(inputConfigProps);
         }
 
-        JobSpec spec = new JobSpec(in, job);
-
-        return spec;
+        return new JobSpec(in, job);
     }
 
 }

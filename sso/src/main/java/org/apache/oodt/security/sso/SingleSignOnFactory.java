@@ -38,25 +38,25 @@ public final class SingleSignOnFactory {
 
   @SuppressWarnings("unchecked")
   public static AbstractWebBasedSingleSignOn getWebBasedSingleSignOn(String className) {
-    AbstractWebBasedSingleSignOn sso = null;
-    Class<AbstractWebBasedSingleSignOn> clazz = null;
+    AbstractWebBasedSingleSignOn sso;
+    Class<AbstractWebBasedSingleSignOn> clazz;
 
     try {
       clazz = (Class<AbstractWebBasedSingleSignOn>) Class.forName(className);
       sso = clazz.newInstance();
       return sso;
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading web based sso class "
               + className + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading web based sso class "
               + className + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading web based sso class "
               + className + " Message: " + e.getMessage());

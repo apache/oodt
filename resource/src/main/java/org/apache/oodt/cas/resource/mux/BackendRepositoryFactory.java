@@ -32,5 +32,5 @@ public interface BackendRepositoryFactory {
      * Create a backend repository
      * @return the newly minted backend repository
      */
-	public BackendRepository createBackendRepository();
+    BackendRepository createBackendRepository();
 }

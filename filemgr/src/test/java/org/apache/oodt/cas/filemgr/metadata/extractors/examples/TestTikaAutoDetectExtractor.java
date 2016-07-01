@@ -18,21 +18,21 @@
 package org.apache.oodt.cas.filemgr.metadata.extractors.examples;
 
 //JDK imports
-import java.net.URL;
-
-//Junit imports
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-// JUnit static imports
-import static junit.framework.Assert.*;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import java.net.URL;
+
+import static junit.framework.Assert.*;
+
+//Junit imports
+// JUnit static imports
+//OODT imports
 
 
 @RunWith(JUnit4.class)
@@ -57,7 +57,6 @@ public class TestTikaAutoDetectExtractor {
         assertNotNull(outputMetadata);
         assertTrue(outputMetadata.getAllKeys().size() > 0);
         assertTrue(outputMetadata.containsKey("X-Parsed-By"));
-        assertFalse(outputMetadata.getMetadata("X-Parsed-By") == "org.apache.tika.parser.EmptyParser");
-        assertTrue(true);
+        assertFalse(outputMetadata.getMetadata("X-Parsed-By").equals("org.apache.tika.parser.EmptyParser"));
     }
 }

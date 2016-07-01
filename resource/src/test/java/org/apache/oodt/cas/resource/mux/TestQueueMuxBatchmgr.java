@@ -70,7 +70,7 @@ public class TestQueueMuxBatchmgr extends TestCase {
             try {
                 queue.executeRemotely(this.getSpecFromQueue("queue-3"),node1);
                 TestCase.fail("Failed to throw JobExecutionException on unknown queue.");
-            } catch(JobExecutionException e) {}
+            } catch(JobExecutionException ignored) {}
         } catch (JobExecutionException e) {
            TestCase.fail("Unexpected Exception: "+e.getMessage());
         }

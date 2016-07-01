@@ -37,31 +37,31 @@ public interface BackendManager {
      * @param batchmgr - batch manager for this set
      * @param scheduler - scheduler for this set
      */
-    public void addSet(String queue,Monitor monitor, Batchmgr batchmgr, Scheduler scheduler);
+    void addSet(String queue, Monitor monitor, Batchmgr batchmgr, Scheduler scheduler);
     /**
      * Return monitor for the given queue.
      * @param queue - queue to check
      * @return montior
      * @throws QueueManagerException when queue does not exist
      */
-    public Monitor getMonitor(String queue) throws QueueManagerException;
+    Monitor getMonitor(String queue) throws QueueManagerException;
     /**
      * Return batch manager for the given queue.
      * @param queue - queue to check
      * @return batchmgr
      * @throws QueueManagerException when queue does not exist
      */
-    public Batchmgr getBatchmgr(String queue) throws QueueManagerException;
+    Batchmgr getBatchmgr(String queue) throws QueueManagerException;
     /**
      * Return scheduler for the given queue.
      * @param queue - queue to check
      * @return scheduler
      * @throws QueueManagerException when queue does not exist
      */
-    public Scheduler getScheduler(String queue) throws QueueManagerException;
+    Scheduler getScheduler(String queue) throws QueueManagerException;
     /**
      * Return a list of all monitors.
      * @return list of all monitors
      */
-    public List<Monitor> getMonitors();
+    List<Monitor> getMonitors();
 }

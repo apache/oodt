@@ -32,6 +32,6 @@ public interface LoadCalculator {
      * @param metrics status metrics of the resource node
      * @return An integer representation of the load within 0 and node's capacity
      */
-    public double calculateLoad(Map<String, String> metrics);
+    double calculateLoad(Map<String, String> metrics);
 
 }

@@ -43,12 +43,15 @@ public class ProductTypeFilter {
 
   public ProductTypeFilter(String filter) {
     this.constraints = new Properties();
-    if (filter != null)
+    if (filter != null) {
       this.parse(filter);
+    }
   }
 
   public void parse(String filter) {
-    if(filter == null) return;
+    if(filter == null) {
+      return;
+    }
     String[] attrConstrs = filter.split(",");
     for (String attrConstr : attrConstrs) {
       String[] attrConstPair = attrConstr.split("\\:");
@@ -57,7 +60,9 @@ public class ProductTypeFilter {
   }
 
   public boolean filter(ProductType type) {
-    if(this.constraints == null) return true;
+    if(this.constraints == null) {
+      return true;
+    }
     if (type.getTypeMetadata() != null) {
       Metadata typeMet = type.getTypeMetadata();
       for (Object constraintObj : this.constraints.keySet()) {

@@ -28,24 +28,24 @@ package org.apache.oodt.cas.product.rss;
  */
 public interface RSSConfigReaderMetKeys {
   
-  public static final String CHANNEL_LINK_ATTR = "channelLink";
+  String CHANNEL_LINK_ATTR = "channelLink";
   
-  public static final String NAMESPACE_TAG = "namespace";
+  String NAMESPACE_TAG = "namespace";
   
-  public static final String NAMESPACE_ATTR_PREFIX = "prefix";
+  String NAMESPACE_ATTR_PREFIX = "prefix";
   
-  public static final String NAMESPACE_ATTR_URI = "uri";
+  String NAMESPACE_ATTR_URI = "uri";
 
-  public static final String TAG_TAG = "tag";
+  String TAG_TAG = "tag";
 
-  public static final String TAG_ATTR_NAME = "name";
+  String TAG_ATTR_NAME = "name";
 
-  public static final String TAG_ATTR_SOURCE = "source";
+  String TAG_ATTR_SOURCE = "source";
 
-  public static final String ATTRIBUTE_TAG = "attribute";
+  String ATTRIBUTE_TAG = "attribute";
 
-  public static final String ATTRIBUTE_ATTR_NAME = "name";
+  String ATTRIBUTE_ATTR_NAME = "name";
 
-  public static final String ATTRIBUTE_ATTR_VALUE = "value";
+  String ATTRIBUTE_ATTR_VALUE = "value";
 
 }

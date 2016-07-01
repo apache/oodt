@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-fm-browser</artifactId>
@@ -29,35 +29,52 @@ the License.
      provides the user of the CAS File Manager with a graphical environment in which they
      can view archived products' metadata, query for products with particular metadata, 
      and export results of queries to the MS Excel(c) file format.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/app/fmbrowser</url>
-  </scm>
-  <build>
-    <plugins />
-  </build>
+  <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
+     Once the dependency is in the core pom, it can then be used in other modules without the version tags.
+     For example, within core/pom.xml:
+
+      <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+     Elsewhere in the platform:
+     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+    </dependency>
+
+     Where possible the same dependency version should be used across the whole platform but if required the version
+     can be overridden in a specific pom and should have a comment explaing why the version has been overridden
+-->
   <dependencies>
     <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-metadata</artifactId>
-      <version>${project.parent.version}</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-metadata</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
-      <version>3.2-FINAL</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
+  <build>
+    <plugins />
+  </build>
+  <scm>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/app/fmbrowser</url>-->
+    <tag>0.13-SNAPSHOT</tag>
+  </scm>
 </project>

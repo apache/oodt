@@ -34,6 +34,6 @@ public interface CacheFactory {
      * @throws InstantiationException If the the particular {@link Cache} can
      * not be created for some reason.
      */
-    public Cache createCache() throws InstantiationException;
+    Cache createCache() throws InstantiationException;
 
 }

@@ -23,11 +23,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.processor.SequentialProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorBuilder;
@@ -99,7 +96,7 @@ public class QuerierAndRunnerUtils {
   }
   
   private File getTmpPath() throws IOException{
-    File testDir = null;
+    File testDir;
     String parentPath = File.createTempFile("test", "txt").getParentFile().getAbsolutePath();
     parentPath = parentPath.endsWith("/") ? parentPath:parentPath + "/";
     String testJobDirPath = parentPath + "jobs";

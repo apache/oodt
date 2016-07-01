@@ -27,6 +27,6 @@ package org.apache.oodt.cas.workflow.gui.perspective.view;
  */
 public interface ViewListener {
 
-  public void stateChangeNotify(ViewChange<?> change);
+  void stateChangeNotify(ViewChange<?> change);
 
 }

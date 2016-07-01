@@ -18,7 +18,6 @@
 package org.apache.oodt.commons.activity;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * A composite activity multiplexes incidents to multiple other activities.
@@ -33,11 +32,14 @@ public class CompositeActivity extends Activity {
 	 * @param activities a {@link Collection} of {@link Activity} instances.
 	 */
 	public CompositeActivity(Collection activities) {
-		if (activities == null)
-			throw new IllegalArgumentException("Activities collection required");
-		for (Iterator i = activities.iterator(); i.hasNext();)
-			if (!(i.next() instanceof Activity))
-				throw new IllegalArgumentException("Non-Activity in activities collection");
+		if (activities == null) {
+		  throw new IllegalArgumentException("Activities collection required");
+		}
+	  for (Object activity : activities) {
+		if (!(activity instanceof Activity)) {
+		  throw new IllegalArgumentException("Non-Activity in activities collection");
+		}
+	  }
 		this.activities = activities;
 	}
 
@@ -47,8 +49,9 @@ public class CompositeActivity extends Activity {
 	 * @param incident The {@link Incident} to record.
 	 */
 	public void recordIncident(Incident incident) {
-		for (Iterator i = activities.iterator(); i.hasNext();)
-			((Activity) i.next()).recordIncident(incident);
+	  for (Object activity : activities) {
+		((Activity) activity).recordIncident(incident);
+	  }
 	}
 
 	/**

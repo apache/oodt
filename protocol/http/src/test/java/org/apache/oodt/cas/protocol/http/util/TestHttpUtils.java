@@ -62,7 +62,7 @@ public class TestHttpUtils extends TestCase {
 		assertEquals("http://localhost/base/directory/path/to/file", resolvedRelativeUri.toString());
 	}
 	
-	public void testConnectUrl() throws MalformedURLException, IOException {
+	public void testConnectUrl() throws IOException {
 		HttpURLConnection conn = HttpUtils.connect(new URL(APACHE_SVN_SITE + URL_OF_THIS_TEST));
 		assertNotSame(0, conn.getDate());
 		String urlText = HttpUtils.readUrl(conn);
@@ -150,7 +150,7 @@ public class TestHttpUtils extends TestCase {
 		assertFalse(matcher.find());
 	}
 	
-	public void testFindLinks() throws MalformedURLException, IOException, URISyntaxException {
+	public void testFindLinks() throws IOException, URISyntaxException {
 		URL url = new URL(APACHE_SVN_SITE + PARENT_URL_OF_THIS_TEST);
 		HttpFile parent = new HttpFile(PARENT_URL_OF_THIS_TEST, true, url);
 		HttpURLConnection conn = HttpUtils.connect(url);
@@ -165,7 +165,7 @@ public class TestHttpUtils extends TestCase {
 		assertTrue(foundThisTest);
 	}
 	
-	public void testIsDirectory() throws MalformedURLException, IOException {
+	public void testIsDirectory() throws IOException {
 		assertTrue(HttpUtils.isDirectory(new URL(APACHE_SVN_SITE + PARENT_URL_OF_THIS_TEST), ""));
 		assertFalse(HttpUtils.isDirectory(new URL(APACHE_SVN_SITE + URL_OF_THIS_TEST), ""));
 		assertTrue(HttpUtils.isDirectory(new URL(APACHE_SVN_SITE), ""));

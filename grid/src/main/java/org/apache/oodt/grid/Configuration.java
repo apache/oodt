@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -64,8 +63,9 @@ public class Configuration implements Serializable {
      */
     public Configuration(File file) throws IOException, SAXException {
         this.file = file;
-        if (file.isFile() && file.length() > 0)
+        if (file.isFile() && file.length() > 0) {
             parse(file);
+        }
     }
 
     /**
@@ -81,23 +81,25 @@ public class Configuration implements Serializable {
         elem.setAttribute("localhost", localhostRequired? "true" : "false");    // Add localhost attribute
 
         if (password != null && password.length > 0)                            // If we have a password
+        {
             elem.setAttribute("password", encode(password));                    // Add passowrd attribute
+        }
 
-        for (Iterator i = productServers.iterator(); i.hasNext();) {            // For each product server
-            ProductServer ps = (ProductServer) i.next();                        // Get the product server
+        for (Object productServer : productServers) {            // For each product server
+            ProductServer ps = (ProductServer) productServer;                        // Get the product server
             elem.appendChild(ps.toXML(owner));                                  // And add it under <configuration>
         }
 
-        for (Iterator i = profileServers.iterator(); i.hasNext();) {            // For each profile server
-            ProfileServer ps = (ProfileServer) i.next();                        // Get the profile server
+        for (Object profileServer : profileServers) {            // For each profile server
+            ProfileServer ps = (ProfileServer) profileServer;                        // Get the profile server
             elem.appendChild(ps.toXML(owner));                                  // And add it under the <configuration>
         }
 
         if (!codeBases.isEmpty()) {                                             // Got any code bases?
             Element cbs = owner.createElement("codeBases");                     // Boo yah.  Make a parent for 'em
             elem.appendChild(cbs);                                              // Add parent
-            for (Iterator i = codeBases.iterator(); i.hasNext();) {             // Then, for each code base
-                URL url = (URL) i.next();                                       // Get the URL to it
+            for (Object codeBase : codeBases) {             // Then, for each code base
+                URL url = (URL) codeBase;                                       // Get the URL to it
                 Element cb = owner.createElement("codeBase");                   // And make a <codeBase> for it
                 cb.setAttribute("url", url.toString());                         // And an "url" attribute
                 cbs.appendChild(cb);                                            // Add it
@@ -108,8 +110,9 @@ public class Configuration implements Serializable {
             Element props = owner.createElement("properties");                  // Add <properties> under <configuration>
             props.setAttribute("xml:space", "preserve");                        // And make sure space is properly preserved
             elem.appendChild(props);                                            // Add the space attribute
-            for (Iterator i = properties.entrySet().iterator(); i.hasNext();) { // For each property
-                Map.Entry entry = (Map.Entry) i.next();                         // Get the property key/value pair
+            for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet()) { // For each property
+                Map.Entry entry =
+                    (Map.Entry) objectObjectEntry;                         // Get the property key/value pair
                 String key = (String) entry.getKey();                           // Key is always a String
                 String value = (String) entry.getValue();                       // So is the value
                 Element prop = owner.createElement("property");                 // Create a <property> element
@@ -209,8 +212,9 @@ public class Configuration implements Serializable {
      * @param password Administrator password.
      */
     public void setPassword(byte[] password) {
-        if (password == null)
+        if (password == null) {
             throw new IllegalArgumentException("Non-null passwords not allowed");
+        }
         this.password = password;
     }
 
@@ -235,9 +239,12 @@ public class Configuration implements Serializable {
         } catch (TransformerException ex) {
             throw new IllegalStateException("Unexpected TransformerException: " + ex.getMessage());
         } finally {
-            if (writer != null) try {                           // And if we got a writer, try ...
-                writer.close();                                 // to close it
-            } catch (IOException ignore) {}                     // Ignoring any error
+            if (writer != null) {
+                try {                           // And if we got a writer, try ...
+                    writer.close();                                 // to close it
+                } catch (IOException ignore) {
+                }                     // Ignoring any error
+            }
         }
     }
 
@@ -263,7 +270,9 @@ public class Configuration implements Serializable {
 
         String passwordAttr = root.getAttribute("password");                        // Get the password attribute
         if (passwordAttr != null && passwordAttr.length() > 0)                      // If it's there, and non-empty
+        {
             password = decode(passwordAttr);                                        // Then decode it
+        }
 
         NodeList children = root.getChildNodes();                                   // Get the child nodes
         for (int i = 0; i < children.getLength(); ++i) {                            // For each child node
@@ -274,10 +283,14 @@ public class Configuration implements Serializable {
 
                     // Keep these in separate sets?
                     if (server instanceof ProductServer)                            // Is a product server?
+                    {
                         productServers.add(server);                                 // Add to product servers
-                    else if (server instanceof ProfileServer)                       // Is a profile server?
+                    } else if (server instanceof ProfileServer)                       // Is a profile server?
+                    {
                         profileServers.add(server);                                 // Add to profile servers
-                    else throw new IllegalArgumentException("Unexpected server type " + server + " in " + file);
+                    } else {
+                        throw new IllegalArgumentException("Unexpected server type " + server + " in " + file);
+                    }
                 } else if ("properties".equals(child.getNodeName())) {              // Is it a <properties>?
                     NodeList props = child.getChildNodes();                         // Get its children
                     for (int j = 0; j < props.getLength(); ++j) {                   // For each child
@@ -287,8 +300,10 @@ public class Configuration implements Serializable {
                             Element propNode = (Element) node;                      // Great, use it as an element
                             String key = propNode.getAttribute("key");              // Get its key attribute
                             if (key == null || key.length() == 0)                   // Make sure it's there
+                            {
                                 throw new SAXException("Required 'key' attribute missing from "
-                                    + "<property> element");
+                                                       + "<property> element");
+                            }
                             properties.setProperty(key, text(propNode));            // And set it
                         }
                     }
@@ -300,9 +315,10 @@ public class Configuration implements Serializable {
                             && "codeBase".equals(node.getNodeName())) {
                             Element cbNode = (Element) node;
                             String u = cbNode.getAttribute("url");
-                            if (u == null || u.length() == 0)
+                            if (u == null || u.length() == 0) {
                                 throw new SAXException("Required 'url' attribute missing from "
-                                    + "<codeBase> element");
+                                                       + "<codeBase> element");
+                            }
                             try {
                                 codeBases.add(new URL(u));
                             } catch (MalformedURLException ex) {
@@ -356,15 +372,19 @@ public class Configuration implements Serializable {
      */
     private static void text0(Node node, StringBuffer b) {
         NodeList children = node.getChildNodes();
-        for (int i = 0; i < children.getLength(); ++i)
+        for (int i = 0; i < children.getLength(); ++i) {
             text0(children.item(i), b);
+        }
         short type = node.getNodeType();
-        if (type == Node.CDATA_SECTION_NODE || type == Node.TEXT_NODE)
+        if (type == Node.CDATA_SECTION_NODE || type == Node.TEXT_NODE) {
             b.append(node.getNodeValue());
+        }
     }
 
     public boolean equals(Object obj) {
-        if (obj == this) return true;
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof Configuration) {
             Configuration rhs = (Configuration) obj;
             return codeBases.equals(rhs.codeBases) && productServers.equals(rhs.productServers)

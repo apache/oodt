@@ -92,14 +92,6 @@ public class UserDetails {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.append("[token=");
-    sb.append(this.token);
-    sb.append(",roles=");
-    sb.append(this.roles);
-    sb.append(",attributes=");
-    sb.append(this.attributes.getHashtable());
-    sb.append("]");
-    return sb.toString();
+    return "[token=" + this.token + ",roles=" + this.roles + ",attributes=" + this.attributes.getMap() + "]";
   }
 }
