@@ -1,0 +1,3506 @@
+From a7be6105471ca9d44c8714df1232220bb15957eb Mon Sep 17 00:00:00 2001
+From: Tom Barber <tom@analytical-labs.com>
+Date: Thu, 23 Jul 2015 16:08:49 +0100
+Subject: [PATCH 1/7] filemgr convert to bundle
+
+---
+ filemgr/pom.xml | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/filemgr/pom.xml b/filemgr/pom.xml
+index 77c7f07..630a542 100644
+--- a/filemgr/pom.xml
++++ b/filemgr/pom.xml
+@@ -23,6 +23,7 @@
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
++  <packaging>bundle</packaging>
+   <artifactId>cas-filemgr</artifactId>
+   <name>Catalog and Archive File Management Component</name>
+   <description>The file management component of a Catalog and Archive Service. This component
+@@ -61,6 +62,7 @@
+       </testResource>
+     </testResources>
+     <plugins>
++
+       <plugin>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <groupId>org.apache.maven.plugins</groupId>
+@@ -105,6 +107,29 @@
+           </execution>
+         </executions>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.cas.filemgr.*</Export-Package>
++            <Main-Class>org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient</Main-Class>
++            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++            <Embed-Transitive>true</Embed-Transitive>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
+   <profiles>
+@@ -136,6 +161,30 @@
+         </plugins>
+       </build>
+     </profile>
++    <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <extensions>true</extensions>
++            <executions>
++              <execution>
++                <id>wrap-my-dependency</id>
++                <goals>
++                  <goal>wrap</goal>
++                </goals>
++                <configuration>
++                  <wrapImportPackage>;</wrapImportPackage>
++                </configuration>
++              </execution>
++            </executions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
+   </profiles>
+   <repositories>
+     <repository>
+
+From 94c0b3815052b0f230096cdbc68f11601f271c9a Mon Sep 17 00:00:00 2001
+From: Tom Barber <tom@analytical-labs.com>
+Date: Thu, 23 Jul 2015 16:15:53 +0100
+Subject: [PATCH 2/7] OODT-859 convert filemgr to bundle, extra profile to add
+ dependencies into jar to stop karaf crying
+
+---
+ filemgr/pom.xml | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/filemgr/pom.xml b/filemgr/pom.xml
+index 630a542..c534c26 100644
+--- a/filemgr/pom.xml
++++ b/filemgr/pom.xml
+@@ -123,9 +123,6 @@
+             <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+             <Export-Package>org.apache.oodt.cas.filemgr.*</Export-Package>
+             <Main-Class>org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient</Main-Class>
+-            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+-            <Embed-Transitive>true</Embed-Transitive>
+-            <Import-Package>*;resolution:=optional</Import-Package>
+           </instructions>
+         </configuration>
+         <extensions>true</extensions>
+@@ -169,18 +166,24 @@
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.cas.filemgr.*</Export-Package>
++                <Main-Class>org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient</Main-Class>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
+             <extensions>true</extensions>
+-            <executions>
+-              <execution>
+-                <id>wrap-my-dependency</id>
+-                <goals>
+-                  <goal>wrap</goal>
+-                </goals>
+-                <configuration>
+-                  <wrapImportPackage>;</wrapImportPackage>
+-                </configuration>
+-              </execution>
+-            </executions>
+           </plugin>
+         </plugins>
+       </build>
+
+From 2e3d21ccd698689a8cc1e37649061e5c812d3e5f Mon Sep 17 00:00:00 2001
+From: Tom Barber <tom@analytical-labs.com>
+Date: Thu, 23 Jul 2015 18:07:47 +0100
+Subject: [PATCH 3/7] OODT-859 convert to bundles
+
+---
+ catalog/pom.xml        | 50 +++++++++++++++++++++++++++++++++++++++++++
+ cli/pom.xml            | 50 +++++++++++++++++++++++++++++++++++++++++++
+ commons/pom.xml        | 51 +++++++++++++++++++++++++++++++++++++++++++-
+ crawler/pom.xml        | 55 +++++++++++++++++++++++++++++++++++++++++++++++
+ filemgr/pom.xml        |  1 +
+ grid/pom.xml           | 51 ++++++++++++++++++++++++++++++++++++++++++++
+ metadata/pom.xml       | 50 +++++++++++++++++++++++++++++++++++++++++++
+ opendapps/pom.xml      | 52 ++++++++++++++++++++++++++++++++++++++++++++
+ pcs/core/pom.xml       | 55 ++++++++++++++++++++++++++++++++++++++++++++++-
+ pcs/input/pom.xml      | 53 ++++++++++++++++++++++++++++++++++++++++++++-
+ pcs/opsui/pom.xml      | 49 ++++++++++++++++++++++++++++++++++++++++++
+ pcs/services/pom.xml   | 58 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ pge/pom.xml            | 57 +++++++++++++++++++++++++++++++++++++++++++++++--
+ product/pom.xml        | 50 +++++++++++++++++++++++++++++++++++++++++++
+ profile/pom.xml        | 50 +++++++++++++++++++++++++++++++++++++++++++
+ protocol/api/pom.xml   | 54 ++++++++++++++++++++++++++++++++++++++++++++++
+ protocol/ftp/pom.xml   | 51 ++++++++++++++++++++++++++++++++++++++++++++
+ protocol/http/pom.xml  | 50 +++++++++++++++++++++++++++++++++++++++++++
+ protocol/imaps/pom.xml | 53 +++++++++++++++++++++++++++++++++++++++++++++
+ protocol/sftp/pom.xml  | 53 +++++++++++++++++++++++++++++++++++++++++++++
+ pushpull/pom.xml       | 55 ++++++++++++++++++++++++++++++++++++++++++++++-
+ resource/pom.xml       | 56 ++++++++++++++++++++++++++++++++++++++++++++++++
+ sso/pom.xml            | 55 ++++++++++++++++++++++++++++++++++++++++++++++-
+ workflow/pom.xml       | 56 +++++++++++++++++++++++++++++++++++++++++++++++-
+ xmlps/pom.xml          | 53 +++++++++++++++++++++++++++++++++++++++++++++
+ xmlquery/pom.xml       | 48 +++++++++++++++++++++++++++++++++++++++++
+ 26 files changed, 1306 insertions(+), 10 deletions(-)
+
+diff --git a/catalog/pom.xml b/catalog/pom.xml
+index 3de13e6..6a9c515 100644
+--- a/catalog/pom.xml
++++ b/catalog/pom.xml
+@@ -23,6 +23,7 @@
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
++  <packaging>bundle</packaging>
+   <artifactId>cas-catalog</artifactId>
+   <name>OODT CAS Virtual Catalog and Integration Service.</name>
+   <description>CAS Catalog is an effort to virtualize underlying 
+@@ -37,6 +38,35 @@
+   </scm>
+   <profiles>
+     <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.cas.catalog.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
+       <id>audit</id>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+@@ -109,6 +139,26 @@
+           </execution>
+         </executions>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.cas.catalog.*</Export-Package>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+     <resources>
+       <resource>
+diff --git a/cli/pom.xml b/cli/pom.xml
+index 020818a..38645b2 100644
+--- a/cli/pom.xml
++++ b/cli/pom.xml
+@@ -28,8 +28,38 @@
+ 	</parent>
+ 	<artifactId>cas-cli</artifactId>
+ 	<name>CAS Command Line Interface</name>
++	<packaging>bundle</packaging>
+ 	<profiles>
+ 		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.cli.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++		<profile>
+ 			<id>audit</id>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+@@ -77,6 +107,26 @@
+ 					</execution>
+ 				</executions>
+ 			</plugin>
++			<plugin>
++				<groupId>org.apache.felix</groupId>
++				<artifactId>maven-bundle-plugin</artifactId>
++				<version>2.3.7</version>
++				<configuration>
++					<supportedProjectTypes>
++						<supportedProjectType>jar</supportedProjectType>
++						<supportedProjectType>bundle</supportedProjectType>
++						<supportedProjectType>war</supportedProjectType>
++					</supportedProjectTypes>
++					<instructions>
++						<Bundle-Name>${project.artifactId}</Bundle-Name>
++						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++						<Export-Package>org.apache.oodt.cas.cli.*</Export-Package>
++						<Import-Package>*;resolution:=optional</Import-Package>
++					</instructions>
++				</configuration>
++				<extensions>true</extensions>
++			</plugin>
+ 		</plugins>
+ 	</build>
+ 	<dependencies>
+diff --git a/commons/pom.xml b/commons/pom.xml
+index ed5f8ee..8523d4e 100644
+--- a/commons/pom.xml
++++ b/commons/pom.xml
+@@ -26,7 +26,7 @@
+   </parent>
+   <artifactId>oodt-commons</artifactId>
+   <name>Common Utilities</name>
+-  <packaging>jar</packaging>
++  <packaging>bundle</packaging>
+   <description>Apache OODT Common Utilities Project</description>
+   <scm>
+    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
+@@ -71,10 +71,59 @@
+           <redirectTestOutputToFile>true</redirectTestOutputToFile>
+         </configuration>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.commons.*</Export-Package>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins> 
+   </build>
+   <profiles>
+     <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.commons.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
+       <id>audit</id>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+diff --git a/crawler/pom.xml b/crawler/pom.xml
+index 6e9c9af..278686b 100644
+--- a/crawler/pom.xml
++++ b/crawler/pom.xml
+@@ -27,6 +27,7 @@ the License.
+ 	<artifactId>cas-crawler</artifactId>
+ 	<name>Catalog and Archive Crawling Framework</name>
+ 	<description>The Catalog and Archive Service Crawling Framework.</description>
++	<packaging>bundle</packaging>
+ 	<scm>
+ 		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</connection>
+ 		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</developerConnection>
+@@ -76,6 +77,28 @@ the License.
+ 					</execution>
+ 				</executions>
+ 			</plugin>
++			<plugin>
++				<groupId>org.apache.felix</groupId>
++				<artifactId>maven-bundle-plugin</artifactId>
++				<version>2.3.7</version>
++				<configuration>
++					<supportedProjectTypes>
++						<supportedProjectType>jar</supportedProjectType>
++						<supportedProjectType>bundle</supportedProjectType>
++						<supportedProjectType>war</supportedProjectType>
++					</supportedProjectTypes>
++					<instructions>
++						<Bundle-Name>${project.artifactId}</Bundle-Name>
++						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++						<Export-Package>org.apache.oodt.cas.crawl.*</Export-Package>
++						<Main-Class>org.apache.oodt.cas.crawl.CrawlerLauncher</Main-Class>
++						<Import-Package>*;resolution:=optional</Import-Package>
++
++					</instructions>
++				</configuration>
++				<extensions>true</extensions>
++			</plugin>
+ 		</plugins>
+ 		<resources>
+ 			<resource>
+@@ -90,6 +113,38 @@ the License.
+ 			</resource>
+ 		</resources>
+ 	</build>
++	<profiles>
++		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.crawl.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++								<Main-Class>org.apache.oodt.cas.crawl.CrawlerLauncher</Main-Class>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++	</profiles>
+ 	<dependencies>
+ 		<dependency>
+ 			<groupId>org.apache.oodt</groupId>
+diff --git a/filemgr/pom.xml b/filemgr/pom.xml
+index c534c26..8f0afc7 100644
+--- a/filemgr/pom.xml
++++ b/filemgr/pom.xml
+@@ -123,6 +123,7 @@
+             <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+             <Export-Package>org.apache.oodt.cas.filemgr.*</Export-Package>
+             <Main-Class>org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient</Main-Class>
++            <Import-Package>*;resolution:=optional</Import-Package>
+           </instructions>
+         </configuration>
+         <extensions>true</extensions>
+diff --git a/grid/pom.xml b/grid/pom.xml
+index d1f0eaf..9fdbc28 100644
+--- a/grid/pom.xml
++++ b/grid/pom.xml
+@@ -72,8 +72,59 @@ the License.
+         </configuration>
+         <version>2.5</version>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.grid.*</Export-Package>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
++  <profiles>
++    <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.grid.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++  </profiles>
+   <dependencies>
+     <dependency>
+       <groupId>org.apache.oodt</groupId>
+diff --git a/metadata/pom.xml b/metadata/pom.xml
+index aafcb96..bbad7db 100644
+--- a/metadata/pom.xml
++++ b/metadata/pom.xml
+@@ -24,6 +24,7 @@ the License.
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
++  <packaging>jar</packaging>
+   <artifactId>cas-metadata</artifactId>
+   <name>Catalog and Archive Service Generic Multi-valued Metadata Container</name>
+   <description>A Multi-valued, generic Metadata container class. The class uses an internal
+@@ -77,10 +78,59 @@ the License.
+           </excludes>
+         </configuration>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.cas.metadata.*</Export-Package>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
+   <profiles>
+     <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.cas.metadata.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
+       <id>audit</id>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+diff --git a/opendapps/pom.xml b/opendapps/pom.xml
+index 3ddd59d..0e2e75b 100644
+--- a/opendapps/pom.xml
++++ b/opendapps/pom.xml
+@@ -35,6 +35,7 @@
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
++    <packaging>jar</packaging>
+   <build>
+     <plugins>
+       <plugin>
+@@ -55,8 +56,59 @@
+           </execution>
+         </executions>
+       </plugin>
++        <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++                <supportedProjectTypes>
++                    <supportedProjectType>jar</supportedProjectType>
++                    <supportedProjectType>bundle</supportedProjectType>
++                    <supportedProjectType>war</supportedProjectType>
++                </supportedProjectTypes>
++                <instructions>
++                    <Bundle-Name>${project.artifactId}</Bundle-Name>
++                    <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                    <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                    <Export-Package>org.apache.oodt.opendapps.*</Export-Package>
++                    <Import-Package>*;resolution:=optional</Import-Package>
++                </instructions>
++            </configuration>
++            <extensions>true</extensions>
++        </plugin>
+     </plugins>
+   </build>
++    <profiles>
++        <profile>
++            <id>create-osgi-bundles-from-dependencies</id>
++            <build>
++                <plugins>
++                    <plugin>
++                        <groupId>org.apache.felix</groupId>
++                        <artifactId>maven-bundle-plugin</artifactId>
++                        <version>2.3.7</version>
++                        <configuration>
++                            <supportedProjectTypes>
++                                <supportedProjectType>jar</supportedProjectType>
++                                <supportedProjectType>bundle</supportedProjectType>
++                                <supportedProjectType>war</supportedProjectType>
++                            </supportedProjectTypes>
++                            <instructions>
++                                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                                <Export-Package>org.apache.oodt.opendapps.*</Export-Package>
++                                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                                <Embed-Transitive>true</Embed-Transitive>
++                                <Import-Package>*;resolution:=optional</Import-Package>
++                            </instructions>
++                        </configuration>
++                        <extensions>true</extensions>
++                    </plugin>
++                </plugins>
++            </build>
++        </profile>
++    </profiles>
+   <dependencies>
+    <dependency>
+      <groupId>edu.ucar</groupId>
+diff --git a/pcs/core/pom.xml b/pcs/core/pom.xml
+index cf52107..9e09e4c 100644
+--- a/pcs/core/pom.xml
++++ b/pcs/core/pom.xml
+@@ -54,9 +54,62 @@ the License.
+             </goals>
+           </execution>
+         </executions>
+-      </plugin>    
++      </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.pcs.*</Export-Package>
++            <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
++  <profiles>
++    <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.pcs.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++                <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++  </profiles>
+   <dependencies>
+     <dependency>
+       <groupId>org.apache.oodt</groupId>
+diff --git a/pcs/input/pom.xml b/pcs/input/pom.xml
+index 2040cc4..fcae9bb 100644
+--- a/pcs/input/pom.xml
++++ b/pcs/input/pom.xml
+@@ -50,7 +50,27 @@ the License.
+               <include>**/*Test*.java</include>
+             </includes>
+         </configuration>
+-      </plugin>  
++      </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.pcs.input.*</Export-Package>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+     <resources>
+       <resource>
+@@ -62,6 +82,37 @@ the License.
+       </resource>
+     </resources>
+   </build>
++  <profiles>
++    <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.pcs.input.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++  </profiles>
+   <dependencies>
+     <dependency>
+       <groupId>org.apache.oodt</groupId>
+diff --git a/pcs/opsui/pom.xml b/pcs/opsui/pom.xml
+index 08697ac..f2a3a31 100755
+--- a/pcs/opsui/pom.xml
++++ b/pcs/opsui/pom.xml
+@@ -122,6 +122,35 @@ the License.
+ 		</dependency>
+ 	</dependencies>
+         <profiles>
++			<profile>
++				<id>create-osgi-bundles-from-dependencies</id>
++				<build>
++					<plugins>
++						<plugin>
++							<groupId>org.apache.felix</groupId>
++							<artifactId>maven-bundle-plugin</artifactId>
++							<version>2.3.7</version>
++							<configuration>
++								<supportedProjectTypes>
++									<supportedProjectType>jar</supportedProjectType>
++									<supportedProjectType>bundle</supportedProjectType>
++									<supportedProjectType>war</supportedProjectType>
++								</supportedProjectTypes>
++								<instructions>
++									<Bundle-Name>${project.artifactId}</Bundle-Name>
++									<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++									<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++									<Export-Package>org.apache.oodt.pcs.opsui.*</Export-Package>
++									<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++									<Embed-Transitive>true</Embed-Transitive>
++									<Import-Package>*;resolution:=optional</Import-Package>
++								</instructions>
++							</configuration>
++							<extensions>true</extensions>
++						</plugin>
++					</plugins>
++				</build>
++			</profile>
+             <profile>
+                 <id>audit</id>
+                 <activation>
+@@ -189,6 +218,26 @@ the License.
+ 					<debug>true</debug>
+ 				</configuration>
+ 			</plugin>
++			<plugin>
++				<groupId>org.apache.felix</groupId>
++				<artifactId>maven-bundle-plugin</artifactId>
++				<version>2.3.7</version>
++				<configuration>
++					<supportedProjectTypes>
++						<supportedProjectType>jar</supportedProjectType>
++						<supportedProjectType>bundle</supportedProjectType>
++						<supportedProjectType>war</supportedProjectType>
++					</supportedProjectTypes>
++					<instructions>
++						<Bundle-Name>${project.artifactId}</Bundle-Name>
++						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++						<Export-Package>org.apache.oodt.pcs.opsui.*</Export-Package>
++						<Import-Package>*;resolution:=optional</Import-Package>
++					</instructions>
++				</configuration>
++				<extensions>true</extensions>
++			</plugin>
+ 		</plugins>
+ 	</build>
+ 	</project>
+diff --git a/pcs/services/pom.xml b/pcs/services/pom.xml
+index 37fca00..a6c346f 100644
+--- a/pcs/services/pom.xml
++++ b/pcs/services/pom.xml
+@@ -23,12 +23,66 @@ the License.
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../../core/pom.xml</relativePath>
+   </parent>
+-  <groupId>org.apache.oodt</groupId>
+-  <artifactId>pcs-services</artifactId>
++    <artifactId>pcs-services</artifactId>
+   <packaging>war</packaging>
+   <name>OODT Process Control System JAX-RS service layer</name>
+   <description>A web application for exposing services form the underlying 
+   OODT Process Control System via the JAX-RS specification.</description>
++    <build>
++        <plugins>
++            <plugin>
++                <groupId>org.apache.felix</groupId>
++                <artifactId>maven-bundle-plugin</artifactId>
++                <version>2.3.7</version>
++                <configuration>
++                    <supportedProjectTypes>
++                        <supportedProjectType>jar</supportedProjectType>
++                        <supportedProjectType>bundle</supportedProjectType>
++                        <supportedProjectType>war</supportedProjectType>
++                    </supportedProjectTypes>
++                    <instructions>
++                        <Bundle-Name>${project.artifactId}</Bundle-Name>
++                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                        <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                        <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
++                        <Import-Package>*;resolution:=optional</Import-Package>
++                    </instructions>
++                </configuration>
++                <extensions>true</extensions>
++            </plugin>
++        </plugins>
++    </build>
++    <profiles>
++        <profile>
++            <id>create-osgi-bundles-from-dependencies</id>
++            <build>
++                <plugins>
++                    <plugin>
++                        <groupId>org.apache.felix</groupId>
++                        <artifactId>maven-bundle-plugin</artifactId>
++                        <version>2.3.7</version>
++                        <configuration>
++                            <supportedProjectTypes>
++                                <supportedProjectType>jar</supportedProjectType>
++                                <supportedProjectType>bundle</supportedProjectType>
++                                <supportedProjectType>war</supportedProjectType>
++                            </supportedProjectTypes>
++                            <instructions>
++                                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                                <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
++                                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                                <Embed-Transitive>true</Embed-Transitive>
++                                <Import-Package>*;resolution:=optional</Import-Package>
++                            </instructions>
++                        </configuration>
++                        <extensions>true</extensions>
++                    </plugin>
++                </plugins>
++            </build>
++        </profile>
++    </profiles>
+   <dependencies>
+     <dependency>
+       <groupId>org.apache.oodt</groupId>
+diff --git a/pge/pom.xml b/pge/pom.xml
+index 45d49d5..e47cad2 100644
+--- a/pge/pom.xml
++++ b/pge/pom.xml
+@@ -25,6 +25,7 @@ the License.
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+   <artifactId>cas-pge</artifactId>
++  <packaging>jar</packaging>
+   <name>CAS PGE Adaptor Framework</name>
+   <description>Allows data processing jobs not written in conformance with the
+         PCS PGE interface to be run within the PCS.</description>
+@@ -53,7 +54,8 @@ the License.
+             </goals>
+           </execution>
+         </executions>
+-      </plugin> 
++      </plugin>
++
+     </plugins>
+  </build>
+   <profiles>
+@@ -81,7 +83,58 @@ the License.
+                 </goals>
+               </execution>
+             </executions>
+-          </plugin>   
++          </plugin>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
++                <Main-Class>org.apache.oodt.cas.pge.PGETask</Main-Class>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++                <Main-Class>org.apache.oodt.cas.pge.PGETask</Main-Class>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
+         </plugins>
+       </build>
+     </profile>
+diff --git a/product/pom.xml b/product/pom.xml
+index 78b8ee1..4498b70 100644
+--- a/product/pom.xml
++++ b/product/pom.xml
+@@ -25,6 +25,7 @@
+     </parent>
+     <artifactId>oodt-product</artifactId>
+     <name>Product Service</name>
++    <packaging>jar</packaging>
+     <description>
+         The Product Service provides access to data products.  Products can be
+         scientific datasets, images, documents, or anything with an electronic
+@@ -80,6 +81,55 @@
+                             </execution>
+                         </executions>
+                     </plugin>
++                    <plugin>
++                        <groupId>org.apache.felix</groupId>
++                        <artifactId>maven-bundle-plugin</artifactId>
++                        <version>2.3.7</version>
++                        <configuration>
++                            <supportedProjectTypes>
++                                <supportedProjectType>jar</supportedProjectType>
++                                <supportedProjectType>bundle</supportedProjectType>
++                                <supportedProjectType>war</supportedProjectType>
++                            </supportedProjectTypes>
++                            <instructions>
++                                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                                <Export-Package>org.apache.oodt.*</Export-Package>
++                                <Import-Package>*;resolution:=optional</Import-Package>
++                            </instructions>
++                        </configuration>
++                        <extensions>true</extensions>
++                    </plugin>
++                </plugins>
++            </build>
++        </profile>
++        <profile>
++            <id>create-osgi-bundles-from-dependencies</id>
++            <build>
++                <plugins>
++                    <plugin>
++                        <groupId>org.apache.felix</groupId>
++                        <artifactId>maven-bundle-plugin</artifactId>
++                        <version>2.3.7</version>
++                        <configuration>
++                            <supportedProjectTypes>
++                                <supportedProjectType>jar</supportedProjectType>
++                                <supportedProjectType>bundle</supportedProjectType>
++                                <supportedProjectType>war</supportedProjectType>
++                            </supportedProjectTypes>
++                            <instructions>
++                                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                                <Export-Package>org.apache.oodt.*</Export-Package>
++                                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                                <Embed-Transitive>true</Embed-Transitive>
++                                <Import-Package>*;resolution:=optional</Import-Package>
++                            </instructions>
++                        </configuration>
++                        <extensions>true</extensions>
++                    </plugin>
+                 </plugins>
+             </build>
+         </profile>
+diff --git a/profile/pom.xml b/profile/pom.xml
+index 6b7b90a..d029e27 100644
+--- a/profile/pom.xml
++++ b/profile/pom.xml
+@@ -25,6 +25,7 @@
+   </parent>
+   <artifactId>oodt-profile</artifactId>
+   <name>Profile Service</name>
++  <packaging>jar</packaging>
+   <description>The Profile Service describes and locates resources using metadata
+     descriptions.  These descriptions, called profiles, tell of a
+     resource's inception, composition, and location using a mix of
+@@ -52,10 +53,59 @@
+           </excludes>
+         </configuration>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.*</Export-Package>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
+   <profiles>
+     <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
+       <id>audit</id>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+diff --git a/protocol/api/pom.xml b/protocol/api/pom.xml
+index 27aef06..38bece1 100644
+--- a/protocol/api/pom.xml
++++ b/protocol/api/pom.xml
+@@ -20,8 +20,40 @@
+ 	</parent>
+ 	<artifactId>cas-protocol-api</artifactId>
+ 	<name>CAS Protocol</name>
++	<packaging>jar</packaging>
+ 	<profiles>
+ 		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.protocol.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++								<Main-Class>org.apache.oodt.cas.protocol.system.CLProtocolManager</Main-Class>
++
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++		<profile>
+ 			<id>audit</id>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+@@ -74,6 +106,28 @@
+ 					</execution>
+ 				</executions>
+ 			</plugin>
++			<plugin>
++				<groupId>org.apache.felix</groupId>
++				<artifactId>maven-bundle-plugin</artifactId>
++				<version>2.3.7</version>
++				<configuration>
++					<supportedProjectTypes>
++						<supportedProjectType>jar</supportedProjectType>
++						<supportedProjectType>bundle</supportedProjectType>
++						<supportedProjectType>war</supportedProjectType>
++					</supportedProjectTypes>
++					<instructions>
++						<Bundle-Name>${project.artifactId}</Bundle-Name>
++						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++						<Export-Package>org.apache.oodt.cas.protocol.*</Export-Package>
++						<Main-Class>org.apache.oodt.cas.protocol.system.CLProtocolManager</Main-Class>
++						<Import-Package>*;resolution:=optional</Import-Package>
++
++					</instructions>
++				</configuration>
++				<extensions>true</extensions>
++			</plugin>
+ 		</plugins>
+     <resources>
+       <resource>
+diff --git a/protocol/ftp/pom.xml b/protocol/ftp/pom.xml
+index 7a53933..f7f77e7 100644
+--- a/protocol/ftp/pom.xml
++++ b/protocol/ftp/pom.xml
+@@ -20,8 +20,38 @@
+ 	</parent>
+ 	<artifactId>cas-protocol-ftp</artifactId>
+ 	<name>CAS Protocol FTP Implementation</name>
++	<packaging>jar</packaging>
+ 	<profiles>
+ 		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.protocol.ftp.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++		<profile>
+ 			<id>audit</id>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+@@ -45,6 +75,27 @@
+ 							</execution>
+ 						</executions>
+ 					</plugin>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.protocol.ftp.*</Export-Package>
++								<Import-Package>*;resolution:=optional</Import-Package>
++
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
+ 				</plugins>
+ 			</build>
+ 		</profile>
+diff --git a/protocol/http/pom.xml b/protocol/http/pom.xml
+index cbe7757..b2cac68 100644
+--- a/protocol/http/pom.xml
++++ b/protocol/http/pom.xml
+@@ -18,10 +18,40 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../../core/pom.xml</relativePath>
+ 	</parent>
++	<packaging>jar</packaging>
+ 	<artifactId>cas-protocol-http</artifactId>
+ 	<name>CAS Protocol HTTP Implementation</name>
+ 	<profiles>
+ 		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.protocol.http.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++		<profile>
+ 			<id>audit</id>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+@@ -45,6 +75,26 @@
+ 							</execution>
+ 						</executions>
+ 					</plugin>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.protocol.http.*</Export-Package>
++								<Import-Package>*;resolution:=optional</Import-Package>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
+ 				</plugins>
+ 			</build>
+ 		</profile>
+diff --git a/protocol/imaps/pom.xml b/protocol/imaps/pom.xml
+index 2d299b7..918586d 100644
+--- a/protocol/imaps/pom.xml
++++ b/protocol/imaps/pom.xml
+@@ -18,10 +18,40 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../../core/pom.xml</relativePath>
+ 	</parent>
++	<packaging>jar</packaging>
+ 	<artifactId>cas-protocol-imaps</artifactId>
+ 	<name>CAS Protocol IMAPS Implementation</name>
+ 	<profiles>
+ 		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.protocol.imaps.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++		<profile>
+ 			<id>audit</id>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+@@ -59,6 +89,29 @@
+         </includes>
+       </resource>
+     </resources>
++	  <plugins>
++		  <plugin>
++			  <groupId>org.apache.felix</groupId>
++			  <artifactId>maven-bundle-plugin</artifactId>
++			  <version>2.3.7</version>
++			  <configuration>
++				  <supportedProjectTypes>
++					  <supportedProjectType>jar</supportedProjectType>
++					  <supportedProjectType>bundle</supportedProjectType>
++					  <supportedProjectType>war</supportedProjectType>
++				  </supportedProjectTypes>
++				  <instructions>
++					  <Bundle-Name>${project.artifactId}</Bundle-Name>
++					  <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++					  <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++					  <Export-Package>org.apache.oodt.cas.protocol.imaps.*</Export-Package>
++					  <Import-Package>*;resolution:=optional</Import-Package>
++
++				  </instructions>
++			  </configuration>
++			  <extensions>true</extensions>
++		  </plugin>
++	  </plugins>
+   </build>
+ 	<dependencies>
+ 		<dependency>
+diff --git a/protocol/sftp/pom.xml b/protocol/sftp/pom.xml
+index c449e6e..223283f 100644
+--- a/protocol/sftp/pom.xml
++++ b/protocol/sftp/pom.xml
+@@ -18,10 +18,40 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../../core/pom.xml</relativePath>
+ 	</parent>
++	<packaging>jar</packaging>
+ 	<artifactId>cas-protocol-sftp</artifactId>
+ 	<name>CAS Protocol SFTP Implementation</name>
+ 	<profiles>
+ 		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.cas.protocol.sftp.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++		<profile>
+ 			<id>audit</id>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+@@ -51,6 +81,29 @@
+ 		</profile>
+ 	</profiles>
+         <build>
++			<plugins>
++				<plugin>
++					<groupId>org.apache.felix</groupId>
++					<artifactId>maven-bundle-plugin</artifactId>
++					<version>2.3.7</version>
++					<configuration>
++						<supportedProjectTypes>
++							<supportedProjectType>jar</supportedProjectType>
++							<supportedProjectType>bundle</supportedProjectType>
++							<supportedProjectType>war</supportedProjectType>
++						</supportedProjectTypes>
++						<instructions>
++							<Bundle-Name>${project.artifactId}</Bundle-Name>
++							<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++							<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++							<Export-Package>org.apache.oodt.cas.protocol.sftp.*</Export-Package>
++							<Import-Package>*;resolution:=optional</Import-Package>
++
++						</instructions>
++					</configuration>
++					<extensions>true</extensions>
++				</plugin>
++			</plugins>
+ 	    <resources>
+ 	      <resource>
+ 		<targetPath>org/apache/oodt/cas/protocol/sftp</targetPath>
+diff --git a/pushpull/pom.xml b/pushpull/pom.xml
+index b38ea98..3c07a72 100644
+--- a/pushpull/pom.xml
++++ b/pushpull/pom.xml
+@@ -56,11 +56,64 @@
+             </goals>
+           </execution>
+         </executions>
+-      </plugin> 
++      </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.profile.*</Export-Package>
++            <Main-Class>org.apache.oodt.cas.pushpull.daemon.DaemonLauncher</Main-Class>
++            <Import-Package>*;resolution:=optional</Import-Package>
++
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+  </build>
+   <profiles>
+     <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.profile.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++                <Main-Class>org.apache.oodt.cas.pushpull.daemon.DaemonLauncher</Main-Class>
++
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
+       <id>audit</id>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+diff --git a/resource/pom.xml b/resource/pom.xml
+index de807d6..a6b2ef7 100644
+--- a/resource/pom.xml
++++ b/resource/pom.xml
+@@ -23,6 +23,7 @@ the License.
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
++  <packaging>jar</packaging>
+   <artifactId>cas-resource</artifactId>
+   <name>Catalog and Archive Resource Management Component</name>
+   <description>The resource management component of a Catalog and Archive Service. This component
+@@ -33,6 +34,39 @@ the License.
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/resource</url>
+   </scm>
++  <profiles>
++    <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.cas.resource.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++                <Main-Class>org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient</Main-Class>
++
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++  </profiles>
+   <build>
+     <plugins>
+       <plugin>
+@@ -77,6 +111,28 @@ the License.
+           </execution>
+         </executions>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.cas.resource.*</Export-Package>
++            <Main-Class>org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient</Main-Class>
++            <Import-Package>*;resolution:=optional</Import-Package>
++
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
+   <dependencies>
+diff --git a/sso/pom.xml b/sso/pom.xml
+index 5b5aba9..4afe323 100644
+--- a/sso/pom.xml
++++ b/sso/pom.xml
+@@ -27,8 +27,61 @@ the License.
+   <name>OODT Single Sign On Security Package</name>
+   <packaging>jar</packaging>
+   <properties />
++  <profiles>
++    <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.security.sso.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++  </profiles>
+   <build>
+-    <plugins />
++    <plugins>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.security.sso.*</Export-Package>
++            <Import-Package>*;resolution:=optional</Import-Package>
++
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
++            </plugins>
+   </build>
+   <dependencies>
+     <dependency>
+diff --git a/workflow/pom.xml b/workflow/pom.xml
+index e87d480..e65a010 100644
+--- a/workflow/pom.xml
++++ b/workflow/pom.xml
+@@ -24,6 +24,7 @@ the License.
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
++  <packaging>jar</packaging>
+   <artifactId>cas-workflow</artifactId>
+   <name>Catalog and Archive Workflow Management Component</name>
+   <description>The workflow management component of a Catalog and Archive Service. This component
+@@ -74,11 +75,64 @@ the License.
+             </goals>
+           </execution>
+         </executions>
+-      </plugin> 
++      </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Export-Package>org.apache.oodt.cas.workflow.*</Export-Package>
++            <Main-Class>org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient</Main-Class>
++
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
+   <profiles>
+     <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.cas.workflow.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++                <Main-Class>org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient</Main-Class>
++                <Import-Package>*;resolution:=optional</Import-Package>
++
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
+       <id>audit</id>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+diff --git a/xmlps/pom.xml b/xmlps/pom.xml
+index d18055e..e588388 100644
+--- a/xmlps/pom.xml
++++ b/xmlps/pom.xml
+@@ -24,6 +24,7 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../core/pom.xml</relativePath>
+ 	</parent>
++	<packaging>jar</packaging>
+ 	<artifactId>oodt-xmlps</artifactId>
+ 	<name>XML-configured, DBMS-based Product and Profile Server</name>
+ 	<version>0.10-SNAPSHOT</version>
+@@ -32,6 +33,37 @@
+ 	  sit on top of Web-Grid and other Product and Profile server contexts
+ 	  for rapid deployment and integration.
+ 	</description>
++	<profiles>
++		<profile>
++			<id>create-osgi-bundles-from-dependencies</id>
++			<build>
++				<plugins>
++					<plugin>
++						<groupId>org.apache.felix</groupId>
++						<artifactId>maven-bundle-plugin</artifactId>
++						<version>2.3.7</version>
++						<configuration>
++							<supportedProjectTypes>
++								<supportedProjectType>jar</supportedProjectType>
++								<supportedProjectType>bundle</supportedProjectType>
++								<supportedProjectType>war</supportedProjectType>
++							</supportedProjectTypes>
++							<instructions>
++								<Bundle-Name>${project.artifactId}</Bundle-Name>
++								<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++								<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++								<Export-Package>org.apache.oodt.xmlps.*</Export-Package>
++								<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++								<Embed-Transitive>true</Embed-Transitive>
++								<Import-Package>*;resolution:=optional</Import-Package>
++							</instructions>
++						</configuration>
++						<extensions>true</extensions>
++					</plugin>
++				</plugins>
++			</build>
++		</profile>
++	</profiles>
+ 	<build>
+ 	 <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+ 		<resources>
+@@ -71,6 +103,27 @@
+ 					</systemProperties>
+ 				</configuration>
+ 			</plugin>
++			<plugin>
++				<groupId>org.apache.felix</groupId>
++				<artifactId>maven-bundle-plugin</artifactId>
++				<version>2.3.7</version>
++				<configuration>
++					<supportedProjectTypes>
++						<supportedProjectType>jar</supportedProjectType>
++						<supportedProjectType>bundle</supportedProjectType>
++						<supportedProjectType>war</supportedProjectType>
++					</supportedProjectTypes>
++					<instructions>
++						<Bundle-Name>${project.artifactId}</Bundle-Name>
++						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++						<Export-Package>org.apache.oodt.xmlps.*</Export-Package>
++						<Import-Package>*;resolution:=optional</Import-Package>
++
++					</instructions>
++				</configuration>
++				<extensions>true</extensions>
++			</plugin>
+ 		</plugins>
+ 	</build>
+ 	<dependencies>
+diff --git a/xmlquery/pom.xml b/xmlquery/pom.xml
+index 91abbc8..dac2e3e 100644
+--- a/xmlquery/pom.xml
++++ b/xmlquery/pom.xml
+@@ -61,10 +61,58 @@
+           </excludes>
+         </configuration>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.felix</groupId>
++        <artifactId>maven-bundle-plugin</artifactId>
++        <version>2.3.7</version>
++        <configuration>
++          <supportedProjectTypes>
++            <supportedProjectType>jar</supportedProjectType>
++            <supportedProjectType>bundle</supportedProjectType>
++            <supportedProjectType>war</supportedProjectType>
++          </supportedProjectTypes>
++          <instructions>
++            <Bundle-Name>${project.artifactId}</Bundle-Name>
++            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++            <Import-Package>*;resolution:=optional</Import-Package>
++          </instructions>
++        </configuration>
++        <extensions>true</extensions>
++      </plugin>
+     </plugins>
+   </build>
+   <profiles>
+     <profile>
++      <id>create-osgi-bundles-from-dependencies</id>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.felix</groupId>
++            <artifactId>maven-bundle-plugin</artifactId>
++            <version>2.3.7</version>
++            <configuration>
++              <supportedProjectTypes>
++                <supportedProjectType>jar</supportedProjectType>
++                <supportedProjectType>bundle</supportedProjectType>
++                <supportedProjectType>war</supportedProjectType>
++              </supportedProjectTypes>
++              <instructions>
++                <Bundle-Name>${project.artifactId}</Bundle-Name>
++                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
++                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
++                <Export-Package>org.apache.oodt.*</Export-Package>
++                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
++                <Embed-Transitive>true</Embed-Transitive>
++                <Import-Package>*;resolution:=optional</Import-Package>
++              </instructions>
++            </configuration>
++            <extensions>true</extensions>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++    <profile>
+       <id>audit</id>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+
+From b4966909ab1b908b4b6508d5d2b8e96b63fa5cfe Mon Sep 17 00:00:00 2001
+From: Tom Barber <tom@analytical-labs.com>
+Date: Thu, 23 Jul 2015 18:13:34 +0100
+Subject: [PATCH 4/7] changes
+
+---
+ CHANGES.txt                                        |  1 +
+ grid/web-grid.iml                                  | 53 +++++++++++++++++++++-
+ .../cas-install/maven-cas-install-plugin.iml       |  4 +-
+ xmlquery/oodt-xmlquery.iml                         |  5 +-
+ 4 files changed, 57 insertions(+), 6 deletions(-)
+
+diff --git a/CHANGES.txt b/CHANGES.txt
+index b97b37f..267bd22 100644
+--- a/CHANGES.txt
++++ b/CHANGES.txt
+@@ -4,6 +4,7 @@ Release 0.10 - Current Development
+ 
+ * OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
+ 
++* OODT-859 Add Bundle Headers to jars/wars for OSGI compatibility (magicaltrout)
+ 
+ Release 0.9 - 05/31/2015
+ 
+diff --git a/grid/web-grid.iml b/grid/web-grid.iml
+index 95c93b5..1f273da 100644
+--- a/grid/web-grid.iml
++++ b/grid/web-grid.iml
+@@ -1,5 +1,20 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
++  <component name="FacetManager">
++    <facet type="web" name="Web">
++      <configuration>
++        <descriptors>
++          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/web.xml" />
++        </descriptors>
++        <webroots>
++          <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
++        </webroots>
++        <sourceRoots>
++          <root url="file://$MODULE_DIR$/src/main/java" />
++        </sourceRoots>
++      </configuration>
++    </facet>
++  </component>
+   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+     <output url="file://$MODULE_DIR$/target/classes" />
+     <output-test url="file://$MODULE_DIR$/target/test-classes" />
+@@ -10,6 +25,8 @@
+     </content>
+     <orderEntry type="inheritedJdk" />
+     <orderEntry type="sourceFolder" forTests="false" />
++    <orderEntry type="library" name="Maven: org.springframework:spring-expression:3.0.5.RELEASE" level="project" />
++    <orderEntry type="library" name="Maven: joda-time:joda-time:2.7" level="project" />
+     <orderEntry type="module" module-name="oodt-commons" />
+     <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.2.1" level="project" />
+     <orderEntry type="library" name="Maven: commons-collections:commons-collections:2.1" level="project" />
+@@ -33,10 +50,42 @@
+     <orderEntry type="library" name="Maven: xmlrpc:xmlrpc:2.0.1" level="project" />
+     <orderEntry type="module" module-name="oodt-profile" />
+     <orderEntry type="module" module-name="cas-filemgr" />
++    <orderEntry type="library" name="Maven: org.apache.tika:tika-parsers:1.7" level="project" />
++    <orderEntry type="library" name="Maven: org.gagravarr:vorbis-java-tika:0.6" level="project" />
++    <orderEntry type="library" name="Maven: edu.ucar:netcdf:4.2.20" level="project" />
++    <orderEntry type="library" name="Maven: edu.ucar:unidataCommon:4.2.20" level="project" />
++    <orderEntry type="library" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
++    <orderEntry type="library" name="Maven: net.sourceforge.jmatio:jmatio:1.0" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-core:0.7.2" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-dom:0.7.2" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.8.1" level="project" />
++    <orderEntry type="library" name="Maven: org.tukaani:xz:1.5" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:1.8.8" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:1.8.8" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.pdfbox:jempbox:1.8.8" level="project" />
++    <orderEntry type="library" name="Maven: org.bouncycastle:bcmail-jdk15:1.45" level="project" />
++    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15:1.45" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.11" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.11" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.11" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.11" level="project" />
++    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" level="project" />
++    <orderEntry type="library" name="Maven: org.ccil.cowan.tagsoup:tagsoup:1.2.1" level="project" />
++    <orderEntry type="library" name="Maven: org.ow2.asm:asm-debug-all:4.1" level="project" />
++    <orderEntry type="library" name="Maven: com.googlecode.mp4parser:isoparser:1.0.2" level="project" />
++    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.8.0" level="project" />
++    <orderEntry type="library" name="Maven: com.drewnoakes:metadata-extractor:2.6.2" level="project" />
++    <orderEntry type="library" name="Maven: com.adobe.xmp:xmpcore:5.1.2" level="project" />
++    <orderEntry type="library" name="Maven: de.l3s.boilerpipe:boilerpipe:1.1.0" level="project" />
++    <orderEntry type="library" name="Maven: rome:rome:1.0" level="project" />
++    <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
++    <orderEntry type="library" name="Maven: org.gagravarr:vorbis-java-core:0.6" level="project" />
++    <orderEntry type="library" name="Maven: com.googlecode.juniversalchardet:juniversalchardet:1.0.3" level="project" />
++    <orderEntry type="library" name="Maven: com.uwyn:jhighlight:1.0" level="project" />
++    <orderEntry type="library" name="Maven: com.pff:java-libpst:0.8.1" level="project" />
+     <orderEntry type="module" module-name="cas-metadata" />
+     <orderEntry type="module" module-name="pcs-input" />
+     <orderEntry type="module" module-name="cas-cli" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-expression:3.0.5.RELEASE" level="project" />
+     <orderEntry type="library" name="Maven: com.google.guava:guava:10.0.1" level="project" />
+     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.2" level="project" />
+@@ -64,7 +113,7 @@
+     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.1.1" level="project" />
+     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.1.1" level="project" />
+     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.1.1" level="project" />
+-    <orderEntry type="library" name="Maven: joda-time:joda-time:2.7" level="project" />
++    <orderEntry type="library" name="Maven: joda-time:joda-time:2.8.1" level="project" />
+     <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:3.4.4" level="project" />
+     <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.0-alpha1" level="project" />
+     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.3" level="project" />
+diff --git a/mvn/plugins/cas-install/maven-cas-install-plugin.iml b/mvn/plugins/cas-install/maven-cas-install-plugin.iml
+index cca8c95..7b268aa 100644
+--- a/mvn/plugins/cas-install/maven-cas-install-plugin.iml
++++ b/mvn/plugins/cas-install/maven-cas-install-plugin.iml
+@@ -9,13 +9,13 @@
+     </content>
+     <orderEntry type="inheritedJdk" />
+     <orderEntry type="sourceFolder" forTests="false" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:2.0.2" level="project" />
+     <orderEntry type="library" name="Maven: org.apache.tika:tika-core:1.6" level="project" />
++    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
+     <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-api:2.0" level="project" />
+     <orderEntry type="module" module-name="cas-metadata" />
+     <orderEntry type="module" module-name="oodt-commons" />
+     <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.2.1" level="project" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
++    <orderEntry type="library" name="Maven: xml-apis:xml-apis:2.0.2" level="project" />
+     <orderEntry type="library" name="Maven: commons-collections:commons-collections:2.1" level="project" />
+     <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.2" level="project" />
+     <orderEntry type="library" name="Maven: xmlrpc:xmlrpc:2.0.1" level="project" />
+diff --git a/xmlquery/oodt-xmlquery.iml b/xmlquery/oodt-xmlquery.iml
+index e1e9963..e9ee65b 100644
+--- a/xmlquery/oodt-xmlquery.iml
++++ b/xmlquery/oodt-xmlquery.iml
+@@ -5,16 +5,17 @@
+     <output-test url="file://$MODULE_DIR$/target/test-classes" />
+     <content url="file://$MODULE_DIR$">
+       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+-      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
+       <sourceFolder url="file://$MODULE_DIR$/src/main/conf" type="java-resource" />
+       <sourceFolder url="file://$MODULE_DIR$/src/main/dtd" type="java-resource" />
++      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+       <excludeFolder url="file://$MODULE_DIR$/target" />
+     </content>
+     <orderEntry type="inheritedJdk" />
+     <orderEntry type="sourceFolder" forTests="false" />
++    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
+     <orderEntry type="module" module-name="oodt-commons" />
+     <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.2.1" level="project" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
++    <orderEntry type="library" name="Maven: xml-apis:xml-apis:2.0.2" level="project" />
+     <orderEntry type="library" name="Maven: commons-collections:commons-collections:2.1" level="project" />
+     <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.2" level="project" />
+     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.3" level="project" />
+
+From d075cefb7624d4b247c337bb0b11d5fc69e1cfd0 Mon Sep 17 00:00:00 2001
+From: Tom Barber <tom@analytical-labs.com>
+Date: Thu, 23 Jul 2015 18:15:41 +0100
+Subject: [PATCH 5/7] remove iml files
+
+---
+ grid/web-grid.iml                                  | 137 ---------------------
+ .../cas-install/maven-cas-install-plugin.iml       |  49 --------
+ xmlquery/oodt-xmlquery.iml                         |  41 ------
+ 3 files changed, 227 deletions(-)
+ delete mode 100644 grid/web-grid.iml
+ delete mode 100644 mvn/plugins/cas-install/maven-cas-install-plugin.iml
+ delete mode 100644 xmlquery/oodt-xmlquery.iml
+
+diff --git a/grid/web-grid.iml b/grid/web-grid.iml
+deleted file mode 100644
+index 1f273da..0000000
+--- a/grid/web-grid.iml
++++ /dev/null
+@@ -1,137 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+-  <component name="FacetManager">
+-    <facet type="web" name="Web">
+-      <configuration>
+-        <descriptors>
+-          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/web.xml" />
+-        </descriptors>
+-        <webroots>
+-          <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
+-        </webroots>
+-        <sourceRoots>
+-          <root url="file://$MODULE_DIR$/src/main/java" />
+-        </sourceRoots>
+-      </configuration>
+-    </facet>
+-  </component>
+-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+-    <output url="file://$MODULE_DIR$/target/classes" />
+-    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+-    <content url="file://$MODULE_DIR$">
+-      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+-      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
+-      <excludeFolder url="file://$MODULE_DIR$/target" />
+-    </content>
+-    <orderEntry type="inheritedJdk" />
+-    <orderEntry type="sourceFolder" forTests="false" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-expression:3.0.5.RELEASE" level="project" />
+-    <orderEntry type="library" name="Maven: joda-time:joda-time:2.7" level="project" />
+-    <orderEntry type="module" module-name="oodt-commons" />
+-    <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.2.1" level="project" />
+-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:2.1" level="project" />
+-    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.2" level="project" />
+-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.3" level="project" />
+-    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.0.3" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-core:2.5.4" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-hibernate3:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.hibernate:hibernate:3.2.5.ga" level="project" />
+-    <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache:1.2.3" level="project" />
+-    <orderEntry type="library" name="Maven: asm:asm-attrs:1.5.3" level="project" />
+-    <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
+-    <orderEntry type="library" name="Maven: antlr:antlr:2.7.6" level="project" />
+-    <orderEntry type="library" name="Maven: cglib:cglib:2.1_3" level="project" />
+-    <orderEntry type="library" name="Maven: asm:asm:1.5.3" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-beans:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-context:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-dao:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: xmlrpc:xmlrpc:2.0.1" level="project" />
+-    <orderEntry type="module" module-name="oodt-profile" />
+-    <orderEntry type="module" module-name="cas-filemgr" />
+-    <orderEntry type="library" name="Maven: org.apache.tika:tika-parsers:1.7" level="project" />
+-    <orderEntry type="library" name="Maven: org.gagravarr:vorbis-java-tika:0.6" level="project" />
+-    <orderEntry type="library" name="Maven: edu.ucar:netcdf:4.2.20" level="project" />
+-    <orderEntry type="library" name="Maven: edu.ucar:unidataCommon:4.2.20" level="project" />
+-    <orderEntry type="library" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: net.sourceforge.jmatio:jmatio:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-core:0.7.2" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-dom:0.7.2" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.8.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.tukaani:xz:1.5" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:1.8.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:1.8.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.pdfbox:jempbox:1.8.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.bouncycastle:bcmail-jdk15:1.45" level="project" />
+-    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15:1.45" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.11" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.11" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.11" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.11" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.ccil.cowan.tagsoup:tagsoup:1.2.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.ow2.asm:asm-debug-all:4.1" level="project" />
+-    <orderEntry type="library" name="Maven: com.googlecode.mp4parser:isoparser:1.0.2" level="project" />
+-    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.8.0" level="project" />
+-    <orderEntry type="library" name="Maven: com.drewnoakes:metadata-extractor:2.6.2" level="project" />
+-    <orderEntry type="library" name="Maven: com.adobe.xmp:xmpcore:5.1.2" level="project" />
+-    <orderEntry type="library" name="Maven: de.l3s.boilerpipe:boilerpipe:1.1.0" level="project" />
+-    <orderEntry type="library" name="Maven: rome:rome:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.gagravarr:vorbis-java-core:0.6" level="project" />
+-    <orderEntry type="library" name="Maven: com.googlecode.juniversalchardet:juniversalchardet:1.0.3" level="project" />
+-    <orderEntry type="library" name="Maven: com.uwyn:jhighlight:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: com.pff:java-libpst:0.8.1" level="project" />
+-    <orderEntry type="module" module-name="cas-metadata" />
+-    <orderEntry type="module" module-name="pcs-input" />
+-    <orderEntry type="module" module-name="cas-cli" />
+-    <orderEntry type="library" name="Maven: com.google.guava:guava:10.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+-    <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.2" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-solrj:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-common:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.2" level="project" />
+-    <orderEntry type="library" name="Maven: stax:stax:1.2.0" level="project" />
+-    <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: net.java.dev.stax-utils:stax-utils:20040917" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-core:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-lucene-analyzers:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-lucene-highlighter:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-lucene-queries:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-lucene-snowball:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-lucene-spellchecker:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.solr:solr-commons-csv:1.3.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-stax-api_1.0_spec:1.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:2.0.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.safehaus.jug:jug:asl:2.0.0" level="project" />
+-    <orderEntry type="library" name="Maven: hsqldb:hsqldb:1.8.0.7" level="project" />
+-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.python:jython:2.2-beta1" level="project" />
+-    <orderEntry type="library" name="Maven: com.amazonaws:aws-java-sdk:1.7.4" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2" level="project" />
+-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.1.1" level="project" />
+-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.1.1" level="project" />
+-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.1.1" level="project" />
+-    <orderEntry type="library" name="Maven: joda-time:joda-time:2.8.1" level="project" />
+-    <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:3.4.4" level="project" />
+-    <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.0-alpha1" level="project" />
+-    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.3" level="project" />
+-    <orderEntry type="module" module-name="oodt-product" />
+-    <orderEntry type="library" name="Maven: commons-io:commons-io:1.4" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.tika:tika-core:1.7" level="project" />
+-    <orderEntry type="module" module-name="oodt-xmlquery" />
+-    <orderEntry type="library" name="Maven: com.hp.hpl.jena:jena:2.6.3" level="project" />
+-    <orderEntry type="library" name="Maven: com.hp.hpl.jena:iri:0.8" level="project" />
+-    <orderEntry type="library" name="Maven: com.hp.hpl.jena:iri:sources:0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.5.8" level="project" />
+-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:slf4j-log4j12:1.5.8" level="project" />
+-    <orderEntry type="library" name="Maven: log4j:log4j:1.2.13" level="project" />
+-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
+-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
+-    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.9.1" level="project" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.3.04" level="project" />
+-    <orderEntry type="library" name="Maven: xalan:xalan:2.7.1" level="project" />
+-    <orderEntry type="library" name="Maven: xalan:serializer:2.7.1" level="project" />
+-  </component>
+-</module>
+\ No newline at end of file
+diff --git a/mvn/plugins/cas-install/maven-cas-install-plugin.iml b/mvn/plugins/cas-install/maven-cas-install-plugin.iml
+deleted file mode 100644
+index 7b268aa..0000000
+--- a/mvn/plugins/cas-install/maven-cas-install-plugin.iml
++++ /dev/null
+@@ -1,49 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+-    <output url="file://$MODULE_DIR$/target/classes" />
+-    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+-    <content url="file://$MODULE_DIR$">
+-      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+-      <excludeFolder url="file://$MODULE_DIR$/target" />
+-    </content>
+-    <orderEntry type="inheritedJdk" />
+-    <orderEntry type="sourceFolder" forTests="false" />
+-    <orderEntry type="library" name="Maven: org.apache.tika:tika-core:1.6" level="project" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-api:2.0" level="project" />
+-    <orderEntry type="module" module-name="cas-metadata" />
+-    <orderEntry type="module" module-name="oodt-commons" />
+-    <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.2.1" level="project" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:2.0.2" level="project" />
+-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:2.1" level="project" />
+-    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.2" level="project" />
+-    <orderEntry type="library" name="Maven: xmlrpc:xmlrpc:2.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.9.1" level="project" />
+-    <orderEntry type="module" module-name="pcs-input" />
+-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.3" level="project" />
+-    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.0.3" level="project" />
+-    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.3" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.tika:tika-core:1.7" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-core:2.5.4" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-hibernate3:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.hibernate:hibernate:3.2.5.ga" level="project" />
+-    <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache:1.2.3" level="project" />
+-    <orderEntry type="library" name="Maven: asm:asm-attrs:1.5.3" level="project" />
+-    <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
+-    <orderEntry type="library" name="Maven: antlr:antlr:2.7.6" level="project" />
+-    <orderEntry type="library" name="Maven: cglib:cglib:2.1_3" level="project" />
+-    <orderEntry type="library" name="Maven: asm:asm:1.5.3" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-beans:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-context:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-dao:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: com.google.guava:guava:10.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.ant:ant:1.7.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.7.0" level="project" />
+-    <orderEntry type="library" name="Maven: commons-io:commons-io:1.4" level="project" />
+-  </component>
+-</module>
+\ No newline at end of file
+diff --git a/xmlquery/oodt-xmlquery.iml b/xmlquery/oodt-xmlquery.iml
+deleted file mode 100644
+index e9ee65b..0000000
+--- a/xmlquery/oodt-xmlquery.iml
++++ /dev/null
+@@ -1,41 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+-    <output url="file://$MODULE_DIR$/target/classes" />
+-    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+-    <content url="file://$MODULE_DIR$">
+-      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+-      <sourceFolder url="file://$MODULE_DIR$/src/main/conf" type="java-resource" />
+-      <sourceFolder url="file://$MODULE_DIR$/src/main/dtd" type="java-resource" />
+-      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+-      <excludeFolder url="file://$MODULE_DIR$/target" />
+-    </content>
+-    <orderEntry type="inheritedJdk" />
+-    <orderEntry type="sourceFolder" forTests="false" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
+-    <orderEntry type="module" module-name="oodt-commons" />
+-    <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.2.1" level="project" />
+-    <orderEntry type="library" name="Maven: xml-apis:xml-apis:2.0.2" level="project" />
+-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:2.1" level="project" />
+-    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.2" level="project" />
+-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.3" level="project" />
+-    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.0.3" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-core:2.5.4" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-hibernate3:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+-    <orderEntry type="library" name="Maven: org.hibernate:hibernate:3.2.5.ga" level="project" />
+-    <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache:1.2.3" level="project" />
+-    <orderEntry type="library" name="Maven: asm:asm-attrs:1.5.3" level="project" />
+-    <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
+-    <orderEntry type="library" name="Maven: antlr:antlr:2.7.6" level="project" />
+-    <orderEntry type="library" name="Maven: cglib:cglib:2.1_3" level="project" />
+-    <orderEntry type="library" name="Maven: asm:asm:1.5.3" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-beans:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-context:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-dao:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:2.0.8" level="project" />
+-    <orderEntry type="library" name="Maven: xmlrpc:xmlrpc:2.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.9.1" level="project" />
+-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
+-  </component>
+-</module>
+\ No newline at end of file
+
+From c8774179f3422c3e55d08413dace4718c22c5603 Mon Sep 17 00:00:00 2001
+From: Tom Barber <tom@analytical-labs.com>
+Date: Wed, 5 Aug 2015 16:49:30 +0100
+Subject: [PATCH 6/7] git ignore
+
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 .gitignore
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..bff2d76
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1 @@
++*.iml
+
+From c9d62c508fc1235e1fce45e17be3da4a6eff88c0 Mon Sep 17 00:00:00 2001
+From: Tom Barber <tom@analytical-labs.com>
+Date: Wed, 19 Aug 2015 11:18:21 +0100
+Subject: [PATCH 7/7] move package type to profile variable
+
+---
+ catalog/pom.xml        |  8 +++++++-
+ cli/pom.xml            |  8 +++++++-
+ commons/pom.xml        | 11 ++++++++++-
+ crawler/pom.xml        |  8 +++++++-
+ filemgr/pom.xml        | 11 ++++++++++-
+ grid/pom.xml           |  8 +++++++-
+ metadata/pom.xml       |  8 +++++++-
+ opendapps/pom.xml      |  8 +++++++-
+ pcs/core/pom.xml       |  8 +++++++-
+ pcs/input/pom.xml      |  8 +++++++-
+ pcs/opsui/pom.xml      | 26 +++++---------------------
+ pcs/services/pom.xml   | 31 ++++++++-----------------------
+ pge/pom.xml            | 11 ++++++++++-
+ product/pom.xml        | 11 ++++++++++-
+ profile/pom.xml        | 11 ++++++++++-
+ protocol/api/pom.xml   | 11 ++++++++++-
+ protocol/ftp/pom.xml   | 11 ++++++++++-
+ protocol/http/pom.xml  | 11 ++++++++++-
+ protocol/imaps/pom.xml | 11 ++++++++++-
+ protocol/sftp/pom.xml  | 11 ++++++++++-
+ pushpull/pom.xml       | 25 +++----------------------
+ resource/pom.xml       |  8 +++++++-
+ sso/pom.xml            | 30 +++++++-----------------------
+ workflow/pom.xml       | 29 +++++++----------------------
+ xmlps/pom.xml          | 29 +++++++----------------------
+ xmlquery/pom.xml       |  8 +++++++-
+ 26 files changed, 207 insertions(+), 153 deletions(-)
+
+diff --git a/catalog/pom.xml b/catalog/pom.xml
+index 6a9c515..e8c6e8c 100644
+--- a/catalog/pom.xml
++++ b/catalog/pom.xml
+@@ -23,7 +23,7 @@
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+-  <packaging>bundle</packaging>
++  <packaging>${packaging.type}</packaging>
+   <artifactId>cas-catalog</artifactId>
+   <name>OODT CAS Virtual Catalog and Integration Service.</name>
+   <description>CAS Catalog is an effort to virtualize underlying 
+@@ -36,9 +36,15 @@
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>
+   </scm>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/cli/pom.xml b/cli/pom.xml
+index 38645b2..b8a9cd0 100644
+--- a/cli/pom.xml
++++ b/cli/pom.xml
+@@ -28,10 +28,16 @@
+ 	</parent>
+ 	<artifactId>cas-cli</artifactId>
+ 	<name>CAS Command Line Interface</name>
+-	<packaging>bundle</packaging>
++	<packaging>${packaging.type}</packaging>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+ 	<profiles>
+ 		<profile>
+ 			<id>create-osgi-bundles-from-dependencies</id>
++			<properties>
++				<packaging.type>bundle</packaging.type>
++			</properties>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+diff --git a/commons/pom.xml b/commons/pom.xml
+index 8523d4e..30a70ff 100644
+--- a/commons/pom.xml
++++ b/commons/pom.xml
+@@ -26,13 +26,16 @@
+   </parent>
+   <artifactId>oodt-commons</artifactId>
+   <name>Common Utilities</name>
+-  <packaging>bundle</packaging>
++  <packaging>${packaging.type}</packaging>
+   <description>Apache OODT Common Utilities Project</description>
+   <scm>
+    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>
+   </scm>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <resources>
+         <resource>
+@@ -96,6 +99,9 @@
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+@@ -125,6 +131,9 @@
+     </profile>
+     <profile>
+       <id>audit</id>
++      <properties>
++        <packaging.type>jar</packaging.type>
++      </properties>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+       </activation>
+diff --git a/crawler/pom.xml b/crawler/pom.xml
+index 278686b..501dfbd 100644
+--- a/crawler/pom.xml
++++ b/crawler/pom.xml
+@@ -27,12 +27,15 @@ the License.
+ 	<artifactId>cas-crawler</artifactId>
+ 	<name>Catalog and Archive Crawling Framework</name>
+ 	<description>The Catalog and Archive Service Crawling Framework.</description>
+-	<packaging>bundle</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<scm>
+ 		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</connection>
+ 		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</developerConnection>
+ 		<url>http://svn.apache.org/viewvc/oodt/trunk/crawler</url>
+ 	</scm>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+ 	<build>
+ 		<plugins>
+ 			<plugin>
+@@ -115,6 +118,9 @@ the License.
+ 	</build>
+ 	<profiles>
+ 		<profile>
++			<properties>
++				<packaging.type>bundle</packaging.type>
++			</properties>
+ 			<id>create-osgi-bundles-from-dependencies</id>
+ 			<build>
+ 				<plugins>
+diff --git a/filemgr/pom.xml b/filemgr/pom.xml
+index 8f0afc7..e0781ff 100644
+--- a/filemgr/pom.xml
++++ b/filemgr/pom.xml
+@@ -23,7 +23,7 @@
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+-  <packaging>bundle</packaging>
++  <packaging>${packaging.type}</packaging>
+   <artifactId>cas-filemgr</artifactId>
+   <name>Catalog and Archive File Management Component</name>
+   <description>The file management component of a Catalog and Archive Service. This component
+@@ -36,6 +36,9 @@
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/filemgr</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/filemgr</url>
+   </scm>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <directory>target</directory>
+     <outputDirectory>target/classes</outputDirectory>
+@@ -133,6 +136,9 @@
+   <profiles>
+     <profile>
+       <id>audit</id>
++      <properties>
++        <packaging.type>jar</packaging.type>
++      </properties>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+       </activation>
+@@ -161,6 +167,9 @@
+     </profile>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/grid/pom.xml b/grid/pom.xml
+index 9fdbc28..b240f48 100644
+--- a/grid/pom.xml
++++ b/grid/pom.xml
+@@ -25,7 +25,7 @@ the License.
+   </parent>
+   <artifactId>web-grid</artifactId>
+   <name>OODT Web Grid</name>
+-  <packaging>war</packaging>
++  <packaging>${packaging.type}</packaging>
+   <description>The OODT grid services (product and profile services) use CORBA or
+     RMI as their underlying network transport.  However, limitations
+     of CORBA and RMI make them inappropriate for large-scale
+@@ -62,6 +62,9 @@ the License.
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>
+   </scm>
++  <properties>
++    <packaging.type>war</packaging.type>
++  </properties>
+   <build>
+     <plugins>
+       <plugin>
+@@ -97,6 +100,9 @@ the License.
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>war</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/metadata/pom.xml b/metadata/pom.xml
+index bbad7db..32ee2d4 100644
+--- a/metadata/pom.xml
++++ b/metadata/pom.xml
+@@ -24,7 +24,7 @@ the License.
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <artifactId>cas-metadata</artifactId>
+   <name>Catalog and Archive Service Generic Multi-valued Metadata Container</name>
+   <description>A Multi-valued, generic Metadata container class. The class uses an internal
+@@ -42,6 +42,9 @@ the License.
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
+   </scm>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <resources>
+       <resource>
+@@ -103,6 +106,9 @@ the License.
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/opendapps/pom.xml b/opendapps/pom.xml
+index 0e2e75b..ecaf3c4 100644
+--- a/opendapps/pom.xml
++++ b/opendapps/pom.xml
+@@ -35,7 +35,10 @@
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+-    <packaging>jar</packaging>
++    <packaging>${packaging.type}</packaging>
++    <properties>
++        <packaging.type>jar</packaging.type>
++    </properties>
+   <build>
+     <plugins>
+       <plugin>
+@@ -81,6 +84,9 @@
+     <profiles>
+         <profile>
+             <id>create-osgi-bundles-from-dependencies</id>
++            <properties>
++                <packaging.type>bundle</packaging.type>
++            </properties>
+             <build>
+                 <plugins>
+                     <plugin>
+diff --git a/pcs/core/pom.xml b/pcs/core/pom.xml
+index 9e09e4c..b1b36ff 100644
+--- a/pcs/core/pom.xml
++++ b/pcs/core/pom.xml
+@@ -26,10 +26,13 @@ the License.
+     <relativePath>../../core/pom.xml</relativePath>
+   </parent>
+   <name>Process Control System Core Package</name>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <description>The Process Control System's core system framework. PCS is an agglomeration of 
+   CAS services and components needed to build a science data system.
+   </description>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <plugins>
+       <plugin>
+@@ -81,6 +84,9 @@ the License.
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/pcs/input/pom.xml b/pcs/input/pom.xml
+index fcae9bb..3a5f05b 100644
+--- a/pcs/input/pom.xml
++++ b/pcs/input/pom.xml
+@@ -26,10 +26,13 @@ the License.
+     <relativePath>../../core/pom.xml</relativePath>
+   </parent>
+   <name>Process Control System Input Data Package</name>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <description>The Process Control System's data handling package. This package contains data structures
+   and readers and writers to write an input file format similar to HDF, as represented in XML.
+   </description>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <plugins>
+       <plugin>
+@@ -85,6 +88,9 @@ the License.
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/pcs/opsui/pom.xml b/pcs/opsui/pom.xml
+index f2a3a31..8cb5389 100755
+--- a/pcs/opsui/pom.xml
++++ b/pcs/opsui/pom.xml
+@@ -19,7 +19,7 @@ the License.
+ 	
+ 	<modelVersion>4.0.0</modelVersion>
+ 	<artifactId>pcs-opsui</artifactId>
+-	<packaging>war</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<parent>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>oodt-core</artifactId>
+@@ -32,6 +32,7 @@ the License.
+ 		<jetty.version>6.1.25</jetty.version>
+ 		<slf4j.version>1.5.8</slf4j.version>
+ 		<log4j.version>1.2.14</log4j.version>
++		<packaging.type>war</packaging.type>
+ 	</properties>
+ 	<dependencies>
+ 		<dependency>
+@@ -124,6 +125,9 @@ the License.
+         <profiles>
+ 			<profile>
+ 				<id>create-osgi-bundles-from-dependencies</id>
++				<properties>
++					<packaging.type>war</packaging.type>
++				</properties>
+ 				<build>
+ 					<plugins>
+ 						<plugin>
+@@ -218,26 +222,6 @@ the License.
+ 					<debug>true</debug>
+ 				</configuration>
+ 			</plugin>
+-			<plugin>
+-				<groupId>org.apache.felix</groupId>
+-				<artifactId>maven-bundle-plugin</artifactId>
+-				<version>2.3.7</version>
+-				<configuration>
+-					<supportedProjectTypes>
+-						<supportedProjectType>jar</supportedProjectType>
+-						<supportedProjectType>bundle</supportedProjectType>
+-						<supportedProjectType>war</supportedProjectType>
+-					</supportedProjectTypes>
+-					<instructions>
+-						<Bundle-Name>${project.artifactId}</Bundle-Name>
+-						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+-						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+-						<Export-Package>org.apache.oodt.pcs.opsui.*</Export-Package>
+-						<Import-Package>*;resolution:=optional</Import-Package>
+-					</instructions>
+-				</configuration>
+-				<extensions>true</extensions>
+-			</plugin>
+ 		</plugins>
+ 	</build>
+ 	</project>
+diff --git a/pcs/services/pom.xml b/pcs/services/pom.xml
+index a6c346f..40e94c2 100644
+--- a/pcs/services/pom.xml
++++ b/pcs/services/pom.xml
+@@ -24,37 +24,22 @@ the License.
+     <relativePath>../../core/pom.xml</relativePath>
+   </parent>
+     <artifactId>pcs-services</artifactId>
+-  <packaging>war</packaging>
++  <packaging>${packaging.type}</packaging>
+   <name>OODT Process Control System JAX-RS service layer</name>
+   <description>A web application for exposing services form the underlying 
+   OODT Process Control System via the JAX-RS specification.</description>
++    <properties>
++        <packaging.type>war</packaging.type>
++    </properties>
+     <build>
+-        <plugins>
+-            <plugin>
+-                <groupId>org.apache.felix</groupId>
+-                <artifactId>maven-bundle-plugin</artifactId>
+-                <version>2.3.7</version>
+-                <configuration>
+-                    <supportedProjectTypes>
+-                        <supportedProjectType>jar</supportedProjectType>
+-                        <supportedProjectType>bundle</supportedProjectType>
+-                        <supportedProjectType>war</supportedProjectType>
+-                    </supportedProjectTypes>
+-                    <instructions>
+-                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+-                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+-                        <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+-                        <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
+-                        <Import-Package>*;resolution:=optional</Import-Package>
+-                    </instructions>
+-                </configuration>
+-                <extensions>true</extensions>
+-            </plugin>
+-        </plugins>
+     </build>
++
+     <profiles>
+         <profile>
+             <id>create-osgi-bundles-from-dependencies</id>
++            <properties>
++                <packaging.type>war</packaging.type>
++            </properties>
+             <build>
+                 <plugins>
+                     <plugin>
+diff --git a/pge/pom.xml b/pge/pom.xml
+index e47cad2..b3f9eba 100644
+--- a/pge/pom.xml
++++ b/pge/pom.xml
+@@ -25,10 +25,13 @@ the License.
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+   <artifactId>cas-pge</artifactId>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <name>CAS PGE Adaptor Framework</name>
+   <description>Allows data processing jobs not written in conformance with the
+         PCS PGE interface to be run within the PCS.</description>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+  <build>
+     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory> 
+     <plugins>
+@@ -61,6 +64,9 @@ the License.
+   <profiles>
+     <profile>
+       <id>audit</id>
++      <properties>
++        <packaging.type>jar</packaging.type>
++      </properties>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+       </activation>
+@@ -110,6 +116,9 @@ the License.
+     </profile>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>jar</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/product/pom.xml b/product/pom.xml
+index 4498b70..61f791a 100644
+--- a/product/pom.xml
++++ b/product/pom.xml
+@@ -25,7 +25,7 @@
+     </parent>
+     <artifactId>oodt-product</artifactId>
+     <name>Product Service</name>
+-    <packaging>jar</packaging>
++    <packaging>${packaging.type}</packaging>
+     <description>
+         The Product Service provides access to data products.  Products can be
+         scientific datasets, images, documents, or anything with an electronic
+@@ -40,6 +40,9 @@
+    		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</developerConnection>
+    		<url>http://svn.apache.org/viewvc/oodt/trunk/product</url>
+     </scm>
++    <properties>
++        <packaging.type>jar</packaging.type>
++    </properties>
+     <build>
+         <resources>
+             <resource>
+@@ -64,6 +67,9 @@
+     <profiles>
+         <profile>
+             <id>audit</id>
++            <properties>
++                <packaging.type>jar</packaging.type>
++            </properties>
+             <activation>
+                 <activeByDefault>false</activeByDefault>
+             </activation>
+@@ -106,6 +112,9 @@
+         </profile>
+         <profile>
+             <id>create-osgi-bundles-from-dependencies</id>
++            <properties>
++                <packaging.type>bundle</packaging.type>
++            </properties>
+             <build>
+                 <plugins>
+                     <plugin>
+diff --git a/profile/pom.xml b/profile/pom.xml
+index d029e27..e6f7c1a 100644
+--- a/profile/pom.xml
++++ b/profile/pom.xml
+@@ -25,7 +25,7 @@
+   </parent>
+   <artifactId>oodt-profile</artifactId>
+   <name>Profile Service</name>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <description>The Profile Service describes and locates resources using metadata
+     descriptions.  These descriptions, called profiles, tell of a
+     resource's inception, composition, and location using a mix of
+@@ -37,6 +37,9 @@
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
+   </scm>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <resources>
+       <resource>
+@@ -78,6 +81,9 @@
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+@@ -107,6 +113,9 @@
+     </profile>
+     <profile>
+       <id>audit</id>
++      <properties>
++        <packaging.type>jar</packaging.type>
++      </properties>
+       <activation>
+         <activeByDefault>false</activeByDefault>
+       </activation>
+diff --git a/protocol/api/pom.xml b/protocol/api/pom.xml
+index 38bece1..51dbc68 100644
+--- a/protocol/api/pom.xml
++++ b/protocol/api/pom.xml
+@@ -20,10 +20,13 @@
+ 	</parent>
+ 	<artifactId>cas-protocol-api</artifactId>
+ 	<name>CAS Protocol</name>
+-	<packaging>jar</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<profiles>
+ 		<profile>
+ 			<id>create-osgi-bundles-from-dependencies</id>
++			<properties>
++				<packaging.type>bundle</packaging.type>
++			</properties>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+@@ -55,6 +58,9 @@
+ 		</profile>
+ 		<profile>
+ 			<id>audit</id>
++			<properties>
++				<packaging.type>jar</packaging.type>
++			</properties>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+ 			</activation>
+@@ -81,6 +87,9 @@
+ 			</build>
+ 		</profile>
+ 	</profiles>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+ 	<build>
+ 		<plugins>
+ 			<plugin>
+diff --git a/protocol/ftp/pom.xml b/protocol/ftp/pom.xml
+index f7f77e7..5546144 100644
+--- a/protocol/ftp/pom.xml
++++ b/protocol/ftp/pom.xml
+@@ -20,10 +20,13 @@
+ 	</parent>
+ 	<artifactId>cas-protocol-ftp</artifactId>
+ 	<name>CAS Protocol FTP Implementation</name>
+-	<packaging>jar</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<profiles>
+ 		<profile>
+ 			<id>create-osgi-bundles-from-dependencies</id>
++			<properties>
++				<packaging.type>bundle</packaging.type>
++			</properties>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+@@ -53,6 +56,9 @@
+ 		</profile>
+ 		<profile>
+ 			<id>audit</id>
++			<properties>
++				<packaging.type>jar</packaging.type>
++			</properties>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+ 			</activation>
+@@ -100,6 +106,9 @@
+ 			</build>
+ 		</profile>
+ 	</profiles>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+   <build>
+     <resources>
+       <resource>
+diff --git a/protocol/http/pom.xml b/protocol/http/pom.xml
+index b2cac68..c17c7c5 100644
+--- a/protocol/http/pom.xml
++++ b/protocol/http/pom.xml
+@@ -18,12 +18,15 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../../core/pom.xml</relativePath>
+ 	</parent>
+-	<packaging>jar</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<artifactId>cas-protocol-http</artifactId>
+ 	<name>CAS Protocol HTTP Implementation</name>
+ 	<profiles>
+ 		<profile>
+ 			<id>create-osgi-bundles-from-dependencies</id>
++			<properties>
++				<packaging.type>bundle</packaging.type>
++			</properties>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+@@ -53,6 +56,9 @@
+ 		</profile>
+ 		<profile>
+ 			<id>audit</id>
++			<properties>
++				<packaging.type>jar</packaging.type>
++			</properties>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+ 			</activation>
+@@ -99,6 +105,9 @@
+ 			</build>
+ 		</profile>
+ 	</profiles>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+ 	<build>
+ 		<resources>
+ 			<resource>
+diff --git a/protocol/imaps/pom.xml b/protocol/imaps/pom.xml
+index 918586d..3310229 100644
+--- a/protocol/imaps/pom.xml
++++ b/protocol/imaps/pom.xml
+@@ -18,12 +18,15 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../../core/pom.xml</relativePath>
+ 	</parent>
+-	<packaging>jar</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<artifactId>cas-protocol-imaps</artifactId>
+ 	<name>CAS Protocol IMAPS Implementation</name>
+ 	<profiles>
+ 		<profile>
+ 			<id>create-osgi-bundles-from-dependencies</id>
++			<properties>
++				<packaging.type>jar</packaging.type>
++			</properties>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+@@ -53,6 +56,9 @@
+ 		</profile>
+ 		<profile>
+ 			<id>audit</id>
++			<properties>
++			<packaging.type>jar</packaging.type>
++		</properties>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+ 			</activation>
+@@ -79,6 +85,9 @@
+ 			</build>
+ 		</profile>
+ 	</profiles>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+   <build>
+     <resources>
+       <resource>
+diff --git a/protocol/sftp/pom.xml b/protocol/sftp/pom.xml
+index 223283f..ec31821 100644
+--- a/protocol/sftp/pom.xml
++++ b/protocol/sftp/pom.xml
+@@ -18,12 +18,15 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../../core/pom.xml</relativePath>
+ 	</parent>
+-	<packaging>jar</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<artifactId>cas-protocol-sftp</artifactId>
+ 	<name>CAS Protocol SFTP Implementation</name>
+ 	<profiles>
+ 		<profile>
+ 			<id>create-osgi-bundles-from-dependencies</id>
++			<properties>
++				<packaging.type>bundle</packaging.type>
++			</properties>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+@@ -53,6 +56,9 @@
+ 		</profile>
+ 		<profile>
+ 			<id>audit</id>
++			<properties>
++				<packaging.type>jar</packaging.type>
++			</properties>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+ 			</activation>
+@@ -80,6 +86,9 @@
+ 			</build>
+ 		</profile>
+ 	</profiles>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+         <build>
+ 			<plugins>
+ 				<plugin>
+diff --git a/pushpull/pom.xml b/pushpull/pom.xml
+index 3c07a72..ee3b1fb 100644
+--- a/pushpull/pom.xml
++++ b/pushpull/pom.xml
+@@ -57,33 +57,14 @@
+           </execution>
+         </executions>
+       </plugin>
+-      <plugin>
+-        <groupId>org.apache.felix</groupId>
+-        <artifactId>maven-bundle-plugin</artifactId>
+-        <version>2.3.7</version>
+-        <configuration>
+-          <supportedProjectTypes>
+-            <supportedProjectType>jar</supportedProjectType>
+-            <supportedProjectType>bundle</supportedProjectType>
+-            <supportedProjectType>war</supportedProjectType>
+-          </supportedProjectTypes>
+-          <instructions>
+-            <Bundle-Name>${project.artifactId}</Bundle-Name>
+-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+-            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+-            <Export-Package>org.apache.oodt.profile.*</Export-Package>
+-            <Main-Class>org.apache.oodt.cas.pushpull.daemon.DaemonLauncher</Main-Class>
+-            <Import-Package>*;resolution:=optional</Import-Package>
+-
+-          </instructions>
+-        </configuration>
+-        <extensions>true</extensions>
+-      </plugin>
+     </plugins>
+  </build>
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/resource/pom.xml b/resource/pom.xml
+index a6b2ef7..aebc0a7 100644
+--- a/resource/pom.xml
++++ b/resource/pom.xml
+@@ -23,7 +23,7 @@ the License.
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <artifactId>cas-resource</artifactId>
+   <name>Catalog and Archive Resource Management Component</name>
+   <description>The resource management component of a Catalog and Archive Service. This component
+@@ -34,9 +34,15 @@ the License.
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/resource</url>
+   </scm>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/sso/pom.xml b/sso/pom.xml
+index 4afe323..ad1e180 100644
+--- a/sso/pom.xml
++++ b/sso/pom.xml
+@@ -25,11 +25,16 @@ the License.
+   </parent>
+   <artifactId>oodt-sso</artifactId>
+   <name>OODT Single Sign On Security Package</name>
+-  <packaging>jar</packaging>
+-  <properties />
++  <packaging>${packaging.type}</packaging>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+@@ -60,27 +65,6 @@ the License.
+   </profiles>
+   <build>
+     <plugins>
+-      <plugin>
+-        <groupId>org.apache.felix</groupId>
+-        <artifactId>maven-bundle-plugin</artifactId>
+-        <version>2.3.7</version>
+-        <configuration>
+-          <supportedProjectTypes>
+-            <supportedProjectType>jar</supportedProjectType>
+-            <supportedProjectType>bundle</supportedProjectType>
+-            <supportedProjectType>war</supportedProjectType>
+-          </supportedProjectTypes>
+-          <instructions>
+-            <Bundle-Name>${project.artifactId}</Bundle-Name>
+-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+-            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+-            <Export-Package>org.apache.oodt.security.sso.*</Export-Package>
+-            <Import-Package>*;resolution:=optional</Import-Package>
+-
+-          </instructions>
+-        </configuration>
+-        <extensions>true</extensions>
+-      </plugin>
+             </plugins>
+   </build>
+   <dependencies>
+diff --git a/workflow/pom.xml b/workflow/pom.xml
+index e65a010..4b28ca1 100644
+--- a/workflow/pom.xml
++++ b/workflow/pom.xml
+@@ -24,7 +24,7 @@ the License.
+     <version>0.10-SNAPSHOT</version>
+     <relativePath>../core/pom.xml</relativePath>
+   </parent>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <artifactId>cas-workflow</artifactId>
+   <name>Catalog and Archive Workflow Management Component</name>
+   <description>The workflow management component of a Catalog and Archive Service. This component
+@@ -32,6 +32,9 @@ the License.
+      provides some out of the box backend implementations of them (including one based
+      on the javax.sql.DataSource interface). This component provides everything that you need
+      to execute workflows, and science processing pipelines.</description>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <plugins>
+       <plugin>
+@@ -76,32 +79,14 @@ the License.
+           </execution>
+         </executions>
+       </plugin>
+-      <plugin>
+-        <groupId>org.apache.felix</groupId>
+-        <artifactId>maven-bundle-plugin</artifactId>
+-        <version>2.3.7</version>
+-        <configuration>
+-          <supportedProjectTypes>
+-            <supportedProjectType>jar</supportedProjectType>
+-            <supportedProjectType>bundle</supportedProjectType>
+-            <supportedProjectType>war</supportedProjectType>
+-          </supportedProjectTypes>
+-          <instructions>
+-            <Bundle-Name>${project.artifactId}</Bundle-Name>
+-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+-            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+-            <Export-Package>org.apache.oodt.cas.workflow.*</Export-Package>
+-            <Main-Class>org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient</Main-Class>
+-
+-          </instructions>
+-        </configuration>
+-        <extensions>true</extensions>
+-      </plugin>
+     </plugins>
+   </build>
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>bundle</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
+diff --git a/xmlps/pom.xml b/xmlps/pom.xml
+index e588388..32778b3 100644
+--- a/xmlps/pom.xml
++++ b/xmlps/pom.xml
+@@ -24,7 +24,7 @@
+ 		<version>0.10-SNAPSHOT</version>
+ 		<relativePath>../core/pom.xml</relativePath>
+ 	</parent>
+-	<packaging>jar</packaging>
++	<packaging>${packaging.type}</packaging>
+ 	<artifactId>oodt-xmlps</artifactId>
+ 	<name>XML-configured, DBMS-based Product and Profile Server</name>
+ 	<version>0.10-SNAPSHOT</version>
+@@ -36,6 +36,9 @@
+ 	<profiles>
+ 		<profile>
+ 			<id>create-osgi-bundles-from-dependencies</id>
++			<properties>
++				<packaging.type>jar</packaging.type>
++			</properties>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+@@ -64,6 +67,9 @@
+ 			</build>
+ 		</profile>
+ 	</profiles>
++	<properties>
++		<packaging.type>jar</packaging.type>
++	</properties>
+ 	<build>
+ 	 <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+ 		<resources>
+@@ -103,27 +109,6 @@
+ 					</systemProperties>
+ 				</configuration>
+ 			</plugin>
+-			<plugin>
+-				<groupId>org.apache.felix</groupId>
+-				<artifactId>maven-bundle-plugin</artifactId>
+-				<version>2.3.7</version>
+-				<configuration>
+-					<supportedProjectTypes>
+-						<supportedProjectType>jar</supportedProjectType>
+-						<supportedProjectType>bundle</supportedProjectType>
+-						<supportedProjectType>war</supportedProjectType>
+-					</supportedProjectTypes>
+-					<instructions>
+-						<Bundle-Name>${project.artifactId}</Bundle-Name>
+-						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+-						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+-						<Export-Package>org.apache.oodt.xmlps.*</Export-Package>
+-						<Import-Package>*;resolution:=optional</Import-Package>
+-
+-					</instructions>
+-				</configuration>
+-				<extensions>true</extensions>
+-			</plugin>
+ 		</plugins>
+ 	</build>
+ 	<dependencies>
+diff --git a/xmlquery/pom.xml b/xmlquery/pom.xml
+index dac2e3e..a08a85d 100644
+--- a/xmlquery/pom.xml
++++ b/xmlquery/pom.xml
+@@ -25,7 +25,7 @@
+   </parent>
+   <artifactId>oodt-xmlquery</artifactId>
+   <name>Query Expression</name>
+-  <packaging>jar</packaging>
++  <packaging>${packaging.type}</packaging>
+   <description>This component provides a way to express queries in a generic
+     manner.  Its centerpiece is a class called XMLQuery that uses
+     boolean postfix expressions to capture the domain, range, and
+@@ -39,6 +39,9 @@
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
+   </scm>
++  <properties>
++    <packaging.type>jar</packaging.type>
++  </properties>
+   <build>
+     <resources>
+       <resource>
+@@ -85,6 +88,9 @@
+   <profiles>
+     <profile>
+       <id>create-osgi-bundles-from-dependencies</id>
++      <properties>
++        <packaging.type>jar</packaging.type>
++      </properties>
+       <build>
+         <plugins>
+           <plugin>
