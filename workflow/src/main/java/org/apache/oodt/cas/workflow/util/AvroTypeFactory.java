@@ -226,7 +226,7 @@ public class AvroTypeFactory {
 
     public static Map<String,String> getAvroMetadata(Metadata metadata){
         Map<String,String> avroMetadata = new HashMap<String, String>();
-        if(metadata.getHashtable().size() > 0)
+        if(metadata.getHashTable().size() > 0)
             for (String key : metadata.getAllKeys()){
                 avroMetadata.put(key,metadata.getMetadata(key));
             }

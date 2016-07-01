@@ -51,6 +51,18 @@ the License.
      can be overridden in a specific pom and should have a comment explaing why the version has been overridden
   -->
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>1.8.1</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.avro/avro-ipc -->
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-ipc</artifactId>
+      <version>1.8.1</version>
+    </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
@@ -145,6 +157,42 @@ the License.
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>1.7.7</version>
+        <configuration>
+          <stringType>String</stringType>
+          <detail>true</detail>
+        </configuration>
+        <executions>
+          <execution>
+            <id>schemas</id>
+            <configuration>
+              <imports>
+                <import>${basedir}/src/main/avro/types/AvroWorkflowCondition.avsc</import>
+                <import>${basedir}/src/main/avro/types/AvroWorkflowTask.avsc</import>
+                <import>${basedir}/src/main/avro/types/AvroWorkflow.avsc</import>
+                <import>${basedir}/src/main/avro/types/AvroWorkflowInstance.avsc</import>
+                <import>${basedir}/src/main/avro/types/AvroWorkflowInstancePage.avsc</import>
+              </imports>
+            </configuration>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>protocol</id>
+            <configuration><imports>
+              <import>${basedir}/src/main/avro/types</import>
+            </imports>
+            </configuration>
+            <goals>
+              <goal>idl-protocol</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.4</version>

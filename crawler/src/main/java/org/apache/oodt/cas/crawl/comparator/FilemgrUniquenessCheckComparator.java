@@ -23,6 +23,7 @@ import java.io.File;
 import java.net.URL;
 
 //OODT imports
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;

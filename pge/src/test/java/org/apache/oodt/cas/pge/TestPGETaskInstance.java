@@ -40,6 +40,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.junit.After;
 import org.junit.Test;
 import org.w3c.dom.Document;

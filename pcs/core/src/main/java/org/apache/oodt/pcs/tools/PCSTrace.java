@@ -60,7 +60,7 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
 
   public PCSTrace(URL wmgrUrl, URL fmUrl) {
     fm = new FileManagerUtils(fmUrl);
-    wm = new WorkflowManagerUtils(wmgrUrl);
+    wm = new org.apache.oodt.pcs.util.WorkflowManagerUtils(wmgrUrl);
   }
 
   public PCSTrace(String wmgrUrlStr, String fmUrlStr) {

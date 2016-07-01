@@ -97,6 +97,11 @@
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-ipc</artifactId>
+      <version>1.8.1</version>
+    </dependency>
   </dependencies>
   <build>
     <resources>
@@ -115,6 +120,23 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>1.7.7</version>
+        <configuration>
+          <stringType>String</stringType>
+        </configuration>
+        <executions>
+          <execution>
+            <id>schemas</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>protocol</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>

@@ -420,8 +420,13 @@ public class AvrorpcCommunicationChannelServer extends AbstractCommunicationChan
         return true;}
 
     @Override
-    public void startup() throws Exception {
-        avrorpc_startup();
+    public void startup() {
+        try {
+            avrorpc_startup();
+        }
+        catch (Exception e){
+
+        }
     }
 }
 

@@ -20,7 +20,9 @@ package org.apache.oodt.profile.handlers.cas;
 
 //CAS imports
 import org.apache.oodt.cas.filemgr.structs.*;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileException;

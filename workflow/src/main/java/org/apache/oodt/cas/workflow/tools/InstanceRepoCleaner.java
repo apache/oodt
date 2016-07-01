@@ -23,6 +23,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.xmlrpc.XmlRpcException;
@@ -74,7 +75,7 @@ public class InstanceRepoCleaner {
     this.rep = new LuceneWorkflowInstanceRepository(idxPath, 1000);
   }
 
-  public static void main(String[] args) throws IOException, InstanceRepositoryException, XmlRpcException {
+  public static void main(String[] args) throws Exception {
     String usage = "InstanceRepoCleaner [options]\n"
         + "<workflow manager url>\n" + "--idxPath <path>\n";
     if (args.length != 1 && args.length != 2) {
@@ -94,7 +95,7 @@ public class InstanceRepoCleaner {
     clean.cleanRepository();
   }
 
-  public void cleanRepository() throws XmlRpcException, IOException, InstanceRepositoryException {
+  public void cleanRepository() throws Exception {
     WorkflowInstancePage page = wm != null ? wm.getFirstPage() : rep
         .getFirstPage();
     while (page != null && page.getPageWorkflows() != null

@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.system;
 
 //APACHE imports
 
-import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
@@ -414,7 +413,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
 
     }
 
-    public List getWorkflows() throws XmlRpcException, IOException, RepositoryException {
+    public Vector getWorkflows() throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         Vector works;
         Vector workflows;
@@ -463,7 +462,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
         return numInsts;
     }
 
-    public List getWorkflowInstancesByStatus(String status) throws XmlRpcException, IOException {
+    public Vector getWorkflowInstancesByStatus(String status) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(status);
         Vector insts;
@@ -487,7 +486,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
 
     }
 
-    public List getWorkflowInstances() throws XmlRpcException, IOException {
+    public Vector getWorkflowInstances() throws XmlRpcException, IOException {
         Vector argList = new Vector();
         Vector insts;
         Vector instsUnpacked;

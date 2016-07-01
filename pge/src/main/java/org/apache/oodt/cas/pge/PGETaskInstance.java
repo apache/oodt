@@ -139,7 +139,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected void updateStatus(String status) throws PGEException, XmlRpcException, IOException {
+   protected void updateStatus(String status) throws Exception {
       logger.info("Updating status to workflow as [" + status + "]");
       if (!wm.updateWorkflowInstanceStatus(workflowInstId, status)) {
          throw new PGEException(
@@ -250,7 +250,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             pgeConfig.getPropertyAdderCustomArgs());
    }
 
-   protected XmlRpcWorkflowManagerClient createWorkflowManagerClient()
+   protected WorkflowManagerClient createWorkflowManagerClient()
        throws MalformedURLException {
       String url = pgeMetadata.getMetadata(WORKFLOW_MANAGER_URL);
       logger.info("Creating WorkflowManager client for url [" + url + "]");
@@ -394,7 +394,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return pgeScriptName;
    }
 
-   protected void runPge() throws PGEException, XmlRpcException {
+   protected void runPge() throws Exception {
       ScriptFile sf = null;
       try {
          long startTime = System.currentTimeMillis();
@@ -532,7 +532,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return crawler;
    }
 
-   protected void runIngestCrawler(ProductCrawler crawler) throws PGEException, IOException, XmlRpcException {
+   protected void runIngestCrawler(ProductCrawler crawler) throws Exception {
       // Determine if we need to create Metadata files
 	   if (crawler instanceof StdProductCrawler){
 		   this.processOutput();
@@ -584,7 +584,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected void updateDynamicMetadata() throws XmlRpcException, IOException {
+   protected void updateDynamicMetadata() throws Exception {
       pgeMetadata.commitMarkedDynamicMetadataKeys();
       wm.updateMetadataForWorkflow(workflowInstId,
             pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));

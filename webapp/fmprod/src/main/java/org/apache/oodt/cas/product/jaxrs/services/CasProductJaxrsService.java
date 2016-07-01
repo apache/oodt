@@ -22,6 +22,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
 import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
@@ -351,7 +352,7 @@ public class CasProductJaxrsService
    * @throws Exception if an object cannot be retrieved from the context
    * attribute
    */
-  public XmlRpcFileManagerClient getContextClient()
+  public FileManagerClient getContextClient()
       throws CasProductException {
     // Get the file manager client from the servlet context.
     Object clientObject = context.getAttribute("client");
