@@ -48,6 +48,14 @@ public final class EnvUtilities {
     private EnvUtilities() throws InstantiationException {
         throw new InstantiationException("Don't construct utility classes!");
     }
+    
+    private final static Properties environment = new Properties();
+    static{
+     System.getenv().entrySet();
+      for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
+        environment.setProperty(entry.getKey(), entry.getValue());
+      }
+    }
 
     /**
      * This method returns a particular named environment variable from the user's
@@ -57,7 +65,7 @@ public final class EnvUtilities {
      * @return The environment variable value, as a String.
      */
     public static String getEnv(String envVarName) {
-        return System.getenv(envVarName);
+        return environment.getProperty(envVarName);
     }
 
     /**
@@ -67,11 +75,7 @@ public final class EnvUtilities {
      * @return The user's current environment, in a {@link Properties} object.
      */
     public static Properties getEnv() {
-        Properties envProps = new Properties();
-        for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-            envProps.setProperty(entry.getKey(), entry.getValue());
-        }
-        return envProps;
+        return environment;
     }
 
     /**

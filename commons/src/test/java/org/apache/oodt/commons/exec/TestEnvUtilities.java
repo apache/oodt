@@ -124,4 +124,13 @@ public class TestEnvUtilities extends TestCase {
             assertEquals(userNameTest1,userNameTest2);
         }
     }
+    
+    public void testStaticEnvironment(){
+      if(SystemUtils.IS_OS_UNIX){
+        Properties env = EnvUtilities.getEnv();
+        Properties env2 = EnvUtilities.getEnv();
+        
+        assertEquals(env, env2);
+      }
+    }
 }
