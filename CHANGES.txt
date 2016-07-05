@@ -1,6 +1,13 @@
 Apache OODT Change Log
 ======================
-Release 0.13 - 06/21/2016
+
+Release 1.1 - Current Development
+
+* OODT-929 EnvUtilities should only load environment variables one time and 
+  statically cache them (mattmann)
+
+
+Release 1.0 - 06/21/2016
 
 * OODT-925 - Update schema.xml field defs for SOLR 5.x
 * OODT-926 - Fix pom versioning
