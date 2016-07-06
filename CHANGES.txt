@@ -3,6 +3,9 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-931 CAS Crawler and metadata preconditions should say what preconditions 
+  failed (mattmann)
+
 * OODT-932 OODT-Core forces javadoc to run and fails on linting - it shouldn't 
   do that (mattmann)
 
