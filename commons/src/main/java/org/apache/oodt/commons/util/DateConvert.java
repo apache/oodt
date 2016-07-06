@@ -107,7 +107,7 @@ public class DateConvert {
 		// onto the formatted date/time string.
 		TimeZone tz = dateFormat.getTimeZone();
 		String tzName = tz.getDisplayName();
-		if (tzName.equals("Greenwich Mean Time")) {
+		if (tzName.equals("Greenwich Mean Time") && !TimeZone.getDefault().inDaylightTime( inputDate )) {
 			dateString = dateString.concat("Z");
 		}
 		else {
