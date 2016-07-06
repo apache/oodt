@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.metadata.extractors.examples;
 
-//JDK imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -29,10 +28,6 @@ import org.junit.runners.JUnit4;
 import java.net.URL;
 
 import static junit.framework.Assert.*;
-
-//Junit imports
-// JUnit static imports
-//OODT imports
 
 
 @RunWith(JUnit4.class)

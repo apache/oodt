@@ -52,10 +52,6 @@ import opendap.dap.DGrid;
 
 import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.*;
 
-//JDK imports
-//OPENDAP imports
-//OODT imports
-
 /**
  * 
  * Static methods for unraveling and generating {@link ProfileElement}s,
