@@ -99,6 +99,7 @@ public class TestAvroRpcWorkflowManager extends TestCase {
         System.setProperty("java.util.logging.config.file", new File(
                 "./src/main/resources/logging.properties").getAbsolutePath());
 
+        System.setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath", System.getProperty("java.io.tmpdir")+"/repo");
         try {
             FileInputStream fileInputStream = new FileInputStream(ulr.getPath());
             System.getProperties().load(
