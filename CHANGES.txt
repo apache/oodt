@@ -3,6 +3,9 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-932 OODT-Core forces javadoc to run and fails on linting - it shouldn't 
+  do that (mattmann)
+
 * OODT-929 EnvUtilities should only load environment variables one time and 
   statically cache them (mattmann)
 
