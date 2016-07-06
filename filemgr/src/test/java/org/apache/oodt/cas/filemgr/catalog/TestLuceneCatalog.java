@@ -73,7 +73,7 @@ public class TestLuceneCatalog extends TestCase {
         // set the log levels
         URL loggingPropertiesUrl = this.getClass().getResource(
             "/test.logging.properties");
-        properties.setProperty("java.util.logging.config.file", new File(
+        System.setProperty("java.util.logging.config.file", new File(
             loggingPropertiesUrl.getFile()).getAbsolutePath());
 
         // first load the example configuration
@@ -107,35 +107,35 @@ public class TestLuceneCatalog extends TestCase {
         tmpDirPath += "testCat/";
 
         // now override the catalog ones
-        properties.setProperty(
+        System.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 tmpDirPath);
 
-        properties.setProperty(
+        System.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", "20");
 
-        properties.setProperty(
+        System.setProperty(
                         "org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
                         "60");
 
-        properties.setProperty(
+        System.setProperty(
                         "org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
                         "60");
 
-        properties.setProperty(
+        System.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor",
                 "20");
 
-        properties.setProperty(
+        System.setProperty(
             "org.apache.oodt.cas.filemgr.catalog.datasource.lenientFields",
             "false");
         // now override the val layer ones
         URL examplesCoreUrl = this.getClass().getResource(
             "/examples/core");
-        properties.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
             "file://" + new File(examplesCoreUrl.getFile()).getAbsolutePath());
 
-        System.setProperties(properties);
+        //System.setProperties(properties);
     }
 
     /*
@@ -173,7 +173,7 @@ public class TestLuceneCatalog extends TestCase {
             }
         }
 
-        System.setProperties(initialProperties);
+      //  System.setProperties(initialProperties);
     }
     
     /**
@@ -993,6 +993,9 @@ public class TestLuceneCatalog extends TestCase {
     public void testNullIndexPath(){
         System.clearProperty("org.apache.oodt.cas.filemgr.catalog.lucene.idxPath");
         Properties sysProps = System.getProperties();
+        sysProps.remove("org.apache.oodt.cas.filemgr.catalog.lucene.idxPath");
+
+
 
         try{
             LuceneCatalogFactory fact = new LuceneCatalogFactory();
