@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 public class TestAvroRpcWorkflowManager extends TestCase {
 
-    private static final int WM_PORT = 50002;
+    private static final int WM_PORT = 65527;
 
     private AvroRpcWorkflowManager wmgr;
 

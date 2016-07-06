@@ -94,6 +94,9 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
         engine = getWorkflowEngineFromProperty();
         LOG.log(Level.INFO, "Setting workflow engine url:"+safeGetUrlFromString("http://"
                 + getHostname() + ":" + this.webServerPort).toString());
+        if(engine == null){
+            throw new NullPointerException("null engine");
+        }
         engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
                 + getHostname() + ":" + this.webServerPort));
         repo = getWorkflowRepositoryFromProperty();
