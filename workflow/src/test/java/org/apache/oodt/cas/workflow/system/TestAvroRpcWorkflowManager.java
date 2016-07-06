@@ -103,7 +103,6 @@ public class TestAvroRpcWorkflowManager extends TestCase {
             FileInputStream fileInputStream = new FileInputStream(ulr.getPath());
             System.getProperties().load(
                     fileInputStream);
-            System.setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath", System.getProperty("java.io.tmpdir")+"/repo");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,6 +155,4 @@ public class TestAvroRpcWorkflowManager extends TestCase {
         }
 
     }
-
-
 }

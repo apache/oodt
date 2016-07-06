@@ -86,18 +86,24 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
     }
 
     public AvroRpcWorkflowManager(int port){
+        LOG.log(Level.INFO, "Starting workflow manager on port: "+port+" as "
+                + System.getProperty("user.name", "unknown"));
         Preconditions.checkArgument(port > 0, "Must specify a port greater than 0");
         webServerPort = port;
-
+        LOG.log(Level.INFO, "Getting workflow engine");
         engine = getWorkflowEngineFromProperty();
+        LOG.log(Level.INFO, "Setting workflow engine url:"+safeGetUrlFromString("http://"
+                + getHostname() + ":" + this.webServerPort).toString());
         engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
                 + getHostname() + ":" + this.webServerPort));
         repo = getWorkflowRepositoryFromProperty();
 
+        LOG.log(Level.INFO, "Starting Netty Server");
         // start up the server
         server = new NettyServer(new SpecificResponder(
                 org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class,this),
                 new InetSocketAddress(this.webServerPort));
+        LOG.log(Level.INFO, "GOOOOO!");
         server.start();
         LOG.log(Level.INFO, "Workflow Manager started by "
                 + System.getProperty("user.name", "unknown"));
