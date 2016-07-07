@@ -197,7 +197,7 @@ the License.
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.4</version>
         <configuration>
-          <forkMode>pertest</forkMode>
+          <forkMode>never</forkMode>
           <useSystemClassLoader>false</useSystemClassLoader>
           <systemProperties>
             <property>
