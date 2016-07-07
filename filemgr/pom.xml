@@ -213,7 +213,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!--forkMode>pertest</forkMode-->
-          <forkMode>none</forkMode>
+          <forkMode>pertest</forkMode>
           <!-- so we can DEBUG -->
           <argLine>-enableassertions</argLine>
           <useSystemClassLoader>false</useSystemClassLoader>
