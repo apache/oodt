@@ -78,14 +78,15 @@ public class CASAnalyzer extends Analyzer {
     }
     /** Builds an analyzer with the given stop words. */
     public CASAnalyzer(CharArraySet stopWords) {
-        //stopSet = StopFilter.makeStopSet(stopWords);
+        stopSet = StopFilter.makeStopSet(stopWords.toArray(new String[stopWords.size()]));
+
     }
 
     /**
      * Constructs a {@link org.apache.lucene.analysis.standard.StandardTokenizer} filtered by a {@link
      * StandardFilter}, a {@link LowerCaseFilter} and a {@link StopFilter}.
      */
-    /*public TokenStream tokenStream(String fieldName, Reader reader) {
+    /*4public TokenStream tokenStream(String fieldName, Reader reader) {
         TokenStream result = new WhitespaceTokenizer(reader);
         result = new StandardFilter(result);
         result = new StopFilter(result, stopSet);
