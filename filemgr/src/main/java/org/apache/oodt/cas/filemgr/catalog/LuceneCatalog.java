@@ -1179,22 +1179,22 @@ public class LuceneCatalog implements Catalog {
         doc.add(new Field("product_id", product.getProductId(),
                 StringField.TYPE_STORED));
         doc.add(new Field("product_name", product.getProductName(),
-                TextField.TYPE_STORED));
+                StringField.TYPE_STORED));
         doc.add(new Field("product_structure", product.getProductStructure(),
-                TextField.TYPE_STORED));
+                StringField.TYPE_STORED));
         doc
                 .add(new Field("product_transfer_status", product
-                        .getTransferStatus(), TextField.TYPE_STORED));
+                        .getTransferStatus(), StringField.TYPE_STORED));
 
         // product type
         doc
                 .add(new Field("product_type_id", product.getProductType()
                         .getProductTypeId(), StringField.TYPE_STORED));
         doc.add(new Field("product_type_name", product.getProductType()
-                .getName(), TextField.TYPE_STORED));
+                .getName(), StringField.TYPE_STORED));
         doc.add(new Field("product_type_desc", product.getProductType()
                 .getDescription() != null ? product.getProductType()
-                .getDescription() : "", TextField.TYPE_STORED));
+                .getDescription() : "", StringField.TYPE_STORED));
         doc.add(new Field("product_type_repoPath", product.getProductType()
                 .getProductRepositoryPath() != null ? product.getProductType()
                 .getProductRepositoryPath() : "", StringField.TYPE_STORED));
@@ -1260,7 +1260,7 @@ public class LuceneCatalog implements Catalog {
 
         // add special field for all products
         // then can use that field to retrieve back all products
-        doc.add(new Field("myfield", "myvalue", TextField.TYPE_STORED));
+        doc.add(new Field("myfield", "myvalue", StringField.TYPE_STORED));
 
         return doc;
     }
