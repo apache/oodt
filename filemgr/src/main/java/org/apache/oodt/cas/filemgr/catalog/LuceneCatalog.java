@@ -447,7 +447,8 @@ public class LuceneCatalog implements Catalog {
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
                     SortField.Type.STRING, true));
             //TODO FIX NUMBER OF RECORDS
-            TopDocs topDocs = searcher.search(query, 1, sort);
+            TopDocs check = searcher.search(query, 1, sort);
+            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
 
             ScoreDoc[] hits = topDocs.scoreDocs;
 
@@ -519,7 +520,8 @@ public class LuceneCatalog implements Catalog {
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
                     SortField.Type.STRING, true));
             //TODO FIX NUMBER OF RECORDS
-            TopDocs topDocs = searcher.search(query, 1, sort);
+            TopDocs check = searcher.search(query, 1, sort);
+            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
 
             ScoreDoc[] hits = topDocs.scoreDocs;
 
@@ -584,7 +586,8 @@ public class LuceneCatalog implements Catalog {
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
                     SortField.Type.STRING, true));
             //TODO FIX NUMBER OF RECORDS
-            TopDocs topDocs = searcher.search(query, 1, sort);
+            TopDocs check = searcher.search(query, 1, sort);
+            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
 
             ScoreDoc[] hits = topDocs.scoreDocs;
 
@@ -728,7 +731,8 @@ public class LuceneCatalog implements Catalog {
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
             //TODO FIX NUMBER OF RECORDS
-            TopDocs topDocs = searcher.search(booleanQuery.build(), 1, sort);
+            TopDocs check = searcher.search(booleanQuery.build(), 1, sort);
+            TopDocs topDocs = searcher.search(booleanQuery.build(), check.totalHits, sort);
 
             ScoreDoc[] hits = topDocs.scoreDocs;
 
@@ -1369,8 +1373,9 @@ public class LuceneCatalog implements Catalog {
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
             //TODO FIX NUMBER OF RECORDS
-            TopDocs topDocs = searcher.search(booleanQuery.build(),1, sort);
-            
+            TopDocs check = searcher.search(booleanQuery.build(),1, sort);
+            TopDocs topDocs = searcher.search(booleanQuery.build(),check.totalHits, sort);
+
             // Calculate page size and set it while we have the results
             if (page != null) {
             	page.setTotalPages(PaginationUtils.getTotalPage(topDocs.totalHits, pageSize));
