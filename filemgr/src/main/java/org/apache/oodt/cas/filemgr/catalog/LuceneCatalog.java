@@ -448,20 +448,25 @@ public class LuceneCatalog implements Catalog {
                     SortField.Type.STRING, true));
             //TODO FIX NUMBER OF RECORDS
             TopDocs check = searcher.search(query, 1, sort);
-            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
+            if(check.totalHits>0) {
+                TopDocs topDocs = searcher.search(query, check.totalHits, sort);
 
-            ScoreDoc[] hits = topDocs.scoreDocs;
+                ScoreDoc[] hits = topDocs.scoreDocs;
 
-            // should be > 0 hits
-            if (hits.length > 0) {
-                // just get the first hit back
-                Document productDoc = searcher.doc(hits[0].doc);
-                CompleteProduct prod = toCompleteProduct(productDoc, getRefs,
-                        false);
-                return prod.getProduct();
-            } else {
-                LOG.log(Level.FINEST, "Request for product by name: ["
-                        + productName + "] returned no results");
+                // should be > 0 hits
+                if (hits.length > 0) {
+                    // just get the first hit back
+                    Document productDoc = searcher.doc(hits[0].doc);
+                    CompleteProduct prod = toCompleteProduct(productDoc, getRefs,
+                            false);
+                    return prod.getProduct();
+                } else {
+                    LOG.log(Level.FINEST, "Request for product by name: ["
+                            + productName + "] returned no results");
+                    return null;
+                }
+            }
+            else{
                 return null;
             }
 
@@ -732,22 +737,27 @@ public class LuceneCatalog implements Catalog {
                     + "]");
             //TODO FIX NUMBER OF RECORDS
             TopDocs check = searcher.search(booleanQuery.build(), 1, sort);
-            TopDocs topDocs = searcher.search(booleanQuery.build(), check.totalHits, sort);
+            if(check.totalHits>0) {
+                TopDocs topDocs = searcher.search(booleanQuery.build(), check.totalHits, sort);
 
-            ScoreDoc[] hits = topDocs.scoreDocs;
+                ScoreDoc[] hits = topDocs.scoreDocs;
 
-            if (hits.length > 0) {
-                products = new Vector<Product>(n);
-                int i = 0;
-                while (products.size() < Math.min(n, hits.length)) {
-                    Document productDoc = searcher.doc(hits[i].doc);
-                    CompleteProduct prod = toCompleteProduct(productDoc, false,
-                            false);
-                    products.add(prod.getProduct());
-                    i++;
+                if (hits.length > 0) {
+                    products = new Vector<Product>(n);
+                    int i = 0;
+                    while (products.size() < Math.min(n, hits.length)) {
+                        Document productDoc = searcher.doc(hits[i].doc);
+                        CompleteProduct prod = toCompleteProduct(productDoc, false,
+                                false);
+                        products.add(prod.getProduct());
+                        i++;
+                    }
+                } else {
+                    LOG.log(Level.WARNING, "Top N query produced no products!");
                 }
-            } else {
-                LOG.log(Level.WARNING, "Top N query produced no products!");
+            }
+            else{
+                return null;
             }
 
         } catch (IOException e) {
@@ -1468,13 +1478,9 @@ public class LuceneCatalog implements Catalog {
             String startVal = ((RangeQueryCriteria) queryCriteria).getStartValue();
             String endVal = ((RangeQueryCriteria) queryCriteria).getEndValue();
             boolean inclusive = ((RangeQueryCriteria) queryCriteria).getInclusive();
-            Term startTerm = null, endTerm = null;
+            Term startTerm = null;
             if (!startVal.equals("")) {
                 startTerm = new Term(queryCriteria.getElementName(), startVal);
-            }
-
-            if (!endVal.equals("")) {
-                endTerm = new Term(queryCriteria.getElementName(), endVal);
             }
 
             return TermRangeQuery.newStringRange(startTerm.field(), startVal, endVal, inclusive,inclusive);
