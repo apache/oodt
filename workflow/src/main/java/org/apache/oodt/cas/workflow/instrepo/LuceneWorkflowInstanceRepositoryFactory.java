@@ -20,14 +20,17 @@ package org.apache.oodt.cas.workflow.instrepo;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 //OODT imports
+import org.apache.lucene.index.*;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.IndexWriter;
 
 /**
  * @author mattmann
@@ -72,12 +75,22 @@ public class LuceneWorkflowInstanceRepositoryFactory implements
      * @see org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepositoryFactory#createInstanceRepository()
      */
     public WorkflowInstanceRepository createInstanceRepository() {
-	    File indexDir = new File(indexFilePath);
+		Directory indexDir = null;
+		try {
+			indexDir = FSDirectory.open(new File( indexFilePath ).toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	    // Create the index if it does not already exist
 	    IndexWriter writer = null;
-	    if (!indexDir.exists()) {
-	        try { 
-	            writer = new IndexWriter(indexDir, new StandardAnalyzer(), true);
+		try {
+				IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+
+				config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+				LogMergePolicy lmp =new LogDocMergePolicy();
+				config.setMergePolicy(lmp);
+
+				writer = new IndexWriter(indexDir, config);
 	        } catch (Exception e) {
 	            LOG.severe("Unable to create index: " + e.getMessage());
 	        } finally {
@@ -89,7 +102,7 @@ public class LuceneWorkflowInstanceRepositoryFactory implements
 	                }
 	            }
 	        }
-	    }
+
         return new LuceneWorkflowInstanceRepository(indexFilePath, pageSize);
     }
 
