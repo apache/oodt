@@ -130,6 +130,10 @@ the License.
       <artifactId>lucene-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-cli</artifactId>
     </dependency>
@@ -197,7 +201,7 @@ the License.
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.4</version>
         <configuration>
-          <forkMode>never</forkMode>
+          <forkMode>pertest</forkMode>
           <useSystemClassLoader>false</useSystemClassLoader>
           <systemProperties>
             <property>
