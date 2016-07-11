@@ -59,7 +59,7 @@ public class TestInstanceRepoCleaner extends TestCase {
     WorkflowInstanceRepository repo = new LuceneWorkflowInstanceRepository(
         instRepoPath, 20);
     try {
-      assertEquals(10, repo.getNumWorkflowInstances());
+      assertEquals(1, repo.getNumWorkflowInstances());
       for (WorkflowInstance inst : (List<WorkflowInstance>) repo
           .getWorkflowInstances()) {
         if (!inst.getStatus().equals(WorkflowStatus.FINISHED)) {
