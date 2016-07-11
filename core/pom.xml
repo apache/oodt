@@ -65,7 +65,7 @@ the License.
       <dependency>
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-solrj</artifactId>
-        <version>6.1.0</version>
+        <version>1.3.0</version>
       </dependency>
       <dependency>
         <groupId>com.amazonaws</groupId>
