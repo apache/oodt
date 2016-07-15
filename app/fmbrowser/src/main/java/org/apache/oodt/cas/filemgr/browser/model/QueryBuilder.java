@@ -18,17 +18,15 @@
 package org.apache.oodt.cas.filemgr.browser.model;
 
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.*;
+import org.apache.lucene.util.BytesRef;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.tools.CASAnalyzer;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +47,7 @@ public class QueryBuilder {
 
     try {
       luceneQ = parser.parse(query);
-    } catch (org.apache.lucene.queryParser.ParseException e) {
+    } catch (org.apache.lucene.queryparser.classic.ParseException e) {
       // TODO Auto-generated catch block
       LOG.log(Level.SEVERE, e.getMessage());
     }
@@ -81,17 +79,17 @@ public class QueryBuilder {
           }
         }
       }
-    } else if (luceneQ instanceof RangeQuery) {
-      Term startT = ((RangeQuery) luceneQ).getLowerTerm();
-      Term endT = ((RangeQuery) luceneQ).getUpperTerm();
-      String element = database.getElementID(startT.field());
-      if (!element.equals("") && !startT.text().equals("")
-          && !endT.text().equals("")) {
-        casQ.addCriterion(new RangeQueryCriteria(element, startT.text(), endT
-            .text()));
+    } else if (luceneQ instanceof TermRangeQuery) {
+      BytesRef startT = ((TermRangeQuery) luceneQ).getLowerTerm();
+      BytesRef endT = ((TermRangeQuery) luceneQ).getUpperTerm();
+      String element = database.getElementID(((TermRangeQuery) luceneQ).getField());
+      if (!element.equals("") && !startT.utf8ToString().equals("")
+          && !endT.utf8ToString().equals("")) {
+        casQ.addCriterion(new RangeQueryCriteria(element, startT.utf8ToString(), endT
+            .utf8ToString()));
       }
     } else if (luceneQ instanceof BooleanQuery) {
-      BooleanClause[] clauses = ((BooleanQuery) luceneQ).getClauses();
+      List<BooleanClause> clauses = ((BooleanQuery) luceneQ).clauses();
       for (BooleanClause clause : clauses) {
         GenerateCASQuery(casQ, (clause).getQuery());
       }

@@ -19,6 +19,7 @@ package org.apache.oodt.cas.crawl.action;
 
 // JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -27,6 +28,7 @@ import java.util.logging.Level;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.filemgr.tools.SolrIndexer;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.solr.client.solrj.SolrServerException;
 
 /**
  * Crawler action that ingests the product metadata into the configured Solr index.
@@ -49,17 +51,25 @@ public class SolrIndexingAction extends CrawlerAction {
 	@Override
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 		
-		try {
+		//try {
 			
 			String productName = productMetadata.getMetadata("ProductName");
 			LOG.log(Level.INFO, "Indexing product: "+productName+ " from File Manager catalog: "+fileManagerUrl+" into Solr index: "+solrUrl);
+		try {
 			solrIndexer.indexProductByName(productName, true); // delete=true
-			solrIndexer.commit(); // must commit:w
-			return true; // success
-			
-		} catch(Exception e) {
+		} catch (SolrServerException e) {
 			throw new CrawlerActionException(e);
 		}
+		try {
+			solrIndexer.commit(); // must commit:w
+		} catch (SolrServerException | IOException e) {
+			throw new CrawlerActionException(e);
+		}
+		return true; // success
+			
+		/*} catch(Exception e) {
+			throw new CrawlerActionException(e);
+		}*/
 		
 	}
 	

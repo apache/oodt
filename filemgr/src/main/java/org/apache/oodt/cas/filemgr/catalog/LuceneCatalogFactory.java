@@ -19,9 +19,15 @@ package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 //OODT imports
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
@@ -47,6 +53,7 @@ public class LuceneCatalogFactory implements CatalogFactory {
   public static final int VAL3 = 20;
   /* path to the index directory for lucene catalogs */
 	private String indexFilePath = null;
+	private IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
 
 	/* our validation layer */
 	private ValidationLayer validationLayer = null;
@@ -119,9 +126,16 @@ public class LuceneCatalogFactory implements CatalogFactory {
 	    File indexDir = new File(indexFilePath);
 	    // Create the index if it does not already exist
 	    IndexWriter writer = null;
+		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 	    if (!indexDir.exists()) {
-	        try { 
-	            writer = new IndexWriter(indexDir, new StandardAnalyzer(), true);
+	        try {
+				try {
+					Directory indexDir2 = FSDirectory.open(new File( indexFilePath ).toPath());
+					writer = new IndexWriter(indexDir2, config);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 	        } catch (Exception e) {
 	            LOG.severe("Unable to create index: " + e.getMessage());
 	        } finally {

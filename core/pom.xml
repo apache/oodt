@@ -63,6 +63,11 @@ the License.
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>1.3.0</version>
+      </dependency>
+      <dependency>
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk</artifactId>
         <version>1.7.4</version>
@@ -275,8 +280,20 @@ the License.
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
-        <version>2.0.0</version>
+        <version>6.1.0</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>6.1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
+        <version>6.1.0</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>cas-cli</artifactId>
@@ -377,11 +394,6 @@ the License.
       <dependency>
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-core</artifactId>
-        <version>1.3.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-solrj</artifactId>
         <version>1.3.0</version>
       </dependency>
       <dependency>
