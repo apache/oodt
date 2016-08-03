@@ -979,7 +979,7 @@ public class LuceneCatalog implements Catalog {
         try {
             writer = new IndexWriter(indexFilePath, new StandardAnalyzer(),
                     createIndex);
-            writer.setCommitLockTimeout(this.commitLockTimeout * 1000);
+            //writer.setCommitLockTimeout(this.commitLockTimeout * 1000);
             writer.setWriteLockTimeout(this.writeLockTimeout * 1000);
             writer.setMergeFactor(this.mergeFactor);
 
