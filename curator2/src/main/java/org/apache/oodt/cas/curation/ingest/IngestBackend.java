@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.curation.configuration.Configuration;
 import org.apache.oodt.cas.curation.ingest.InputStruct.InputEntry;
 import org.apache.oodt.cas.curation.metadata.FlatDirMetadataHandler;
@@ -89,6 +90,13 @@ public class IngestBackend {
             //Remove metadata file after successful ingest
             handler.remove(file,user);
             org.apache.commons.io.FileUtils.deleteQuietly(full);
+            File p = full.getParentFile();
+            if(p.exists() && p.isDirectory()){
+                if(p.list().length==0){
+                    FileUtils.deleteDirectory(p);
+                }
+
+            }
         } catch(Exception e) {
             LOG.log(Level.WARNING,"Error: failed ingesting product: "+e);
             throw new IngestException("Error: problem while ingesting",e);
