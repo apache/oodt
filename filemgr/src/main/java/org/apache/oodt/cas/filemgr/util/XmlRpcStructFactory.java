@@ -605,7 +605,7 @@ public final class XmlRpcStructFactory {
   }
 
   public static Map<String, Object> getXmlRpcElement(Element element) {
-    Map<String, Object> elementHash = new HashMap<String, Object>();
+    Map<String, Object> elementHash = new Hashtable<>();
 
     elementHash.put("id", element.getElementId());
     elementHash.put("name", element.getElementName());

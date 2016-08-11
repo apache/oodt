@@ -173,7 +173,15 @@ public class LuceneCatalog implements Catalog {
                 CompleteProduct p = getCompleteProductById(product.getProductId(), true, true);
                 LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
                 removeProduct(product);
+            if (hasMetadataAndRefs(p)) {
+                LOG.log(Level.FINE,
+                        "metadata and references present for product: ["
+                                + product.getProductId() + "]");
+                p.setMetadata(m);
 
+                addCompleteProductToIndex(p);
+                // now remove its entry from the cache
+            }
         }
     }
 
