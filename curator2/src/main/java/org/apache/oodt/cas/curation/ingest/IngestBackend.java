@@ -90,12 +90,20 @@ public class IngestBackend {
             //Remove metadata file after successful ingest
             handler.remove(file,user);
             org.apache.commons.io.FileUtils.deleteQuietly(full);
+            LOG.log(Level.FINE,"Checking if directory can be removed:"+full.getParent());
             File p = full.getParentFile();
+            String test = Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG).trim();
+
+            if(test.endsWith("/")){
+                test=test.substring(0, test.length()-1);;
+            }
+            while(p!=null && !p.getAbsolutePath().equals(test))
             if(p.exists() && p.isDirectory()){
+
                 if(p.list().length==0){
                     FileUtils.deleteDirectory(p);
                 }
-
+                p = p.getParentFile();
             }
         } catch(Exception e) {
             LOG.log(Level.WARNING,"Error: failed ingesting product: "+e);
