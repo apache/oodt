@@ -2,8 +2,8 @@
  * A controller mechanism for the tree view
  * @author starchmd
  */
-define(["jquery"],
-    function($) {
+define(["jquery", "js-new/utils/EventBus"],
+    function($, EventBus) {
         /**
          * 
          */
@@ -21,5 +21,9 @@ define(["jquery"],
                 };
            
             _self.tree.setUpdate(_self.onupdate);
+
+            EventBus.events.bind('ingest:execute', function(){
+                _self.tree.refresh_tree();
+            });
         }
 });
