@@ -79,9 +79,11 @@ import java.util.logging.Logger;
  * @author mattmann
  * @author bfoster
  * @version $Revision$
+ * @deprecated replaced by avro-rpc
  *          <p/>
  *          <p> An XML RPC-based File manager. </p>
  */
+@Deprecated
 public class XmlRpcFileManager {
 
   /* the port to run the XML RPC web server on, default is 1999 */

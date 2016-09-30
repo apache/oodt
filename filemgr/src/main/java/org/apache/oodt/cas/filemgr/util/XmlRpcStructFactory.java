@@ -54,6 +54,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *          <p> A factory class for creating File Manager structures suitable for transfer over the XML-RPC pipe, and
  *          for reading objects from the XML-RPC pipe into File Manager structs. </p>
  */
+@Deprecated
 public final class XmlRpcStructFactory {
 
   private XmlRpcStructFactory() throws InstantiationException {

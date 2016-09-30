@@ -48,12 +48,13 @@ import java.util.logging.Logger;
 /**
  * @author mattmann
  * @version $Revision$
- * 
+ * @deprecated soon be replaced by avro-rpc
  * <p>
  * The XML RPC based resource manager client.
  * </p>
  * 
  */
+@Deprecated
 public class XmlRpcResourceManagerClient {
 
     public static final int VAL = 20;

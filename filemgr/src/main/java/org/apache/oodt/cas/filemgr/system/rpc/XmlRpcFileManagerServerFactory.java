@@ -23,6 +23,7 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerServer;
 /**
  * Created by radu on 7/11/15.
  */
+@Deprecated
 public class XmlRpcFileManagerServerFactory implements FileManagerServerFactory {
 
     private int port;

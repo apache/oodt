@@ -56,7 +56,9 @@ import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.get
  *
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
+ * @deprecated replaced by avro-rpc
  */
+@Deprecated
 public class XmlRpcWorkflowManager implements WorkflowManager {
 
   private static final Logger LOG = Logger.getLogger(XmlRpcWorkflowManager.class.getName());

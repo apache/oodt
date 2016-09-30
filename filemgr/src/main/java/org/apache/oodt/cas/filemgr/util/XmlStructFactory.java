@@ -58,6 +58,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * </p>
  * 
  */
+@Deprecated
 public final class XmlStructFactory {
 
     /* our log stream */

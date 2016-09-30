@@ -45,12 +45,13 @@ import java.util.logging.Logger;
 /**
  * @author mattmann
  * @version $Revision$
- * 
+ * @deprecated replaced by avro-rpc
  * <p>
  * The XML RPC based workflow manager client.
  * </p>
  * 
  */
+@Deprecated
 public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
 
     /* our xml rpc client */

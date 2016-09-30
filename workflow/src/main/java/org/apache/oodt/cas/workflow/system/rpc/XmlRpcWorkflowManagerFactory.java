@@ -24,6 +24,10 @@ import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
 import java.net.URL;
 
+/**
+ * @deprecated replaced by avro-rpc
+ */
+@Deprecated
 public class XmlRpcWorkflowManagerFactory implements WorkflowManagerFactory {
 
     private int port;

@@ -48,11 +48,13 @@ import java.util.Vector;
 /**
  * @author bfoster
  * @version $Revision$
+ * @deprecated replaced by avro-rpc
  *
  * <p>
  * A Communication Channel Client over XML-RPC
  * <p>
  */
+@Deprecated
 public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChannelClient {
 
   public static final int INT = 60;

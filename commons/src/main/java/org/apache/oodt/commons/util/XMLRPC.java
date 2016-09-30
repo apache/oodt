@@ -40,7 +40,9 @@ import java.util.Map;
  * This class provides several XML-RPC utilities.
  *
  * @author Kelly
+ * @deprecated soon be replaced by avro-rpc
  */
+@Deprecated
 public class XMLRPC {
 	/** Build an XML-RPC method call.
 	 *

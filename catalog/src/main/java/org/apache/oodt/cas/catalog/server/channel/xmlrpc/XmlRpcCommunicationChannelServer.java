@@ -42,11 +42,12 @@ import java.util.Set;
 /**
  * @author bfoster
  * @version $Revision$
- *
+ * @deprecated replaced by avro-rpc
  * <p>
  * A Communication Channel Server over XML-RPC
  * <p>
  */
+@Deprecated
 public class XmlRpcCommunicationChannelServer extends
 		AbstractCommunicationChannelServer {
 

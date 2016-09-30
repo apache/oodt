@@ -33,11 +33,12 @@ import org.springframework.beans.factory.annotation.Required;
 /**
  * @author bfoster
  * @version $Revision$
- *
+ * @deprecated replaced by avro-rpc
  * <p>
  * A Factory for creating XmlRpcCommunicationChannelServer
  * <p>
  */
+@Deprecated
 public class XmlRpcCommunicationChannelServerFactory implements
 		CommunicationChannelServerFactory {
 	

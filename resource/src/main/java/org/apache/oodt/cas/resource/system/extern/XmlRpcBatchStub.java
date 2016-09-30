@@ -41,12 +41,13 @@ import java.util.logging.Logger;
 /**
  * @author woollard
  * @version $Revision$
- *
+ * @deprecated soon be replaced by avro-rpc
  * <p>
  * An XML RPC-based Batch Submission System.
  * </p>
  *
  */
+@Deprecated
 public class XmlRpcBatchStub {
 
     /* the port to run the XML RPC web server on, default is 2000 */

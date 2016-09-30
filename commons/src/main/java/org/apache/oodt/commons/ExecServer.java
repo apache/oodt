@@ -55,7 +55,9 @@ import javax.naming.NamingException;
  * This is an executable class that starts a JPL EDA server.
  *
  * @author Kelly
+ * @deprecated soon be replaced by avro-rpc
  */
+@Deprecated
 public class ExecServer {
 
   public static final int MILLIS = 15000;
