@@ -21,10 +21,12 @@ package org.apache.oodt.cas.filemgr.datatransfer;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
@@ -40,8 +42,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-//JDK imports
 
 /**
  * @author mattmann
@@ -381,8 +381,8 @@ public class LocalDataTransferer implements DataTransfer {
      }
    }
 
-   private void moveFile(Reference r, boolean log) throws IOException,
-         URISyntaxException {
+   private void moveFile(Reference r, boolean log, Product product) throws IOException,
+           URISyntaxException, CatalogException {
       if (log) {
          LOG.log(Level.INFO,
                "LocalDataTransfer: Moving File: " + r.getOrigReference()
@@ -391,7 +391,26 @@ public class LocalDataTransferer implements DataTransfer {
       File srcFileRef = new File(new URI(r.getOrigReference()));
       File destFileRef = new File(new URI(r.getDataStoreReference()));
 
-      FileUtils.copyFile(srcFileRef, destFileRef);
+       boolean move = Boolean.getBoolean("org.apache.oodt.cas.filemgr.datatransferer.local.move");
+       if(move){
+           if (client == null) {
+               LOG.log(Level.WARNING,
+                       "File Manager service not defined: this move will not be tracked");
+               return;
+           }
+           else{
+               Metadata metadata = client.getMetadata(product);
+               metadata.addMetadata("Original Location", r.getOrigReference());
+               client.addMetadata(product, metadata);
+           }
+
+           FileUtils.moveFile(srcFileRef, destFileRef);
+
+       }
+       else{
+           FileUtils.copyFile(srcFileRef, destFileRef);
+       }
+
    }
 
    private void copyFile(Reference r, File directory) throws IOException,
