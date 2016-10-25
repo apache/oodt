@@ -111,6 +111,8 @@ public class LocalDataTransferer implements DataTransfer {
                               .getOrigReference() + ": Message: "
                         + e.getMessage());
             throw new DataTransferException(e);
+         } catch (CatalogException e) {
+             LOG.log(Level.WARNING, "Unable to read metadata: "+ e.getLocalizedMessage());
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
          try {
@@ -121,6 +123,8 @@ public class LocalDataTransferer implements DataTransfer {
                   "URI Syntax Exception when moving files: Message: "
                         + e.getMessage());
             throw new DataTransferException(e);
+         } catch (CatalogException e) {
+             LOG.log(Level.WARNING, "Unable to read metadata: "+ e.getLocalizedMessage());
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
             LOG.log(Level.INFO,"Streaming products are not moved.");
@@ -316,7 +320,7 @@ public class LocalDataTransferer implements DataTransfer {
    }
 
    private void moveDirToProductRepo(Product product) throws IOException,
-         URISyntaxException {
+           URISyntaxException, CatalogException {
       Reference dirRef = product.getProductReferences().get(0);
       LOG.log(
             Level.INFO,
@@ -331,7 +335,7 @@ public class LocalDataTransferer implements DataTransfer {
        File fileRef = new File(new URI(r.getOrigReference()));
 
        if (fileRef.isFile()) {
-         moveFile(r, false);
+         moveFile(r, false, product);
        } else if (fileRef.isDirectory()
                   && (fileRef.list() != null && fileRef.list().length == 0)) {
          // if it's a directory and it doesn't exist yet, we should
@@ -359,14 +363,14 @@ public class LocalDataTransferer implements DataTransfer {
    }
 
    private void moveFilesToProductRepo(Product product) throws IOException,
-         URISyntaxException {
+           URISyntaxException, CatalogException {
       List<Reference> refs = product.getProductReferences();
 
       // notify the file manager that we started
       quietNotifyTransferProduct(product);
 
      for (Reference r : refs) {
-       moveFile(r, true);
+       moveFile(r, true, product);
      }
 
       // notify the file manager that we're done
