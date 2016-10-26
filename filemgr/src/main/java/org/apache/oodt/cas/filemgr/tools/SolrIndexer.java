@@ -38,9 +38,8 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.util.StringUtils;
 
@@ -73,8 +72,8 @@ public class SolrIndexer {
 	private final static String ACCESS_KEY = "access.key";
 	private final static String ACCESS_URL = "access.url";
 	private final static String PRODUCT_NAME = "CAS.ProductName";
+	private final HttpSolrClient server;
 	private IndexerConfig config = null;
-	private final SolrServer server;
 	private String fmUrl;
 	private String solrUrl;
 	private static Logger LOG = Logger.getLogger(SolrIndexer.class.getName());
@@ -132,13 +131,9 @@ public class SolrIndexer {
 		}
 
 		LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
+		server = new HttpSolrClient(this.solrUrl);
 
-		try {
-			server = new CommonsHttpSolrServer(this.solrUrl);
-		} catch (MalformedURLException e) {
-			LOG.severe("Could not connect to Solr server " + this.solrUrl);
-			throw new InstantiationException(e.getMessage());
-		}
+//		server = new SolrClient(this.solrUrl);
 
 	}
 
