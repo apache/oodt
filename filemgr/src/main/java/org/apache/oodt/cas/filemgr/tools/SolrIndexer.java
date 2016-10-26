@@ -326,9 +326,9 @@ public class SolrIndexer {
 			List<ProductType> types = fmClient.getProductTypes();
 			for (ProductType type : types) {
 				if (!config.getIgnoreTypes().contains(type.getName().trim())) {
+					ProductPage page = safeFirstPage(fmClient, type);
 					LOG.info("Paging through products for product type: "
-					    + type.getName());
-					ProductPage page = safeFirstPage(fmClient, type); 
+							+ type.getName()+" Total pages are "+page.getTotalPages());
 					while (page != null) {
 					    for (Product product : page.getPageProducts()) {
 							try {
@@ -339,7 +339,7 @@ public class SolrIndexer {
 								    + e.getMessage());
 							}
 						}
-					    if (page.isLastPage()) {
+					    if (page.getPageNum() >= page.getTotalPages() || page.isLastPage()) {
 					        break;
 					    }
 					    page = fmClient.getNextPage(type, page);
