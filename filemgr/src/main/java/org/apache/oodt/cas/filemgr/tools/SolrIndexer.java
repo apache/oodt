@@ -336,7 +336,7 @@ public class SolrIndexer {
 								    .getMetadata(product), type.getTypeMetadata());
 							} catch (Exception e) {
 								LOG.severe("Could not index " + product.getProductId() + ": "
-								    + e.getMessage());
+								    + e.getLocalizedMessage());
 							}
 						}
 					    if (page.getPageNum() >= page.getTotalPages() || page.isLastPage()) {
@@ -472,7 +472,7 @@ public class SolrIndexer {
 				server.add(this.getSolrDocument(metadata));
 				LOG.info("Indexed product: " + productId);
 			} catch (IOException e) {
-				LOG.severe("Could not index product: " + productId);
+				LOG.severe("Could not index product: " + productId+ "Exception:"+e.getLocalizedMessage());
 			}
 		} else {
 			LOG.info("Could not find metadata for product: " + productId);
