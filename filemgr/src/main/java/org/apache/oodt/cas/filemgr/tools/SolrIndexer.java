@@ -27,6 +27,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -53,6 +54,9 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -131,7 +135,8 @@ public class SolrIndexer {
 		}
 
 		LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
-		server = new HttpSolrClient(this.solrUrl);
+		SystemDefaultHttpClient httpClient = new SystemDefaultHttpClient();
+		server = new HttpSolrClient(this.solrUrl, httpClient);
 
 //		server = new SolrClient(this.solrUrl);
 
@@ -168,6 +173,8 @@ public class SolrIndexer {
 	private SolrInputDocument getSolrDocument(Metadata metadata) {
 		SolrInputDocument doc = new SolrInputDocument();
 		// Only grab metadata which have a mapping in the indexer.properties
+		String official = "";
+
 		for (Object objKey : config.getMapProperties().keySet()) {
 			// The key in the metadata object
 			String key = (String) objKey;
@@ -178,12 +185,14 @@ public class SolrIndexer {
 				for (String value : values) {
 					// Add each metadata value into the
 					if (value != null && !config.getIgnoreValues().contains(value.trim())) {
-						LOG.fine("Adding field: " + fieldName + " value: " + value);
+						official += " Key: " + key + " Value: " + value;
 						doc.addField(fieldName, value);
 					}
 				}
 			}
 		}
+	//	LOG.info("KEYS WERE:" +official);
+
 		return doc;
 	}
 
@@ -327,8 +336,9 @@ public class SolrIndexer {
 					while (page != null) {
 					    for (Product product : page.getPageProducts()) {
 							try {
-								this.indexProduct(product.getProductId(), fmClient
-								    .getMetadata(product), type.getTypeMetadata());
+								String p = product.getProductId();
+								Metadata m = fmClient.getMetadata(product);
+								this.indexProduct(p, m, type.getTypeMetadata());
 							} catch (Exception e) {
 								LOG.severe("Could not index " + product.getProductId() + ": "
 								    + e.getLocalizedMessage());
@@ -373,6 +383,17 @@ public class SolrIndexer {
 			    this.fmUrl));
 			Product product = fmClient.getProductById(productId);
 			Metadata productMetadata = fmClient.getMetadata(product);
+			List<String> keys = productMetadata.getAllKeys();
+			String logger = "";
+			for(String k :keys){
+				logger+=" key: "+keys;
+				List<String> values = productMetadata.getAllValues(k);
+
+				for(String v : values){
+					logger+=" value: "+v + ", ";
+				}
+			}
+			LOG.info("Metadata: "+ logger);
 			indexProduct(product.getProductId(), productMetadata, product
 			    .getProductType().getTypeMetadata());
 		} catch (MalformedURLException e) {
@@ -541,10 +562,12 @@ public class SolrIndexer {
 				List<String> values = metadata.getAllMetadata(keyString);
 				if (values != null) {
 					List<String> newValues = new ArrayList<String>();
-					SimpleDateFormat format = new SimpleDateFormat(config
-					    .getFormatProperties().getProperty(keyString).trim());
+
+				/*	SimpleDateFormat format = new SimpleDateFormat(config
+					    .getFormatProperties().getProperty(keyString).trim());*/
 					for (String value : values) {
-						newValues.add(formatDate(format, value));
+						String d = value.trim();
+						newValues.add(d);
 					}
 					metadata.removeMetadata(keyString);
 					metadata.addMetadata(keyString, newValues);

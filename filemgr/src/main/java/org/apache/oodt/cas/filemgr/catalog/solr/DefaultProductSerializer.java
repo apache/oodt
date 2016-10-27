@@ -446,16 +446,28 @@ public class DefaultProductSerializer implements ProductSerializer {
 				if (name.startsWith(Parameters.NS)) {
 					if (name.equals(Parameters.PRODUCT_ID)) {
 						product.setProductId(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_NAME)) {
 						product.setProductName(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_STRUCTURE)) {
 						product.setProductStructure(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_TRANSFER_STATUS)) {
 						product.setTransferStatus(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_TYPE_NAME)) {
 						productType.setName(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_TYPE_ID)) {
 						productType.setProductTypeId(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_RECEIVED_TIME)) {
 						product.setProductRecievedTime(value);
 						metadata.addMetadata(name, value);
