@@ -65,7 +65,9 @@ public class SolrCatalog implements Catalog {
 	public void addMetadata(Metadata metadata, Product product) throws CatalogException {
 		
 		LOG.info("Adding metadata for product:"+product.getProductName());
-		
+		if(metadata.containsKey("_version_")){
+			metadata.removeMetadata("_version_");
+		}
 		// serialize metadadta to Solr document(s)
 	  // replace=false i.e. add metadata to existing values
 		List<String> docs = productSerializer.serialize(product.getProductId(), metadata, false); 
@@ -110,7 +112,10 @@ public class SolrCatalog implements Catalog {
 				
 			}
 		}
-		
+
+		if(updateMetadata.containsKey("_version_")){
+			updateMetadata.removeMetadata("_version_");
+		}
 		// generate Solr update documents
 		// replace=true to override existing values
 		List<String> docs = productSerializer.serialize(product.getProductId(), updateMetadata, true);

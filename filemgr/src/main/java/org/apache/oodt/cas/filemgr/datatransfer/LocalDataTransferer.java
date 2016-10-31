@@ -37,10 +37,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 
 /**
@@ -405,10 +408,11 @@ public class LocalDataTransferer implements DataTransfer {
            else{
                Metadata metadata = client.getMetadata(product);
                metadata.addMetadata("Original Location", r.getOrigReference());
-               client.addMetadata(product, metadata);
+               client.updateMetadata(product, metadata);
            }
+           Files.move(srcFileRef.toPath(), destFileRef.toPath());
 
-           FileUtils.moveFile(srcFileRef, destFileRef);
+           //FileUtils.moveFile(srcFileRef, destFileRef);
 
        }
        else{

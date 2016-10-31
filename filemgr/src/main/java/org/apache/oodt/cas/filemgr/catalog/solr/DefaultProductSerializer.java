@@ -182,7 +182,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 		
 		for (String key : metadata.getKeys()) {
 			if (! (key.startsWith(Parameters.NS)              // skip metadata keys starting with reserved namespace
-				     || Parameters.PRODUCT_TYPE_NAME.contains(key)
+				     //|| Parameters.PRODUCT_TYPE_NAME.contains(key)
 				   // skip 'ProductType' as already stored as 'CAS.ProductTypeName'
 				     || Parameters.PRODUCT_STRUCTURE.contains(key))) { // skip 'ProductType' as already stored as 'CAS.ProductStructure'
 				for (String value : metadata.getAllMetadata(key)) {
