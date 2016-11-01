@@ -16,6 +16,7 @@
  */
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -34,6 +35,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.solr.client.solrj.util.ClientUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -167,7 +169,7 @@ public class SolrClient {
 	public String queryProductByName(String name, String mimeType) throws CatalogException {
 		
 		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
-		params.put("q", new String[]{Parameters.PRODUCT_NAME+":"+name} );
+		params.put("q", new String[]{Parameters.PRODUCT_NAME+":"+ ClientUtils.escapeQueryChars(name)} );
 		return query(params, mimeType);
 		
 	}
