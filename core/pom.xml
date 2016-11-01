@@ -111,11 +111,6 @@ the License.
         <version>1.2.1</version>
       </dependency>
       <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>3.0</version>
-      </dependency>
-      <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>2.4</version>
@@ -128,7 +123,7 @@ the License.
       <dependency>
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
-        <version>1.0.3</version>
+        <version>1.2</version>
       </dependency>
       <dependency>
         <groupId>commons-pool</groupId>
@@ -144,6 +139,12 @@ the License.
         <groupId>edu.ucar</groupId>
         <artifactId>netcdf</artifactId>
         <version>4.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>hsqldb</groupId>
@@ -264,7 +265,13 @@ the License.
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.2.5</version>
+        <version>4.5.2</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.jena</groupId>
@@ -484,12 +491,12 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j</artifactId>
+        <artifactId>slf4j-log4j12</artifactId>
         <version>1.7.12</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
+        <artifactId>jcl-over-slf4j</artifactId>
         <version>1.7.12</version>
       </dependency>
       <dependency>

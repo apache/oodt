@@ -18,16 +18,23 @@
 package org.apache.oodt.security.sso.opensso;
 
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,23 +91,33 @@ public class SSOProxy implements SSOMetKeys {
   }
 
   public String authenticate(String username, String password) {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(AUTH_ENDPOINT);
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(AUTH_ENDPOINT);
+    //PostMethod post = new PostMethod(AUTH_ENDPOINT);
     String response;
     String ssoToken = null;
 
-    NameValuePair[] data = { new NameValuePair("username", username),
-        new NameValuePair("password", password),
-        new NameValuePair("uri", "realm/lmmp") };
+    NameValuePair[] data = { new BasicNameValuePair("username", username),
+        new BasicNameValuePair("password", password),
+        new BasicNameValuePair("uri", "realm/lmmp") };
 
-    post.setRequestBody(data);
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+
+    post.setEntity(entity);
 
     try {
-      httpClient.executeMethod(post);
-      if (post.getStatusCode() != HttpStatus.SC_OK) {
-        throw new HttpException(post.getStatusLine().toString());
+      HttpResponse response1 = httpClient.execute(post);
+      if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        throw new HttpException(response1.getStatusLine().toString());
       }
-      response = post.getResponseBodyAsString().trim();
+      ResponseHandler<String> handler = new BasicResponseHandler();
+
+      response = handler.handleResponse(response1);
       ssoToken = response.substring(9);
     } catch (Exception e) {
       LOG.log(Level.SEVERE, e.getMessage());
@@ -113,55 +130,84 @@ public class SSOProxy implements SSOMetKeys {
 
   public IdentityDetails readIdentity(String username, String token)
       throws IOException, SingleSignOnException {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(IDENT_READ_ENDPOINT);
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(IDENT_READ_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining identity: username: [" + username
         + "]: token: [" + token + "]: REST url: [" + IDENT_READ_ENDPOINT
         + "]");
-    NameValuePair[] data = { new NameValuePair("name", username),
-        new NameValuePair("admin", token) };
+    NameValuePair[] data = { new BasicNameValuePair("name", username),
+        new BasicNameValuePair("admin", token) };
 
-    post.setRequestBody(data);
-
-    httpClient.executeMethod(post);
-    if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new SingleSignOnException(post.getStatusLine().toString());
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
     }
 
-    return parseIdentityDetails(post.getResponseBodyAsString().trim());
+    post.setEntity(entity);
+
+    HttpResponse response1 = httpClient.execute(post);
+    if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      throw new SingleSignOnException(response1.getStatusLine().toString());
+    }
+
+    ResponseHandler<String> handler = new BasicResponseHandler();
+
+
+    return parseIdentityDetails(handler.handleResponse(response1).trim());
 
   }
 
   public UserDetails getUserAttributes(String token) throws IOException, SingleSignOnException {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(IDENT_ATTR_ENDPOINT);
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(IDENT_READ_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining user attributes: token: [" + token
         + "]: REST url: [" + IDENT_ATTR_ENDPOINT + "]");
-    NameValuePair[] data = { new NameValuePair("subjectid", token) };
+    NameValuePair[] data = { new BasicNameValuePair("subjectid", token) };
 
-    post.setRequestBody(data);
-
-    httpClient.executeMethod(post);
-    if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new SingleSignOnException(post.getStatusLine().toString());
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
     }
 
-    return parseUserDetails(post.getResponseBodyAsString().trim());
+    post.setEntity(entity);
+
+    HttpResponse response1 = httpClient.execute(post);
+    if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      throw new SingleSignOnException(response1.getStatusLine().toString());
+    }
+
+    ResponseHandler<String> handler = new BasicResponseHandler();
+
+
+    return parseUserDetails(handler.handleResponse(response1).trim());
 
   }
 
   public void logout(String token) {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(LOG_ENDPOINT);
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(LOG_ENDPOINT);
     LOG.log(Level.INFO, "Logging out: token: [" + token + "]: REST url: ["
         + LOG_ENDPOINT + "]");
-    NameValuePair[] data = { new NameValuePair("subjectid", token) };
-    post.setRequestBody(data);
+    NameValuePair[] data = { new BasicNameValuePair("subjectid", token) };
+
+
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+
+    post.setEntity(entity);
 
     try {
-      httpClient.executeMethod(post);
-      if (post.getStatusCode() != HttpStatus.SC_OK) {
-        throw new HttpException(post.getStatusLine().toString());
+      HttpResponse response1 = httpClient.execute(post);
+      if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        throw new HttpException(response1.getStatusLine().toString());
       }
     } catch (HttpException e) {
       // TODO Auto-generated catch block

@@ -17,10 +17,10 @@
 
 package org.apache.oodt.cas.filemgr.system;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpMethodRetryHandler;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpContext;
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
@@ -43,7 +43,6 @@ import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.xmlrpc.CommonsXmlRpcTransport;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcClientException;
 import org.apache.xmlrpc.XmlRpcException;
@@ -118,32 +117,32 @@ public class XmlRpcFileManagerClient {
 
       public XmlRpcTransport createTransport()
           throws XmlRpcClientException {
-        HttpClient client = new HttpClient();
-        client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-            new HttpMethodRetryHandler() {
 
-              public boolean retryMethod(HttpMethod method,
-                                         IOException e, int count) {
-                if (count < Integer
+        HttpRequestRetryHandler myRetryHandler = new HttpRequestRetryHandler() {
+          public boolean retryRequest(
+                  IOException exception,
+                  int count,
+                  HttpContext context){
+            if (count < Integer
                     .getInteger(
-                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retries",
-                        3)) {
-                  try {
-                    Thread
+                            "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retries",
+                            3)) {
+              try {
+                Thread
                         .sleep(Integer
-                                   .getInteger(
-                                       "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retry.interval.seconds",
-                                       0) * 1000);
-                    return true;
-                  } catch (Exception ignored) {
-                  }
-                }
-                return false;
+                                .getInteger(
+                                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retry.interval.seconds",
+                                        0) * 1000);
+                return true;
+              } catch (Exception ignored) {
               }
+            }
+            return false;
+          }
+        };
+        HttpClient client = HttpClients.custom().setRetryHandler(myRetryHandler).build();
 
-            });
-        CommonsXmlRpcTransport transport = new CommonsXmlRpcTransport(
-            url, client);
+        CommonsXmlRpcTransport transport = new CommonsXmlRpcTransport(url, client);
         transport
             .setConnectionTimeout(Integer
                                       .getInteger(

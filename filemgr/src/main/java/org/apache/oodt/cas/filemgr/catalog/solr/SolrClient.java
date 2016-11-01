@@ -16,20 +16,33 @@
  */
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
@@ -237,19 +250,23 @@ public class SolrClient {
 		throws IOException, CatalogException {
 				    
 		// build HTTP/GET request
-    GetMethod method = new GetMethod(url);
-    List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+
+
+    List<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
     for (Map.Entry<String, String[]> key : parameters.entrySet()) {
     	for (String value : key.getValue()) {
-    		nvps.add(new NameValuePair(key.getKey(), value));
+    		nvps.add(new BasicNameValuePair(key.getKey(), value));
     	}
     }
     // request results in JSON format
     if (mimeType.equals(Parameters.MIME_TYPE_JSON)) {
-	  nvps.add(new NameValuePair("wt", "json"));
+	  nvps.add(new BasicNameValuePair("wt", "json"));
 	}
-    method.setQueryString( nvps.toArray( new NameValuePair[nvps.size()] ) );
-    LOG.info("GET url: "+url+" query string: "+method.getQueryString());
+
+		String paramString = URLEncodedUtils.format(nvps, "utf-8");
+
+		HttpRequestBase method = new HttpGet(url+"?"+paramString);
+    LOG.info("GET url: "+url+" query string: "+method.getURI());
     
     // send HTTP/GET request, return response
     return doHttp(method);
@@ -265,10 +282,15 @@ public class SolrClient {
 	private String doPost(String url, String document, String mimeType) throws IOException, CatalogException {
     
 		// build HTTP/POST request
-    PostMethod method = new PostMethod(url);
-    StringRequestEntity requestEntity = new StringRequestEntity(document, mimeType, "UTF-8");
-    method.setRequestEntity(requestEntity);
-    
+    HttpPost method = new HttpPost(url);
+		HttpEntity requestEntity = null;
+		try {
+			requestEntity = new StringEntity(document, mimeType, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		method.setEntity(requestEntity);
     // send HTTP/POST request, return response
     return doHttp(method);
 		
@@ -280,34 +302,34 @@ public class SolrClient {
 	 * @return
 	 * @throws Exception
 	 */
-	private String doHttp(HttpMethod method) throws IOException, CatalogException {
+	private String doHttp(HttpRequestBase method) throws IOException, CatalogException {
 		
-		StringBuilder response = new StringBuilder();
+		String response = null;
 		BufferedReader br = null;
 		try {
 			
 	    // send request
-	    HttpClient httpClient = new HttpClient();
+	    HttpClient httpClient = new DefaultHttpClient();
             // OODT-719 Prevent httpclient from spawning closewait tcp connections
-            method.setRequestHeader("Connection", "close");
+            method.setHeader("Connection", "close");
 
-	    int statusCode = httpClient.executeMethod(method);	    
+	    HttpResponse statusCode = httpClient.execute(method);
 	    
 	    // read response
-	    if (statusCode != HttpStatus.SC_OK) {
+	    if (statusCode.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 	    	
 	    	// still consume the response
-	    	method.getResponseBodyAsString();
-	      throw new CatalogException("HTTP method failed: " + method.getStatusLine());
+			ResponseHandler<String> handler = new BasicResponseHandler();
+
+			handler.handleResponse(statusCode);
+	      throw new CatalogException("HTTP method failed: " + statusCode.getStatusLine().toString());
 	      
 	    } else {
-	
-		    // read the response body.
-		    br = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
-        String readLine;
-        while(((readLine = br.readLine()) != null)) {
-          response.append(readLine);
-        }
+			ResponseHandler<String> handler = new BasicResponseHandler();
+
+			String resp = handler.handleResponse(statusCode);
+
+			response=resp;
 	    
 	    }
 	  	
@@ -322,7 +344,7 @@ public class SolrClient {
 		}
 	  }  
   
-	  return response.toString();
+	  return response;
   
 	}
 	
