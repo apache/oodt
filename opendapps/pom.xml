@@ -54,6 +54,10 @@
       <artifactId>netcdf4</artifactId>
     </dependency>
     <dependency>
+      <groupId>edu.ucar</groupId>
+      <artifactId>opendap</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-profile</artifactId>
     </dependency>
