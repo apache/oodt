@@ -15,6 +15,7 @@ import org.apache.oodt.cas.curation.metadata.FlatDirMetadataHandler;
 import org.apache.oodt.cas.curation.rest.IngestRest;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -124,17 +125,23 @@ public class IngestBackend {
                     temp.file = entry.file;
                     temp.pname = entry.pname;
                     temp.timestamp = entry.timestamp;
-                    if (entry.error != null ) {
-                        //torm.add(entry);
-                        temp.status = "Error: "+entry.error.getMessage();
-                    } else if (client.hasProduct(entry.pname)) {
-                         //torm.add(entry);
-                         temp.product = client.getProductByName(entry.pname).getProductId();
-                         temp.status = DONE;
-                    } else {
-                        temp.status = IN_PROGRESS;
+                    try {
+
+                        if (entry.error != null) {
+                            //torm.add(entry);
+                            temp.status = "Error: " + entry.error.getMessage();
+                        } else if (client.hasProduct(entry.pname)) {
+                            //torm.add(entry);
+                            temp.product = client.getProductByName(entry.pname).getProductId();
+                            temp.status = DONE;
+                        } else {
+                            temp.status = IN_PROGRESS;
+                        }
+                        ret.add(temp);
                     }
-                    ret.add(temp);
+                    catch (CatalogException e){
+                        LOG.log(Level.WARNING,"Error: failed fetching product: "+e.getLocalizedMessage());
+                    }
                 }
             }
             //for (InputStruct.InputEntry entry : torm) {

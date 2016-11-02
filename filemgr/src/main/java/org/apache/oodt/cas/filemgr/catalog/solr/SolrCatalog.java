@@ -132,20 +132,31 @@ public class SolrCatalog implements Catalog {
 	 */
 	@Override
 	public void addProduct(Product product) throws CatalogException {
-		
-		LOG.info("Adding product:"+product.getProductName());
-		
-		// generate product identifier if not existing already
-		if (!StringUtils.hasText(product.getProductId())) {
-			String productId = this.productIdGenerator.generateId(product);
-			product.setProductId(productId);
+
+		if(product.getProductId()!=null && this.getCompleteProductById(product.getProductId()) !=null) {
+			throw new CatalogException(
+					"Attempt to add a product that already existed: product: ["
+							+ product.getProductName() + "]");
+
+
+
+
+
+		} else {
+			LOG.info("Adding product:" + product.getProductName());
+
+			// generate product identifier if not existing already
+			if (!StringUtils.hasText(product.getProductId())) {
+				String productId = this.productIdGenerator.generateId(product);
+				product.setProductId(productId);
+			}
+
+			// serialize product for ingestion into Solr
+			List<String> docs = productSerializer.serialize(product, true); // create=true
+
+			// send records to Solr
+			solrClient.index(docs, true, productSerializer.getMimeType());
 		}
-		
-		// serialize product for ingestion into Solr
-		List<String> docs = productSerializer.serialize(product, true); // create=true
-				
-		// send records to Solr
-		solrClient.index(docs, true, productSerializer.getMimeType());
 		
 	}
 

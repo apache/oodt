@@ -410,8 +410,8 @@ public class LocalDataTransferer implements DataTransfer {
                metadata.addMetadata("Original Location", r.getOrigReference());
                client.updateMetadata(product, metadata);
            }
-           Files.move(srcFileRef.toPath(), destFileRef.toPath());
-           
+           Files.move(srcFileRef.toPath(), destFileRef.toPath(), REPLACE_EXISTING);
+
        }
        else{
            FileUtils.copyFile(srcFileRef, destFileRef);
