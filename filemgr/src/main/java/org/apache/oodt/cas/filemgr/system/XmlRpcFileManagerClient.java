@@ -17,8 +17,12 @@
 
 package org.apache.oodt.cas.filemgr.system;
 
+import org.apache.http.auth.AuthSchemeProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
 import org.apache.oodt.cas.cli.CmdLineUtility;
@@ -140,7 +144,18 @@ public class XmlRpcFileManagerClient {
             return false;
           }
         };
-        HttpClient client = HttpClients.custom().setRetryHandler(myRetryHandler).build();
+        RequestConfig config = RequestConfig.custom()
+                .setSocketTimeout(Integer
+                        .getInteger(
+                                "org.apache.oodt.cas.filemgr.system.xmlrpc.connectionTimeout.minutes",
+                                20) * 60 * 1000)
+                .setConnectTimeout(Integer
+                        .getInteger(
+                                "org.apache.oodt.cas.filemgr.system.xmlrpc.requestTimeout.minutes",
+                                60) * 60 * 1000)
+                .build();
+        Registry<AuthSchemeProvider> r = RegistryBuilder.<AuthSchemeProvider>create().build();
+        HttpClient client = HttpClients.custom().setRetryHandler(myRetryHandler).setDefaultAuthSchemeRegistry(r).setDefaultRequestConfig(config).build();
 
         CommonsXmlRpcTransport transport = new CommonsXmlRpcTransport(url, client);
         transport

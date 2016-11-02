@@ -137,8 +137,8 @@ the License.
       </dependency>
       <dependency>
         <groupId>edu.ucar</groupId>
-        <artifactId>netcdf</artifactId>
-        <version>4.2</version>
+        <artifactId>netcdf4</artifactId>
+        <version>4.5.5</version>
         <exclusions>
           <exclusion>
             <groupId>commons-httpclient</groupId>

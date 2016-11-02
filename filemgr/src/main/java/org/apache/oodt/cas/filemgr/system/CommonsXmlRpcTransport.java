@@ -19,16 +19,18 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AUTH;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.*;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 
+import org.apache.http.impl.auth.BasicSchemeFactory;
+import org.apache.http.impl.auth.DigestSchemeFactory;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
@@ -45,7 +47,7 @@ public class CommonsXmlRpcTransport implements XmlRpcTransport {
     private Credentials creds;
     protected HttpPost method;
     private int timeout = 10;
-    private int connecttimeout;
+    private int connecttimeout = 10;
     private String password;
     private String user;
     private String auth;
@@ -72,7 +74,9 @@ public class CommonsXmlRpcTransport implements XmlRpcTransport {
 
             }
 
-            HttpClient newClient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).setDefaultRequestConfig(config).build();
+            System.out.println("building empty registry");
+            Registry<AuthSchemeProvider> r = RegistryBuilder.<AuthSchemeProvider>create().build();
+            HttpClient newClient = HttpClients.custom().setDefaultAuthSchemeRegistry(r).setDefaultCredentialsProvider(credsProvider).setDefaultRequestConfig(config).build();
             this.client = newClient;
         } else {
             this.client = client;
