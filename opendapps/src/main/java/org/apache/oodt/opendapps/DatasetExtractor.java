@@ -107,6 +107,11 @@ public class DatasetExtractor {
         LOG.log(Level.WARNING, msg);
       }
 
+      @Override
+      public void setProgress(String s, int i) {
+
+      }
+
     };
 
     LOG.log(Level.FINE, "catalogURL: " + this.mainCatalogURL);
