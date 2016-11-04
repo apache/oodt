@@ -116,7 +116,9 @@ define(["jquery",
                         var splits = node.text.split("/");
                         var localName = (splits[splits.length -1] != "")?splits[splits.length -1]:splits[splits.length - 2]
                         path = localName+"/"+path;
+
                     }
+                    path = encodeURI(path);
                     selection.add({"id":path,"treeId":node.id});
                 }
                 var pending = 0;

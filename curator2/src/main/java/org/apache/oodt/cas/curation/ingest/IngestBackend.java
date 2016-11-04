@@ -2,6 +2,8 @@ package org.apache.oodt.cas.curation.ingest;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,6 +79,7 @@ public class IngestBackend {
      */
     private void ingest(String file, String user) throws IngestException {
         try {
+            file = URLDecoder.decode(file);
             File full = null;
             if (!file.startsWith("/")) {
                 String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
