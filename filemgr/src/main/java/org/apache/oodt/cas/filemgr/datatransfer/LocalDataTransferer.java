@@ -18,7 +18,9 @@
 package org.apache.oodt.cas.filemgr.datatransfer;
 
 //APACHE Imports
+import org.apache.commons.compress.compressors.FileNameUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -410,8 +412,12 @@ public class LocalDataTransferer implements DataTransfer {
                metadata.addMetadata("Original Location", r.getOrigReference());
                client.updateMetadata(product, metadata);
            }
-           Files.move(srcFileRef.toPath(), destFileRef.toPath(), REPLACE_EXISTING);
-
+           if(!srcFileRef.toPath().toString().contains("/dev/null")) {
+               String fullpath = FilenameUtils.getFullPath(destFileRef.getAbsolutePath());
+               LOG.log(Level.INFO, "Creating directory: "+fullpath);
+               FileUtils.forceMkdir(new File(fullpath));
+               Files.move(srcFileRef.toPath(), destFileRef.toPath(), REPLACE_EXISTING);
+           }
        }
        else{
            FileUtils.copyFile(srcFileRef, destFileRef);

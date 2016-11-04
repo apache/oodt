@@ -60,6 +60,7 @@ public class MetadataRest {
                 file = "/dev/null";
             }
             this.setup();
+            System.out.println("Getting metadata for file: "+file);
             Metadata met = this.backend.getMetadata(file,(user==null)?"":user, extractor);
             return Response.ok().entity(gson.toJson(met)).build();
         } catch (Exception e) {
