@@ -409,7 +409,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 				List<String> vals = new ArrayList<String>();
 				for (int k=0; k<values.getLength(); k++) {
 					String value = ((Element)values.item(k)).getTextContent();
-					vals.add(value);
+					vals.add(StringEscapeUtils.unescapeXml(value));
 				}
 				// CAS.reference.... fields
 				if (name.startsWith(Parameters.NS)) {					
@@ -442,7 +442,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 			 */
 			} else {
 				
-				String value = element.getTextContent();
+				String value = StringEscapeUtils.unescapeXml(element.getTextContent());
 				
 				// core CAS fields
 				if (name.startsWith(Parameters.NS)) {
