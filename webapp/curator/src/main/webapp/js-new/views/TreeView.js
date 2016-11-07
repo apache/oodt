@@ -10,7 +10,7 @@ define(["jquery",
         "js-new/models/SetupModels",
         "popover",
         "blockui"],
-    function($,_,Backbone,jstree,utils, Models) {
+    function($,_,Backbone,jst4ree,utils, Models) {
 
         var opennodes = false;
         var nodestates = [];
@@ -144,7 +144,11 @@ define(["jquery",
                 }
                 selection.each(function(elem) {
                     pending += 1;
-                    elem.fetch({"success":onFetched.bind(this,elem)});
+                    elem.fetch({"success":onFetched.bind(this,elem),
+                    "error": function(err){
+                        alert("Error fetching metadata");
+                        return false;
+                    }});
                 });
             };
         };
@@ -167,7 +171,7 @@ define(["jquery",
             this.updater = null;
             $("#"+this.name).jstree(core);
             $("#"+this.name).on("refresh.jstree",this.gussy.bind(this));
-            $("#"+this.name).on("loaded.jstree open_node.jstree", function(event, data){
+            $("#"+this.name).on("ready.jstree refresh.jstree open_node.jstree", function(event, data){
                 $('[data-toggle="popover"]').popover({trigger: 'hover','placement': 'top',delay: { "show": 500, "hide": 100 }});
                 
             });
