@@ -110,6 +110,7 @@ define(["jquery","js-new/utils/utils", "js-new/config/Configuration", "js-new/ut
                                 }
                                 var timestamp = new Date().getTime();
                                 var id = elem.get("id");
+                                id = encodeURIComponent(id);
                                 var productName = elem.get("root")["children"]["ProductName"]["values"][0];
                                 selects.push({"timestamp":timestamp,"file":id,"size":0,"pname":productName});
                                 if (elem.id != "/dev/null") {
