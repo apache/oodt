@@ -41,6 +41,13 @@ the License.
     <jetty.version>6.1.25</jetty.version>
     <sonar.language>java</sonar.language>
   </properties>
+  <distributionManagement>
+    <site>
+      <id>www.yourcompany.com</id>
+      <url>scp://www.yourcompany.com/www/docs/project/</url>
+    </site>
+  </distributionManagement>
+
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
        Once the dependency is in the core pom, it can then be used in other modules without the version tags.
        For example, within core/pom.xml:
@@ -494,11 +501,11 @@ the License.
         <artifactId>slf4j-api</artifactId>
         <version>1.7.12</version>
       </dependency>
-      <dependency>
+<!--      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j</artifactId>
         <version>1.7.12</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
@@ -641,7 +648,7 @@ mm
       <!-- Produce JavaDoc -->
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
+        <version>2.10.4</version>
         <configuration>
           <outputEncoding>UTF-8</outputEncoding>
           <charset>UTF-8</charset>
@@ -696,7 +703,7 @@ mm
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>2.0-beta-7</version>
+        <version>3.5.1</version>
         <configuration>
           <outputEncoding>UTF-8</outputEncoding>
         </configuration>
