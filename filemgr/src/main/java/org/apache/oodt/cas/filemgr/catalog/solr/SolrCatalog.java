@@ -38,23 +38,23 @@ import org.springframework.util.StringUtils;
 /**
  * Implementation of the CAS {@link Catalog} interface
  * that uses a Solr back-end metadata store.
- * 
+ *
  * @author Luca Cinquini
  *
  */
 public class SolrCatalog implements Catalog {
-	
+
 	// Class responsible for serializing/deserializing CAS products into Solr documents
 	ProductSerializer productSerializer;
-		
+
 	// Class responsible for generating unique identifiers for incoming Products
 	ProductIdGenerator productIdGenerator;
-	
+
 	// Class responsible for interacting with the Solr server
 	SolrClient solrClient;
-	
+
 	private static final Logger LOG = Logger.getLogger(SolrCatalog.class.getName());
-	
+
 	public SolrCatalog(String solrUrl, ProductIdGenerator productIdGenerator, ProductSerializer productSerializer) {
 		this.productIdGenerator = productIdGenerator;
 		this.productSerializer = productSerializer;
@@ -63,13 +63,15 @@ public class SolrCatalog implements Catalog {
 
 	@Override
 	public void addMetadata(Metadata metadata, Product product) throws CatalogException {
-		
+
 		LOG.info("Adding metadata for product:"+product.getProductName());
-		
+		if(metadata.containsKey("_version_")){
+			metadata.removeMetadata("_version_");
+		}
 		// serialize metadadta to Solr document(s)
-	  // replace=false i.e. add metadata to existing values
-		List<String> docs = productSerializer.serialize(product.getProductId(), metadata, false); 
-				
+		// replace=false i.e. add metadata to existing values
+		List<String> docs = productSerializer.serialize(product.getProductId(), metadata, false);
+
 		// send documents to Solr server
 		solrClient.index(docs, true, productSerializer.getMimeType());
 
@@ -82,39 +84,42 @@ public class SolrCatalog implements Catalog {
 	 */
 	@Override
 	public void removeMetadata(Metadata metadata, Product product) throws CatalogException {
-		
+
 		// retrieve full existing metadata
 		Metadata currentMetadata = getMetadata(product);
-		
+
 		// metadata to be updated
 		Metadata updateMetadata = new Metadata();
-		
+
 		// loop over keys of metadata be updated
 		for (String key : metadata.getKeys()) {
-			
+
 			// list of values remaining after removal
 			List<String> values = new ArrayList<String>();
 			if (currentMetadata.containsKey(key)) {
 				for (String value : currentMetadata.getAllMetadata(key)) {
 					if (!metadata.getAllMetadata(key).contains(value)) {
 						values.add(value);
-					}					
+					}
 				}
 
 				// add remaining values to updated metadata
 				if (values.isEmpty()) {
 					// special value because Metadata will NOT store an empty list
 					values.add(Parameters.NULL);
-				} 
+				}
 				updateMetadata.addMetadata(key, values);
-				
+
 			}
 		}
-		
+
+		if(updateMetadata.containsKey("_version_")){
+			updateMetadata.removeMetadata("_version_");
+		}
 		// generate Solr update documents
 		// replace=true to override existing values
 		List<String> docs = productSerializer.serialize(product.getProductId(), updateMetadata, true);
-				
+
 		// send documents to Solr server
 		solrClient.index(docs, true, productSerializer.getMimeType());
 
@@ -127,40 +132,51 @@ public class SolrCatalog implements Catalog {
 	 */
 	@Override
 	public void addProduct(Product product) throws CatalogException {
-		
-		LOG.info("Adding product:"+product.getProductName());
-		
-		// generate product identifier if not existing already
-		if (!StringUtils.hasText(product.getProductId())) {
-			String productId = this.productIdGenerator.generateId(product);
-			product.setProductId(productId);
+
+		if(product.getProductId()!=null && this.getCompleteProductById(product.getProductId()) !=null) {
+			throw new CatalogException(
+					"Attempt to add a product that already existed: product: ["
+							+ product.getProductName() + "]");
+
+
+
+
+
+		} else {
+			LOG.info("Adding product:" + product.getProductName());
+
+			// generate product identifier if not existing already
+			if (!StringUtils.hasText(product.getProductId())) {
+				String productId = this.productIdGenerator.generateId(product);
+				product.setProductId(productId);
+			}
+
+			// serialize product for ingestion into Solr
+			List<String> docs = productSerializer.serialize(product, true); // create=true
+
+			// send records to Solr
+			solrClient.index(docs, true, productSerializer.getMimeType());
 		}
-		
-		// serialize product for ingestion into Solr
-		List<String> docs = productSerializer.serialize(product, true); // create=true
-				
-		// send records to Solr
-		solrClient.index(docs, true, productSerializer.getMimeType());
-		
+
 	}
 
 	@Override
 	public void modifyProduct(Product product) throws CatalogException {
-		
+
 		LOG.info("Modifying product:"+product.getProductName());
-		
+
 		// serialize the update product information to Solr document(s)
 		List<String> docs = productSerializer.serialize(product, false); // create=false
-				
+
 		// send records to Solr
 		solrClient.index(docs, true, productSerializer.getMimeType());
-		
+
 
 	}
 
 	@Override
 	public void removeProduct(Product product) throws CatalogException {
-				
+
 		// send message to Solr server
 		solrClient.delete(product.getProductId(), true);
 
@@ -168,17 +184,17 @@ public class SolrCatalog implements Catalog {
 
 	@Override
 	public void setProductTransferStatus(Product product) throws CatalogException {
-		
+
 		this.modifyProduct(product);
 
 	}
 
 	@Override
 	public void addProductReferences(Product product) throws CatalogException {
-				
+
 		// generate update documents (with replace=true)
-		List<String> docs = productSerializer.serialize(product.getProductId(), product.getRootRef(), product.getProductReferences(), true); 
-		
+		List<String> docs = productSerializer.serialize(product.getProductId(), product.getRootRef(), product.getProductReferences(), true);
+
 		// send documents to Solr server
 		solrClient.index(docs, true, productSerializer.getMimeType());
 
@@ -186,51 +202,51 @@ public class SolrCatalog implements Catalog {
 
 	@Override
 	public Product getProductById(String productId) throws CatalogException {
-				
-			CompleteProduct cp = getCompleteProductById(productId);
-			return cp.getProduct();
-		
+
+		CompleteProduct cp = getCompleteProductById(productId);
+		return cp.getProduct();
+
 	}
 
 	@Override
 	public Product getProductByName(String productName) throws CatalogException {
-		
-		CompleteProduct cp = getCompleteProductByName(productName);	
+
+		CompleteProduct cp = getCompleteProductByName(productName);
 		if (cp!=null) {
-		    LOG.info("Found product name="+productName+" id="+cp.getProduct().getProductId());
-		    return cp.getProduct();
+			LOG.info("Found product name="+productName+" id="+cp.getProduct().getProductId());
+			return cp.getProduct();
 		} else {
-		    LOG.info("Product with name="+productName+" not found");
-		    return null;
+			LOG.info("Product with name="+productName+" not found");
+			return null;
 		}
-		
+
 	}
 
 	@Override
 	public List<Reference> getProductReferences(Product product) throws CatalogException {
-		
+
 		CompleteProduct cp = getCompleteProductById(product.getProductId());
 		return cp.getProduct().getProductReferences();
-		
+
 	}
 
 	@Override
 	public List<Product> getProducts() throws CatalogException {
-				
+
 		// build query parameters
 		Map<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[] { "*:*" } );
 		//params.put("rows", new String[] { "20" } ); // control pagination ?
-		
+
 		// query Solr for all matching products
 		return getProducts(params, 0, -1).getProducts(); // get ALL products
-		
+
 	}
-	
+
 	/**
 	 * Common utility to retrieve a range of products matching the specified {@link Query} and {@link ProductType}.
 	 * This method transforms the given constraints in a map of HTTP (name, value) pairs and delegates to the following method.
-	 * 
+	 *
 	 * @param query
 	 * @param type
 	 * @param offset
@@ -239,25 +255,25 @@ public class SolrCatalog implements Catalog {
 	 * @throws CatalogException
 	 */
 	private QueryResponse getProducts(Query query, ProductType type, int offset, int limit) throws CatalogException {
-		
+
 		// build HTTP request
 		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		// product type constraint
 		params.put("q", new String[]{Parameters.PRODUCT_TYPE_NAME+":"+type.getName()} );
-    // convert filemgr query into a Solr query
+		// convert filemgr query into a Solr query
 		List<String> qc = new ArrayList<String>();
-    for (QueryCriteria queryCriteria : query.getCriteria()) {
-    		LOG.info("Query criteria="+queryCriteria.toString());
-    		qc.add(queryCriteria.toString());
-    }
-    params.put("fq", qc.toArray( new String[ qc.size() ] ));
-    // sort
-    params.put("sort", new String[]{ Parameters.PRODUCT_RECEIVED_TIME+" desc"} );
+		for (QueryCriteria queryCriteria : query.getCriteria()) {
+			LOG.info("Query criteria="+queryCriteria.toString());
+			qc.add(queryCriteria.toString());
+		}
+		params.put("fq", qc.toArray( new String[ qc.size() ] ));
+		// sort
+		params.put("sort", new String[]{ Parameters.PRODUCT_RECEIVED_TIME+" desc"} );
 
-    return this.getProducts(params, offset, limit);
-		
+		return this.getProducts(params, offset, limit);
+
 	}
-	
+
 	/**
 	 * Common utility to retrieve a range of products matching the specified query parameters
 	 * @param params : HTTP query parameters used for query to Solr
@@ -266,38 +282,38 @@ public class SolrCatalog implements Catalog {
 	 * @return
 	 */
 	private QueryResponse getProducts(Map<String, String[]> params, int offset, int limit) throws CatalogException {
-		
+
 		// combined results from pagination
 		QueryResponse queryResponse = new QueryResponse();
 		queryResponse.setStart(offset);
 		int start = offset;
 		while (queryResponse.getCompleteProducts().size()<limit || limit<0) {
-			
+
 			params.put("start", new String[] { ""+start } );
 			String response = solrClient.query(params, productSerializer.getMimeType());
 			QueryResponse qr = productSerializer.deserialize(response);
-			
+
 			for (CompleteProduct cp : qr.getCompleteProducts()) {
 				if (queryResponse.getCompleteProducts().size()<limit) {
 					queryResponse.getCompleteProducts().add( cp );
 				}
 			}
-			
+
 			queryResponse.setNumFound( qr.getNumFound() );
 			start = offset+queryResponse.getCompleteProducts().size();
 			if (limit<0) {
-			  limit = queryResponse.getNumFound(); // retrieve ALL results
+				limit = queryResponse.getNumFound(); // retrieve ALL results
 			}
 			if (start>=queryResponse.getNumFound()) {
-			  break; // don't query any longer
+				break; // don't query any longer
 			}
-			
+
 		}
-		
+
 		LOG.info("Total number of products found="+queryResponse.getNumFound());
 		LOG.info("Total number of products returned="+queryResponse.getCompleteProducts().size());
 		return queryResponse;
-		
+
 	}
 
 	@Override
@@ -308,7 +324,7 @@ public class SolrCatalog implements Catalog {
 		params.put("q", new String[] { "*:*" } );
 		// use the product type name as query parameter
 		params.put("fq", new String[] { Parameters.PRODUCT_TYPE_NAME+":"+type.getName() } );
-		
+
 		// query Solr for all matching products
 		return getProducts(params, 0, -1).getProducts(); // get ALL products
 
@@ -316,28 +332,28 @@ public class SolrCatalog implements Catalog {
 
 	@Override
 	public Metadata getMetadata(Product product) throws CatalogException {
-		
+
 		CompleteProduct cp = getCompleteProductById(product.getProductId());
 		return cp.getMetadata();
-		
+
 	}
 
 	@Override
 	public Metadata getReducedMetadata(Product product, List<String> elements) throws CatalogException {
-		
+
 		// build HTTP request
 		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{Parameters.PRODUCT_ID+":"+product.getProductId()} );
 		// request metadata elements explicitly
 		params.put("fl", elements.toArray(new String[elements.size()]) );
-		
+
 		// execute request
 		String doc = solrClient.query(params, productSerializer.getMimeType());
-		
+
 		// parse response
 		CompleteProduct cp = extractCompleteProduct(doc);
 		return cp.getMetadata();
-		
+
 	}
 
 	/**
@@ -346,50 +362,50 @@ public class SolrCatalog implements Catalog {
 	 */
 	@Override
 	public List<String> query(Query query, ProductType type) throws CatalogException {
-		
-    // execute request for ALL results
-    QueryResponse queryResponse =  this.getProducts(query, type, 0, -1); // get ALL products 
+
+		// execute request for ALL results
+		QueryResponse queryResponse =  this.getProducts(query, type, 0, -1); // get ALL products
 
 		// extract ids from products
 		List<String> ids = new ArrayList<String>();
 		for (CompleteProduct cp : queryResponse.getCompleteProducts()) {
 			ids.add(cp.getProduct().getProductId());
 		}
-		
+
 		return ids;
-		
+
 	}
 
 	@Override
-	public List<Product> getTopNProducts(int n) throws CatalogException {		
-				
+	public List<Product> getTopNProducts(int n) throws CatalogException {
+
 		// retrieve most recent n products from Solr
 		String doc = solrClient.queryProductsByDate(n, productSerializer.getMimeType());
-		
+
 		// parse Solr response into Product objects
 		return this.getProductsFromDocument(doc);
-		
+
 	}
-	
+
 	@Override
 	public ProductPage pagedQuery(Query query, ProductType type, int pageNum) throws CatalogException {
-				
-		
-    // execute request for one page of results
-    int offset = (pageNum-1)*Parameters.PAGE_SIZE;
-    int limit = Parameters.PAGE_SIZE;
-    QueryResponse queryResponse = this.getProducts(query, type, offset, limit);
 
-    // build product page from query response
-    return newProductPage(pageNum, queryResponse);
-		
+
+		// execute request for one page of results
+		int offset = (pageNum-1)*Parameters.PAGE_SIZE;
+		int limit = Parameters.PAGE_SIZE;
+		QueryResponse queryResponse = this.getProducts(query, type, offset, limit);
+
+		// build product page from query response
+		return newProductPage(pageNum, queryResponse);
+
 	}
-	
+
 	@Override
 	public ProductPage getFirstPage(ProductType type) {
 		try {
 			return this.pagedQuery(new Query(), type, 1);
-			
+
 		} catch(CatalogException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
@@ -397,82 +413,82 @@ public class SolrCatalog implements Catalog {
 
 	@Override
 	public ProductPage getLastProductPage(ProductType type) {
-		
+
 		try {
-			
+
 			// query for total number of products of this type
 			int numTotalResults = this.getNumProducts(type);
-			
+
 			// compute last page number
 			int numOfPages = PaginationUtils.getTotalPage(numTotalResults, Parameters.PAGE_SIZE);
-			
+
 			// request last page
 			return pagedQuery(new Query(), type, numOfPages);
-		
+
 		} catch(CatalogException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		
+
 	}
 
 	@Override
 	public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
-		
+
 		int nextPageNumber = currentPage.getPageNum()+1;
 		if (nextPageNumber>currentPage.getTotalPages()) {
-		  throw new RuntimeException("Invalid next page number: " + nextPageNumber);
+			throw new RuntimeException("Invalid next page number: " + nextPageNumber);
 		}
 
 		try {
 			return this.pagedQuery(new Query(), type, currentPage.getPageNum()+1);
-			
+
 		} catch(CatalogException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		
+
 	}
 
 	@Override
 	public ProductPage getPrevPage(ProductType type, ProductPage currentPage) {
-		
+
 		int prevPageNumber = currentPage.getPageNum()-1;
 		if (prevPageNumber<=0) {
-		  throw new RuntimeException("Invalid previous page number: " + prevPageNumber);
+			throw new RuntimeException("Invalid previous page number: " + prevPageNumber);
 		}
-		
+
 		try {
 			return this.pagedQuery(new Query(), type, prevPageNumber);
-			
+
 		} catch(CatalogException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Common functionality for extracting products from a Solr response document.
 	 * @param doc
 	 * @return
 	 */
 	private List<Product> getProductsFromDocument(String doc) throws CatalogException {
-		
+
 		// extract full product information from Solr response
 		QueryResponse queryResponse = productSerializer.deserialize(doc);
-		
+
 		// return products only
 		return queryResponse.getProducts();
-		
+
 	}
 
 	@Override
 	public List<Product> getTopNProducts(int n, ProductType type) throws CatalogException {
-		
+
 		// retrieve most recent n products from Solr
 		String doc = solrClient.queryProductsByDateAndType(n, type, productSerializer.getMimeType());
-		
+
 		// parse Solr response into Product objects
 		return this.getProductsFromDocument(doc);
-		
+
 	}
 
 	@Override
@@ -484,43 +500,43 @@ public class SolrCatalog implements Catalog {
 
 	@Override
 	public int getNumProducts(ProductType type) throws CatalogException {
-		
+
 		// build query parameters
 		Map<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[] { "CAS.ProductTypeName:"+type.getName() } );
 		params.put("rows", new String[] { "0" } ); // don't return any results
-		
+
 		// execute query
 		String response = solrClient.query(params, productSerializer.getMimeType());
-		
+
 		// parse response
 		QueryResponse queryResponse = productSerializer.deserialize(response);
 		return queryResponse.getNumFound();
-		
+
 	}
-	
+
 	private CompleteProduct getCompleteProductById(String productId) throws CatalogException {
-							
+
 		// request document with given id
 		String doc = solrClient.queryProductById(productId, productSerializer.getMimeType());
-		
+
 		// parse document into complete product
 		return extractCompleteProduct(doc);
-		
+
 	}
-	
-	private CompleteProduct getCompleteProductByName(String productName) throws CatalogException {	
-		
+
+	private CompleteProduct getCompleteProductByName(String productName) throws CatalogException {
+
 		// request document with given id
 		String doc = solrClient.queryProductByName(productName, productSerializer.getMimeType());
-		
+
 		// parse document into complete product
 		return extractCompleteProduct(doc);
-		
+
 	}
-	
+
 	private CompleteProduct extractCompleteProduct(String doc) throws CatalogException {
-		
+
 		// deserialize document into Product
 		LOG.info("Parsing Solr document: "+doc);
 		QueryResponse queryResponse = productSerializer.deserialize(doc);
@@ -532,7 +548,7 @@ public class SolrCatalog implements Catalog {
 		} else {
 			return queryResponse.getCompleteProducts().get(0);
 		}
-			
+
 	}
 
 	/**
@@ -541,7 +557,7 @@ public class SolrCatalog implements Catalog {
 	 * @return
 	 */
 	private ProductPage newProductPage(int pageNum, QueryResponse queryResponse) {
-		
+
 		ProductPage page = new ProductPage();
 		page.setPageNum(pageNum);
 		page.setPageSize(queryResponse.getProducts().size());
@@ -549,7 +565,7 @@ public class SolrCatalog implements Catalog {
 		page.setPageProducts(queryResponse.getProducts());
 		page.setTotalPages(PaginationUtils.getTotalPage(queryResponse.getNumFound(), Parameters.PAGE_SIZE));
 		return page;
-		
+
 	}
 
 }
