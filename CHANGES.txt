@@ -3,6 +3,10 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-938 update netcdf (magicaltrout)
+
+* OODT-943 update javadoc and site plugin versions (magicaltrout)
+
 * OODT-931 CAS Crawler and metadata preconditions should say what preconditions 
   failed (mattmann)
 

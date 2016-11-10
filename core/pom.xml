@@ -154,8 +154,13 @@ the License.
       </dependency>
       <dependency>
         <groupId>edu.ucar</groupId>
-        <artifactId>netcdf</artifactId>
-        <version>4.2</version>
+        <artifactId>netcdf4</artifactId>
+        <version>4.5.5</version>
+      </dependency>
+      <dependency>
+        <groupId>edu.ucar</groupId>
+        <artifactId>opendap</artifactId>
+        <version>2.2.2</version>
       </dependency>
       <dependency>
         <groupId>hsqldb</groupId>
