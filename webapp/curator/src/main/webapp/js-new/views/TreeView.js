@@ -108,6 +108,8 @@ define(["jquery",
                 for (var i = 0; i < data.selected.length; i++) {
                     var node = data.instance.get_node(data.selected[i]);
                     var path = node.text;
+                    if(node.state.disabled)
+                        continue;
                     //Do NOT allow selection of directories
                     if (node.original.type == "DIRECTORY")
                         continue;
