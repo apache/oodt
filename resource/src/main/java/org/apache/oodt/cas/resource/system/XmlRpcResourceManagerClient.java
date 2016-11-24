@@ -20,6 +20,14 @@ package org.apache.oodt.cas.resource.system;
 
 
 //OODTimports
+import org.apache.http.auth.AuthSchemeProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpContext;
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
@@ -29,9 +37,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.*;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 
 //APACHE imports
-import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.*;
 
 //JDK imports
 import java.io.File;
@@ -79,7 +85,7 @@ public class XmlRpcResourceManagerClient {
      * @param url
      *            The url pointer to the xml rpc resource manager service.
      */
-    public XmlRpcResourceManagerClient(URL url) {
+    public XmlRpcResourceManagerClient(final URL url) {
         // set up the configuration, if there is any
         if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
             String configFile = System
@@ -98,20 +104,57 @@ public class XmlRpcResourceManagerClient {
 
         }
 
-        CommonsXmlRpcTransportFactory transportFactory = new CommonsXmlRpcTransportFactory(
-                url);
-        int connectionTimeoutMins = Integer
-            .getInteger(
-                "org.apache.oodt.cas.resource.system.xmlrpc.connectionTimeout.minutes",
-                VAL);
-        int connectionTimeout = connectionTimeoutMins * INT * 1000;
-        int requestTimeoutMins = Integer
-            .getInteger(
-                "org.apache.oodt.cas.resource.system.xmlrpc.requestTimeout.minutes",
-                VAL1);
-        int requestTimeout = requestTimeoutMins * INT1 * 1000;
-        transportFactory.setConnectionTimeout(connectionTimeout);
-        transportFactory.setTimeout(requestTimeout);
+        XmlRpcTransportFactory transportFactory = new XmlRpcTransportFactory() {
+
+
+            public XmlRpcTransport createTransport()
+                    throws XmlRpcClientException {
+                HttpRequestRetryHandler myRetryHandler = new HttpRequestRetryHandler() {
+                    public boolean retryRequest(
+                            IOException exception,
+                            int count,
+                            HttpContext context) {
+                        if (count < Integer
+                                .getInteger(
+                                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retries",
+                                        3)) {
+                            try {
+                                Thread
+                                        .sleep(Integer
+                                                .getInteger(
+                                                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retry.interval.seconds",
+                                                        0) * 1000);
+                                return true;
+                            } catch (Exception ignored) {
+                            }
+                        }
+                        return false;
+                    }
+                };
+                RequestConfig config = RequestConfig.custom()
+                        .setSocketTimeout(Integer
+                                .getInteger(
+                                        "org.apache.oodt.cas.resource.system.xmlrpc.connectionTimeout.minutes",
+                                        20) * 60 * 1000)
+                        .setConnectTimeout(Integer
+                                .getInteger(
+                                        "org.apache.oodt.cas.resource.system.xmlrpc.requestTimeout.minutes",
+                                        60) * 60 * 1000)
+                        .build();
+                Registry<AuthSchemeProvider> r = RegistryBuilder.<AuthSchemeProvider>create().build();
+
+                HttpClient client = HttpClients.custom().setRetryHandler(myRetryHandler).setDefaultAuthSchemeRegistry(r).setDefaultRequestConfig(config).build();
+
+                CommonsXmlRpcTransport transport = new CommonsXmlRpcTransport(url, client);
+                return transport;
+            }
+
+            @Override
+            public void setProperty(String s, Object o) {
+
+            }
+        };
+
         client = new XmlRpcClient(url, transportFactory);
         resMgrUrl = url;
     }
