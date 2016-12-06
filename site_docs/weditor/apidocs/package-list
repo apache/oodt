@@ -1,0 +1,11 @@
+org.apache.oodt.cas.workflow.gui
+org.apache.oodt.cas.workflow.gui.menu
+org.apache.oodt.cas.workflow.gui.model
+org.apache.oodt.cas.workflow.gui.model.repo
+org.apache.oodt.cas.workflow.gui.perspective
+org.apache.oodt.cas.workflow.gui.perspective.build
+org.apache.oodt.cas.workflow.gui.perspective.view
+org.apache.oodt.cas.workflow.gui.perspective.view.impl
+org.apache.oodt.cas.workflow.gui.toolbox
+org.apache.oodt.cas.workflow.gui.util
+org.apache.oodt.cas.workflow.gui.util.exceptions

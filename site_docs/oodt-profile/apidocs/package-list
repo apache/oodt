@@ -1,0 +1,8 @@
+org.apache.oodt.profile
+org.apache.oodt.profile.activity
+org.apache.oodt.profile.gui
+org.apache.oodt.profile.gui.pstructs
+org.apache.oodt.profile.handlers
+org.apache.oodt.profile.handlers.cas
+org.apache.oodt.profile.handlers.cas.util
+org.apache.oodt.profile.handlers.lightweight

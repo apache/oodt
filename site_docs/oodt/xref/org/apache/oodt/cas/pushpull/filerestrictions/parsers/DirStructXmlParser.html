@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>DirStructXmlParser xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../../apidocs/org/apache/oodt/cas/pushpull/filerestrictions/parsers/DirStructXmlParser.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_comment">/*</em>
+<a name="2" href="#2">2</a>   <em class="jxr_comment"> * Licensed to the Apache Software Foundation (ASF) under one or more</em>
+<a name="3" href="#3">3</a>   <em class="jxr_comment"> * contributor license agreements.  See the NOTICE file distributed with</em>
+<a name="4" href="#4">4</a>   <em class="jxr_comment"> * this work for additional information regarding copyright ownership.</em>
+<a name="5" href="#5">5</a>   <em class="jxr_comment"> * The ASF licenses this file to You under the Apache License, Version 2.0</em>
+<a name="6" href="#6">6</a>   <em class="jxr_comment"> * (the "License"); you may not use this file except in compliance with</em>
+<a name="7" href="#7">7</a>   <em class="jxr_comment"> * the License.  You may obtain a copy of the License at</em>
+<a name="8" href="#8">8</a>   <em class="jxr_comment"> *</em>
+<a name="9" href="#9">9</a>   <em class="jxr_comment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a name="10" href="#10">10</a>  <em class="jxr_comment"> *</em>
+<a name="11" href="#11">11</a>  <em class="jxr_comment"> * Unless required by applicable law or agreed to in writing, software</em>
+<a name="12" href="#12">12</a>  <em class="jxr_comment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a name="13" href="#13">13</a>  <em class="jxr_comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a name="14" href="#14">14</a>  <em class="jxr_comment"> * See the License for the specific language governing permissions and</em>
+<a name="15" href="#15">15</a>  <em class="jxr_comment"> * limitations under the License.</em>
+<a name="16" href="#16">16</a>  <em class="jxr_comment"> */</em>
+<a name="17" href="#17">17</a>  
+<a name="18" href="#18">18</a>  
+<a name="19" href="#19">19</a>  <strong class="jxr_keyword">package</strong> org.apache.oodt.cas.pushpull.filerestrictions.parsers;
+<a name="20" href="#20">20</a>  
+<a name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.metadata.Metadata;
+<a name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
+<a name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.metadata.util.PathUtils;
+<a name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.exceptions.ParserException;
+<a name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.expressions.GlobalVariables;
+<a name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.expressions.Method;
+<a name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.expressions.Variable;
+<a name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.filerestrictions.Parser;
+<a name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
+<a name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
+<a name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.commons.exceptions.CommonsException;
+<a name="32" href="#32">32</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.commons.xml.XMLUtils;
+<a name="33" href="#33">33</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.Element;
+<a name="34" href="#34">34</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.Node;
+<a name="35" href="#35">35</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.NodeList;
+<a name="36" href="#36">36</a>  <strong class="jxr_keyword">import</strong> org.xml.sax.InputSource;
+<a name="37" href="#37">37</a>  
+<a name="38" href="#38">38</a>  <strong class="jxr_keyword">import</strong> java.io.FileInputStream;
+<a name="39" href="#39">39</a>  <strong class="jxr_keyword">import</strong> java.text.ParseException;
+<a name="40" href="#40">40</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ConcurrentHashMap;
+<a name="41" href="#41">41</a>  <strong class="jxr_keyword">import</strong> java.util.StringTokenizer;
+<a name="42" href="#42">42</a>  <strong class="jxr_keyword">import</strong> java.util.logging.Level;
+<a name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> java.util.logging.Logger;
+<a name="44" href="#44">44</a>  
+<a name="45" href="#45">45</a>  <strong class="jxr_keyword">import</strong> javax.xml.parsers.DocumentBuilderFactory;
+<a name="46" href="#46">46</a>  
+<a name="47" href="#47">47</a>  
+<a name="48" href="#48">48</a>  <em class="jxr_javadoccomment">/**</em>
+<a name="49" href="#49">49</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="50" href="#50">50</a>  <em class="jxr_javadoccomment"> * @author bfoster</em>
+<a name="51" href="#51">51</a>  <em class="jxr_javadoccomment"> * @version $Revision$</em>
+<a name="52" href="#52">52</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="53" href="#53">53</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a name="54" href="#54">54</a>  <em class="jxr_javadoccomment"> * Describe your class here</em>
+<a name="55" href="#55">55</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;.</em>
+<a name="56" href="#56">56</a>  <em class="jxr_javadoccomment"> */</em>
+<a name="57" href="#57">57</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/parsers/DirStructXmlParser.html">DirStructXmlParser</a> implements <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/Parser.html">Parser</a> {
+<a name="58" href="#58">58</a>  
+<a name="59" href="#59">59</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger LOG = Logger.getLogger(DirStructXmlParser.<strong class="jxr_keyword">class</strong>
+<a name="60" href="#60">60</a>              .getName());
+<a name="61" href="#61">61</a>      
+<a name="62" href="#62">62</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> ConcurrentHashMap&lt;String, Method&gt; methodRepo = <strong class="jxr_keyword">new</strong> ConcurrentHashMap&lt;String, Method&gt;();
+<a name="63" href="#63">63</a>  
+<a name="64" href="#64">64</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/parsers/DirStructXmlParser.html">DirStructXmlParser</a>() {}
+<a name="65" href="#65">65</a>  
+<a name="66" href="#66">66</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFileStructure.html">VirtualFileStructure</a> parse(FileInputStream xmlFile, <a href="../../../../../../../org/apache/oodt/cas/metadata/Metadata.html">Metadata</a> metadata)
+<a name="67" href="#67">67</a>              <strong class="jxr_keyword">throws</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/exceptions/ParserException.html">ParserException</a> {
+<a name="68" href="#68">68</a>          <strong class="jxr_keyword">try</strong> {
+<a name="69" href="#69">69</a>              String initialCdDir = <span class="jxr_string">"/"</span>;
+<a name="70" href="#70">70</a>              <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFile.html">VirtualFile</a> root = <strong class="jxr_keyword">null</strong>;
+<a name="71" href="#71">71</a>              NodeList list = (DocumentBuilderFactory.newInstance()
+<a name="72" href="#72">72</a>                      .newDocumentBuilder().parse(<strong class="jxr_keyword">new</strong> InputSource(xmlFile)))
+<a name="73" href="#73">73</a>                      .getDocumentElement().getChildNodes();
+<a name="74" href="#74">74</a>              <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFile.html">VirtualFile</a> currentFile;
+<a name="75" href="#75">75</a>              <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; list.getLength(); i++) {
+<a name="76" href="#76">76</a>                  Node node = list.item(i);
+<a name="77" href="#77">77</a>                  <strong class="jxr_keyword">if</strong> (node.getNodeName().equals(<span class="jxr_string">"dirstruct"</span>)) {
+<a name="78" href="#78">78</a>  
+<a name="79" href="#79">79</a>                      <em class="jxr_comment">// parse out starting path</em>
+<a name="80" href="#80">80</a>                      String startingPath = ((Element) node)
+<a name="81" href="#81">81</a>                              .getAttribute(<span class="jxr_string">"starting_path"</span>);
+<a name="82" href="#82">82</a>                          root = (currentFile = <strong class="jxr_keyword">new</strong> VirtualFile(
+<a name="83" href="#83">83</a>                                  initialCdDir = startingPath, <strong class="jxr_keyword">true</strong>))
+<a name="84" href="#84">84</a>                                  .getRootDir();
+<a name="85" href="#85">85</a>                          <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFile.html">VirtualFile</a> temp = currentFile.getParentFile();
+<a name="86" href="#86">86</a>                          <strong class="jxr_keyword">while</strong> (temp != <strong class="jxr_keyword">null</strong>) {
+<a name="87" href="#87">87</a>                              temp.setNoDirs(<strong class="jxr_keyword">true</strong>);
+<a name="88" href="#88">88</a>                              temp.setNoFiles(<strong class="jxr_keyword">true</strong>);
+<a name="89" href="#89">89</a>                              temp = temp.getParentFile();
+<a name="90" href="#90">90</a>                          }
+<a name="91" href="#91">91</a>                      <em class="jxr_comment">// parse the directory structure</em>
+<a name="92" href="#92">92</a>                      parseDirstructXML(node.getChildNodes(), currentFile);
+<a name="93" href="#93">93</a>  
+<a name="94" href="#94">94</a>                  } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (node.getNodeName().equals(<span class="jxr_string">"variables"</span>)) {
+<a name="95" href="#95">95</a>                      parseVariablesXML(node.getChildNodes());
+<a name="96" href="#96">96</a>                  } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (node.getNodeName().equals(<span class="jxr_string">"methods"</span>)) {
+<a name="97" href="#97">97</a>                      parseMethodsXML(node.getChildNodes());
+<a name="98" href="#98">98</a>                  }
+<a name="99" href="#99">99</a>              }
+<a name="100" href="#100">100</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFileStructure.html">VirtualFileStructure</a>(initialCdDir, root);
+<a name="101" href="#101">101</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="102" href="#102">102</a>             LOG.log(Level.SEVERE, e.getMessage());
+<a name="103" href="#103">103</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/exceptions/ParserException.html">ParserException</a>(<span class="jxr_string">"Failed to parse XML file : "</span>
+<a name="104" href="#104">104</a>                     + e.getMessage());
+<a name="105" href="#105">105</a>         }
+<a name="106" href="#106">106</a>     }
+<a name="107" href="#107">107</a> 
+<a name="108" href="#108">108</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> parseDirstructXML(NodeList list, <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFile.html">VirtualFile</a> currentLoadFile) {
+<a name="109" href="#109">109</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; list.getLength(); i++) {
+<a name="110" href="#110">110</a>             Node dir = list.item(i);
+<a name="111" href="#111">111</a>             <strong class="jxr_keyword">if</strong> (dir.getNodeName().equals(<span class="jxr_string">"dir"</span>)) {
+<a name="112" href="#112">112</a>                 String dirName = replaceVariablesAndMethods(((Element) dir)
+<a name="113" href="#113">113</a>                         .getAttribute(<span class="jxr_string">"name"</span>));
+<a name="114" href="#114">114</a>                 currentLoadFile.addChild(<strong class="jxr_keyword">new</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFile.html">VirtualFile</a>(dirName, <strong class="jxr_keyword">true</strong>));
+<a name="115" href="#115">115</a>                 NodeList children;
+<a name="116" href="#116">116</a>                 <strong class="jxr_keyword">if</strong> ((children = dir.getChildNodes()).getLength() &gt; 0) {
+<a name="117" href="#117">117</a>                     parseDirstructXML(children, currentLoadFile.getChild(
+<a name="118" href="#118">118</a>                             dirName, <strong class="jxr_keyword">true</strong>));
+<a name="119" href="#119">119</a>                 }
+<a name="120" href="#120">120</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (dir.getNodeName().equals(<span class="jxr_string">"nodirs"</span>)) {
+<a name="121" href="#121">121</a>                 currentLoadFile.setNoDirs(<strong class="jxr_keyword">true</strong>);
+<a name="122" href="#122">122</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (dir.getNodeName().equals(<span class="jxr_string">"nofiles"</span>)) {
+<a name="123" href="#123">123</a>                 currentLoadFile.setNoFiles(<strong class="jxr_keyword">true</strong>);
+<a name="124" href="#124">124</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (dir.getNodeName().equals(<span class="jxr_string">"file"</span>)) {
+<a name="125" href="#125">125</a>                 <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFile.html">VirtualFile</a> vf = <strong class="jxr_keyword">new</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/filerestrictions/VirtualFile.html">VirtualFile</a>(
+<a name="126" href="#126">126</a>                         replaceVariablesAndMethods(((Element) dir)
+<a name="127" href="#127">127</a>                                 .getAttribute(<span class="jxr_string">"name"</span>)), false);
+<a name="128" href="#128">128</a>                 vf.setNoDirs(<strong class="jxr_keyword">true</strong>);
+<a name="129" href="#129">129</a>                 currentLoadFile.addChild(vf);
+<a name="130" href="#130">130</a>             }
+<a name="131" href="#131">131</a>         }
+<a name="132" href="#132">132</a>     }
+<a name="133" href="#133">133</a> 
+<a name="134" href="#134">134</a>     <strong class="jxr_keyword">private</strong> String replaceVariablesAndMethods(String input) {
+<a name="135" href="#135">135</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; input.length(); i++) {
+<a name="136" href="#136">136</a>             <strong class="jxr_keyword">char</strong> c = input.charAt(i);
+<a name="137" href="#137">137</a>             <strong class="jxr_keyword">switch</strong> (c) {
+<a name="138" href="#138">138</a>             <strong class="jxr_keyword">case</strong> '$':
+<a name="139" href="#139">139</a>                 <strong class="jxr_keyword">try</strong> {
+<a name="140" href="#140">140</a>                     <strong class="jxr_keyword">if</strong> (input.charAt(i + 1) == '{') {
+<a name="141" href="#141">141</a>                         StringBuilder variable = <strong class="jxr_keyword">new</strong> StringBuilder(<span class="jxr_string">""</span>);
+<a name="142" href="#142">142</a>                         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> j = i + 2; j &lt; input.length(); j++) {
+<a name="143" href="#143">143</a>                             <strong class="jxr_keyword">char</strong> ch = input.charAt(j);
+<a name="144" href="#144">144</a>                             <strong class="jxr_keyword">if</strong> ((ch &lt;= 'Z' &amp;&amp; ch &gt;= 'A')
+<a name="145" href="#145">145</a>                                     || (ch &lt;= 'z' &amp;&amp; ch &gt;= 'a')
+<a name="146" href="#146">146</a>                                     || (ch &lt;= '9' &amp;&amp; ch &gt;= '0') 
+<a name="147" href="#147">147</a>                                     || ch == '_') {
+<a name="148" href="#148">148</a>                               variable.append(ch);
+<a name="149" href="#149">149</a>                             } <strong class="jxr_keyword">else</strong> {
+<a name="150" href="#150">150</a>                               <strong class="jxr_keyword">break</strong>;
+<a name="151" href="#151">151</a>                             }
+<a name="152" href="#152">152</a>                         }
+<a name="153" href="#153">153</a>                         <a href="../../../../../../../org/apache/oodt/cas/pushpull/expressions/Variable.html">Variable</a> v = GlobalVariables.ConcurrentHashMap.get(variable
+<a name="154" href="#154">154</a>                                 .toString());
+<a name="155" href="#155">155</a>                         <strong class="jxr_keyword">if</strong> (v == <strong class="jxr_keyword">null</strong>) {
+<a name="156" href="#156">156</a>                           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Exception(<span class="jxr_string">"No variable defined with name '"</span> + variable.toString() + <span class="jxr_string">"'"</span>);
+<a name="157" href="#157">157</a>                         }
+<a name="158" href="#158">158</a>                         input = input.replaceFirst(<span class="jxr_string">"&#92;&#92;$&#92;&#92;{"</span> + variable + <span class="jxr_string">"&#92;&#92;}"</span>, v.toString());
+<a name="159" href="#159">159</a>                         i = i + v.toString().length();
+<a name="160" href="#160">160</a>                     }
+<a name="161" href="#161">161</a>                 } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="162" href="#162">162</a>                 	LOG.log(Level.WARNING, <span class="jxr_string">"Failed to replace variable in '"</span> + input + <span class="jxr_string">" for i = '"</span> + i + <span class="jxr_string">"' : "</span> + e.getMessage(), e);
+<a name="163" href="#163">163</a>                 }
+<a name="164" href="#164">164</a>                 <strong class="jxr_keyword">break</strong>;
+<a name="165" href="#165">165</a>             <strong class="jxr_keyword">case</strong> '%':
+<a name="166" href="#166">166</a>                 <strong class="jxr_keyword">try</strong> {
+<a name="167" href="#167">167</a>                     StringBuilder method = <strong class="jxr_keyword">new</strong> StringBuilder(<span class="jxr_string">""</span>);
+<a name="168" href="#168">168</a>                     <strong class="jxr_keyword">int</strong> j = i + 1;
+<a name="169" href="#169">169</a>                     <strong class="jxr_keyword">for</strong> (; j &lt; input.length(); j++) {
+<a name="170" href="#170">170</a>                         <strong class="jxr_keyword">char</strong> ch = input.substring(j, j + 1).charAt(0);
+<a name="171" href="#171">171</a>                         <strong class="jxr_keyword">if</strong> ((ch &lt;= 'Z' &amp;&amp; ch &gt;= 'A')
+<a name="172" href="#172">172</a>                                 || (ch &lt;= 'z' &amp;&amp; ch &gt;= 'a')
+<a name="173" href="#173">173</a>                                 || (ch &lt;= '9' &amp;&amp; ch &gt;= '0') || ch == '_') {
+<a name="174" href="#174">174</a>                           method.append(ch);
+<a name="175" href="#175">175</a>                         } <strong class="jxr_keyword">else</strong> {
+<a name="176" href="#176">176</a>                           <strong class="jxr_keyword">break</strong>;
+<a name="177" href="#177">177</a>                         }
+<a name="178" href="#178">178</a>                     }
+<a name="179" href="#179">179</a> 
+<a name="180" href="#180">180</a>                     <strong class="jxr_keyword">if</strong> (input.substring(j, j + 1).charAt(0) == '(') {
+<a name="181" href="#181">181</a>                         <a href="../../../../../../../org/apache/oodt/cas/pushpull/expressions/Method.html">Method</a> m = methodRepo.get(method.toString());
+<a name="182" href="#182">182</a>                         StringTokenizer st = <strong class="jxr_keyword">new</strong> StringTokenizer(input
+<a name="183" href="#183">183</a>                                 .substring(j, input.substring(j).indexOf(<span class="jxr_string">")"</span>)
+<a name="184" href="#184">184</a>                                         + j), <span class="jxr_string">"#\&quot;, ()"</span>);
+<a name="185" href="#185">185</a>                         <strong class="jxr_keyword">while</strong> (st.hasMoreTokens()) {
+<a name="186" href="#186">186</a>                             String arg = st.nextToken();
+<a name="187" href="#187">187</a>                             m.addArg(<strong class="jxr_keyword">null</strong>, arg);
+<a name="188" href="#188">188</a>                         }
+<a name="189" href="#189">189</a>                         String returnValue = m.execute().toString();
+<a name="190" href="#190">190</a>                         input = input.substring(0, i)
+<a name="191" href="#191">191</a>                                 + returnValue
+<a name="192" href="#192">192</a>                                 + input.substring(input.substring(i).indexOf(
+<a name="193" href="#193">193</a>                                         <span class="jxr_string">")"</span>)
+<a name="194" href="#194">194</a>                                         + 1 + i);
+<a name="195" href="#195">195</a>                         i = i + returnValue.length();
+<a name="196" href="#196">196</a>                     } <strong class="jxr_keyword">else</strong> {
+<a name="197" href="#197">197</a>                         LOG.log(Level.SEVERE, <span class="jxr_string">"Invalid method signature in "</span>
+<a name="198" href="#198">198</a>                                 + input + <span class="jxr_string">" near "</span> + method);
+<a name="199" href="#199">199</a>                         <strong class="jxr_keyword">break</strong>;
+<a name="200" href="#200">200</a>                     }
+<a name="201" href="#201">201</a>                 } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a name="202" href="#202">202</a>                 }
+<a name="203" href="#203">203</a>                 <strong class="jxr_keyword">break</strong>;
+<a name="204" href="#204">204</a>             }
+<a name="205" href="#205">205</a>         }
+<a name="206" href="#206">206</a>         <strong class="jxr_keyword">return</strong> input;
+<a name="207" href="#207">207</a>     }
+<a name="208" href="#208">208</a> 
+<a name="209" href="#209">209</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> parseVariablesXML(NodeList list) <strong class="jxr_keyword">throws</strong> ParseException, CommonsException, CasMetadataException {
+<a name="210" href="#210">210</a> 
+<a name="211" href="#211">211</a>         <em class="jxr_comment">// loop through all variable elements</em>
+<a name="212" href="#212">212</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; list.getLength(); i++) {
+<a name="213" href="#213">213</a>             Node node = list.item(i);
+<a name="214" href="#214">214</a> 
+<a name="215" href="#215">215</a>             <em class="jxr_comment">// parse variable element</em>
+<a name="216" href="#216">216</a>             <strong class="jxr_keyword">if</strong> (node.getNodeName().equals(<span class="jxr_string">"variable"</span>)) {
+<a name="217" href="#217">217</a>                 NodeList children = node.getChildNodes();
+<a name="218" href="#218">218</a> 
+<a name="219" href="#219">219</a>                 <em class="jxr_comment">// create Variable Object</em>
+<a name="220" href="#220">220</a>                 String variableName = ((Element) node).getAttribute(<span class="jxr_string">"name"</span>);
+<a name="221" href="#221">221</a>                 <a href="../../../../../../../org/apache/oodt/cas/pushpull/expressions/Variable.html">Variable</a> variable = <strong class="jxr_keyword">new</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/expressions/Variable.html">Variable</a>(variableName);
+<a name="222" href="#222">222</a> 
+<a name="223" href="#223">223</a>                 <em class="jxr_comment">// loop through to fill Variable</em>
+<a name="224" href="#224">224</a>                 String type = <strong class="jxr_keyword">null</strong>, value = <strong class="jxr_keyword">null</strong>;
+<a name="225" href="#225">225</a>                 <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> j = 0; j &lt; children.getLength(); j++) {
+<a name="226" href="#226">226</a>                     Node child = children.item(j);
+<a name="227" href="#227">227</a> 
+<a name="228" href="#228">228</a>                     <em class="jxr_comment">// get the Variable's name</em>
+<a name="229" href="#229">229</a>                     <strong class="jxr_keyword">if</strong> (child.getNodeName().equals(<span class="jxr_string">"type"</span>)) {
+<a name="230" href="#230">230</a>                         type = XMLUtils.getSimpleElementText((Element) child,
+<a name="231" href="#231">231</a>                                 <strong class="jxr_keyword">true</strong>).toLowerCase();
+<a name="232" href="#232">232</a> 
+<a name="233" href="#233">233</a>                         <em class="jxr_comment">// get the Variable's value</em>
+<a name="234" href="#234">234</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (child.getNodeName().equals(<span class="jxr_string">"value"</span>)) {
+<a name="235" href="#235">235</a>                         value = PathUtils.doDynamicReplacement(<a href="../../../../../../../org/apache/oodt/commons/xml/XMLUtils.html">XMLUtils</a>
+<a name="236" href="#236">236</a>                                 .getSimpleElementText((Element) child, false));
+<a name="237" href="#237">237</a> 
+<a name="238" href="#238">238</a>                         <em class="jxr_comment">// get the Variable's value's precision infomation</em>
+<a name="239" href="#239">239</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (child.getNodeName().equals(<span class="jxr_string">"precision"</span>)) {
+<a name="240" href="#240">240</a>                         NodeList grandChildren = child.getChildNodes();
+<a name="241" href="#241">241</a>                         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> k = 0; k &lt; grandChildren.getLength(); k++) {
+<a name="242" href="#242">242</a>                             Node grandChild = grandChildren.item(k);
+<a name="243" href="#243">243</a>                             <em class="jxr_comment">// get the precision</em>
+<a name="244" href="#244">244</a>                             <strong class="jxr_keyword">if</strong> (grandChild.getNodeName().equals(<span class="jxr_string">"locations"</span>)) {
+<a name="245" href="#245">245</a>                                 variable.setPrecision(Integer.parseInt(<a href="../../../../../../../org/apache/oodt/commons/xml/XMLUtils.html">XMLUtils</a>
+<a name="246" href="#246">246</a>                                         .getSimpleElementText((Element) grandChild, <strong class="jxr_keyword">true</strong>)));
+<a name="247" href="#247">247</a>                                 <em class="jxr_comment">// get the fill character to meet the precision</em>
+<a name="248" href="#248">248</a>                                 <em class="jxr_comment">// [optional]</em>
+<a name="249" href="#249">249</a>                             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (grandChild.getNodeName().equals(<span class="jxr_string">"fill"</span>)) {
+<a name="250" href="#250">250</a>                                 variable.setFillString(
+<a name="251" href="#251">251</a>                                     XMLUtils.getSimpleElementText((Element) grandChild, false));
+<a name="252" href="#252">252</a>                                 <em class="jxr_comment">// get the side for which the fill character</em>
+<a name="253" href="#253">253</a>                                 <em class="jxr_comment">// will be applied [optional]</em>
+<a name="254" href="#254">254</a>                             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (grandChild.getNodeName().equals(<span class="jxr_string">"side"</span>)) {
+<a name="255" href="#255">255</a>                                 variable.setFillSide(
+<a name="256" href="#256">256</a>                                         (XMLUtils.getSimpleElementText((Element) grandChild, <strong class="jxr_keyword">true</strong>)
+<a name="257" href="#257">257</a>                                             .toLowerCase().equals(<span class="jxr_string">"front"</span>)) 
+<a name="258" href="#258">258</a>                                                 ? variable.FILL_FRONT
+<a name="259" href="#259">259</a>                                                 : variable.FILL_BACK);
+<a name="260" href="#260">260</a>                             }
+<a name="261" href="#261">261</a>                         }
+<a name="262" href="#262">262</a>                     }
+<a name="263" href="#263">263</a>                 }
+<a name="264" href="#264">264</a>                 <em class="jxr_comment">// determine if variable is an Integer or a String</em>
+<a name="265" href="#265">265</a>                 <strong class="jxr_keyword">if</strong> (type.equals(<span class="jxr_string">"int"</span>)) {
+<a name="266" href="#266">266</a>                     variable.setValue(Integer.valueOf(value));
+<a name="267" href="#267">267</a>                 } <strong class="jxr_keyword">else</strong> {
+<a name="268" href="#268">268</a>                   variable.setValue(value);
+<a name="269" href="#269">269</a>                 }
+<a name="270" href="#270">270</a> 
+<a name="271" href="#271">271</a>                 <em class="jxr_comment">// store Variable in list of Variables</em>
+<a name="272" href="#272">272</a>                 GlobalVariables.ConcurrentHashMap.put(variable.getName(), variable);
+<a name="273" href="#273">273</a>             }
+<a name="274" href="#274">274</a>         }
+<a name="275" href="#275">275</a>     }
+<a name="276" href="#276">276</a> 
+<a name="277" href="#277">277</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> parseMethodsXML(NodeList list) {
+<a name="278" href="#278">278</a> 
+<a name="279" href="#279">279</a>         <em class="jxr_comment">// loop though all method elements</em>
+<a name="280" href="#280">280</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; list.getLength(); i++) {
+<a name="281" href="#281">281</a>             Node node = list.item(i);
+<a name="282" href="#282">282</a>             <em class="jxr_comment">// parse method element</em>
+<a name="283" href="#283">283</a>             <strong class="jxr_keyword">if</strong> (node.getNodeName().equals(<span class="jxr_string">"method"</span>)) {
+<a name="284" href="#284">284</a>                 NodeList children = node.getChildNodes();
+<a name="285" href="#285">285</a> 
+<a name="286" href="#286">286</a>                 <em class="jxr_comment">// create Method Object</em>
+<a name="287" href="#287">287</a>                 String methodName = ((Element) node).getAttribute(<span class="jxr_string">"name"</span>);
+<a name="288" href="#288">288</a>                 <a href="../../../../../../../org/apache/oodt/cas/pushpull/expressions/Method.html">Method</a> method = <strong class="jxr_keyword">new</strong> <a href="../../../../../../../org/apache/oodt/cas/pushpull/expressions/Method.html">Method</a>(methodName);
+<a name="289" href="#289">289</a> 
+<a name="290" href="#290">290</a>                 <em class="jxr_comment">// loop through to fill Method Object</em>
+<a name="291" href="#291">291</a>                 <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> j = 0; j &lt; children.getLength(); j++) {
+<a name="292" href="#292">292</a>                     Node child = children.item(j);
+<a name="293" href="#293">293</a> 
+<a name="294" href="#294">294</a>                     <em class="jxr_comment">// get the Method's behavoir</em>
+<a name="295" href="#295">295</a>                     <strong class="jxr_keyword">if</strong> (child.getNodeName().equals(<span class="jxr_string">"action"</span>)) {
+<a name="296" href="#296">296</a>                         method.setBehavoir(XMLUtils.getSimpleElementText(
+<a name="297" href="#297">297</a>                                 (Element) child, false));
+<a name="298" href="#298">298</a> 
+<a name="299" href="#299">299</a>                         <em class="jxr_comment">// get the Method's arguments</em>
+<a name="300" href="#300">300</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (child.getNodeName().equals(<span class="jxr_string">"args"</span>)) {
+<a name="301" href="#301">301</a>                         String name, argType = <strong class="jxr_keyword">null</strong>;
+<a name="302" href="#302">302</a>                         NodeList grandChildren = child.getChildNodes();
+<a name="303" href="#303">303</a> 
+<a name="304" href="#304">304</a>                         <em class="jxr_comment">// loop for every arg element</em>
+<a name="305" href="#305">305</a>                         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> k = 0; k &lt; grandChildren.getLength(); k++) {
+<a name="306" href="#306">306</a>                             Node grandChild = grandChildren.item(k);
+<a name="307" href="#307">307</a> 
+<a name="308" href="#308">308</a>                             <em class="jxr_comment">// parse arg element</em>
+<a name="309" href="#309">309</a>                             <strong class="jxr_keyword">if</strong> (grandChild.getNodeName().equals(<span class="jxr_string">"arg"</span>)) {
+<a name="310" href="#310">310</a>                                 name = ((Element) grandChild)
+<a name="311" href="#311">311</a>                                         .getAttribute(<span class="jxr_string">"name"</span>);
+<a name="312" href="#312">312</a> 
+<a name="313" href="#313">313</a>                                 <em class="jxr_comment">// get arg element properties</em>
+<a name="314" href="#314">314</a>                                 NodeList greatGrandChildren = grandChild
+<a name="315" href="#315">315</a>                                         .getChildNodes();
+<a name="316" href="#316">316</a>                                 <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> l = 0; l &lt; greatGrandChildren
+<a name="317" href="#317">317</a>                                         .getLength(); l++) {
+<a name="318" href="#318">318</a>                                     Node greatGrandChild = greatGrandChildren
+<a name="319" href="#319">319</a>                                             .item(l);
+<a name="320" href="#320">320</a>                                     <strong class="jxr_keyword">if</strong> (greatGrandChild.getNodeName().equals(
+<a name="321" href="#321">321</a>                                             <span class="jxr_string">"type"</span>)) {
+<a name="322" href="#322">322</a>                                         argType = XMLUtils.getSimpleElementText(
+<a name="323" href="#323">323</a>                                                 (Element) greatGrandChild,
+<a name="324" href="#324">324</a>                                                 <strong class="jxr_keyword">true</strong>);
+<a name="325" href="#325">325</a>                                     }
+<a name="326" href="#326">326</a>                                 }
+<a name="327" href="#327">327</a> 
+<a name="328" href="#328">328</a>                                 <em class="jxr_comment">// create argument signature in Method</em>
+<a name="329" href="#329">329</a>                                 method
+<a name="330" href="#330">330</a>                                         .addArgSignature(
+<a name="331" href="#331">331</a>                                                 name,
+<a name="332" href="#332">332</a>                                                 ((argType.toLowerCase()
+<a name="333" href="#333">333</a>                                                         .equals(<span class="jxr_string">"int"</span>)) ? method.INT
+<a name="334" href="#334">334</a>                                                         : method.STRING));
+<a name="335" href="#335">335</a>                             }
+<a name="336" href="#336">336</a>                         }
+<a name="337" href="#337">337</a>                     }
+<a name="338" href="#338">338</a>                 }
+<a name="339" href="#339">339</a> 
+<a name="340" href="#340">340</a>                 <em class="jxr_comment">// store Method in list of Methods</em>
+<a name="341" href="#341">341</a>                 methodRepo.put(method.getName(), method);
+<a name="342" href="#342">342</a>             }
+<a name="343" href="#343">343</a>         }
+<a name="344" href="#344">344</a>     }
+<a name="345" href="#345">345</a> 
+<a name="346" href="#346">346</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

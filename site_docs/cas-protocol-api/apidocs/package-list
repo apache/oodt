@@ -1,0 +1,8 @@
+org.apache.oodt.cas.protocol
+org.apache.oodt.cas.protocol.auth
+org.apache.oodt.cas.protocol.cli.action
+org.apache.oodt.cas.protocol.config
+org.apache.oodt.cas.protocol.exceptions
+org.apache.oodt.cas.protocol.system
+org.apache.oodt.cas.protocol.util
+org.apache.oodt.cas.protocol.verify

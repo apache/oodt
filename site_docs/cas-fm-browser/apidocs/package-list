@@ -1,0 +1,7 @@
+org.apache.oodt.cas.filemgr.browser.controller
+org.apache.oodt.cas.filemgr.browser.model
+org.apache.oodt.cas.filemgr.browser.system
+org.apache.oodt.cas.filemgr.browser.view
+org.apache.oodt.cas.filemgr.browser.view.menus
+org.apache.oodt.cas.filemgr.browser.view.panels
+org.apache.oodt.cas.filemgr.browser.view.prompts

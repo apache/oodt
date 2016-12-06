@@ -1,0 +1,8 @@
+org.apache.oodt.xmlps.exceptions
+org.apache.oodt.xmlps.mapping
+org.apache.oodt.xmlps.mapping.funcs
+org.apache.oodt.xmlps.product
+org.apache.oodt.xmlps.profile
+org.apache.oodt.xmlps.queryparser
+org.apache.oodt.xmlps.structs
+org.apache.oodt.xmlps.util

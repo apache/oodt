@@ -1,0 +1,15 @@
+org.apache.oodt.commons
+org.apache.oodt.commons.activity
+org.apache.oodt.commons.database
+org.apache.oodt.commons.date
+org.apache.oodt.commons.exceptions
+org.apache.oodt.commons.exec
+org.apache.oodt.commons.filter
+org.apache.oodt.commons.io
+org.apache.oodt.commons.net
+org.apache.oodt.commons.object.jndi
+org.apache.oodt.commons.pagination
+org.apache.oodt.commons.spring
+org.apache.oodt.commons.spring.postprocessor
+org.apache.oodt.commons.util
+org.apache.oodt.commons.xml

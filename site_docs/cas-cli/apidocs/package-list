@@ -1,0 +1,16 @@
+org.apache.oodt.cas.cli
+org.apache.oodt.cas.cli.action
+org.apache.oodt.cas.cli.action.store
+org.apache.oodt.cas.cli.action.store.spring
+org.apache.oodt.cas.cli.construct
+org.apache.oodt.cas.cli.exception
+org.apache.oodt.cas.cli.option
+org.apache.oodt.cas.cli.option.handler
+org.apache.oodt.cas.cli.option.require
+org.apache.oodt.cas.cli.option.store
+org.apache.oodt.cas.cli.option.store.spring
+org.apache.oodt.cas.cli.option.validator
+org.apache.oodt.cas.cli.parser
+org.apache.oodt.cas.cli.presenter
+org.apache.oodt.cas.cli.printer
+org.apache.oodt.cas.cli.util

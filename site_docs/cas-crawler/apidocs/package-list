@@ -1,0 +1,11 @@
+org.apache.oodt.cas.crawl
+org.apache.oodt.cas.crawl.action
+org.apache.oodt.cas.crawl.cli.action
+org.apache.oodt.cas.crawl.cli.option.handler
+org.apache.oodt.cas.crawl.comparator
+org.apache.oodt.cas.crawl.config
+org.apache.oodt.cas.crawl.daemon
+org.apache.oodt.cas.crawl.status
+org.apache.oodt.cas.crawl.structs.exceptions
+org.apache.oodt.cas.crawl.typedetection
+org.apache.oodt.cas.crawl.util

@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>Catalog and Archive Workflow Management GUI Editor - Checkstyle report</title>
+    <link>http://oodt.apache.org/weditor/</link>
+    <description>Catalog and Archive Workflow Management GUI Editor - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <item>
+      <title>File: 39,
+             Errors: 2631,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://oodt.apache.org/weditor//checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://oodt.apache.org/weditor//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.ViewChange.java">org/apache/oodt/cas/workflow/gui/perspective/view/ViewChange.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  82
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.toolbox.package.html">org/apache/oodt/cas/workflow/gui/toolbox/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.model.ModelNode.java">org/apache/oodt/cas/workflow/gui/model/ModelNode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  189
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.util.exceptions.WorkflowException.java">org/apache/oodt/cas/workflow/gui/util/exceptions/WorkflowException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.model.ModelGraph.java">org/apache/oodt/cas/workflow/gui/model/ModelGraph.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  157
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.GraphView.java">org/apache/oodt/cas/workflow/gui/perspective/view/impl/GraphView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  337
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.MultiStatePerspective.java">org/apache/oodt/cas/workflow/gui/perspective/MultiStatePerspective.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  51
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.util.package.html">org/apache/oodt/cas/workflow/gui/util/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.ViewState.java">org/apache/oodt/cas/workflow/gui/perspective/view/ViewState.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  203
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.model.package.html">org/apache/oodt/cas/workflow/gui/model/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.toolbox.ToolBox.java">org/apache/oodt/cas/workflow/gui/toolbox/ToolBox.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  24
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.model.repo.XmlWorkflowModelRepositoryFactory.java">org/apache/oodt/cas/workflow/gui/model/repo/XmlWorkflowModelRepositoryFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.Perspective.java">org/apache/oodt/cas/workflow/gui/perspective/Perspective.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  29
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.util.exceptions.package.html">org/apache/oodt/cas/workflow/gui/util/exceptions/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.toolbox.Tool.java">org/apache/oodt/cas/workflow/gui/toolbox/Tool.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  36
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.package.html">org/apache/oodt/cas/workflow/gui/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.package.html">org/apache/oodt/cas/workflow/gui/perspective/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.build.package.html">org/apache/oodt/cas/workflow/gui/perspective/build/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.ViewListener.java">org/apache/oodt/cas/workflow/gui/perspective/view/ViewListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.DefaultPropView.java">org/apache/oodt/cas/workflow/gui/perspective/view/impl/DefaultPropView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  232
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.TreeProjectView.java">org/apache/oodt/cas/workflow/gui/perspective/view/impl/TreeProjectView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  27
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.build.BuildPerspective.java">org/apache/oodt/cas/workflow/gui/perspective/build/BuildPerspective.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  158
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.util.Line.java">org/apache/oodt/cas/workflow/gui/util/Line.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.util.GuiUtils.java">org/apache/oodt/cas/workflow/gui/util/GuiUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  247
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.menu.FileMenu.java">org/apache/oodt/cas/workflow/gui/menu/FileMenu.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  36
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.menu.EditMenu.java">org/apache/oodt/cas/workflow/gui/menu/EditMenu.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.util.IconLoader.java">org/apache/oodt/cas/workflow/gui/util/IconLoader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.menu.package.html">org/apache/oodt/cas/workflow/gui/menu/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.WorkflowGUI.java">org/apache/oodt/cas/workflow/gui/WorkflowGUI.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  71
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.GlobalConfigView.java">org/apache/oodt/cas/workflow/gui/perspective/view/impl/GlobalConfigView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  76
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.IdentifiableEdge.java">org/apache/oodt/cas/workflow/gui/perspective/view/impl/IdentifiableEdge.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  30
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.DefaultTreeView.java">org/apache/oodt/cas/workflow/gui/perspective/view/impl/DefaultTreeView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  121
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.MultiStateView.java">org/apache/oodt/cas/workflow/gui/perspective/view/MultiStateView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.package.html">org/apache/oodt/cas/workflow/gui/perspective/view/impl/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.View.java">org/apache/oodt/cas/workflow/gui/perspective/view/View.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  54
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.model.repo.package.html">org/apache/oodt/cas/workflow/gui/model/repo/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.model.repo.XmlWorkflowModelRepository.java">org/apache/oodt/cas/workflow/gui/model/repo/XmlWorkflowModelRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  288
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.impl.JungJGraphModelAdapter.java">org/apache/oodt/cas/workflow/gui/perspective/view/impl/JungJGraphModelAdapter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  78
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/weditor//checkstyle.html#org.apache.oodt.cas.workflow.gui.perspective.view.package.html">org/apache/oodt/cas/workflow/gui/perspective/view/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

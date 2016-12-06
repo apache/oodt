@@ -1,0 +1,980 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>FileRetrievalSystem xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/org/apache/oodt/cas/pushpull/retrievalsystem/FileRetrievalSystem.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_comment">/*</em>
+<a name="2" href="#2">2</a>   <em class="jxr_comment"> * Licensed to the Apache Software Foundation (ASF) under one or more</em>
+<a name="3" href="#3">3</a>   <em class="jxr_comment"> * contributor license agreements.  See the NOTICE file distributed with</em>
+<a name="4" href="#4">4</a>   <em class="jxr_comment"> * this work for additional information regarding copyright ownership.</em>
+<a name="5" href="#5">5</a>   <em class="jxr_comment"> * The ASF licenses this file to You under the Apache License, Version 2.0</em>
+<a name="6" href="#6">6</a>   <em class="jxr_comment"> * (the "License"); you may not use this file except in compliance with</em>
+<a name="7" href="#7">7</a>   <em class="jxr_comment"> * the License.  You may obtain a copy of the License at</em>
+<a name="8" href="#8">8</a>   <em class="jxr_comment"> *</em>
+<a name="9" href="#9">9</a>   <em class="jxr_comment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a name="10" href="#10">10</a>  <em class="jxr_comment"> *</em>
+<a name="11" href="#11">11</a>  <em class="jxr_comment"> * Unless required by applicable law or agreed to in writing, software</em>
+<a name="12" href="#12">12</a>  <em class="jxr_comment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a name="13" href="#13">13</a>  <em class="jxr_comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a name="14" href="#14">14</a>  <em class="jxr_comment"> * See the License for the specific language governing permissions and</em>
+<a name="15" href="#15">15</a>  <em class="jxr_comment"> * limitations under the License.</em>
+<a name="16" href="#16">16</a>  <em class="jxr_comment"> */</em>
+<a name="17" href="#17">17</a>  
+<a name="18" href="#18">18</a>  
+<a name="19" href="#19">19</a>  <strong class="jxr_keyword">package</strong> org.apache.oodt.cas.pushpull.retrievalsystem;
+<a name="20" href="#20">20</a>  
+<a name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.config.Config;
+<a name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.config.SiteInfo;
+<a name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
+<a name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.exceptions.CrawlerException;
+<a name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
+<a name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.exceptions.ThreadEvaluatorException;
+<a name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.exceptions.ToManyFailedDownloadsException;
+<a name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.exceptions.UndefinedTypeException;
+<a name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.filerestrictions.renamingconventions.RenamingConvention;
+<a name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+<a name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+<a name="32" href="#32">32</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.protocol.Protocol;
+<a name="33" href="#33">33</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.protocol.ProtocolFile;
+<a name="34" href="#34">34</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.protocol.ProtocolHandler;
+<a name="35" href="#35">35</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.protocol.RemoteSite;
+<a name="36" href="#36">36</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
+<a name="37" href="#37">37</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+<a name="38" href="#38">38</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.metadata.Metadata;
+<a name="39" href="#39">39</a>  <strong class="jxr_keyword">import</strong> org.apache.oodt.cas.metadata.util.MimeTypeUtils;
+<a name="40" href="#40">40</a>  
+<a name="41" href="#41">41</a>  
+<a name="42" href="#42">42</a>  <em class="jxr_comment">//JDK imports</em>
+<a name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> java.io.File;
+<a name="44" href="#44">44</a>  <strong class="jxr_keyword">import</strong> java.io.FileFilter;
+<a name="45" href="#45">45</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a name="46" href="#46">46</a>  <strong class="jxr_keyword">import</strong> java.util.HashSet;
+<a name="47" href="#47">47</a>  <strong class="jxr_keyword">import</strong> java.util.LinkedList;
+<a name="48" href="#48">48</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a name="49" href="#49">49</a>  <strong class="jxr_keyword">import</strong> java.util.Vector;
+<a name="50" href="#50">50</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.LinkedBlockingQueue;
+<a name="51" href="#51">51</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ThreadPoolExecutor;
+<a name="52" href="#52">52</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.TimeUnit;
+<a name="53" href="#53">53</a>  <strong class="jxr_keyword">import</strong> java.util.logging.Level;
+<a name="54" href="#54">54</a>  <strong class="jxr_keyword">import</strong> java.util.logging.Logger;
+<a name="55" href="#55">55</a>  
+<a name="56" href="#56">56</a>  <strong class="jxr_keyword">import</strong> com.google.common.base.Preconditions;
+<a name="57" href="#57">57</a>  <strong class="jxr_keyword">import</strong> com.google.common.base.Strings;
+<a name="58" href="#58">58</a>  
+<a name="59" href="#59">59</a>  <em class="jxr_javadoccomment">/**</em>
+<a name="60" href="#60">60</a>  <em class="jxr_javadoccomment"> * &lt;pre&gt;</em>
+<a name="61" href="#61">61</a>  <em class="jxr_javadoccomment"> *    Will crawl external directory structures and will download the files within these structures.</em>
+<a name="62" href="#62">62</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="63" href="#63">63</a>  <em class="jxr_javadoccomment"> *    This class's settings are set using a java .properties file which can be read in and parsed by Config.java.</em>
+<a name="64" href="#64">64</a>  <em class="jxr_javadoccomment"> *    This .properties file should have the following properties set:</em>
+<a name="65" href="#65">65</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="66" href="#66">66</a>  <em class="jxr_javadoccomment"> *   	{@literal #list of sites to crawl</em>
+<a name="67" href="#67">67</a>  <em class="jxr_javadoccomment"> *   	protocol.external.sources=&amp;lt;path-to-xml-file&amp;gt;</em>
+<a name="68" href="#68">68</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="69" href="#69">69</a>  <em class="jxr_javadoccomment"> *   	#protocol types</em>
+<a name="70" href="#70">70</a>  <em class="jxr_javadoccomment"> *   	protocolfactory.types=&amp;lt;list-of-protocols-separated-by-commas&amp;gt; (e.g. ftp,http,https,sftp)</em>
+<a name="71" href="#71">71</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="72" href="#72">72</a>  <em class="jxr_javadoccomment"> *   	#Protocol factories per types (must have one for each protocol mention in protocolfactory.types -- the property must be name</em>
+<a name="73" href="#73">73</a>  <em class="jxr_javadoccomment"> *    	# as such: protocolfactory.&amp;lt;name-of-protocol-type&amp;gt;</em>
+<a name="74" href="#74">74</a>  <em class="jxr_javadoccomment"> *   	protocolfactory.ftp=&amp;lt;path-to-java-protocolfactory-class&amp;gt; (e.g. org.apache.oodt.cas.protocol.ftp.FtpClientFactory)</em>
+<a name="75" href="#75">75</a>  <em class="jxr_javadoccomment"> *   	protocolfactory.http=&amp;lt;path-to-java-protocolfactory-class&amp;gt;</em>
+<a name="76" href="#76">76</a>  <em class="jxr_javadoccomment"> *   	protocolfactory.https=&amp;lt;path-to-java-protocolfactory-class&amp;gt;</em>
+<a name="77" href="#77">77</a>  <em class="jxr_javadoccomment"> *   	protocolfactory.sftp=&amp;lt;path-to-java-protocolfactory-class&amp;gt;</em>
+<a name="78" href="#78">78</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="79" href="#79">79</a>  <em class="jxr_javadoccomment"> *   	#configuration to make java.net.URL accept unsupported protocols -- must exist just as shown</em>
+<a name="80" href="#80">80</a>  <em class="jxr_javadoccomment"> *   	java.protocol.handler.pkgs=org.apache.oodt.cas.url.handlers</em>
+<a name="81" href="#81">81</a>  <em class="jxr_javadoccomment"> *    }</em>
+<a name="82" href="#82">82</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="83" href="#83">83</a>  <em class="jxr_javadoccomment"> *    In order to specify which external sites to crawl you must create a XML file which contains the</em>
+<a name="84" href="#84">84</a>  <em class="jxr_javadoccomment"> *    the site and necessary information needed to crawl the site, such as username and password.</em>
+<a name="85" href="#85">85</a>  <em class="jxr_javadoccomment"> *    protocol.external.sources must contain the path to this file so the crawl knows where to find it.</em>
+<a name="86" href="#86">86</a>  <em class="jxr_javadoccomment"> *    You can also train this class on how to crawl each given site.  This is also specified in an XML</em>
+<a name="87" href="#87">87</a>  <em class="jxr_javadoccomment"> *    file, whose path must be given in the first mentioned XML file which contians the username and password.</em>
+<a name="88" href="#88">88</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="89" href="#89">89</a>  <em class="jxr_javadoccomment"> *    Then schema for the external sites XML file is as such:</em>
+<a name="90" href="#90">90</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="91" href="#91">91</a>  <em class="jxr_javadoccomment"> *    	{@literal &amp;lt;sources&amp;gt;</em>
+<a name="92" href="#92">92</a>  <em class="jxr_javadoccomment"> *    	   &amp;lt;source url=&amp;quot;url-of-server&amp;quot;&amp;gt;</em>
+<a name="93" href="#93">93</a>  <em class="jxr_javadoccomment"> *    	      &amp;lt;username&amp;gt;username&amp;lt;/username&amp;gt;</em>
+<a name="94" href="#94">94</a>  <em class="jxr_javadoccomment"> *    	      &amp;lt;password&amp;gt;password&amp;lt;/password&amp;gt;</em>
+<a name="95" href="#95">95</a>  <em class="jxr_javadoccomment"> *    	      &amp;lt;dirstruct&amp;gt;path-to-xml-file&amp;lt;/dirstruct&amp;gt;</em>
+<a name="96" href="#96">96</a>  <em class="jxr_javadoccomment"> *    	      &amp;lt;crawl&amp;gt;yes-or-no&amp;lt;/crawl&amp;gt;</em>
+<a name="97" href="#97">97</a>  <em class="jxr_javadoccomment"> *    	   &amp;lt;/source&amp;gt;</em>
+<a name="98" href="#98">98</a>  <em class="jxr_javadoccomment"> *    	   ...</em>
+<a name="99" href="#99">99</a>  <em class="jxr_javadoccomment"> *    	   ...</em>
+<a name="100" href="#100">100</a> <em class="jxr_javadoccomment"> *    	   ...</em>
+<a name="101" href="#101">101</a> <em class="jxr_javadoccomment"> *    	&amp;lt;/sources\&amp;gt;}</em>
+<a name="102" href="#102">102</a> <em class="jxr_javadoccomment"> *</em>
+<a name="103" href="#103">103</a> <em class="jxr_javadoccomment"> *    You may specify as many sources as you would like by specifying multiple {@literal &amp;lt;source&amp;gt;} tags.</em>
+<a name="104" href="#104">104</a> <em class="jxr_javadoccomment"> *    In the {@literal &amp;lt;source&amp;gt;} tag, the parameter 'url' must be specified.  This is the url of the server</em>
+<a name="105" href="#105">105</a> <em class="jxr_javadoccomment"> *    you want the crawler to connect to.  It should be of the following format:</em>
+<a name="106" href="#106">106</a> <em class="jxr_javadoccomment"> *    {@literal &amp;lt;protocol&amp;gt;://&amp;lt;host&amp;gt;} (e.g. sftp://remote.computer.gov)</em>
+<a name="107" href="#107">107</a> <em class="jxr_javadoccomment"> *    If no username and password exist, then these elements can be omitted (they are optional).</em>
+<a name="108" href="#108">108</a> <em class="jxr_javadoccomment"> *    For {@literal &amp;lt;crawl&amp;gt;} place yes or no here.  This is for convenience of being able to keep record of the</em>
+<a name="109" href="#109">109</a> <em class="jxr_javadoccomment"> *    sites and their information in this XML file even if you decide that you no longer need to crawl it</em>
+<a name="110" href="#110">110</a> <em class="jxr_javadoccomment"> *    anymore (just put {@literal &amp;lt;crawl&amp;gt;no&amp;lt;/crawl&amp;gt;} and the crawl will not crawl that site).</em>
+<a name="111" href="#111">111</a> <em class="jxr_javadoccomment"> *    {@literal &amp;lt;dirStruct&amp;gt;} contains a path to another XML file which is documented in DirStruct.java javadoc.  This</em>
+<a name="112" href="#112">112</a> <em class="jxr_javadoccomment"> *    element is optional.  If no {@literal &amp;lt;dirStruct&amp;gt;} is given, then every directory will be crawled on the site</em>
+<a name="113" href="#113">113</a> <em class="jxr_javadoccomment"> *    and every encountered file will be downloaded.</em>
+<a name="114" href="#114">114</a> <em class="jxr_javadoccomment"> * &lt;/pre&gt;</em>
+<a name="115" href="#115">115</a> <em class="jxr_javadoccomment"> *</em>
+<a name="116" href="#116">116</a> <em class="jxr_javadoccomment"> * @author bfoster (Brian Foster)</em>
+<a name="117" href="#117">117</a> <em class="jxr_javadoccomment"> */</em>
+<a name="118" href="#118">118</a> <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/FileRetrievalSystem.html">FileRetrievalSystem</a> {
+<a name="119" href="#119">119</a> 
+<a name="120" href="#120">120</a>   <em class="jxr_comment">/*<em class="jxr_comment"> our log stream */</em></em>
+<a name="121" href="#121">121</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger LOG = Logger
+<a name="122" href="#122">122</a>             .getLogger(FileRetrievalSystem.<strong class="jxr_keyword">class</strong>.getName());
+<a name="123" href="#123">123</a> 
+<a name="124" href="#124">124</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> MAX_RETRIES = 3;
+<a name="125" href="#125">125</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> INT = 180;
+<a name="126" href="#126">126</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> TIMEOUT = 5000;
+<a name="127" href="#127">127</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> TIMEOUT1 = 5000;
+<a name="128" href="#128">128</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> TIMEOUT2 = 600;
+<a name="129" href="#129">129</a> 
+<a name="130" href="#130">130</a>   <strong class="jxr_keyword">private</strong> LinkedList&lt;ProtocolFile&gt; failedDownloadList;
+<a name="131" href="#131">131</a> 
+<a name="132" href="#132">132</a>     <strong class="jxr_keyword">private</strong> HashSet&lt;ProtocolFile&gt; currentlyDownloading;
+<a name="133" href="#133">133</a> 
+<a name="134" href="#134">134</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> max_allowed_failed_downloads;
+<a name="135" href="#135">135</a> 
+<a name="136" href="#136">136</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="137" href="#137">137</a> <em class="jxr_javadoccomment">     * The max number of threads able to run at the same time</em>
+<a name="138" href="#138">138</a> <em class="jxr_javadoccomment">     */</em>
+<a name="139" href="#139">139</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> max_sessions;
+<a name="140" href="#140">140</a> 
+<a name="141" href="#141">141</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> absMaxAllowedSessions = 50;
+<a name="142" href="#142">142</a> 
+<a name="143" href="#143">143</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="144" href="#144">144</a> <em class="jxr_javadoccomment">     * This is just for clarity purposes. . .I only create the amount of threads</em>
+<a name="145" href="#145">145</a> <em class="jxr_javadoccomment">     * that I will allow to be used at any given moment</em>
+<a name="146" href="#146">146</a> <em class="jxr_javadoccomment">     */</em>
+<a name="147" href="#147">147</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> EXTRA_LAZY_SESSIONS_TIMEOUT = 10;
+<a name="148" href="#148">148</a> 
+<a name="149" href="#149">149</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="150" href="#150">150</a> <em class="jxr_javadoccomment">     * A list of created protocol sessions (devoted to grabbing files from the</em>
+<a name="151" href="#151">151</a> <em class="jxr_javadoccomment">     * crawling directory structure) that are not presently in use.</em>
+<a name="152" href="#152">152</a> <em class="jxr_javadoccomment">     */</em>
+<a name="153" href="#153">153</a>     <strong class="jxr_keyword">private</strong> Vector&lt;Protocol&gt; avaliableSessions;
+<a name="154" href="#154">154</a> 
+<a name="155" href="#155">155</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="156" href="#156">156</a> <em class="jxr_javadoccomment">     * The number of sessions that have been created (should always be less than</em>
+<a name="157" href="#157">157</a> <em class="jxr_javadoccomment">     * or equal to MAX_SESSIONS).</em>
+<a name="158" href="#158">158</a> <em class="jxr_javadoccomment">     */</em>
+<a name="159" href="#159">159</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> numberOfSessions;
+<a name="160" href="#160">160</a> 
+<a name="161" href="#161">161</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="162" href="#162">162</a> <em class="jxr_javadoccomment">     * The thread pool that is in charge of the sessions.</em>
+<a name="163" href="#163">163</a> <em class="jxr_javadoccomment">     */</em>
+<a name="164" href="#164">164</a>     <strong class="jxr_keyword">private</strong> ThreadPoolExecutor threadController;
+<a name="165" href="#165">165</a> 
+<a name="166" href="#166">166</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="167" href="#167">167</a> <em class="jxr_javadoccomment">     * Manages the Protocols and always ensures that the Crawler is using the</em>
+<a name="168" href="#168">168</a> <em class="jxr_javadoccomment">     * appropriate protocol for any given server.</em>
+<a name="169" href="#169">169</a> <em class="jxr_javadoccomment">     */</em>
+<a name="170" href="#170">170</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/ProtocolHandler.html">ProtocolHandler</a> protocolHandler;
+<a name="171" href="#171">171</a> 
+<a name="172" href="#172">172</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="173" href="#173">173</a> <em class="jxr_javadoccomment">     * max_sessions tracker</em>
+<a name="174" href="#174">174</a> <em class="jxr_javadoccomment">     */</em>
+<a name="175" href="#175">175</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/DownloadThreadEvaluator.html">DownloadThreadEvaluator</a> dtEval;
+<a name="176" href="#176">176</a> 
+<a name="177" href="#177">177</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/DownloadListener.html">DownloadListener</a> dListener;
+<a name="178" href="#178">178</a> 
+<a name="179" href="#179">179</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/config/Config.html">Config</a> config;
+<a name="180" href="#180">180</a> 
+<a name="181" href="#181">181</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/config/SiteInfo.html">SiteInfo</a> siteInfo;
+<a name="182" href="#182">182</a> 
+<a name="183" href="#183">183</a>     <strong class="jxr_keyword">private</strong> HashSet&lt;File&gt; stagingAreas;
+<a name="184" href="#184">184</a> 
+<a name="185" href="#185">185</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/apache/oodt/cas/metadata/util/MimeTypeUtils.html">MimeTypeUtils</a> mimeTypeDetection;
+<a name="186" href="#186">186</a> 
+<a name="187" href="#187">187</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="188" href="#188">188</a> <em class="jxr_javadoccomment">     * Creates a Crawler based on the URL, DirStruct, and Config objects passed</em>
+<a name="189" href="#189">189</a> <em class="jxr_javadoccomment">     * in. If no DirStruct is needed then set it to null.</em>
+<a name="190" href="#190">190</a> <em class="jxr_javadoccomment">     *</em>
+<a name="191" href="#191">191</a> <em class="jxr_javadoccomment">     * @param config</em>
+<a name="192" href="#192">192</a> <em class="jxr_javadoccomment">     *            The Configuration file that is passed to this objects</em>
+<a name="193" href="#193">193</a> <em class="jxr_javadoccomment">     *            ProtocolHandler.</em>
+<a name="194" href="#194">194</a> <em class="jxr_javadoccomment">     * @throws InstantiationException</em>
+<a name="195" href="#195">195</a> <em class="jxr_javadoccomment">     * @throws DatabaseException</em>
+<a name="196" href="#196">196</a> <em class="jxr_javadoccomment">     */</em>
+<a name="197" href="#197">197</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/FileRetrievalSystem.html">FileRetrievalSystem</a>(<a href="../../../../../../org/apache/oodt/cas/pushpull/config/Config.html">Config</a> config, <a href="../../../../../../org/apache/oodt/cas/pushpull/config/SiteInfo.html">SiteInfo</a> siteInfo)
+<a name="198" href="#198">198</a>             <strong class="jxr_keyword">throws</strong> InstantiationException {
+<a name="199" href="#199">199</a>         <strong class="jxr_keyword">try</strong> {
+<a name="200" href="#200">200</a>             protocolHandler = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/ProtocolHandler.html">ProtocolHandler</a>(config.getProtocolInfo());
+<a name="201" href="#201">201</a>             <strong class="jxr_keyword">this</strong>.config = config;
+<a name="202" href="#202">202</a>             <strong class="jxr_keyword">this</strong>.siteInfo = siteInfo;
+<a name="203" href="#203">203</a>             mimeTypeDetection = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/metadata/util/MimeTypeUtils.html">MimeTypeUtils</a>(config
+<a name="204" href="#204">204</a>                     .getProductTypeDetectionFile());
+<a name="205" href="#205">205</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="206" href="#206">206</a>             LOG.log(Level.SEVERE, e.getMessage());
+<a name="207" href="#207">207</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InstantiationException(
+<a name="208" href="#208">208</a>                     <span class="jxr_string">"Failed to create FileRetrievalSystem : "</span> + e.getMessage());
+<a name="209" href="#209">209</a>         }
+<a name="210" href="#210">210</a>     }
+<a name="211" href="#211">211</a> 
+<a name="212" href="#212">212</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> registerDownloadListener(<a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/DownloadListener.html">DownloadListener</a> dListener) {
+<a name="213" href="#213">213</a>         <strong class="jxr_keyword">this</strong>.dListener = dListener;
+<a name="214" href="#214">214</a>     }
+<a name="215" href="#215">215</a> 
+<a name="216" href="#216">216</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> initialize() <strong class="jxr_keyword">throws</strong> IOException {
+<a name="217" href="#217">217</a>         <strong class="jxr_keyword">try</strong> {
+<a name="218" href="#218">218</a>             resetVariables();
+<a name="219" href="#219">219</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="220" href="#220">220</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Failed to initialize FileRetrievalSystem : "</span>
+<a name="221" href="#221">221</a>                     + e.getMessage());
+<a name="222" href="#222">222</a>         }
+<a name="223" href="#223">223</a>     }
+<a name="224" href="#224">224</a> 
+<a name="225" href="#225">225</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="226" href="#226">226</a> <em class="jxr_javadoccomment">     * Initializes variables that must be reset when more than one crawl is done</em>
+<a name="227" href="#227">227</a> <em class="jxr_javadoccomment">     *</em>
+<a name="228" href="#228">228</a> <em class="jxr_javadoccomment">     * @throws ThreadEvaluatorException</em>
+<a name="229" href="#229">229</a> <em class="jxr_javadoccomment">     */</em>
+<a name="230" href="#230">230</a>     <strong class="jxr_keyword">void</strong> resetVariables() {
+<a name="231" href="#231">231</a>         numberOfSessions = 0;
+<a name="232" href="#232">232</a>         stagingAreas = <strong class="jxr_keyword">new</strong> HashSet&lt;File&gt;();
+<a name="233" href="#233">233</a>         avaliableSessions = <strong class="jxr_keyword">new</strong> Vector&lt;Protocol&gt;();
+<a name="234" href="#234">234</a>         currentlyDownloading = <strong class="jxr_keyword">new</strong> HashSet&lt;ProtocolFile&gt;();
+<a name="235" href="#235">235</a>         failedDownloadList = <strong class="jxr_keyword">new</strong> LinkedList&lt;ProtocolFile&gt;();
+<a name="236" href="#236">236</a>         max_allowed_failed_downloads = config.getMaxFailedDownloads();
+<a name="237" href="#237">237</a>         max_sessions = config.getRecommendedThreadCount();
+<a name="238" href="#238">238</a>         threadController = <strong class="jxr_keyword">new</strong> ThreadPoolExecutor(<strong class="jxr_keyword">this</strong>.max_sessions,
+<a name="239" href="#239">239</a>                 <strong class="jxr_keyword">this</strong>.max_sessions, EXTRA_LAZY_SESSIONS_TIMEOUT,
+<a name="240" href="#240">240</a>                 TimeUnit.SECONDS, <strong class="jxr_keyword">new</strong> LinkedBlockingQueue&lt;Runnable&gt;());
+<a name="241" href="#241">241</a>         <strong class="jxr_keyword">if</strong> (config.useTracker()) {
+<a name="242" href="#242">242</a>           dtEval = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/DownloadThreadEvaluator.html">DownloadThreadEvaluator</a>(<strong class="jxr_keyword">this</strong>.absMaxAllowedSessions);
+<a name="243" href="#243">243</a>         }
+<a name="244" href="#244">244</a>     }
+<a name="245" href="#245">245</a> 
+<a name="246" href="#246">246</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="247" href="#247">247</a> <em class="jxr_javadoccomment">     * reset error flag</em>
+<a name="248" href="#248">248</a> <em class="jxr_javadoccomment">     */</em>
+<a name="249" href="#249">249</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> clearErrorFlag() {
+<a name="250" href="#250">250</a>         max_allowed_failed_downloads += config.getMaxFailedDownloads();
+<a name="251" href="#251">251</a>     }
+<a name="252" href="#252">252</a> 
+<a name="253" href="#253">253</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isAlreadyInDatabase(<a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/RemoteFile.html">RemoteFile</a> rf) <strong class="jxr_keyword">throws</strong> CatalogException {
+<a name="254" href="#254">254</a>         <strong class="jxr_keyword">return</strong> config.getIngester() != <strong class="jxr_keyword">null</strong> &amp;&amp; config.getIngester().hasProduct(
+<a name="255" href="#255">255</a>             config.getFmUrl(), rf.getMetadata(RemoteFile.PRODUCT_NAME));
+<a name="256" href="#256">256</a>     }
+<a name="257" href="#257">257</a> 
+<a name="258" href="#258">258</a>     <strong class="jxr_keyword">public</strong> List&lt;RemoteSiteFile&gt; getNextPage(<strong class="jxr_keyword">final</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a> dir,
+<a name="259" href="#259">259</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/util/ProtocolFileFilter.html">ProtocolFileFilter</a> filter) <strong class="jxr_keyword">throws</strong> RemoteConnectionException {
+<a name="260" href="#260">260</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 3; i++) {
+<a name="261" href="#261">261</a>             <strong class="jxr_keyword">try</strong> {
+<a name="262" href="#262">262</a>                 <strong class="jxr_keyword">return</strong> protocolHandler.nextPage(dir.getSite(), protocolHandler
+<a name="263" href="#263">263</a>                         .getAppropriateProtocol(dir, <strong class="jxr_keyword">true</strong>, <strong class="jxr_keyword">true</strong>),
+<a name="264" href="#264">264</a>                         <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/util/ProtocolFileFilter.html">ProtocolFileFilter</a>() {
+<a name="265" href="#265">265</a>                             @Override
+<a name="266" href="#266">266</a>                            <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> accept(<a href="../../../../../../org/apache/oodt/cas/protocol/ProtocolFile.html">ProtocolFile</a> file) {
+<a name="267" href="#267">267</a>                                 <strong class="jxr_keyword">return</strong> filter.accept(file)
+<a name="268" href="#268">268</a>                                         &amp;&amp; !FileRetrievalSystem.<strong class="jxr_keyword">this</strong>
+<a name="269" href="#269">269</a>                                                 .isDownloading(file);
+<a name="270" href="#270">270</a>                             }
+<a name="271" href="#271">271</a>                         });
+<a name="272" href="#272">272</a>             } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="273" href="#273">273</a>                 LOG.log(Level.WARNING, <span class="jxr_string">"Retrying to get next page for "</span> + dir
+<a name="274" href="#274">274</a>                         + <span class="jxr_string">" because operation failed : "</span> + e.getMessage(), e);
+<a name="275" href="#275">275</a>             }
+<a name="276" href="#276">276</a>         }
+<a name="277" href="#277">277</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/RemoteConnectionException.html">RemoteConnectionException</a>(<span class="jxr_string">"Failed to get next page for "</span>
+<a name="278" href="#278">278</a>                 + dir);
+<a name="279" href="#279">279</a>     }
+<a name="280" href="#280">280</a> 
+<a name="281" href="#281">281</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeToRoot(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite) <strong class="jxr_keyword">throws</strong>
+<a name="282" href="#282">282</a>         org.apache.oodt.cas.protocol.exceptions.ProtocolException {
+<a name="283" href="#283">283</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="284" href="#284">284</a>           protocolHandler.cdToROOT(protocolHandler
+<a name="285" href="#285">285</a>               .getAppropriateProtocolBySite(remoteSite, <strong class="jxr_keyword">true</strong>));
+<a name="286" href="#286">286</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="287" href="#287">287</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="288" href="#288">288</a>         }
+<a name="289" href="#289">289</a>     }
+<a name="290" href="#290">290</a> 
+<a name="291" href="#291">291</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeToHOME(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite) <strong class="jxr_keyword">throws</strong> ProtocolException {
+<a name="292" href="#292">292</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="293" href="#293">293</a>           protocolHandler.cdToHOME(protocolHandler
+<a name="294" href="#294">294</a>               .getAppropriateProtocolBySite(remoteSite, <strong class="jxr_keyword">true</strong>));
+<a name="295" href="#295">295</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="296" href="#296">296</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="297" href="#297">297</a>         }
+<a name="298" href="#298">298</a>     }
+<a name="299" href="#299">299</a> 
+<a name="300" href="#300">300</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeToDir(String dir, <a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite)
+<a name="301" href="#301">301</a>             <strong class="jxr_keyword">throws</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a> {
+<a name="302" href="#302">302</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="303" href="#303">303</a>           <strong class="jxr_keyword">this</strong>
+<a name="304" href="#304">304</a>               .changeToDir(protocolHandler.getProtocolFileFor(remoteSite,
+<a name="305" href="#305">305</a>                   protocolHandler.getAppropriateProtocolBySite(
+<a name="306" href="#306">306</a>                       remoteSite, <strong class="jxr_keyword">true</strong>), dir, <strong class="jxr_keyword">true</strong>));
+<a name="307" href="#307">307</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="308" href="#308">308</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="309" href="#309">309</a>         }
+<a name="310" href="#310">310</a>     }
+<a name="311" href="#311">311</a> 
+<a name="312" href="#312">312</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeToDir(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a> pFile) <strong class="jxr_keyword">throws</strong> ProtocolException {
+<a name="313" href="#313">313</a>         <a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite = pFile.getSite();
+<a name="314" href="#314">314</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="315" href="#315">315</a>           protocolHandler.cd(protocolHandler.getAppropriateProtocolBySite(
+<a name="316" href="#316">316</a>               remoteSite, <strong class="jxr_keyword">true</strong>), pFile);
+<a name="317" href="#317">317</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="318" href="#318">318</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="319" href="#319">319</a>         }
+<a name="320" href="#320">320</a>     }
+<a name="321" href="#321">321</a> 
+<a name="322" href="#322">322</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/ProtocolFile.html">ProtocolFile</a> getHomeDir(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite)
+<a name="323" href="#323">323</a>             <strong class="jxr_keyword">throws</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a> {
+<a name="324" href="#324">324</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="325" href="#325">325</a>           <strong class="jxr_keyword">return</strong> protocolHandler.getHomeDir(remoteSite, protocolHandler
+<a name="326" href="#326">326</a>               .getAppropriateProtocolBySite(remoteSite, <strong class="jxr_keyword">true</strong>));
+<a name="327" href="#327">327</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="328" href="#328">328</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="329" href="#329">329</a>         }
+<a name="330" href="#330">330</a>     }
+<a name="331" href="#331">331</a> 
+<a name="332" href="#332">332</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/ProtocolFile.html">ProtocolFile</a> getProtocolFile(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite, String file,
+<a name="333" href="#333">333</a>             <strong class="jxr_keyword">boolean</strong> isDir) <strong class="jxr_keyword">throws</strong> ProtocolException {
+<a name="334" href="#334">334</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="335" href="#335">335</a>           <strong class="jxr_keyword">return</strong> protocolHandler.getProtocolFileFor(remoteSite, protocolHandler
+<a name="336" href="#336">336</a>                   .getAppropriateProtocolBySite(remoteSite, <strong class="jxr_keyword">true</strong>), file,
+<a name="337" href="#337">337</a>               isDir);
+<a name="338" href="#338">338</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="339" href="#339">339</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="340" href="#340">340</a>         }
+<a name="341" href="#341">341</a>     }
+<a name="342" href="#342">342</a> 
+<a name="343" href="#343">343</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/ProtocolFile.html">ProtocolFile</a> getCurrentFile(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite)
+<a name="344" href="#344">344</a>             <strong class="jxr_keyword">throws</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a> {
+<a name="345" href="#345">345</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="346" href="#346">346</a>           <strong class="jxr_keyword">return</strong> protocolHandler.pwd(remoteSite, protocolHandler
+<a name="347" href="#347">347</a>               .getAppropriateProtocolBySite(remoteSite, <strong class="jxr_keyword">true</strong>));
+<a name="348" href="#348">348</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="349" href="#349">349</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="350" href="#350">350</a>         }
+<a name="351" href="#351">351</a>     }
+<a name="352" href="#352">352</a> 
+<a name="353" href="#353">353</a>     <em class="jxr_comment">// returns true if download was added to queue. . .false otherwise</em>
+<a name="354" href="#354">354</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addToDownloadQueue(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite, String file,
+<a name="355" href="#355">355</a>             String renamingString, File downloadToDir,
+<a name="356" href="#356">356</a>             String uniqueMetadataElement, <strong class="jxr_keyword">boolean</strong> deleteAfterDownload, <a href="../../../../../../org/apache/oodt/cas/metadata/Metadata.html">Metadata</a> fileMetadata)
+<a name="357" href="#357">357</a>             <strong class="jxr_keyword">throws</strong> ToManyFailedDownloadsException, RemoteConnectionException,
+<a name="358" href="#358">358</a>         ProtocolException,
+<a name="359" href="#359">359</a>             AlreadyInDatabaseException, UndefinedTypeException,
+<a name="360" href="#360">360</a>             CatalogException, IOException {
+<a name="361" href="#361">361</a>         <strong class="jxr_keyword">if</strong> (validate(remoteSite)) {
+<a name="362" href="#362">362</a>             <strong class="jxr_keyword">if</strong> (!file.startsWith(<span class="jxr_string">"/"</span>)) {
+<a name="363" href="#363">363</a>               file = <span class="jxr_string">"/"</span> + file;
+<a name="364" href="#364">364</a>             }
+<a name="365" href="#365">365</a>             <strong class="jxr_keyword">return</strong> addToDownloadQueue(protocolHandler.getProtocolFileFor(remoteSite,
+<a name="366" href="#366">366</a>                     protocolHandler.getAppropriateProtocolBySite(remoteSite,
+<a name="367" href="#367">367</a>                             <strong class="jxr_keyword">true</strong>), file, false), renamingString, downloadToDir,
+<a name="368" href="#368">368</a>                     uniqueMetadataElement, deleteAfterDownload, fileMetadata);
+<a name="369" href="#369">369</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="370" href="#370">370</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(<span class="jxr_string">"Not a valid remote site "</span> + remoteSite);
+<a name="371" href="#371">371</a>         }
+<a name="372" href="#372">372</a>     }
+<a name="373" href="#373">373</a> 
+<a name="374" href="#374">374</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> validate(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> remoteSite) {
+<a name="375" href="#375">375</a>         Preconditions.checkNotNull(remoteSite);
+<a name="376" href="#376">376</a>         LinkedList&lt;RemoteSite&gt; remoteSites = <strong class="jxr_keyword">this</strong>.siteInfo
+<a name="377" href="#377">377</a>                 .getPossibleRemoteSites(remoteSite.getAlias(), remoteSite
+<a name="378" href="#378">378</a>                         .getURL(), remoteSite.getUsername(), remoteSite
+<a name="379" href="#379">379</a>                         .getPassword());
+<a name="380" href="#380">380</a>         <strong class="jxr_keyword">if</strong> (remoteSites.size() == 1) {
+<a name="381" href="#381">381</a>             <a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSite.html">RemoteSite</a> rs = remoteSites.get(0);
+<a name="382" href="#382">382</a>             remoteSite.copy(rs);
+<a name="383" href="#383">383</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a name="384" href="#384">384</a>         }
+<a name="385" href="#385">385</a>         <strong class="jxr_keyword">return</strong> false;
+<a name="386" href="#386">386</a>     }
+<a name="387" href="#387">387</a> 
+<a name="388" href="#388">388</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> waitUntilAllCurrentDownloadsAreComplete()
+<a name="389" href="#389">389</a>             <strong class="jxr_keyword">throws</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a> {
+<a name="390" href="#390">390</a>         <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a name="391" href="#391">391</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; INT; i++) {
+<a name="392" href="#392">392</a>                 <strong class="jxr_keyword">try</strong> {
+<a name="393" href="#393">393</a>                     <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.avaliableSessions.size() == <strong class="jxr_keyword">this</strong>.numberOfSessions) {
+<a name="394" href="#394">394</a>                       <strong class="jxr_keyword">return</strong>;
+<a name="395" href="#395">395</a>                     } <strong class="jxr_keyword">else</strong> {
+<a name="396" href="#396">396</a>                       <strong class="jxr_keyword">this</strong>.wait(TIMEOUT);
+<a name="397" href="#397">397</a>                     }
+<a name="398" href="#398">398</a>                 } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a name="399" href="#399">399</a>                 }
+<a name="400" href="#400">400</a>             }
+<a name="401" href="#401">401</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ProtocolException.html">ProtocolException</a>(
+<a name="402" href="#402">402</a>                     <span class="jxr_string">"Downloads appear to be hanging . . . aborting wait . . . waited for 15 minutes"</span>);
+<a name="403" href="#403">403</a>         }
+<a name="404" href="#404">404</a>     }
+<a name="405" href="#405">405</a> 
+<a name="406" href="#406">406</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> addToDownloadQueue(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a> file,
+<a name="407" href="#407">407</a>                                     String renamingString,
+<a name="408" href="#408">408</a>                                     File downloadToDir,
+<a name="409" href="#409">409</a>                                     String uniqueMetadataElement,
+<a name="410" href="#410">410</a>                                     <strong class="jxr_keyword">boolean</strong> deleteAfterDownload,
+<a name="411" href="#411">411</a>                                     <a href="../../../../../../org/apache/oodt/cas/metadata/Metadata.html">Metadata</a> fileMetadata) <strong class="jxr_keyword">throws</strong> ToManyFailedDownloadsException,
+<a name="412" href="#412">412</a>                                                                   RemoteConnectionException,
+<a name="413" href="#413">413</a>                                                                   AlreadyInDatabaseException,
+<a name="414" href="#414">414</a>                                                                   UndefinedTypeException,
+<a name="415" href="#415">415</a>                                                                   CatalogException,
+<a name="416" href="#416">416</a>                                                                   IOException {
+<a name="417" href="#417">417</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.failedDownloadList.size() &gt; max_allowed_failed_downloads) {
+<a name="418" href="#418">418</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/ToManyFailedDownloadsException.html">ToManyFailedDownloadsException</a>(
+<a name="419" href="#419">419</a>               <span class="jxr_string">"Number of failed downloads exceeds "</span>
+<a name="420" href="#420">420</a>               + max_allowed_failed_downloads
+<a name="421" href="#421">421</a>               + <span class="jxr_string">" . . . blocking all downloads from being added to queue . . . "</span>
+<a name="422" href="#422">422</a>               + <span class="jxr_string">"reset error flag in order to force allow downloads into queue"</span>);
+<a name="423" href="#423">423</a>         }
+<a name="424" href="#424">424</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.isDownloading(file)) {
+<a name="425" href="#425">425</a>             LOG.log(Level.WARNING, <span class="jxr_string">"Skipping file '"</span> + file
+<a name="426" href="#426">426</a>                     + <span class="jxr_string">"' because it is already on the download queue"</span>);
+<a name="427" href="#427">427</a>             <strong class="jxr_keyword">return</strong> false;
+<a name="428" href="#428">428</a>         }
+<a name="429" href="#429">429</a> 
+<a name="430" href="#430">430</a>         <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/RemoteFile.html">RemoteFile</a> remoteFile = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/RemoteFile.html">RemoteFile</a>(file);
+<a name="431" href="#431">431</a>         remoteFile.addMetadata(fileMetadata);
+<a name="432" href="#432">432</a>         remoteFile.addMetadata(RemoteFile.RENAMING_STRING, renamingString);
+<a name="433" href="#433">433</a>         remoteFile.addMetadata(RemoteFile.DELETE_AFTER_DOWNLOAD,
+<a name="434" href="#434">434</a>                 deleteAfterDownload + <span class="jxr_string">""</span>);
+<a name="435" href="#435">435</a> 
+<a name="436" href="#436">436</a>         <strong class="jxr_keyword">if</strong> (config.onlyDownloadDefinedTypes()) {
+<a name="437" href="#437">437</a>            String mimeType = <strong class="jxr_keyword">this</strong>.mimeTypeDetection.getMimeType(file.getName());
+<a name="438" href="#438">438</a>            <strong class="jxr_keyword">if</strong> (mimeType != <strong class="jxr_keyword">null</strong>
+<a name="439" href="#439">439</a>                    &amp;&amp; !mimeType.equals(<span class="jxr_string">"application/octet-stream"</span>)) {
+<a name="440" href="#440">440</a>                remoteFile.addMetadata(RemoteFile.MIME_TYPE, mimeType);
+<a name="441" href="#441">441</a>                remoteFile.addMetadata(RemoteFile.SUPER_TYPE, <strong class="jxr_keyword">this</strong>.mimeTypeDetection
+<a name="442" href="#442">442</a>                        .getSuperTypeForMimeType(mimeType));
+<a name="443" href="#443">443</a>                String description = <strong class="jxr_keyword">this</strong>.mimeTypeDetection
+<a name="444" href="#444">444</a>                        .getDescriptionForMimeType(mimeType);
+<a name="445" href="#445">445</a>                <strong class="jxr_keyword">if</strong> (!Strings.isNullOrEmpty(description)) {
+<a name="446" href="#446">446</a>                  <strong class="jxr_keyword">if</strong>(description.contains(<span class="jxr_string">"&amp;"</span>)){
+<a name="447" href="#447">447</a>                    <strong class="jxr_keyword">for</strong> (String field : description.split(<span class="jxr_string">"&#92;&#92;&amp;&#92;&#92;&amp;"</span>)) {
+<a name="448" href="#448">448</a>                      String[] keyval = field.split(<span class="jxr_string">"&#92;&#92;="</span>);
+<a name="449" href="#449">449</a>                      remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
+<a name="450" href="#450">450</a>                    }
+<a name="451" href="#451">451</a>                  } <strong class="jxr_keyword">else</strong>{
+<a name="452" href="#452">452</a>                    <em class="jxr_comment">// it's the ProductType</em>
+<a name="453" href="#453">453</a>                    remoteFile.addMetadata(RemoteFile.PRODUCT_TYPE, description);
+<a name="454" href="#454">454</a>                  }
+<a name="455" href="#455">455</a>                  <strong class="jxr_keyword">if</strong> (remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT) != <strong class="jxr_keyword">null</strong>) {
+<a name="456" href="#456">456</a>                     uniqueMetadataElement = remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT);
+<a name="457" href="#457">457</a>                  }
+<a name="458" href="#458">458</a>                }
+<a name="459" href="#459">459</a>            } <strong class="jxr_keyword">else</strong> {
+<a name="460" href="#460">460</a>               <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/UndefinedTypeException.html">UndefinedTypeException</a>(<span class="jxr_string">"File '"</span> + file
+<a name="461" href="#461">461</a>                     + <span class="jxr_string">"' is not a defined type"</span>);
+<a name="462" href="#462">462</a>            }
+<a name="463" href="#463">463</a>         }
+<a name="464" href="#464">464</a> 
+<a name="465" href="#465">465</a>         downloadToDir = <strong class="jxr_keyword">new</strong> File(downloadToDir.isAbsolute() ? downloadToDir
+<a name="466" href="#466">466</a>                 .getAbsolutePath() : <strong class="jxr_keyword">this</strong>.config.getBaseStagingArea() + <span class="jxr_string">"/"</span>
+<a name="467" href="#467">467</a>                 + downloadToDir.getPath());
+<a name="468" href="#468">468</a>         <strong class="jxr_keyword">if</strong> (!<strong class="jxr_keyword">this</strong>.isStagingAreaInitialized(downloadToDir)) {
+<a name="469" href="#469">469</a>           <strong class="jxr_keyword">this</strong>.initializeStagingArea(downloadToDir);
+<a name="470" href="#470">470</a>         }
+<a name="471" href="#471">471</a> 
+<a name="472" href="#472">472</a>         remoteFile.addMetadata(RemoteFile.DOWNLOAD_TO_DIR, downloadToDir.getAbsolutePath());
+<a name="473" href="#473">473</a> 
+<a name="474" href="#474">474</a>     	<strong class="jxr_keyword">if</strong> (remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR) != <strong class="jxr_keyword">null</strong>) {
+<a name="475" href="#475">475</a>     		remoteFile.addMetadata(RemoteFile.PRODUCT_NAME, RenamingConvention.rename(remoteFile, remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR)));
+<a name="476" href="#476">476</a>     	}<strong class="jxr_keyword">else</strong> {
+<a name="477" href="#477">477</a>     		remoteFile.setUniqueMetadataElement(uniqueMetadataElement == <strong class="jxr_keyword">null</strong> ? RemoteFile.FILENAME : uniqueMetadataElement);
+<a name="478" href="#478">478</a>     	}
+<a name="479" href="#479">479</a> 
+<a name="480" href="#480">480</a>         <strong class="jxr_keyword">if</strong> (!isAlreadyInDatabase(remoteFile)) {
+<a name="481" href="#481">481</a> 
+<a name="482" href="#482">482</a>             <em class="jxr_comment">// get download location</em>
+<a name="483" href="#483">483</a>             File newFile = getSaveToLoc(remoteFile);
+<a name="484" href="#484">484</a> 
+<a name="485" href="#485">485</a>             <em class="jxr_comment">// add session to thread pool</em>
+<a name="486" href="#486">486</a>             <strong class="jxr_keyword">if</strong> (!<strong class="jxr_keyword">this</strong>.isInStagingArea(newFile)) {
+<a name="487" href="#487">487</a>                 <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> retries = 0;; retries++) {
+<a name="488" href="#488">488</a>                     <strong class="jxr_keyword">try</strong> {
+<a name="489" href="#489">489</a>                         addSessionToThreadPool(
+<a name="490" href="#490">490</a>                                 getNextAvaliableSession(remoteFile
+<a name="491" href="#491">491</a>                                         .getProtocolFile()), remoteFile,
+<a name="492" href="#492">492</a>                                 newFile);
+<a name="493" href="#493">493</a>                         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a name="494" href="#494">494</a>                     } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="495" href="#495">495</a>                         <strong class="jxr_keyword">if</strong> (retries &lt; MAX_RETRIES) {
+<a name="496" href="#496">496</a>                             LOG.log(Level.WARNING, <span class="jxr_string">"Failed to get session for "</span>
+<a name="497" href="#497">497</a>                                     + file + <span class="jxr_string">" . . . retrying in 5 secs"</span>);
+<a name="498" href="#498">498</a>                             <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a name="499" href="#499">499</a>                                 <strong class="jxr_keyword">try</strong> {
+<a name="500" href="#500">500</a>                                     wait(TIMEOUT1);
+<a name="501" href="#501">501</a>                                 } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a name="502" href="#502">502</a>                                 }
+<a name="503" href="#503">503</a>                             }
+<a name="504" href="#504">504</a>                         } <strong class="jxr_keyword">else</strong> {
+<a name="505" href="#505">505</a>                             <strong class="jxr_keyword">this</strong>.failedDownloadList.add(file);
+<a name="506" href="#506">506</a>                             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/RemoteConnectionException.html">RemoteConnectionException</a>(
+<a name="507" href="#507">507</a>                                     <span class="jxr_string">"Failed to get session to download "</span> + file
+<a name="508" href="#508">508</a>                                             + <span class="jxr_string">" : "</span> + e.getMessage(), e);
+<a name="509" href="#509">509</a>                         }
+<a name="510" href="#510">510</a>                     }
+<a name="511" href="#511">511</a>                 }
+<a name="512" href="#512">512</a>             } <strong class="jxr_keyword">else</strong> {
+<a name="513" href="#513">513</a>                 <strong class="jxr_keyword">if</strong> (deleteAfterDownload) {
+<a name="514" href="#514">514</a>                     <strong class="jxr_keyword">try</strong> {
+<a name="515" href="#515">515</a>                         protocolHandler
+<a name="516" href="#516">516</a>                                 .delete(protocolHandler.getAppropriateProtocol(
+<a name="517" href="#517">517</a>                                         file, <strong class="jxr_keyword">true</strong>, <strong class="jxr_keyword">true</strong>), file);
+<a name="518" href="#518">518</a>                     } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="519" href="#519">519</a>                         LOG.log(Level.SEVERE,
+<a name="520" href="#520">520</a>                                 <span class="jxr_string">"Failed to delete file from server : "</span>
+<a name="521" href="#521">521</a>                                         + e.getMessage());
+<a name="522" href="#522">522</a>                     }
+<a name="523" href="#523">523</a>                 }
+<a name="524" href="#524">524</a>                 LOG.log(Level.WARNING, <span class="jxr_string">"Skipping file "</span> + file
+<a name="525" href="#525">525</a>                         + <span class="jxr_string">" because it is already in staging area"</span>);
+<a name="526" href="#526">526</a>                 <strong class="jxr_keyword">return</strong> false;
+<a name="527" href="#527">527</a>             }
+<a name="528" href="#528">528</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="529" href="#529">529</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/AlreadyInDatabaseException.html">AlreadyInDatabaseException</a>(<span class="jxr_string">"File "</span> + file
+<a name="530" href="#530">530</a>                                                + <span class="jxr_string">" is already the database"</span>);
+<a name="531" href="#531">531</a>         }
+<a name="532" href="#532">532</a>     }
+<a name="533" href="#533">533</a> 
+<a name="534" href="#534">534</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isStagingAreaInitialized(File stagingArea) {
+<a name="535" href="#535">535</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.stagingAreas.contains(stagingArea);
+<a name="536" href="#536">536</a>     }
+<a name="537" href="#537">537</a> 
+<a name="538" href="#538">538</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isInStagingArea(<strong class="jxr_keyword">final</strong> File findFile) {
+<a name="539" href="#539">539</a>         <strong class="jxr_keyword">return</strong> (findFile.exists() || <strong class="jxr_keyword">new</strong> File(findFile.getParentFile(),
+<a name="540" href="#540">540</a>                 <span class="jxr_string">"Downloading_"</span> + findFile.getName()).exists());
+<a name="541" href="#541">541</a>     }
+<a name="542" href="#542">542</a> 
+<a name="543" href="#543">543</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> initializeStagingArea(File stagingArea) <strong class="jxr_keyword">throws</strong> IOException {
+<a name="544" href="#544">544</a>         LOG.log(Level.INFO, <span class="jxr_string">"Preparing staging area "</span> + stagingArea);
+<a name="545" href="#545">545</a>         <strong class="jxr_keyword">if</strong> (stagingArea.exists()) {
+<a name="546" href="#546">546</a>             File[] failedDownloads = stagingArea.listFiles(<strong class="jxr_keyword">new</strong> FileFilter() {
+<a name="547" href="#547">547</a>                 @Override
+<a name="548" href="#548">548</a>                <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> accept(File pathname) {
+<a name="549" href="#549">549</a>                     <strong class="jxr_keyword">return</strong> pathname.getName().startsWith(<span class="jxr_string">"Downloading_"</span>);
+<a name="550" href="#550">550</a>                 }
+<a name="551" href="#551">551</a>             });
+<a name="552" href="#552">552</a>             <strong class="jxr_keyword">if</strong>(failedDownloads!=<strong class="jxr_keyword">null</strong>) {
+<a name="553" href="#553">553</a>               <strong class="jxr_keyword">for</strong> (File file : failedDownloads) {
+<a name="554" href="#554">554</a>                 LOG.log(Level.INFO, <span class="jxr_string">"Removing failed download file "</span>
+<a name="555" href="#555">555</a>                                     + file.getAbsolutePath());
+<a name="556" href="#556">556</a>                 file.delete();
+<a name="557" href="#557">557</a>               }
+<a name="558" href="#558">558</a>             }
+<a name="559" href="#559">559</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="560" href="#560">560</a>             LOG.log(Level.INFO, <span class="jxr_string">"Staging area "</span> + stagingArea.getAbsolutePath()
+<a name="561" href="#561">561</a>                     + <span class="jxr_string">" does not exist! -- trying to create it "</span>);
+<a name="562" href="#562">562</a>             <strong class="jxr_keyword">if</strong> (!stagingArea.mkdirs()) {
+<a name="563" href="#563">563</a>               <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Failed to create staging area at "</span>
+<a name="564" href="#564">564</a>                                     + stagingArea.getAbsolutePath());
+<a name="565" href="#565">565</a>             }
+<a name="566" href="#566">566</a>         }
+<a name="567" href="#567">567</a>         <strong class="jxr_keyword">this</strong>.stagingAreas.add(stagingArea);
+<a name="568" href="#568">568</a>     }
+<a name="569" href="#569">569</a> 
+<a name="570" href="#570">570</a>     File getSaveToLoc(<a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/RemoteFile.html">RemoteFile</a> remoteFile) {
+<a name="571" href="#571">571</a>         String renamingString = remoteFile
+<a name="572" href="#572">572</a>                 .getMetadata(RemoteFile.RENAMING_STRING);
+<a name="573" href="#573">573</a>         <strong class="jxr_keyword">if</strong> (renamingString == <strong class="jxr_keyword">null</strong> || renamingString.equals(<span class="jxr_string">""</span>)) {
+<a name="574" href="#574">574</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> File(remoteFile.getMetadata(RemoteFile.DOWNLOAD_TO_DIR)
+<a name="575" href="#575">575</a>                     + <span class="jxr_string">"/"</span> + remoteFile.getMetadata(RemoteFile.FILENAME));
+<a name="576" href="#576">576</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="577" href="#577">577</a>             File newFile = <strong class="jxr_keyword">new</strong> File(remoteFile
+<a name="578" href="#578">578</a>                     .getMetadata(RemoteFile.DOWNLOAD_TO_DIR)
+<a name="579" href="#579">579</a>                     + <span class="jxr_string">"/"</span>
+<a name="580" href="#580">580</a>                     + RenamingConvention.rename(remoteFile, renamingString));
+<a name="581" href="#581">581</a>             <strong class="jxr_keyword">if</strong> (!newFile.getParentFile().equals(
+<a name="582" href="#582">582</a>                     remoteFile.getMetadata(RemoteFile.DOWNLOAD_TO_DIR))) {
+<a name="583" href="#583">583</a>               newFile.getParentFile().mkdirs();
+<a name="584" href="#584">584</a>             }
+<a name="585" href="#585">585</a>             <strong class="jxr_keyword">return</strong> newFile;
+<a name="586" href="#586">586</a>         }
+<a name="587" href="#587">587</a>     }
+<a name="588" href="#588">588</a> 
+<a name="589" href="#589">589</a>     <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> getNextAvaliableSession(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a> file) <strong class="jxr_keyword">throws</strong> CrawlerException {
+<a name="590" href="#590">590</a>         <em class="jxr_comment">// wait for available session, then load it</em>
+<a name="591" href="#591">591</a>         <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session;
+<a name="592" href="#592">592</a>         <strong class="jxr_keyword">while</strong> ((session = getSession(file)) == <strong class="jxr_keyword">null</strong>) {
+<a name="593" href="#593">593</a>             <strong class="jxr_keyword">try</strong> {
+<a name="594" href="#594">594</a>                 waitMainThread();
+<a name="595" href="#595">595</a>             } <strong class="jxr_keyword">catch</strong> (InterruptedException ignored) {
+<a name="596" href="#596">596</a>             }
+<a name="597" href="#597">597</a>         }
+<a name="598" href="#598">598</a>         <strong class="jxr_keyword">return</strong> session;
+<a name="599" href="#599">599</a>     }
+<a name="600" href="#600">600</a> 
+<a name="601" href="#601">601</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="602" href="#602">602</a> <em class="jxr_javadoccomment">     * Sleeps the crawling thread</em>
+<a name="603" href="#603">603</a> <em class="jxr_javadoccomment">     *</em>
+<a name="604" href="#604">604</a> <em class="jxr_javadoccomment">     * @throws InterruptedException</em>
+<a name="605" href="#605">605</a> <em class="jxr_javadoccomment">     */</em>
+<a name="606" href="#606">606</a>     <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> waitMainThread() <strong class="jxr_keyword">throws</strong> InterruptedException {
+<a name="607" href="#607">607</a>         wait();
+<a name="608" href="#608">608</a>     }
+<a name="609" href="#609">609</a> 
+<a name="610" href="#610">610</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="611" href="#611">611</a> <em class="jxr_javadoccomment">     * Wakes up the crawling thread</em>
+<a name="612" href="#612">612</a> <em class="jxr_javadoccomment">     */</em>
+<a name="613" href="#613">613</a>     <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> wakeUpMainThread() {
+<a name="614" href="#614">614</a>         notify();
+<a name="615" href="#615">615</a>     }
+<a name="616" href="#616">616</a> 
+<a name="617" href="#617">617</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="618" href="#618">618</a> <em class="jxr_javadoccomment">     * Increments the number of downloading session</em>
+<a name="619" href="#619">619</a> <em class="jxr_javadoccomment">     */</em>
+<a name="620" href="#620">620</a>     <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> incrementSessions() {
+<a name="621" href="#621">621</a>         numberOfSessions++;
+<a name="622" href="#622">622</a>     }
+<a name="623" href="#623">623</a> 
+<a name="624" href="#624">624</a>     <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> decrementSessions() {
+<a name="625" href="#625">625</a>         <strong class="jxr_keyword">this</strong>.numberOfSessions--;
+<a name="626" href="#626">626</a>     }
+<a name="627" href="#627">627</a> 
+<a name="628" href="#628">628</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="629" href="#629">629</a> <em class="jxr_javadoccomment">     * Gets an available downloading session Protocol. Returns null if none are</em>
+<a name="630" href="#630">630</a> <em class="jxr_javadoccomment">     * available</em>
+<a name="631" href="#631">631</a> <em class="jxr_javadoccomment">     *</em>
+<a name="632" href="#632">632</a> <em class="jxr_javadoccomment">     * @return The found downloading session Protocol</em>
+<a name="633" href="#633">633</a> <em class="jxr_javadoccomment">     * @throws RemoteCommunicationException</em>
+<a name="634" href="#634">634</a> <em class="jxr_javadoccomment">     *             If downloading session Protocol has to be reconnected and</em>
+<a name="635" href="#635">635</a> <em class="jxr_javadoccomment">     *             there is an error communicating with the server</em>
+<a name="636" href="#636">636</a> <em class="jxr_javadoccomment">     */</em>
+<a name="637" href="#637">637</a>     <strong class="jxr_keyword">synchronized</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> getSession(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a> file) <strong class="jxr_keyword">throws</strong> CrawlerException {
+<a name="638" href="#638">638</a>         <strong class="jxr_keyword">try</strong> {
+<a name="639" href="#639">639</a>             <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session = <strong class="jxr_keyword">null</strong>;
+<a name="640" href="#640">640</a> 			<strong class="jxr_keyword">if</strong> (file.getSite().getMaxConnections() &lt; 0
+<a name="641" href="#641">641</a> 					|| file.getSite().getMaxConnections() &gt; <strong class="jxr_keyword">this</strong>.getCurrentlyDownloadingFiles().size()) {
+<a name="642" href="#642">642</a> 	            <strong class="jxr_keyword">if</strong> (avaliableSessions.size() &gt; 0) {
+<a name="643" href="#643">643</a> 	                session = modifyAvailableSessionForPath(file);
+<a name="644" href="#644">644</a> 	            } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (numberOfSessions &lt; max_sessions) {
+<a name="645" href="#645">645</a> 	                session = createNewSessionForPath(file);
+<a name="646" href="#646">646</a> 	                incrementSessions();
+<a name="647" href="#647">647</a> 	            }
+<a name="648" href="#648">648</a>             }
+<a name="649" href="#649">649</a>             <strong class="jxr_keyword">return</strong> session;
+<a name="650" href="#650">650</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="651" href="#651">651</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/CrawlerException.html">CrawlerException</a>(<span class="jxr_string">"Failed to get new session : "</span>
+<a name="652" href="#652">652</a>                     + e.getMessage(), e);
+<a name="653" href="#653">653</a>         }
+<a name="654" href="#654">654</a>     }
+<a name="655" href="#655">655</a> 
+<a name="656" href="#656">656</a>     <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> createNewSessionForPath(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a> file)
+<a name="657" href="#657">657</a>             <strong class="jxr_keyword">throws</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/RemoteConnectionException.html">RemoteConnectionException</a> {
+<a name="658" href="#658">658</a>         <strong class="jxr_keyword">return</strong> protocolHandler.getAppropriateProtocol(file, <em class="jxr_comment">/*<em class="jxr_comment"> reuse */</em>false, /* navigate */</em>
+<a name="659" href="#659">659</a>         <strong class="jxr_keyword">true</strong>);
+<a name="660" href="#660">660</a>     }
+<a name="661" href="#661">661</a> 
+<a name="662" href="#662">662</a>     <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> modifyAvailableSessionForPath(<a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a> file)
+<a name="663" href="#663">663</a>             <strong class="jxr_keyword">throws</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/exceptions/RemoteConnectionException.html">RemoteConnectionException</a> {
+<a name="664" href="#664">664</a>         <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session = getAvailableSession();
+<a name="665" href="#665">665</a>         <strong class="jxr_keyword">if</strong> (!file.getSite().getURL().getHost().equals(
+<a name="666" href="#666">666</a>                 file.getSite().getURL().getHost())
+<a name="667" href="#667">667</a>                 || !protocolHandler.isProtocolConnected(session)) {
+<a name="668" href="#668">668</a>             protocolHandler.disconnect(session);
+<a name="669" href="#669">669</a>             session = protocolHandler.getAppropriateProtocol(file, <em class="jxr_comment">/*<em class="jxr_comment"> reuse */</em></em>
+<a name="670" href="#670">670</a>             false, <em class="jxr_comment">/*<em class="jxr_comment"> navigate */</em><strong class="jxr_keyword">true</strong>);</em>
+<a name="671" href="#671">671</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="672" href="#672">672</a>             <strong class="jxr_keyword">try</strong> {
+<a name="673" href="#673">673</a>                 <strong class="jxr_keyword">if</strong> (file.isDir()) {
+<a name="674" href="#674">674</a>                   protocolHandler.cd(session, file);
+<a name="675" href="#675">675</a>                 } <strong class="jxr_keyword">else</strong> {
+<a name="676" href="#676">676</a>                   protocolHandler.cd(session,
+<a name="677" href="#677">677</a>                       <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/protocol/RemoteSiteFile.html">RemoteSiteFile</a>(file.getParent(), file.getSite()));
+<a name="678" href="#678">678</a>                 }
+<a name="679" href="#679">679</a>             } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="680" href="#680">680</a>                 LOG.log(Level.SEVERE, e.getMessage());
+<a name="681" href="#681">681</a>                 <strong class="jxr_keyword">try</strong> {
+<a name="682" href="#682">682</a>                     protocolHandler.disconnect(session);
+<a name="683" href="#683">683</a>                 } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a name="684" href="#684">684</a>                 }
+<a name="685" href="#685">685</a>                 session = protocolHandler.getAppropriateProtocol(file, <em class="jxr_comment">/*<em class="jxr_comment"> reuse */</em></em>
+<a name="686" href="#686">686</a>                 false, <em class="jxr_comment">/*<em class="jxr_comment"> navigate */</em><strong class="jxr_keyword">true</strong>);</em>
+<a name="687" href="#687">687</a>             }
+<a name="688" href="#688">688</a>         }
+<a name="689" href="#689">689</a>         <strong class="jxr_keyword">return</strong> session;
+<a name="690" href="#690">690</a>     }
+<a name="691" href="#691">691</a> 
+<a name="692" href="#692">692</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="693" href="#693">693</a> <em class="jxr_javadoccomment">     * Puts a session in the available session list</em>
+<a name="694" href="#694">694</a> <em class="jxr_javadoccomment">     *</em>
+<a name="695" href="#695">695</a> <em class="jxr_javadoccomment">     * @param session</em>
+<a name="696" href="#696">696</a> <em class="jxr_javadoccomment">     *            The Protocol session to be added to the available list</em>
+<a name="697" href="#697">697</a> <em class="jxr_javadoccomment">     */</em>
+<a name="698" href="#698">698</a>     <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> addAvailableSession(<a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session) {
+<a name="699" href="#699">699</a>         avaliableSessions.add(session);
+<a name="700" href="#700">700</a>     }
+<a name="701" href="#701">701</a> 
+<a name="702" href="#702">702</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="703" href="#703">703</a> <em class="jxr_javadoccomment">     * Removes a session from the available list and returns it</em>
+<a name="704" href="#704">704</a> <em class="jxr_javadoccomment">     *</em>
+<a name="705" href="#705">705</a> <em class="jxr_javadoccomment">     * @return An available downloading Protocol session</em>
+<a name="706" href="#706">706</a> <em class="jxr_javadoccomment">     */</em>
+<a name="707" href="#707">707</a>     <strong class="jxr_keyword">synchronized</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> getAvailableSession() {
+<a name="708" href="#708">708</a>         <strong class="jxr_keyword">return</strong> avaliableSessions.remove(0);
+<a name="709" href="#709">709</a>     }
+<a name="710" href="#710">710</a> 
+<a name="711" href="#711">711</a>     <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">int</strong> getNumberOfUsedSessions() {
+<a name="712" href="#712">712</a>         <strong class="jxr_keyword">return</strong> numberOfSessions - avaliableSessions.size();
+<a name="713" href="#713">713</a>     }
+<a name="714" href="#714">714</a> 
+<a name="715" href="#715">715</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="716" href="#716">716</a> <em class="jxr_javadoccomment">     * Registers a downloading session with the threadpoolexecutor to begin</em>
+<a name="717" href="#717">717</a> <em class="jxr_javadoccomment">     * downloading the specified ProtocolFile to the local File location</em>
+<a name="718" href="#718">718</a> <em class="jxr_javadoccomment">     *</em>
+<a name="719" href="#719">719</a> <em class="jxr_javadoccomment">     * @param session</em>
+<a name="720" href="#720">720</a> <em class="jxr_javadoccomment">     *            The downloading Protocol session to be used to download the</em>
+<a name="721" href="#721">721</a> <em class="jxr_javadoccomment">     *            ProtocolFile</em>
+<a name="722" href="#722">722</a> <em class="jxr_javadoccomment">     * @param newFile</em>
+<a name="723" href="#723">723</a> <em class="jxr_javadoccomment">     *            The location which the downloaded file will be stored</em>
+<a name="724" href="#724">724</a> <em class="jxr_javadoccomment">     */</em>
+<a name="725" href="#725">725</a>     <strong class="jxr_keyword">void</strong> addSessionToThreadPool(<strong class="jxr_keyword">final</strong> <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session,
+<a name="726" href="#726">726</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/apache/oodt/cas/pushpull/retrievalsystem/RemoteFile.html">RemoteFile</a> remoteFile, <strong class="jxr_keyword">final</strong> File newFile) {
+<a name="727" href="#727">727</a>         <strong class="jxr_keyword">this</strong>.addToDownloadingList(remoteFile.getProtocolFile());
+<a name="728" href="#728">728</a>         threadController.execute(<strong class="jxr_keyword">new</strong> Runnable() {
+<a name="729" href="#729">729</a>             @Override
+<a name="730" href="#730">730</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
+<a name="731" href="#731">731</a>                 <strong class="jxr_keyword">boolean</strong> successful = false;
+<a name="732" href="#732">732</a>                 <strong class="jxr_keyword">int</strong> retries = 0;
+<a name="733" href="#733">733</a>                 <a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> curSession = session;
+<a name="734" href="#734">734</a> 
+<a name="735" href="#735">735</a>                 <strong class="jxr_keyword">if</strong> (FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener != <strong class="jxr_keyword">null</strong>) {
+<a name="736" href="#736">736</a>                   FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener
+<a name="737" href="#737">737</a>                       .downloadStarted(remoteFile.getProtocolFile());
+<a name="738" href="#738">738</a>                 }
+<a name="739" href="#739">739</a> 
+<a name="740" href="#740">740</a>                 <em class="jxr_comment">// try until successful or all retries have been used</em>
+<a name="741" href="#741">741</a>                 <strong class="jxr_keyword">do</strong> {
+<a name="742" href="#742">742</a>                     <strong class="jxr_keyword">try</strong> {
+<a name="743" href="#743">743</a>                         <em class="jxr_comment">// if thread tracker is to be used</em>
+<a name="744" href="#744">744</a>                         <strong class="jxr_keyword">if</strong> (config.useTracker()) {
+<a name="745" href="#745">745</a>                             dtEval.startTrackingDownloadRuntimeForFile(newFile);
+<a name="746" href="#746">746</a>                             protocolHandler.download(curSession, remoteFile
+<a name="747" href="#747">747</a>                                     .getProtocolFile(), newFile, remoteFile
+<a name="748" href="#748">748</a>                                     .getMetadata(
+<a name="749" href="#749">749</a>                                             RemoteFile.DELETE_AFTER_DOWNLOAD)
+<a name="750" href="#750">750</a>                                     .equals(<span class="jxr_string">"true"</span>));
+<a name="751" href="#751">751</a>                             dtEval.fileDownloadComplete(newFile);
+<a name="752" href="#752">752</a>                             threadController
+<a name="753" href="#753">753</a>                                     .setCorePoolSize(max_sessions = dtEval
+<a name="754" href="#754">754</a>                                             .getRecommendedThreadCount());
+<a name="755" href="#755">755</a>                             threadController.setMaximumPoolSize(max_sessions);
+<a name="756" href="#756">756</a>                             <em class="jxr_comment">// if static number of threads are to be used</em>
+<a name="757" href="#757">757</a>                         } <strong class="jxr_keyword">else</strong> {
+<a name="758" href="#758">758</a>                             protocolHandler.download(curSession, remoteFile
+<a name="759" href="#759">759</a>                                     .getProtocolFile(), newFile, remoteFile
+<a name="760" href="#760">760</a>                                     .getMetadata(
+<a name="761" href="#761">761</a>                                             RemoteFile.DELETE_AFTER_DOWNLOAD)
+<a name="762" href="#762">762</a>                                     .equals(<span class="jxr_string">"true"</span>));
+<a name="763" href="#763">763</a>                         }
+<a name="764" href="#764">764</a> 
+<a name="765" href="#765">765</a>                         successful = <strong class="jxr_keyword">true</strong>;
+<a name="766" href="#766">766</a>                         <strong class="jxr_keyword">if</strong> (FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener != <strong class="jxr_keyword">null</strong>) {
+<a name="767" href="#767">767</a>                           FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener
+<a name="768" href="#768">768</a>                               .downloadFinished(remoteFile
+<a name="769" href="#769">769</a>                                   .getProtocolFile());
+<a name="770" href="#770">770</a>                         }
+<a name="771" href="#771">771</a> 
+<a name="772" href="#772">772</a>                         remoteFile.addMetadata(RemoteFile.FILE_SIZE, newFile
+<a name="773" href="#773">773</a>                                 .length()
+<a name="774" href="#774">774</a>                                 + <span class="jxr_string">""</span>);
+<a name="775" href="#775">775</a> 
+<a name="776" href="#776">776</a>                         <em class="jxr_comment">// try to create the metadata file</em>
+<a name="777" href="#777">777</a>                         <strong class="jxr_keyword">if</strong> (config.getWriteMetFile()) {
+<a name="778" href="#778">778</a> 	                        <strong class="jxr_keyword">try</strong> {
+<a name="779" href="#779">779</a> 	                        	LOG.log(Level.INFO, <span class="jxr_string">"Writing metadata file for '"</span> + newFile + <span class="jxr_string">"'"</span>);
+<a name="780" href="#780">780</a> 	                            remoteFile.addMetadata(RemoteFile.FILE_SIZE,
+<a name="781" href="#781">781</a> 	                                    newFile.length() + <span class="jxr_string">""</span>);
+<a name="782" href="#782">782</a> 	                            remoteFile.writeToPropEqValFile(newFile
+<a name="783" href="#783">783</a> 	                                    .getAbsolutePath()
+<a name="784" href="#784">784</a> 	                                    + <span class="jxr_string">"."</span> + config.getMetFileExtension(),
+<a name="785" href="#785">785</a> 	                                    config.getListOfMetadataToOutput());
+<a name="786" href="#786">786</a> 	                        } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="787" href="#787">787</a> 	                            LOG.log(Level.SEVERE,
+<a name="788" href="#788">788</a> 	                                    <span class="jxr_string">"Failed to create metadata file for "</span>
+<a name="789" href="#789">789</a> 	                                            + remoteFile.getProtocolFile());
+<a name="790" href="#790">790</a> 	                        }
+<a name="791" href="#791">791</a>                         }
+<a name="792" href="#792">792</a> 
+<a name="793" href="#793">793</a>                     } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="794" href="#794">794</a> 
+<a name="795" href="#795">795</a>                         <em class="jxr_comment">// if tracker is being used cancel tracking</em>
+<a name="796" href="#796">796</a>                         <strong class="jxr_keyword">if</strong> (config.useTracker()) {
+<a name="797" href="#797">797</a>                           dtEval.cancelRuntimeTracking(newFile);
+<a name="798" href="#798">798</a>                         }
+<a name="799" href="#799">799</a> 
+<a name="800" href="#800">800</a>                         <em class="jxr_comment">// delete any created file from staging area</em>
+<a name="801" href="#801">801</a>                         newFile.delete();
+<a name="802" href="#802">802</a>                         <strong class="jxr_keyword">new</strong> File(newFile.getAbsolutePath() + <span class="jxr_string">"."</span>
+<a name="803" href="#803">803</a>                                 + config.getMetFileExtension()).delete();
+<a name="804" href="#804">804</a> 
+<a name="805" href="#805">805</a>                         <em class="jxr_comment">// check if a retry is still allowed</em>
+<a name="806" href="#806">806</a>                         <strong class="jxr_keyword">if</strong> (++retries &gt; MAX_RETRIES) {
+<a name="807" href="#807">807</a>                             FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.failedDownloadList
+<a name="808" href="#808">808</a>                                     .add(remoteFile.getProtocolFile());
+<a name="809" href="#809">809</a>                             LOG.log(Level.SEVERE, <span class="jxr_string">"Failed to download "</span>
+<a name="810" href="#810">810</a>                                     + remoteFile.getProtocolFile() + <span class="jxr_string">" : "</span>
+<a name="811" href="#811">811</a>                                     + e.getMessage());
+<a name="812" href="#812">812</a>                             <strong class="jxr_keyword">if</strong> (FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener != <strong class="jxr_keyword">null</strong>) {
+<a name="813" href="#813">813</a>                               FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener
+<a name="814" href="#814">814</a>                                   .downloadFailed(remoteFile
+<a name="815" href="#815">815</a>                                       .getProtocolFile(), e
+<a name="816" href="#816">816</a>                                       .getMessage());
+<a name="817" href="#817">817</a>                             }
+<a name="818" href="#818">818</a>                             <strong class="jxr_keyword">break</strong>;
+<a name="819" href="#819">819</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.failedDownloadList
+<a name="820" href="#820">820</a>                                 .size() &lt; max_allowed_failed_downloads) {
+<a name="821" href="#821">821</a>                             <em class="jxr_comment">// discard current session and recreate a new</em>
+<a name="822" href="#822">822</a>                             <em class="jxr_comment">// session to try to download file with</em>
+<a name="823" href="#823">823</a>                             LOG.log(Level.WARNING, <span class="jxr_string">"Retrying to download file "</span>
+<a name="824" href="#824">824</a>                                     + remoteFile.getProtocolFile()
+<a name="825" href="#825">825</a>                                     + <span class="jxr_string">" because download failed : "</span>
+<a name="826" href="#826">826</a>                                     + e.getMessage(), e);
+<a name="827" href="#827">827</a>                             <strong class="jxr_keyword">try</strong> {
+<a name="828" href="#828">828</a>                                 protocolHandler.disconnect(curSession);
+<a name="829" href="#829">829</a>                             } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a name="830" href="#830">830</a>                             }
+<a name="831" href="#831">831</a>                             <strong class="jxr_keyword">try</strong> {
+<a name="832" href="#832">832</a>                                 curSession = protocolHandler
+<a name="833" href="#833">833</a>                                         .getAppropriateProtocol(remoteFile
+<a name="834" href="#834">834</a>                                                 .getProtocolFile(), false, <strong class="jxr_keyword">true</strong>);
+<a name="835" href="#835">835</a>                             } <strong class="jxr_keyword">catch</strong> (Exception exc) {
+<a name="836" href="#836">836</a>                                 LOG.log(Level.SEVERE,
+<a name="837" href="#837">837</a>                                         <span class="jxr_string">"Failed to reconnect protocol to retry download of file "</span>
+<a name="838" href="#838">838</a>                                                 + remoteFile.getProtocolFile()
+<a name="839" href="#839">839</a>                                                 + <span class="jxr_string">" -- aborting retry : "</span>
+<a name="840" href="#840">840</a>                                                 + e.getMessage(), e);
+<a name="841" href="#841">841</a>                             }
+<a name="842" href="#842">842</a>                         } <strong class="jxr_keyword">else</strong> {
+<a name="843" href="#843">843</a>                             LOG
+<a name="844" href="#844">844</a>                                     .log(
+<a name="845" href="#845">845</a>                                             Level.SEVERE,
+<a name="846" href="#846">846</a>                                             <span class="jxr_string">"Terminating download tries for file "</span>
+<a name="847" href="#847">847</a>                                                     + remoteFile
+<a name="848" href="#848">848</a>                                                             .getProtocolFile()
+<a name="849" href="#849">849</a>                                                     + <span class="jxr_string">" do to too many previous download failures : "</span>
+<a name="850" href="#850">850</a>                                                     + e.getMessage(), e);
+<a name="851" href="#851">851</a>                             <strong class="jxr_keyword">if</strong> (FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener != <strong class="jxr_keyword">null</strong>) {
+<a name="852" href="#852">852</a>                               FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.dListener
+<a name="853" href="#853">853</a>                                   .downloadFailed(remoteFile
+<a name="854" href="#854">854</a>                                       .getProtocolFile(), e
+<a name="855" href="#855">855</a>                                       .getMessage());
+<a name="856" href="#856">856</a>                             }
+<a name="857" href="#857">857</a>                             <strong class="jxr_keyword">break</strong>;
+<a name="858" href="#858">858</a>                         }
+<a name="859" href="#859">859</a> 
+<a name="860" href="#860">860</a>                     }
+<a name="861" href="#861">861</a>                 } <strong class="jxr_keyword">while</strong> (!successful);
+<a name="862" href="#862">862</a> 
+<a name="863" href="#863">863</a>                 FileRetrievalSystem.<strong class="jxr_keyword">this</strong>.removeFromDownloadingList(remoteFile
+<a name="864" href="#864">864</a>                         .getProtocolFile());
+<a name="865" href="#865">865</a>                 determineSessionFate(curSession);
+<a name="866" href="#866">866</a>             }
+<a name="867" href="#867">867</a>         });
+<a name="868" href="#868">868</a>     }
+<a name="869" href="#869">869</a> 
+<a name="870" href="#870">870</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> addToDownloadingList(<a href="../../../../../../org/apache/oodt/cas/protocol/ProtocolFile.html">ProtocolFile</a> pFile) {
+<a name="871" href="#871">871</a>         <strong class="jxr_keyword">this</strong>.currentlyDownloading.add(pFile);
+<a name="872" href="#872">872</a>     }
+<a name="873" href="#873">873</a> 
+<a name="874" href="#874">874</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> removeFromDownloadingList(<a href="../../../../../../org/apache/oodt/cas/protocol/ProtocolFile.html">ProtocolFile</a> pFile) {
+<a name="875" href="#875">875</a>         <strong class="jxr_keyword">this</strong>.currentlyDownloading.remove(pFile);
+<a name="876" href="#876">876</a>     }
+<a name="877" href="#877">877</a> 
+<a name="878" href="#878">878</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">boolean</strong> isDownloading(<a href="../../../../../../org/apache/oodt/cas/protocol/ProtocolFile.html">ProtocolFile</a> pFile) {
+<a name="879" href="#879">879</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.currentlyDownloading.contains(pFile);
+<a name="880" href="#880">880</a>     }
+<a name="881" href="#881">881</a> 
+<a name="882" href="#882">882</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">synchronized</strong> LinkedList&lt;ProtocolFile&gt; getCurrentlyDownloadingFiles() {
+<a name="883" href="#883">883</a>         LinkedList&lt;ProtocolFile&gt; list = <strong class="jxr_keyword">new</strong> LinkedList&lt;ProtocolFile&gt;();
+<a name="884" href="#884">884</a>         list.addAll(<strong class="jxr_keyword">this</strong>.currentlyDownloading);
+<a name="885" href="#885">885</a>         <strong class="jxr_keyword">return</strong> list;
+<a name="886" href="#886">886</a>     }
+<a name="887" href="#887">887</a> 
+<a name="888" href="#888">888</a>     <strong class="jxr_keyword">public</strong> LinkedList&lt;ProtocolFile&gt; getListOfFailedDownloads() {
+<a name="889" href="#889">889</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.failedDownloadList;
+<a name="890" href="#890">890</a>     }
+<a name="891" href="#891">891</a> 
+<a name="892" href="#892">892</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> clearFailedDownloadsList() {
+<a name="893" href="#893">893</a>         <strong class="jxr_keyword">this</strong>.failedDownloadList.clear();
+<a name="894" href="#894">894</a>     }
+<a name="895" href="#895">895</a> 
+<a name="896" href="#896">896</a>     <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> determineSessionFate(<a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session) {
+<a name="897" href="#897">897</a>         <em class="jxr_comment">// determine whether thread should be keep or should be thrown away</em>
+<a name="898" href="#898">898</a>         <strong class="jxr_keyword">if</strong> (numberOfSessions &lt;= max_sessions) {
+<a name="899" href="#899">899</a>             giveBackSession(session);
+<a name="900" href="#900">900</a>         } <strong class="jxr_keyword">else</strong> {
+<a name="901" href="#901">901</a>             disposeOfSession(session);
+<a name="902" href="#902">902</a>         }
+<a name="903" href="#903">903</a>     }
+<a name="904" href="#904">904</a> 
+<a name="905" href="#905">905</a>     <strong class="jxr_keyword">void</strong> giveBackSession(<a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session) {
+<a name="906" href="#906">906</a>         addAvailableSession(session);
+<a name="907" href="#907">907</a>         wakeUpMainThread();
+<a name="908" href="#908">908</a>     }
+<a name="909" href="#909">909</a> 
+<a name="910" href="#910">910</a>     <strong class="jxr_keyword">void</strong> disposeOfSession(<a href="../../../../../../org/apache/oodt/cas/protocol/Protocol.html">Protocol</a> session) {
+<a name="911" href="#911">911</a>         <strong class="jxr_keyword">try</strong> {
+<a name="912" href="#912">912</a>             protocolHandler.disconnect(session);
+<a name="913" href="#913">913</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="914" href="#914">914</a>             <em class="jxr_comment">// log failure</em>
+<a name="915" href="#915">915</a>         }
+<a name="916" href="#916">916</a>         numberOfSessions--;
+<a name="917" href="#917">917</a>     }
+<a name="918" href="#918">918</a> 
+<a name="919" href="#919">919</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> shutdown() {
+<a name="920" href="#920">920</a>         <strong class="jxr_keyword">try</strong> {
+<a name="921" href="#921">921</a>             <em class="jxr_comment">// close out threadpool</em>
+<a name="922" href="#922">922</a>             threadController.shutdown();
+<a name="923" href="#923">923</a>             <em class="jxr_comment">// give a max of 10 minutes to finish downloading any files</em>
+<a name="924" href="#924">924</a>             threadController.awaitTermination(TIMEOUT2, TimeUnit.SECONDS);
+<a name="925" href="#925">925</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="926" href="#926">926</a>             <em class="jxr_comment">// log failure</em>
+<a name="927" href="#927">927</a>         }
+<a name="928" href="#928">928</a> 
+<a name="929" href="#929">929</a>         <strong class="jxr_keyword">try</strong> {
+<a name="930" href="#930">930</a>             <strong class="jxr_keyword">this</strong>.resetVariables();
+<a name="931" href="#931">931</a>         } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a name="932" href="#932">932</a> 
+<a name="933" href="#933">933</a>         }
+<a name="934" href="#934">934</a> 
+<a name="935" href="#935">935</a>         <strong class="jxr_keyword">try</strong> {
+<a name="936" href="#936">936</a>             closeSessions();
+<a name="937" href="#937">937</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="938" href="#938">938</a>             <em class="jxr_comment">// log failure!!!</em>
+<a name="939" href="#939">939</a>         }
+<a name="940" href="#940">940</a> 
+<a name="941" href="#941">941</a>         <strong class="jxr_keyword">try</strong> {
+<a name="942" href="#942">942</a>             protocolHandler.close();
+<a name="943" href="#943">943</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="944" href="#944">944</a>             <em class="jxr_comment">// log failure!!!</em>
+<a name="945" href="#945">945</a>         }
+<a name="946" href="#946">946</a> 
+<a name="947" href="#947">947</a>     }
+<a name="948" href="#948">948</a> 
+<a name="949" href="#949">949</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="950" href="#950">950</a> <em class="jxr_javadoccomment">     * Disconnects all downloading Protocol sessions in the avaiableSessions</em>
+<a name="951" href="#951">951</a> <em class="jxr_javadoccomment">     * list. The ThreadPoolExecutor needs to be completely shutdown before this</em>
+<a name="952" href="#952">952</a> <em class="jxr_javadoccomment">     * method should be called. Otherwise some Protocols might not be</em>
+<a name="953" href="#953">953</a> <em class="jxr_javadoccomment">     * disconnected or left downloading.</em>
+<a name="954" href="#954">954</a> <em class="jxr_javadoccomment">     *</em>
+<a name="955" href="#955">955</a> <em class="jxr_javadoccomment">     * @return True if successful, false otherwise</em>
+<a name="956" href="#956">956</a> <em class="jxr_javadoccomment">     * @throws RemoteConnectionException</em>
+<a name="957" href="#957">957</a> <em class="jxr_javadoccomment">     */</em>
+<a name="958" href="#958">958</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> closeSessions() <strong class="jxr_keyword">throws</strong> RemoteConnectionException {
+<a name="959" href="#959">959</a>         <strong class="jxr_keyword">for</strong> (Protocol session : avaliableSessions) {
+<a name="960" href="#960">960</a>             protocolHandler.disconnect(session);
+<a name="961" href="#961">961</a>         }
+<a name="962" href="#962">962</a>         avaliableSessions.clear();
+<a name="963" href="#963">963</a>         numberOfSessions = 0;
+<a name="964" href="#964">964</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a name="965" href="#965">965</a>     }
+<a name="966" href="#966">966</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

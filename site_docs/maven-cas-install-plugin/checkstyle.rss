@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>CAS Installer Maven Mojo - Checkstyle report</title>
+    <link>http://oodt.apache.org/maven-cas-install-plugin/</link>
+    <description>CAS Installer Maven Mojo - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <item>
+      <title>File: 5,
+             Errors: 85,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://oodt.apache.org/maven-cas-install-plugin//checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://oodt.apache.org/maven-cas-install-plugin//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/maven-cas-install-plugin//checkstyle.html#org.apache.oodt.cas.install.CASInstallDirMetKeys.java">org/apache/oodt/cas/install/CASInstallDirMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/maven-cas-install-plugin//checkstyle.html#org.apache.oodt.cas.install.EnvReplacer.java">org/apache/oodt/cas/install/EnvReplacer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/maven-cas-install-plugin//checkstyle.html#org.apache.oodt.cas.install.AntDecorator.java">org/apache/oodt/cas/install/AntDecorator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  24
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/maven-cas-install-plugin//checkstyle.html#org.apache.oodt.cas.install.CASInstallDistMojo.java">org/apache/oodt/cas/install/CASInstallDistMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  42
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/maven-cas-install-plugin//checkstyle.html#org.apache.oodt.cas.install.package.html">org/apache/oodt/cas/install/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

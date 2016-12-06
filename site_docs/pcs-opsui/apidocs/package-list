@@ -1,0 +1,5 @@
+org.apache.oodt.pcs.opsui
+org.apache.oodt.pcs.opsui.config
+org.apache.oodt.pcs.opsui.config.filemgr
+org.apache.oodt.pcs.opsui.pedigree
+org.apache.oodt.pcs.opsui.status

@@ -1,0 +1,13 @@
+org.apache.oodt.cas.product
+org.apache.oodt.cas.product.data
+org.apache.oodt.cas.product.exceptions
+org.apache.oodt.cas.product.jaxrs
+org.apache.oodt.cas.product.jaxrs.configurations
+org.apache.oodt.cas.product.jaxrs.exceptions
+org.apache.oodt.cas.product.jaxrs.filters
+org.apache.oodt.cas.product.jaxrs.resources
+org.apache.oodt.cas.product.jaxrs.services
+org.apache.oodt.cas.product.jaxrs.servlets
+org.apache.oodt.cas.product.jaxrs.writers
+org.apache.oodt.cas.product.rdf
+org.apache.oodt.cas.product.rss
