@@ -18,30 +18,37 @@
 package org.apache.oodt.security.sso.opensso;
 
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * A client class to the services provided by the <a
  * href="https://opensso.dev.java.net/">OpenSSO</a> project. The descriptions of
  * these services are <a
  * href="http://developers.sun.com/identity/reference/techart/id-svcs.html"
  * >here</a>.
- * 
+ *
  * @author mattmann
  * @version $Revision$
- * 
+ *
  */
 public class SSOProxy implements SSOMetKeys {
 
@@ -54,53 +61,63 @@ public class SSOProxy implements SSOMetKeys {
   private static final String IDENT_ATTR_ENDPOINT_KEY = "IDENT_ATTR_ENDPOINT";
   private static final String LOG_ENDPOINT;
   private static final String LOG_ENDPOINT_KEY = "LOG_ENDPOINT";
-  
-  static {
-	  if (System.getProperty(AUTH_ENDPOINT_KEY) != null) {
-		  AUTH_ENDPOINT = System.getProperty(AUTH_ENDPOINT_KEY);
-	  } else {
-		  AUTH_ENDPOINT = AUTHENTICATE_ENDPOINT;
-	  }
-	  if (System.getProperty(IDENT_READ_ENDPOINT_KEY) != null) {
-		  IDENT_READ_ENDPOINT = System.getProperty(IDENT_READ_ENDPOINT_KEY);
-	  } else {
-		  IDENT_READ_ENDPOINT = IDENTITY_READ_ENDPOINT;
-	  }
-	  if (System.getProperty(IDENT_ATTR_ENDPOINT_KEY) != null) {
-		  IDENT_ATTR_ENDPOINT = System.getProperty(IDENT_ATTR_ENDPOINT_KEY);
-	  } else {
-		  IDENT_ATTR_ENDPOINT = IDENTITY_ATTRIBUTES_ENDPOINT;
-	  }
-	  if (System.getProperty(LOG_ENDPOINT_KEY) != null) {
-		  LOG_ENDPOINT = System.getProperty(LOG_ENDPOINT_KEY);
-	  } else {
-		  LOG_ENDPOINT = LOGOUT_ENDPOINT;
-	  }
 
-	  LOG.log(Level.INFO, AUTH_ENDPOINT_KEY + " set to " + AUTH_ENDPOINT);
-	  LOG.log(Level.INFO, IDENT_READ_ENDPOINT_KEY + " set to " + IDENT_READ_ENDPOINT);
-	  LOG.log(Level.INFO, IDENT_ATTR_ENDPOINT_KEY + " set to " + IDENT_ATTR_ENDPOINT);
-	  LOG.log(Level.INFO, LOG_ENDPOINT_KEY + " set to " + LOG_ENDPOINT);
+  static {
+    if (System.getProperty(AUTH_ENDPOINT_KEY) != null) {
+      AUTH_ENDPOINT = System.getProperty(AUTH_ENDPOINT_KEY);
+    } else {
+      AUTH_ENDPOINT = AUTHENTICATE_ENDPOINT;
+    }
+    if (System.getProperty(IDENT_READ_ENDPOINT_KEY) != null) {
+      IDENT_READ_ENDPOINT = System.getProperty(IDENT_READ_ENDPOINT_KEY);
+    } else {
+      IDENT_READ_ENDPOINT = IDENTITY_READ_ENDPOINT;
+    }
+    if (System.getProperty(IDENT_ATTR_ENDPOINT_KEY) != null) {
+      IDENT_ATTR_ENDPOINT = System.getProperty(IDENT_ATTR_ENDPOINT_KEY);
+    } else {
+      IDENT_ATTR_ENDPOINT = IDENTITY_ATTRIBUTES_ENDPOINT;
+    }
+    if (System.getProperty(LOG_ENDPOINT_KEY) != null) {
+      LOG_ENDPOINT = System.getProperty(LOG_ENDPOINT_KEY);
+    } else {
+      LOG_ENDPOINT = LOGOUT_ENDPOINT;
+    }
+
+    LOG.log(Level.INFO, AUTH_ENDPOINT_KEY + " set to " + AUTH_ENDPOINT);
+    LOG.log(Level.INFO, IDENT_READ_ENDPOINT_KEY + " set to " + IDENT_READ_ENDPOINT);
+    LOG.log(Level.INFO, IDENT_ATTR_ENDPOINT_KEY + " set to " + IDENT_ATTR_ENDPOINT);
+    LOG.log(Level.INFO, LOG_ENDPOINT_KEY + " set to " + LOG_ENDPOINT);
   }
 
   public String authenticate(String username, String password) {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(AUTH_ENDPOINT);
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(AUTH_ENDPOINT);
+    //PostMethod post = new PostMethod(AUTH_ENDPOINT);
     String response;
     String ssoToken = null;
 
-    NameValuePair[] data = { new NameValuePair("username", username),
-        new NameValuePair("password", password),
-        new NameValuePair("uri", "realm/lmmp") };
+    NameValuePair[] data = { new BasicNameValuePair("username", username),
+            new BasicNameValuePair("password", password),
+            new BasicNameValuePair("uri", "realm/lmmp") };
 
-    post.setRequestBody(data);
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+
+    post.setEntity(entity);
 
     try {
-      httpClient.executeMethod(post);
-      if (post.getStatusCode() != HttpStatus.SC_OK) {
-        throw new HttpException(post.getStatusLine().toString());
+      HttpResponse response1 = httpClient.execute(post);
+      if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        throw new HttpException(response1.getStatusLine().toString());
       }
-      response = post.getResponseBodyAsString().trim();
+      ResponseHandler<String> handler = new BasicResponseHandler();
+
+      response = handler.handleResponse(response1);
       ssoToken = response.substring(9);
     } catch (Exception e) {
       LOG.log(Level.SEVERE, e.getMessage());
@@ -112,56 +129,85 @@ public class SSOProxy implements SSOMetKeys {
   }
 
   public IdentityDetails readIdentity(String username, String token)
-      throws IOException, SingleSignOnException {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(IDENT_READ_ENDPOINT);
+          throws IOException, SingleSignOnException {
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(IDENT_READ_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining identity: username: [" + username
-        + "]: token: [" + token + "]: REST url: [" + IDENT_READ_ENDPOINT
-        + "]");
-    NameValuePair[] data = { new NameValuePair("name", username),
-        new NameValuePair("admin", token) };
+            + "]: token: [" + token + "]: REST url: [" + IDENT_READ_ENDPOINT
+            + "]");
+    NameValuePair[] data = { new BasicNameValuePair("name", username),
+            new BasicNameValuePair("admin", token) };
 
-    post.setRequestBody(data);
-
-    httpClient.executeMethod(post);
-    if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new SingleSignOnException(post.getStatusLine().toString());
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
     }
 
-    return parseIdentityDetails(post.getResponseBodyAsString().trim());
+    post.setEntity(entity);
+
+    HttpResponse response1 = httpClient.execute(post);
+    if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      throw new SingleSignOnException(response1.getStatusLine().toString());
+    }
+
+    ResponseHandler<String> handler = new BasicResponseHandler();
+
+
+    return parseIdentityDetails(handler.handleResponse(response1).trim());
 
   }
 
   public UserDetails getUserAttributes(String token) throws IOException, SingleSignOnException {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(IDENT_ATTR_ENDPOINT);
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(IDENT_READ_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining user attributes: token: [" + token
-        + "]: REST url: [" + IDENT_ATTR_ENDPOINT + "]");
-    NameValuePair[] data = { new NameValuePair("subjectid", token) };
+            + "]: REST url: [" + IDENT_ATTR_ENDPOINT + "]");
+    NameValuePair[] data = { new BasicNameValuePair("subjectid", token) };
 
-    post.setRequestBody(data);
-
-    httpClient.executeMethod(post);
-    if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new SingleSignOnException(post.getStatusLine().toString());
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
     }
 
-    return parseUserDetails(post.getResponseBodyAsString().trim());
+    post.setEntity(entity);
+
+    HttpResponse response1 = httpClient.execute(post);
+    if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      throw new SingleSignOnException(response1.getStatusLine().toString());
+    }
+
+    ResponseHandler<String> handler = new BasicResponseHandler();
+
+
+    return parseUserDetails(handler.handleResponse(response1).trim());
 
   }
 
   public void logout(String token) {
-    HttpClient httpClient = new HttpClient();
-    PostMethod post = new PostMethod(LOG_ENDPOINT);
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost post = new HttpPost(LOG_ENDPOINT);
     LOG.log(Level.INFO, "Logging out: token: [" + token + "]: REST url: ["
-        + LOG_ENDPOINT + "]");
-    NameValuePair[] data = { new NameValuePair("subjectid", token) };
-    post.setRequestBody(data);
+            + LOG_ENDPOINT + "]");
+    NameValuePair[] data = { new BasicNameValuePair("subjectid", token) };
+
+
+    UrlEncodedFormEntity entity = null;
+    try {
+      entity = new UrlEncodedFormEntity(Arrays.asList(data), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+
+    post.setEntity(entity);
 
     try {
-      httpClient.executeMethod(post);
-      if (post.getStatusCode() != HttpStatus.SC_OK) {
-        throw new HttpException(post.getStatusLine().toString());
+      HttpResponse response1 = httpClient.execute(post);
+      if (response1.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        throw new HttpException(response1.getStatusLine().toString());
       }
     } catch (HttpException e) {
       // TODO Auto-generated catch block
@@ -176,7 +222,7 @@ public class SSOProxy implements SSOMetKeys {
 
   private IdentityDetails parseIdentityDetails(String serviceResponse) {
     ByteArrayInputStream is = new ByteArrayInputStream(serviceResponse
-        .getBytes());
+            .getBytes());
     BufferedReader br = new BufferedReader(new InputStreamReader(is));
     IdentityDetails details = new IdentityDetails();
     String line = null, lastAttrKeyRead = null;
@@ -214,7 +260,7 @@ public class SSOProxy implements SSOMetKeys {
     } catch (IOException e) {
       LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
-          + "]: Message: " + e.getMessage());
+              + "]: Message: " + e.getMessage());
     } finally {
       try {
         is.close();
@@ -233,7 +279,7 @@ public class SSOProxy implements SSOMetKeys {
 
   private UserDetails parseUserDetails(String serviceResponse) {
     ByteArrayInputStream is = new ByteArrayInputStream(serviceResponse
-        .getBytes());
+            .getBytes());
     BufferedReader br = new BufferedReader(new InputStreamReader(is));
     UserDetails details = new UserDetails();
     String line = null, lastAttrKeyRead = null;
@@ -264,7 +310,7 @@ public class SSOProxy implements SSOMetKeys {
     } catch (IOException e) {
       LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
-          + "]: Message: " + e.getMessage());
+              + "]: Message: " + e.getMessage());
     } finally {
       try {
         is.close();
@@ -283,8 +329,8 @@ public class SSOProxy implements SSOMetKeys {
 
   public static void main(String[] args) throws IOException, SingleSignOnException {
     String usage = "SSOProxy <cmd> [args]\n\n" + "Where cmd is one of:\n"
-        + "authenticate <user> <pass>\n" + "identity <user> <token>\n"
-        + "attributes <token>\nlogout <token>\n";
+            + "authenticate <user> <pass>\n" + "identity <user> <token>\n"
+            + "attributes <token>\nlogout <token>\n";
 
     if (args.length < 2 || args.length > 3) {
       System.err.println(usage);

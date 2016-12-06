@@ -111,9 +111,15 @@ the License.
         <version>1.4</version>
       </dependency>
       <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>3.1</version>
+       <groupId>org.apache.httpcomponents</groupId>
+       <artifactId>httpclient</artifactId>
+       <exclusions>
+         <exclusion>
+           <artifactId>commons-logging</artifactId>
+         <groupId>commons-logging</groupId>
+       </exclusion>
+      </exclusions>
+        <version>4.5.2</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -265,11 +271,6 @@ the License.
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-activation_1.1_spec</artifactId>
         <version>1.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>4.5.2</version>
       </dependency>
       <dependency>
         <groupId>org.apache.jena</groupId>
@@ -485,11 +486,6 @@ the License.
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.7.12</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j</artifactId>
         <version>1.7.12</version>
       </dependency>
       <dependency>
