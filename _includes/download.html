@@ -1,0 +1,84 @@
+<div class="container" >
+
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Introduction</h1>
+      <p>Thanks for checking out Apache OODT. On this page you can download our official release.<br/> <strong>N.B. OODT is ONLY released as source code and NOT binary</strong>. This is because you will most likely want to recompile various aspects of the codebase with configuration before deploying an OODT system.</p>
+
+      <p>See the <a href="https://raw.githubusercontent.com/apache/oodt/{{site.oodt_releases.first.version}}/CHANGES.txt">{{site.oodt_releases.first.version}}-CHANGES.txt</a> file for more information on the list of updates in this release.</p>
+
+      <p>OODT is always distributed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, version 2.0</a>.</p>
+
+      <h1>Prerequisites</h1>
+      <p>You require <a href="http://maven.apache.org/">Apache Maven</a> to build the OODT source code. Maven can either be downloaded and installed manually or alternatively via command line via your operating system package manager.</p>
+
+      <h1>Official Release</h1>
+      <p>{{site.oodt_releases.first.date}}: The Latest Apache™ OODT version {{site.oodt_releases.first.version}} is now released and available for download.</p>
+
+      <p><a href="http://www.apache.org/dyn/closer.lua/oodt" class="btn btn-primary">Download OODT</a>
+      <h2>Download OODT</h2>
+
+      <h3>Mirrors</h3>
+      <p>The link in the Mirrors column below should display a default mirror selection based on your inferred location. If (when you browse to it) you do not see that page, try a different browser. The checksum and signature are links to the originals on the main distribution server.</p>
+
+      <table class="table">
+	<tr>
+	  <th>Version</th>
+	  <th>Mirrors</th>
+	  <th>MD5 Checksum</th>
+	  <th>Signature</th>
+	  <th>SHA Checksum</th>
+	</tr>
+	<tr>
+	  <td>
+	    Apache OODT {{site.oodt_releases.first.version}} (zip)
+	  </td>
+	  <td>
+	    <a href="http://www.apache.org/dyn/closer.cgi/oodt/apache-oodt-{{site.oodt_releases.first.version}}-src.zip">apache-oodt-{{site.oodt_releases.first.version}}-src.zip</a>
+	  </td>
+	  <td>
+	    <a href="http://www.apache.org/dist/oodt/apache-oodt-{{site.oodt_releases.first.version}}-src.zip.md5">apache-oodt-{{site.oodt_releases.first.version}}-src.zip.md5</a>
+	  </td>
+	  <td>
+	    <a href="http://www.apache.org/dist/oodt/apache-oodt-{{site.oodt_releases.first.version}}-src.zip.asc">apache-oodt-{{site.oodt_releases.first.version}}-src.zip.asc</a>
+	  </td>
+	  <td>
+	    <a href="http://www.apache.org/dist/oodt/apache-oodt-{{site.oodt_releases.first.version}}-src.zip.sha1">apache-oodt-{{site.oodt_releases.first.version}}-src.zip.sha1</a>
+	  </td>
+	</tr>
+      </table>
+      <h3>Verify Releases</h3>
+      <p>It is essential that you verify the integrity of the downloaded files using the PGP, MD5 and/or SHA signatures. published with every OODT release.</p>
+
+      <p>Please read <a href="http://httpd.apache.org/dev/verification.html">Verifying Apache HTTP Server Releases</a> for more information on why you should verify our releases.</p>
+
+      <p>We strongly recommend you verify your downloads with at least both PGP and MD5. Guidance for doing so is provided below.</p>
+
+      <h4>PGP Signature</h4>
+      <p>The PGP signatures can be verified using PGP or GPG. First download the <a href="https://people.apache.org/keys/group/oodt.asc">KEYS</a> as well as the asc signature file for the relevant distribution.</p>
+
+      <p>N.B.Make sure you get these files from the <a href="http://www.apache.org/dist/oodt/">main distribution directory</a>, rather than from a mirror. Then verify the signatures using the following:</p>
+
+      <code>$ gpg --import KEYS $ gpg --verify apache-oodt-{{site.oodt_releases.first.version}}-src.zip.asc</code>
+      <p>The files in the most recent release are signed by {{site.oodt_releases.first.pgp_signature}} (CODE SIGNING KEY)</p>
+
+      <h4>MD5 Signature</h4>
+      <p>Alternatively, you can verify the MD5 signature on the files. A unix program called md5 or md5sum is included in many unix distributions.</p>
+
+      <code>$ md5sum apache-oodt-{{site.oodt_releases.first.version}}-src.tar.gz</code>
+      <p>... output should match the string in apache-oodt-{{site.oodt_releases.first.version}}-src.zip.md5</p>
+
+    </div>
+    <div class="col-md-4">
+      <h1>Previous Releases</h1>
+      {% for item in site.oodt_releases offset:1 limit:10 %}
+      <p>
+      Release Date: {{item.date}}<br/>
+      Version: OODT {{ item.version }}<br/>
+      <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-{{item.version}}-src.zip">Download</a><br/>
+      <a href="#">Verification KEYS</a>
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="jumbotron oodt-lightbg">
+    <div class="container">
+        <h1 class="post-title">{{ page.title }}</h1>
+        <p class="post-date">{{ page.date | date: '%B %d, %Y' }}</p>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <article class="post-content">
+                {{content}}
+            </article>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="jumbotron oodt-lightbg">
+    <div class="container">
+        <h1>Latest Posts</h1>
+        <p>News and information from the world of Apache OODT.</p>
+    </div>
+
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <div class="list-group">
+                {% for post in site.posts %}
+                {% unless post.tags contains 'portfolio' %}
+                <a class="list-group-item" href="{{ post.url }}">
+                    <h4 class="list-group-item-heading">{{ post.title }}</h4>
+                    <p class="list-group-item-text">{{ post.excerpt }}</p>
+                </a>
+                {% endunless %}
+                {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,6 +1,0 @@
-org.apache.oodt.cas.metadata
-org.apache.oodt.cas.metadata.exceptions
-org.apache.oodt.cas.metadata.extractors
-org.apache.oodt.cas.metadata.filenaming
-org.apache.oodt.cas.metadata.preconditions
-org.apache.oodt.cas.metadata.util

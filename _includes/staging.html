@@ -1,0 +1,22 @@
+<div class="row col-md-6 col-md-offset-3">
+
+    <h1>
+        Tracking Data Inside Your Data Pool
+    </h1>
+    <p>
+        Storage is cheap, so businesses like to store data, lots of it. This is fine but it adds complexity to the data storage pool, data locality, what data is stored and so on.
+        What OODT provides is a way for users and administrators to keep track of the data that is available to them and search through sets of data with relative ease.
+    </p>
+    <h2>Track data by metadata</h2>
+    <p>
+        By putting OODT in front of your staging area or data storage pool, you can use metadata extractors like Apache Tika to extract data from the files you plan to ingest
+        into your data warehouse. For example, embedded in every Excel spreadsheet will be the creator, the last edited date and so on which can be valuable to users because
+        it allows them to discover data by metadata instead of by folder or file name. Should you use HDFS or another clustered file system you can also add connectivity to that
+        file system with relative ease, allowing you instant ingestion and tracking via OODT whilst allowing your NOSQL jobs to run over the content instantly.
+    </p>
+    <h2>Solr Analysis</h2>
+    <p>
+        By pumping your metadata catalog into Solr you can have instant analysis at your fingertips. Front Solr with Banana and you can ask questions of your metadata, giving
+        analysts another entry point into your data warehouse.
+    </p>
+</div>

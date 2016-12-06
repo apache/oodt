@@ -1,0 +1,23 @@
+<header id="top" class="header">
+    <div class="text-vertical-center">
+      <div class="row transparent" style="padding:10px;" >
+    <div class="text-vertical-center col-md-9">
+      <img src="img/oodt_asf_logo_med.png" class="img-responsive" style="margin: 0 auto;" alt="OODT LOGO" />
+    <h3>Catalogs, archives, metadata & more</h3>
+    <br>
+     <a href="/download.html" class="btn btn-dark btn-lg">Download OODT</a>
+    </div>
+    <div class="col-md-3" >
+       <h3>Latest News</h3>
+    <ul class="list-group">
+      {% for post in site.posts limit:5 do %}
+      <li class="list-group-item">
+	<a href="{{ post.url }}">{{ post.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    </div>
+      </div>
+</div>
+</header>
+ 

@@ -1,6 +1,0 @@
-org.apache.oodt.cas.workflow.webapp.monitor
-org.apache.oodt.cas.workflow.webapp.monitor.condition
-org.apache.oodt.cas.workflow.webapp.monitor.events
-org.apache.oodt.cas.workflow.webapp.monitor.instance
-org.apache.oodt.cas.workflow.webapp.monitor.task
-org.apache.oodt.cas.workflow.webapp.monitor.workflow

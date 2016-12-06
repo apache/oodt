@@ -1,0 +1,19 @@
+<div class="row col-md-12 ">
+  <h1>Overview</h1>
+  <p>The high level goal of this effort is to build a distribution of OODT that sets up, installs, and runs within a few commands. Reducing the number of commands to run OODT is an effort to push the edge of ease of setup and configuration required to get going. This distribution of OODT will include both a deployment and source structure for managing the evolution of your installation of OODT.</p>
+  <p>Maven offers an improved way to export, configure and build OODT called Archetypes. Archetypes simply put are a way to define templates for projects. Within these project templates we will include packaging instructions to conform to the guidelines below to increase the similarity amongst deployments of OODT. Moreover, we will build higher level scripts and configuration to tie the pieces together at the system level. Finally, we will leverage the CAS Install Maven Plugin to take us from our source structure to our deployment structure.</p>
+  <p>This wiki will be used to capture thoughts, ideas and plans for the first archetypes we develop for OODT. To keep things simple we are going to initially focus on a small number of modules that are typically deployed and configured together. Finally, our goal is to build an 80% solution that works in most cases to get people out of the gates and running with a full OODT solution. We believe this effort will help increase adoption and conformity amongst installations of an already great system.</p>
+
+  <h1>Installing OODT with Radix</h1>
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+  <kbd>curl -s "https://git-wip-us.apache.org/repos/asf?p=oodt.git;a=blob_plain;f=mvn/archetypes/radix/src/main/resources/bin/radix;hb=HEAD" | bash</kbd><br/>
+  <kbd>mv oodt oodt-src; cd oodt-src; mvn install</kbd><br/>
+  <kbd>mkdir ../oodt; tar -xvf distribution/target/oodt-distribution-0.1-bin.tar.gz -C ../oodt</kbd><br/>
+  <kbd>cd ../oodt; ./bin/oodt start</kbd><br/>
+  <kbd>./resmgr/bin/batch_stub 2001</kbd><br/>
+  </div>
+</div>
+</div>

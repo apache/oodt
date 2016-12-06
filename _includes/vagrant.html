@@ -1,0 +1,66 @@
+<div class="row col-md-12 ">
+
+
+<h1>Introduction</h1>
+    <p>This user-guide will help you understand, and set up a Vagrant powered Virtual Machine containing a pre-configured OODT installation.</p>
+    <h2>Requirements</h2>
+    <ul>
+        <li>Vagrant - please download from: http://www.vagrantup.com</li>
+        <li>VirtualBox - please download from: https://www.virtualbox.org/</li>
+        <li>At least 4GB disk space</li>
+    </ul>
+    <h2>OODT RADiX Vagrant Virtual Machine</h2>
+    <p>Launching this Vagrant VM will provide you with:
+
+        <ul>
+            <li>A pre-configured RADiX installation with a version of OODT of your choosing (including the latest OODT snapshots!)</li>
+            <li>A port-forwarded OPSUI control webapp at http://localhost:8080/opsui that you can quickly use to verify and control OODT</li>
+            <li>More time, because installing OODT is as easy as "vagrant up"</li>
+            <li>A fast way to produce a RADiX project tar-ball, which you can copy and use elsewhere</li>
+        </ul>
+    </p>
+    <h2>Steps</h2>
+    <ol>
+        <li>Download the latest Apache OODT distribution.</li>
+        <li>Extract the OODT distribution somewhere on your machine
+    <div class="panel panel-default">
+        <div class="panel-body">
+        <kbd># please change ${version} to the version you have</kbd><br/>
+        <kbd>$ unzip apache-oodt-${version}-src.zip</kbd><br/>
+        <kbd>$ cd apache-oodt-${version}-src/vagrant/radix/</kbd>
+            </div>
+        </div>
+            </li>
+        <li>
+    Customize your RADiX Vagrant distribution for your organization/project:
+            <ol>
+                <li>Open vagrant/env.sh in your favorite editor</li>
+                <li>Make sure you customize entries for the following variables:
+                    <ol>
+                        <li>(required) PROJECT_GROUP_ID - The namespace that will be used to create the RADiX distribution of OODT (e.g. com.mycompany.myorg)</li>
+                        <li>(required) PROJECT_ARTIFACT_ID - The specific name of the RADiX distribution project (e.g. myproject)</li>
+                        <li>(optional) BUILD_FLAGS - Set of build flags that will customize the RADiX deployment Vagrant will build. See more build flag options here.</li>
+                        <li>(optional) OODT_DEPLOYMENT_HOME - The location on the Vagrant Virtual Machine where OODT RADiX will be installed to</li>
+                        <li>(Optional) Change the top line of Vagrantfile that sets the VM_NAME to a name of your choosing. Note, every Vagrant virtual machine must have a unique name.</li>
+                        </ol>
+                </li>
+                </ol>
+            </li>
+        <li>
+    Install/Launch RADiX OODT
+        <ol>
+            <li>
+    Type vagrant up to launch the Virtual Machine (can take up to 15 minutes the first time you run)
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <kbd>$ vagrant up</kbd>
+            </div>
+        </div>
+            </li>
+        </ol>
+            </li>
+        <li>
+    After the above command finished, navigate to the OODT OpsUI on your host machine: http://localhost:8080/opsui
+        </li>
+        </ol>
+</div>

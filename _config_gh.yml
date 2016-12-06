@@ -1,0 +1,42 @@
+# Site settings
+github.url: "https://dl.dropboxusercontent.com/u/8503756/oodt-website/"
+title: Apache OODT - Distributed Data Management
+email: dev@oodt.apache.org
+description: |
+    Apache Object Oriented Data Technology (OODT) is the smart way to integrate and archive your processes, your data, and its metadata. It facilitates the generation, processing, management, distribution, analysis of data management, data archiving, and data analytics systems allowing for the integration of data, computation, visualization and other components.
+baseurl: "oodt-website" # the subpath of your site, e.g. /blog/
+url: "http://buggtb.github.io/" # the base hostname & protocol for your site
+
+# User setting
+owner: Apache OODT
+email: dev@oodt.apache.org 
+facebook_username:
+twitter_username: apache_oodt
+github_username: apache/oodt
+#address:
+#  - line:
+#  - line:
+#telephone:
+copyright: The Apache Foundation
+
+# API settings
+google_api_key: AIzaSyBF9vQhDZ0si6cAFWwjETefQE1eREl6NvQ
+
+# Build settings
+markdown: kramdown
+
+gems: ['jekyll-less']
+
+oodt_releases:
+      - version: "1.0"
+        date: JUN-2016
+        pgp_signature: 783CE7BB Tom Barber
+      - version: "0.12"
+        date: FEB-2016
+        pgp_signature: 783CE7BB Tom Barber
+      - version: "0.11"
+        date: JAN-2016
+      - version: "0.10"
+        date: AUG-2015
+      - version: "0.9"
+        date: JUN-2015

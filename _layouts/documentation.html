@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+<body>
+
+
+  {% include navigation.html %}
+  <div class="container" >
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Getting Started</a></li>
+    <li role="presentation"><a href="#radix" aria-controls="radix" role="tab" data-toggle="tab">Radix</a></li>
+    <li role="presentation"><a href="#vagrant" aria-controls="vagrant" role="tab" data-toggle="tab">Vagrant</a></li>
+    <li role="presentation"><a href="#devres" aria-controls="devres" role="tab" data-toggle="tab">Development Resources</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="home">
+      {% include getstarted.html %}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="radix">
+      {% include radix.html %}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="vagrant">
+      {% include vagrant.html %}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="devres">
+      {% include devres.html %}
+    </div>
+  </div>
+
+  
+</div>
+  {% include footer.html %}
+  {% include scripts.html %}
+  {% include contactform.html %}
+</body>
+
+</html>
