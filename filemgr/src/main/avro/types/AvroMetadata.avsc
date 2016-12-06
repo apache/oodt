@@ -1,8 +1,0 @@
-{
-  "type":"record",
-  "name":"AvroMetadata",
-  "namespace": "org.apache.oodt.cas.filemgr.structs.avrotypes",
-  "fields":[
-    {"name":"tableMetadata","type":[{"type":"map","values":{"type":"array","items":"string"}},"null"]}
-  ]
-}
