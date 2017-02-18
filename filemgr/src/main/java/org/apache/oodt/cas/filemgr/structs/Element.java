@@ -17,8 +17,12 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author mattmann
+ * @author starchmd
  * @version $Revision$
  * 
  * <p>
@@ -39,6 +43,9 @@ public class Element {
 
     /* the element's string description. */
     private String description = null;
+
+    /* a list of properties attached to this element */
+    private Map<String,String> attachments = new HashMap<String,String>();
 
     /**
      * <p>
@@ -137,6 +144,19 @@ public class Element {
      */
     public void setDescription(String description) {
         this.description = description;
-    }  
-
+    }
+    /**
+     * Set attachments to this elements
+     * @param attachments - attachment map to add
+     */
+    public void setAttachments(Map<String,String> attachments) {
+        this.attachments = attachments;
+    }
+    /**
+     * Return the current attachments
+     * @return attachments
+     */
+    public Map<String,String> getAttachments() {
+        return this.attachments;
+    }
 }

@@ -27,6 +27,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -38,9 +39,8 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.util.StringUtils;
 
@@ -73,8 +73,8 @@ public class SolrIndexer {
 	private final static String ACCESS_KEY = "access.key";
 	private final static String ACCESS_URL = "access.url";
 	private final static String PRODUCT_NAME = "CAS.ProductName";
+	private final HttpSolrClient server;
 	private IndexerConfig config = null;
-	private final SolrServer server;
 	private String fmUrl;
 	private String solrUrl;
 	private static Logger LOG = Logger.getLogger(SolrIndexer.class.getName());
@@ -132,13 +132,10 @@ public class SolrIndexer {
 		}
 
 		LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
+		SystemDefaultHttpClient httpClient = new SystemDefaultHttpClient();
+		server = new HttpSolrClient(this.solrUrl, httpClient);
 
-		try {
-			server = new CommonsHttpSolrServer(this.solrUrl);
-		} catch (MalformedURLException e) {
-			LOG.severe("Could not connect to Solr server " + this.solrUrl);
-			throw new InstantiationException(e.getMessage());
-		}
+//		server = new SolrClient(this.solrUrl);
 
 	}
 
@@ -173,6 +170,8 @@ public class SolrIndexer {
 	private SolrInputDocument getSolrDocument(Metadata metadata) {
 		SolrInputDocument doc = new SolrInputDocument();
 		// Only grab metadata which have a mapping in the indexer.properties
+		String official = "";
+
 		for (Object objKey : config.getMapProperties().keySet()) {
 			// The key in the metadata object
 			String key = (String) objKey;
@@ -183,12 +182,14 @@ public class SolrIndexer {
 				for (String value : values) {
 					// Add each metadata value into the
 					if (value != null && !config.getIgnoreValues().contains(value.trim())) {
-						LOG.fine("Adding field: " + fieldName + " value: " + value);
+						official += " Key: " + key + " Value: " + value;
 						doc.addField(fieldName, value);
 					}
 				}
 			}
 		}
+	//	LOG.info("KEYS WERE:" +official);
+
 		return doc;
 	}
 
@@ -326,20 +327,21 @@ public class SolrIndexer {
 			List<ProductType> types = fmClient.getProductTypes();
 			for (ProductType type : types) {
 				if (!config.getIgnoreTypes().contains(type.getName().trim())) {
+					ProductPage page = safeFirstPage(fmClient, type);
 					LOG.info("Paging through products for product type: "
-					    + type.getName());
-					ProductPage page = safeFirstPage(fmClient, type); 
+							+ type.getName()+" Total pages are "+page.getTotalPages());
 					while (page != null) {
 					    for (Product product : page.getPageProducts()) {
 							try {
-								this.indexProduct(product.getProductId(), fmClient
-								    .getMetadata(product), type.getTypeMetadata());
+								String p = product.getProductId();
+								Metadata m = fmClient.getMetadata(product);
+								this.indexProduct(p, m, type.getTypeMetadata());
 							} catch (Exception e) {
 								LOG.severe("Could not index " + product.getProductId() + ": "
-								    + e.getMessage());
+								    + e.getLocalizedMessage());
 							}
 						}
-					    if (page.isLastPage()) {
+					    if (page.getPageNum() >= page.getTotalPages() || page.isLastPage()) {
 					        break;
 					    }
 					    page = fmClient.getNextPage(type, page);
@@ -378,6 +380,17 @@ public class SolrIndexer {
 			    this.fmUrl));
 			Product product = fmClient.getProductById(productId);
 			Metadata productMetadata = fmClient.getMetadata(product);
+			List<String> keys = productMetadata.getAllKeys();
+			String logger = "";
+			for(String k :keys){
+				logger+=" key: "+keys;
+				List<String> values = productMetadata.getAllValues(k);
+
+				for(String v : values){
+					logger+=" value: "+v + ", ";
+				}
+			}
+			LOG.info("Metadata: "+ logger);
 			indexProduct(product.getProductId(), productMetadata, product
 			    .getProductType().getTypeMetadata());
 		} catch (MalformedURLException e) {
@@ -472,7 +485,7 @@ public class SolrIndexer {
 				server.add(this.getSolrDocument(metadata));
 				LOG.info("Indexed product: " + productId);
 			} catch (IOException e) {
-				LOG.severe("Could not index product: " + productId);
+				LOG.severe("Could not index product: " + productId+ "Exception:"+e.getLocalizedMessage());
 			}
 		} else {
 			LOG.info("Could not find metadata for product: " + productId);
@@ -546,10 +559,12 @@ public class SolrIndexer {
 				List<String> values = metadata.getAllMetadata(keyString);
 				if (values != null) {
 					List<String> newValues = new ArrayList<String>();
-					SimpleDateFormat format = new SimpleDateFormat(config
-					    .getFormatProperties().getProperty(keyString).trim());
+
+				/*	SimpleDateFormat format = new SimpleDateFormat(config
+					    .getFormatProperties().getProperty(keyString).trim());*/
 					for (String value : values) {
-						newValues.add(formatDate(format, value));
+						String d = value.trim();
+						newValues.add(d);
 					}
 					metadata.removeMetadata(keyString);
 					metadata.addMetadata(keyString, newValues);

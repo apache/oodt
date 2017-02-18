@@ -16,12 +16,14 @@
  */
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,7 +86,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 		ProductType productType = product.getProductType();
 		if (productType!=null) {
 			this.addKeyValueToMap(fields, Parameters.PRODUCT_TYPE_NAME, productType.getName());
-			this.addKeyValueToMap(fields, Parameters.PRODUCT_TYPE_ID, productType.getProductTypeId());				
+			this.addKeyValueToMap(fields, Parameters.PRODUCT_TYPE_ID, productType.getProductTypeId());
 		}
 		if (create) {
 			// only insert date/time when product is first created
@@ -116,10 +118,10 @@ public class DefaultProductSerializer implements ProductSerializer {
 		// product root reference
 		if (rootReference!=null) {
 			
-			addKeyValueToMap(fields, Parameters.ROOT_REFERENCE_ORIGINAL, rootReference.getOrigReference());
-			addKeyValueToMap(fields, Parameters.ROOT_REFERENCE_DATASTORE, rootReference.getDataStoreReference());
+			addKeyValueToMap(fields, Parameters.ROOT_REFERENCE_ORIGINAL, StringEscapeUtils.escapeXml(rootReference.getOrigReference()));
+			addKeyValueToMap(fields, Parameters.ROOT_REFERENCE_DATASTORE, StringEscapeUtils.escapeXml(rootReference.getDataStoreReference()));
 			addKeyValueToMap(fields, Parameters.ROOT_REFERENCE_FILESIZE, ""+rootReference.getFileSize());
-			addKeyValueToMap(fields, Parameters.ROOT_REFERENCE_MIMETYPE, rootReference.getMimeType().toString());
+			addKeyValueToMap(fields, Parameters.ROOT_REFERENCE_MIMETYPE, StringEscapeUtils.escapeXml(rootReference.getMimeType().toString()));
 			
 		}
 		
@@ -127,10 +129,10 @@ public class DefaultProductSerializer implements ProductSerializer {
 	  // note that Solr will preserve the indexing order.
 		for (Reference reference : references) {
 			
-			addKeyValueToMap(fields, Parameters.REFERENCE_ORIGINAL, reference.getOrigReference());
-			addKeyValueToMap(fields, Parameters.REFERENCE_DATASTORE, reference.getDataStoreReference());
+			addKeyValueToMap(fields, Parameters.REFERENCE_ORIGINAL, StringEscapeUtils.escapeXml(reference.getOrigReference()));
+			addKeyValueToMap(fields, Parameters.REFERENCE_DATASTORE, StringEscapeUtils.escapeXml(reference.getDataStoreReference()));
 			addKeyValueToMap(fields, Parameters.REFERENCE_FILESIZE, ""+reference.getFileSize());
-			addKeyValueToMap(fields, Parameters.REFERENCE_MIMETYPE, reference.getMimeType().toString());
+			addKeyValueToMap(fields, Parameters.REFERENCE_MIMETYPE, StringEscapeUtils.escapeXml(reference.getMimeType().toString()));
 			
 		}
 		
@@ -182,11 +184,11 @@ public class DefaultProductSerializer implements ProductSerializer {
 		
 		for (String key : metadata.getKeys()) {
 			if (! (key.startsWith(Parameters.NS)              // skip metadata keys starting with reserved namespace
-				     || Parameters.PRODUCT_TYPE_NAME.contains(key)
+				     //|| Parameters.PRODUCT_TYPE_NAME.contains(key)
 				   // skip 'ProductType' as already stored as 'CAS.ProductTypeName'
 				     || Parameters.PRODUCT_STRUCTURE.contains(key))) { // skip 'ProductType' as already stored as 'CAS.ProductStructure'
 				for (String value : metadata.getAllMetadata(key)) {
-					this.addKeyValueToMap(fields, key, value);
+					this.addKeyValueToMap(fields, key, StringEscapeUtils.escapeXml(value));
 				}
 			}
 		}
@@ -232,7 +234,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 		// all other fields
 		for (Map.Entry<String, List<String>> key : fields.entrySet()) {
 			for (String value : key.getValue()) {
-				doc.append( encodeIndexField(key.getKey(), value) );
+				doc.append( encodeIndexField(key.getKey(), StringEscapeUtils.escapeXml(value)) );
 			}
 		}
 
@@ -268,13 +270,13 @@ public class DefaultProductSerializer implements ProductSerializer {
 					
 				} else {
 					for (String value : values) {
-						setFields.add( this.encodeUpdateField(key.getKey(), value, true) );
+						setFields.add( this.encodeUpdateField(key.getKey(), StringEscapeUtils.escapeXml(value), true) );
 					}
 				}
 				
 			} else {
 				for (String value : values) {
-					addFields.add( this.encodeUpdateField(key.getKey(), value, false) );
+					addFields.add( this.encodeUpdateField(key.getKey(), StringEscapeUtils.escapeXml(value), false) );
 				}
 			}
 			
@@ -407,7 +409,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 				List<String> vals = new ArrayList<String>();
 				for (int k=0; k<values.getLength(); k++) {
 					String value = ((Element)values.item(k)).getTextContent();
-					vals.add(value);
+					vals.add(StringEscapeUtils.unescapeXml(value));
 				}
 				// CAS.reference.... fields
 				if (name.startsWith(Parameters.NS)) {					
@@ -440,22 +442,34 @@ public class DefaultProductSerializer implements ProductSerializer {
 			 */
 			} else {
 				
-				String value = element.getTextContent();
+				String value = StringEscapeUtils.unescapeXml(element.getTextContent());
 				
 				// core CAS fields
 				if (name.startsWith(Parameters.NS)) {
 					if (name.equals(Parameters.PRODUCT_ID)) {
 						product.setProductId(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_NAME)) {
 						product.setProductName(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_STRUCTURE)) {
 						product.setProductStructure(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_TRANSFER_STATUS)) {
 						product.setTransferStatus(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_TYPE_NAME)) {
 						productType.setName(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_TYPE_ID)) {
 						productType.setProductTypeId(value);
+						metadata.addMetadata(name, value);
+
 					} else if (name.equals(Parameters.PRODUCT_RECEIVED_TIME)) {
 						product.setProductRecievedTime(value);
 						metadata.addMetadata(name, value);

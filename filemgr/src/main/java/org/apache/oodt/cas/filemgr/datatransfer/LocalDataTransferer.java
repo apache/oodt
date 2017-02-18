@@ -18,13 +18,17 @@
 package org.apache.oodt.cas.filemgr.datatransfer;
 
 //APACHE Imports
+import org.apache.commons.compress.compressors.FileNameUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
@@ -35,13 +39,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-//JDK imports
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 
 /**
  * @author mattmann
@@ -111,6 +116,8 @@ public class LocalDataTransferer implements DataTransfer {
                               .getOrigReference() + ": Message: "
                         + e.getMessage());
             throw new DataTransferException(e);
+         } catch (CatalogException e) {
+             LOG.log(Level.WARNING, "Unable to read metadata: "+ e.getLocalizedMessage());
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
          try {
@@ -121,6 +128,8 @@ public class LocalDataTransferer implements DataTransfer {
                   "URI Syntax Exception when moving files: Message: "
                         + e.getMessage());
             throw new DataTransferException(e);
+         } catch (CatalogException e) {
+             LOG.log(Level.WARNING, "Unable to read metadata: "+ e.getLocalizedMessage());
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
             LOG.log(Level.INFO,"Streaming products are not moved.");
@@ -316,7 +325,7 @@ public class LocalDataTransferer implements DataTransfer {
    }
 
    private void moveDirToProductRepo(Product product) throws IOException,
-         URISyntaxException {
+           URISyntaxException, CatalogException {
       Reference dirRef = product.getProductReferences().get(0);
       LOG.log(
             Level.INFO,
@@ -331,7 +340,7 @@ public class LocalDataTransferer implements DataTransfer {
        File fileRef = new File(new URI(r.getOrigReference()));
 
        if (fileRef.isFile()) {
-         moveFile(r, false);
+         moveFile(r, false, product);
        } else if (fileRef.isDirectory()
                   && (fileRef.list() != null && fileRef.list().length == 0)) {
          // if it's a directory and it doesn't exist yet, we should
@@ -359,14 +368,14 @@ public class LocalDataTransferer implements DataTransfer {
    }
 
    private void moveFilesToProductRepo(Product product) throws IOException,
-         URISyntaxException {
+           URISyntaxException, CatalogException {
       List<Reference> refs = product.getProductReferences();
 
       // notify the file manager that we started
       quietNotifyTransferProduct(product);
 
      for (Reference r : refs) {
-       moveFile(r, true);
+       moveFile(r, true, product);
      }
 
       // notify the file manager that we're done
@@ -381,8 +390,8 @@ public class LocalDataTransferer implements DataTransfer {
      }
    }
 
-   private void moveFile(Reference r, boolean log) throws IOException,
-         URISyntaxException {
+   private void moveFile(Reference r, boolean log, Product product) throws IOException,
+           URISyntaxException, CatalogException {
       if (log) {
          LOG.log(Level.INFO,
                "LocalDataTransfer: Moving File: " + r.getOrigReference()
@@ -391,7 +400,29 @@ public class LocalDataTransferer implements DataTransfer {
       File srcFileRef = new File(new URI(r.getOrigReference()));
       File destFileRef = new File(new URI(r.getDataStoreReference()));
 
-      FileUtils.copyFile(srcFileRef, destFileRef);
+       boolean move = Boolean.getBoolean("org.apache.oodt.cas.filemgr.datatransferer.local.move");
+       if(move){
+           if (client == null) {
+               LOG.log(Level.WARNING,
+                       "File Manager service not defined: this move will not be tracked");
+               return;
+           }
+           else{
+               Metadata metadata = client.getMetadata(product);
+               metadata.addMetadata("Original Location", r.getOrigReference());
+               client.updateMetadata(product, metadata);
+           }
+           if(!srcFileRef.toPath().toString().contains("/dev/null")) {
+               String fullpath = FilenameUtils.getFullPath(destFileRef.getAbsolutePath());
+               LOG.log(Level.INFO, "Creating directory: "+fullpath);
+               FileUtils.forceMkdir(new File(fullpath));
+               Files.move(srcFileRef.toPath(), destFileRef.toPath(), REPLACE_EXISTING);
+           }
+       }
+       else{
+           FileUtils.copyFile(srcFileRef, destFileRef);
+       }
+
    }
 
    private void copyFile(Reference r, File directory) throws IOException,

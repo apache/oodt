@@ -324,7 +324,7 @@ public interface Catalog extends Pagination {
      * @throws CatalogException
      *             If any error occurs (e.g., the layer isn't initialized).
      */
-    ValidationLayer getValidationLayer();
+    ValidationLayer getValidationLayer() throws CatalogException;
 
     /**
      * 
