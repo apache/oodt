@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-948 Fix dockerfile (magicaltrout/R B Krishna)
+
 * OODT-938 update netcdf (magicaltrout)
 
 * OODT-943 update javadoc and site plugin versions (magicaltrout)
