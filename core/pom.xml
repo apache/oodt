@@ -70,6 +70,11 @@ the License.
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>6.4.2</version>
+      </dependency>
+      <dependency>
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk</artifactId>
         <version>1.7.4</version>
@@ -416,6 +421,7 @@ the License.
         <version>6.2.1</version>
       </dependency>
       <dependency>
+
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
         <version>1.10</version>
@@ -619,7 +625,6 @@ mm
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.9</version>
         <configuration>
-          <outputEncoding>UTF-8</outputEncoding>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
           <encoding>UTF-8</encoding>
@@ -662,7 +667,6 @@ mm
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.10.4</version>
         <configuration>
-          <outputEncoding>UTF-8</outputEncoding>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
           <encoding>UTF-8</encoding>
@@ -972,7 +976,6 @@ mm
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.10.3</version>
             <configuration>
-              <outputEncoding>UTF-8</outputEncoding>
               <charset>UTF-8</charset>
               <docencoding>UTF-8</docencoding>
               <encoding>UTF-8</encoding>
