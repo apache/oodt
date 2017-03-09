@@ -81,12 +81,15 @@
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.12" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.12" level="project" />
     <orderEntry type="library" name="Maven: hsqldb:hsqldb:1.8.0.7" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:6.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-common:6.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queryparser:6.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queries:6.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-sandbox:6.1.0" level="project" />
     <orderEntry type="module" module-name="cas-cli" />
     <orderEntry type="module" module-name="cas-metadata" />
     <orderEntry type="module" module-name="pcs-input" />
     <orderEntry type="library" name="Maven: org.apache.solr:solr-core:6.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-common:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-kuromoji:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-phonetic:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-backward-codecs:6.2.1" level="project" />
@@ -98,9 +101,6 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-join:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-misc:6.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queries:6.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queryparser:6.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-sandbox:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-spatial-extras:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-suggest:6.2.1" level="project" />
     <orderEntry type="library" name="Maven: com.carrotsearch:hppc:0.7.1" level="project" />
@@ -155,7 +155,7 @@
     <orderEntry type="library" name="Maven: org.ow2.asm:asm-commons:5.1" level="project" />
     <orderEntry type="library" name="Maven: org.restlet.jee:org.restlet:2.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.restlet.jee:org.restlet.ext.servlet:2.3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.solr:solr-solrj:6.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.solr:solr-solrj:6.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tika:tika-parsers:1.7" level="project" />
     <orderEntry type="library" name="Maven: org.gagravarr:vorbis-java-tika:0.6" level="project" />
     <orderEntry type="library" name="Maven: edu.ucar:netcdf:4.2.20" level="project" />

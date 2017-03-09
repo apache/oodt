@@ -21,7 +21,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.13-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-crawler</artifactId>
@@ -47,6 +47,20 @@ the License.
      can be overridden in a specific pom and should have a comment explaing why the version has been overridden
   -->
   <dependencies>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-lucene-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>

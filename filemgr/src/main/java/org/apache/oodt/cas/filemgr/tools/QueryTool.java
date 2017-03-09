@@ -18,14 +18,10 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.*;
+import org.apache.lucene.util.BytesRef;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
@@ -137,13 +133,12 @@ public final class QueryTool {
                         aT.field(), aT.text()));
                 }
             }
-        } else if (luceneQuery instanceof RangeQuery) {
-            Term startT = ((RangeQuery) luceneQuery).getLowerTerm();
-            Term endT = ((RangeQuery) luceneQuery).getUpperTerm();
-            casQuery.addCriterion(new RangeQueryCriteria(startT
-                    .field(), startT.text(), endT.text()));
+        } else if (luceneQuery instanceof TermRangeQuery) {
+            BytesRef startT = ((TermRangeQuery) luceneQuery).getLowerTerm();
+            BytesRef endT = ((TermRangeQuery) luceneQuery).getUpperTerm();
+            casQuery.addCriterion(new RangeQueryCriteria(((TermRangeQuery) luceneQuery).getField(), startT.utf8ToString(), endT.utf8ToString()));
         } else if (luceneQuery instanceof BooleanQuery) {
-            BooleanClause[] clauses = ((BooleanQuery) luceneQuery).getClauses();
+            List<BooleanClause> clauses = ((BooleanQuery) luceneQuery).clauses();
             for (BooleanClause clause : clauses) {
                 generateCASQuery(casQuery, (clause).getQuery());
             }

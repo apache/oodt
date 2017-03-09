@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.13-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-filemgr</artifactId>
@@ -131,6 +131,15 @@
       <artifactId>lucene-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-cli</artifactId>
     </dependency>
@@ -235,7 +244,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!--forkMode>pertest</forkMode-->
-          <forkMode>none</forkMode>
+          <forkMode>pertest</forkMode>
           <!-- so we can DEBUG -->
           <argLine>-enableassertions</argLine>
           <useSystemClassLoader>false</useSystemClassLoader>

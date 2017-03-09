@@ -17,44 +17,29 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
-//JDK imports
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.WildcardQuery;
-import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.lucene.document.*;
+import org.apache.lucene.index.*;
+import org.apache.lucene.search.*;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.Version;
+import org.apache.oodt.cas.filemgr.structs.*;
 import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.pagination.PaginationUtils;
-
+import org.apache.poi.hssf.record.formula.functions.Text;
+import org.apache.solr.schema.FieldType;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -62,10 +47,6 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//Lucene imports
-//OODT imports
-//JUG imports
 
 /**
  * @author mattmann
@@ -81,7 +62,9 @@ import java.util.logging.Logger;
  * 
  */
 public class LuceneCatalog implements Catalog {
+    Directory indexDir = null;
 
+    private DirectoryReader reader;
     /* the path to the index directory for this catalog */
     private String indexFilePath = null;
 
@@ -92,7 +75,7 @@ public class LuceneCatalog implements Catalog {
      * temporary Cache of product/metadata/reference information before it is
      * written to the index
      */
-    private static ConcurrentHashMap<String, CompleteProduct> CATALOG_CACHE = new ConcurrentHashMap<String, CompleteProduct>();
+    private static ConcurrentHashMap<String, CompleteProduct> CATALOG_CACHE = new ConcurrentHashMap<>();
 
     /* our product ID generator */
     private static UUIDGenerator generator = UUIDGenerator.getInstance();
@@ -111,6 +94,8 @@ public class LuceneCatalog implements Catalog {
 
     /* lucene index merge factor */
     private int mergeFactor = -1;
+
+
 
     /**
      * 
@@ -144,6 +129,17 @@ public class LuceneCatalog implements Catalog {
         this.writeLockTimeout = writeTimeout;
         this.commitLockTimeout = commitTimeout;
         this.mergeFactor = mergeFactor;
+
+        try {
+            indexDir = FSDirectory.open(new File( indexFilePath ).toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
     }
 
     /*
@@ -193,7 +189,7 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void removeMetadata(Metadata m, Product product)
             throws CatalogException {
-        CompleteProduct p=null;
+        CompleteProduct p;
 
         if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
              p = CATALOG_CACHE.get(product.getProductId());
@@ -358,7 +354,7 @@ public class LuceneCatalog implements Catalog {
         else{
                 // move product from index to cache
                 // it will be moved back after metadata is added
-                CompleteProduct p = getCompleteProductById(product.getProductId(), true, true);
+                getCompleteProductById(product.getProductId(), true, true);
                 LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
                 removeProduct(product);
 
@@ -395,19 +391,28 @@ public class LuceneCatalog implements Catalog {
             boolean getRefs, boolean getMet) throws CatalogException {
         IndexSearcher searcher = null;
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            try {
+                reader = DirectoryReader.open(indexDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            searcher = new IndexSearcher(reader);
             Term productIdTerm = new Term("product_id", productId);
             org.apache.lucene.search.Query query = new TermQuery(productIdTerm);
-            Hits hits = searcher.search(query);
+            TopDocs topDocs = searcher.search(query,1);
+
+            ScoreDoc[] hits = topDocs.scoreDocs;
 
             // should be exactly 1 hit
-            if (hits.length() == 0) {
+            if (topDocs.totalHits == 0) {
             	throw new CatalogException("Product: [" + productId + "] NOT found in the catalog!");
-            } else if (hits.length() > 1) {
+            }
+            if (topDocs.totalHits > 1) {
                 throw new CatalogException("Product: [" + productId+ "] is not unique in the catalog!");
             }
 
-            Document productDoc = hits.doc(0);
+            Document productDoc = searcher.doc(hits[0].doc);
             return toCompleteProduct(productDoc, getRefs,
                     getMet);
         } catch (IOException e) {
@@ -419,7 +424,7 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
+                    //TODO shutdown  reader
                 } catch (Exception ignore) {
                 }
             }
@@ -439,23 +444,37 @@ public class LuceneCatalog implements Catalog {
             throws CatalogException {
         IndexSearcher searcher = null;
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            try {
+                reader = DirectoryReader.open(indexDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            searcher = new IndexSearcher(reader);
             Term productIdTerm = new Term("product_name", productName);
             org.apache.lucene.search.Query query = new TermQuery(productIdTerm);
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
-                    SortField.STRING, true));
-            Hits hits = searcher.search(query, sort);
+                    SortField.Type.STRING, true));
+            //TODO FIX NUMBER OF RECORDS
+            TopDocs check = searcher.search(query, 1, sort);
+            if(check.totalHits>0) {
+                TopDocs topDocs = searcher.search(query, check.totalHits, sort);
 
-            // should be > 0 hits
-            if (hits.length() > 0) {
-                // just get the first hit back
-                Document productDoc = hits.doc(0);
-                CompleteProduct prod = toCompleteProduct(productDoc, getRefs,
-                        false);
-                return prod.getProduct();
-            } else {
-                LOG.log(Level.FINEST, "Request for product by name: ["
-                        + productName + "] returned no results");
+                ScoreDoc[] hits = topDocs.scoreDocs;
+
+                // should be > 0 hits
+                if (hits.length > 0) {
+                    // just get the first hit back
+                    Document productDoc = searcher.doc(hits[0].doc);
+                    CompleteProduct prod = toCompleteProduct(productDoc, getRefs,
+                            false);
+                    return prod.getProduct();
+                } else {
+                    LOG.log(Level.FINEST, "Request for product by name: ["
+                            + productName + "] returned no results");
+                    return null;
+                }
+            }
+            else{
                 return null;
             }
 
@@ -468,7 +487,7 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
+//TODO CLOSE SEARCHER
                 } catch (Exception ignore) {
                 }
             }
@@ -503,18 +522,27 @@ public class LuceneCatalog implements Catalog {
         List<Product> products = null;
 
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            try {
+                reader = DirectoryReader.open(indexDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            searcher = new IndexSearcher(reader);
             Term productIdTerm = new Term("myfield", "myvalue");
             org.apache.lucene.search.Query query = new TermQuery(productIdTerm);
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
-                    SortField.STRING, true));
-            Hits hits = searcher.search(query, sort);
+                    SortField.Type.STRING, true));
+            //TODO FIX NUMBER OF RECORDS
+            TopDocs check = searcher.search(query, 1, sort);
+            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
+
+            ScoreDoc[] hits = topDocs.scoreDocs;
 
             // should be > 0 hits
-            if (hits.length() > 0) {
-                products = new Vector<Product>(hits.length());
-                for (int i = 0; i < hits.length(); i++) {
-                    Document productDoc = hits.doc(i);
+            if (hits.length > 0) {
+                products = new Vector<Product>(hits.length);
+                for (ScoreDoc hit : hits) {
+                    Document productDoc = searcher.doc(hit.doc);
                     CompleteProduct prod = toCompleteProduct(productDoc,
                             getRefs, false);
                     products.add(prod.getProduct());
@@ -534,7 +562,7 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
+                    //TODO close searcher
                 } catch (Exception ignore) {
                 }
             }
@@ -559,19 +587,28 @@ public class LuceneCatalog implements Catalog {
         List<Product> products = null;
 
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            try {
+                reader = DirectoryReader.open(indexDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            searcher = new IndexSearcher(reader);
             Term productIdTerm = new Term("product_type_id", type
                     .getProductTypeId());
             org.apache.lucene.search.Query query = new TermQuery(productIdTerm);
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
-                    SortField.STRING, true));
-            Hits hits = searcher.search(query, sort);
+                    SortField.Type.STRING, true));
+            //TODO FIX NUMBER OF RECORDS
+            TopDocs check = searcher.search(query, 1, sort);
+            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
+
+            ScoreDoc[] hits = topDocs.scoreDocs;
 
             // should be > 0 hits
-            if (hits.length() > 0) {
-                products = new Vector<Product>(hits.length());
-                for (int i = 0; i < hits.length(); i++) {
-                    Document productDoc = hits.doc(i);
+            if (hits.length > 0) {
+                products = new Vector<Product>(hits.length);
+                for (ScoreDoc hit : hits) {
+                    Document productDoc = searcher.doc(hit.doc);
                     CompleteProduct prod = toCompleteProduct(productDoc,
                             getRefs, false);
                     products.add(prod.getProduct());
@@ -591,8 +628,8 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
-                } catch (Exception ignore) {
+//TODO CLOSE
+               } catch (Exception ignore) {
                 }
             }
         }
@@ -603,20 +640,31 @@ public class LuceneCatalog implements Catalog {
     public Metadata getMetadata(Product product) throws CatalogException {
         IndexSearcher searcher = null;
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            try {
+                reader = DirectoryReader.open(indexDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            searcher = new IndexSearcher(reader);
+            TermQuery qry = new TermQuery(new Term("*", "*"));
+            TopDocs tdocks  = searcher.search(qry, 100);
             Term productIdTerm = new Term("product_id", product.getProductId());
             org.apache.lucene.search.Query query = new TermQuery(productIdTerm);
-            Hits hits = searcher.search(query);
+            //TODO FIX NUMBER OF RECORDS
+            TopDocs topDocs = searcher.search(query, 1);
+
+            ScoreDoc[] hits = topDocs.scoreDocs;
 
             // should be exactly 1 hit
-            if (hits.length() != 1) {
+            if (topDocs.totalHits != 1) {
                 throw new CatalogException("Product: ["
                         + product.getProductId()
                         + "] is not unique in the catalog! Num Hits: ["
-                        + hits.length() + "]");
+                        + hits.length + "]");
             }
 
-            Document productDoc = hits.doc(0);
+            Document productDoc = searcher.doc(hits[0].doc);
+
             CompleteProduct prod = toCompleteProduct(productDoc, false, true);
             return prod.getMetadata();
         } catch (IOException e) {
@@ -628,8 +676,8 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
-                } catch (Exception ignore) {
+//TODO CLOSE
+               } catch (Exception ignore) {
                 }
             }
         }
@@ -679,30 +727,45 @@ public class LuceneCatalog implements Catalog {
         IndexSearcher searcher = null;
 
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            try {
+                reader = DirectoryReader.open(indexDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            searcher = new IndexSearcher(reader);
 
             // construct a Boolean query here
-            BooleanQuery booleanQuery = new BooleanQuery();
+            BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
             TermQuery tq = new TermQuery(new Term("myfield", "myvalue"));
             booleanQuery.add(tq, BooleanClause.Occur.MUST);
 
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
-                    SortField.STRING, true));
+                    SortField.Type.STRING, true));
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
-            Hits hits = searcher.search(booleanQuery, sort);
-            if (hits.length() > 0) {
-                products = new Vector<Product>(n);
-                int i = 0;
-                while (products.size() < Math.min(n, hits.length())) {
-                    Document productDoc = hits.doc(i);
-                    CompleteProduct prod = toCompleteProduct(productDoc, false,
-                            false);
-                    products.add(prod.getProduct());
-                    i++;
+            //TODO FIX NUMBER OF RECORDS
+            TopDocs check = searcher.search(booleanQuery.build(), 1, sort);
+            if(check.totalHits>0) {
+                TopDocs topDocs = searcher.search(booleanQuery.build(), check.totalHits, sort);
+
+                ScoreDoc[] hits = topDocs.scoreDocs;
+
+                if (hits.length > 0) {
+                    products = new Vector<Product>(n);
+                    int i = 0;
+                    while (products.size() < Math.min(n, hits.length)) {
+                        Document productDoc = searcher.doc(hits[i].doc);
+                        CompleteProduct prod = toCompleteProduct(productDoc, false,
+                                false);
+                        products.add(prod.getProduct());
+                        i++;
+                    }
+                } else {
+                    LOG.log(Level.WARNING, "Top N query produced no products!");
                 }
-            } else {
-                LOG.log(Level.WARNING, "Top N query produced no products!");
+            }
+            else{
+                return null;
             }
 
         } catch (IOException e) {
@@ -714,7 +777,7 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
+                    //TODO CLOSE
                 } catch (Exception ignore) {
                 }
             }
@@ -948,15 +1011,28 @@ public class LuceneCatalog implements Catalog {
 
     private synchronized void removeProductDocument(Product product)
             throws CatalogException {
-        IndexReader reader = null;
 
         try {
-            reader = IndexReader.open(indexFilePath);
+            reader = DirectoryReader.open(indexDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
             LOG.log(Level.FINE,
                     "LuceneCatalog: remove document from index for product: ["
                             + product.getProductId() + "]");
-            reader.deleteDocuments(new Term("product_id", product
+            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+
+            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+            LogMergePolicy lmp =new LogDocMergePolicy();
+            lmp.setMergeFactor(mergeFactor);
+            config.setMergePolicy(lmp);
+
+                IndexWriter writer = new IndexWriter(indexDir, config);
+            writer.deleteDocuments(new Term("product_id", product
                     .getProductId()));
+            writer.close();
+
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Exception removing product: ["
                     + product.getProductName() + "] from index: Message: "
@@ -977,24 +1053,24 @@ public class LuceneCatalog implements Catalog {
     private synchronized void addCompleteProductToIndex(CompleteProduct cp)
             throws CatalogException {
         IndexWriter writer = null;
-
-        File indexDir = new File(indexFilePath);
-
-        boolean createIndex;
-
-        createIndex = !(indexDir.exists() && indexDir.isDirectory());
-
         try {
-            writer = new IndexWriter(indexFilePath, new StandardAnalyzer(),
-                    createIndex);
+            /*writer = new IndexWriter(indexFilePath, new StandardAnalyzer(),
+                    createIndex);*/
             //writer.setCommitLockTimeout(this.commitLockTimeout * 1000);
-            writer.setWriteLockTimeout(this.writeLockTimeout * 1000);
-            writer.setMergeFactor(this.mergeFactor);
+            //writer.setWriteLockTimeout(this.writeLockTimeout * 1000);
+            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+
+            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+            LogMergePolicy lmp =new LogDocMergePolicy();
+            lmp.setMergeFactor(mergeFactor);
+            config.setMergePolicy(lmp);
+
+            writer = new IndexWriter(indexDir, config);
 
             Document doc = toDoc(cp.getProduct(), cp.getMetadata());
             writer.addDocument(doc);
             // TODO: determine a better way to optimize the index
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.log(Level.WARNING, "Unable to index product: ["
                     + cp.getProduct().getProductName() + "]: Message: "
                     + e.getMessage(), e);
@@ -1006,7 +1082,8 @@ public class LuceneCatalog implements Catalog {
                 if (writer != null) {
                     writer.close();
                 }
-            } catch (Exception ignore) {
+            } catch (Exception e) {
+                System.out.println("failed"+e.getLocalizedMessage());
             }
         }
 
@@ -1052,13 +1129,12 @@ public class LuceneCatalog implements Catalog {
 	            }
             } else {
             	// add all metadata elements found in document
-            	Enumeration<Field> fields = doc.fields();
-            	while (fields.hasMoreElements()) {
-            		Field field = fields.nextElement();
-            		if (!names.contains(field.name())) {
-            				names.add(field.name());
-            		}
-            	}
+            	List<IndexableField> fields = doc.getFields();
+                for(IndexableField field: fields){
+                    if (!names.contains(field.name())) {
+                        names.add(field.name());
+                    }
+                }
             	
             }
 
@@ -1116,36 +1192,33 @@ public class LuceneCatalog implements Catalog {
 
     private Document toDoc(Product product, Metadata metadata) {
         Document doc = new Document();
-
+//TODO CHECK STORED TYPES
         // add the product information
         doc.add(new Field("product_id", product.getProductId(),
-                Field.Store.YES, Field.Index.UN_TOKENIZED));
+                StringField.TYPE_STORED));
         doc.add(new Field("product_name", product.getProductName(),
-                Field.Store.YES, Field.Index.UN_TOKENIZED));
+                StringField.TYPE_STORED));
         doc.add(new Field("product_structure", product.getProductStructure(),
-                Field.Store.YES, Field.Index.UN_TOKENIZED));
+                StringField.TYPE_STORED));
         doc
                 .add(new Field("product_transfer_status", product
-                        .getTransferStatus(), Field.Store.YES,
-                        Field.Index.UN_TOKENIZED));
+                        .getTransferStatus(), StringField.TYPE_STORED));
 
         // product type
         doc
                 .add(new Field("product_type_id", product.getProductType()
-                        .getProductTypeId(), Field.Store.YES,
-                        Field.Index.UN_TOKENIZED));
+                        .getProductTypeId(), StringField.TYPE_STORED));
         doc.add(new Field("product_type_name", product.getProductType()
-                .getName(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+                .getName(), StringField.TYPE_STORED));
         doc.add(new Field("product_type_desc", product.getProductType()
                 .getDescription() != null ? product.getProductType()
-                .getDescription() : "", Field.Store.YES, Field.Index.NO));
+                .getDescription() : "", StringField.TYPE_STORED));
         doc.add(new Field("product_type_repoPath", product.getProductType()
                 .getProductRepositoryPath() != null ? product.getProductType()
-                .getProductRepositoryPath() : "", Field.Store.YES,
-                Field.Index.NO));
+                .getProductRepositoryPath() : "", StringField.TYPE_STORED));
         doc.add(new Field("product_type_versioner", product.getProductType()
                 .getVersioner() != null ? product.getProductType()
-                .getVersioner() : "", Field.Store.YES, Field.Index.NO));
+                .getVersioner() : "", StringField.TYPE_STORED));
         
         // write metadata fields to the Lucene document
         List<String> keys = new ArrayList<String>();
@@ -1183,30 +1256,29 @@ public class LuceneCatalog implements Catalog {
             }
 
             for (String val : values) {
-                doc.add(new Field(key, val, Field.Store.YES,
-                    Field.Index.UN_TOKENIZED));
+                doc.add(new Field(key, val, StringField.TYPE_STORED));
+                if(values.size()==1) {
+                    doc.add(new SortedDocValuesField(key, new BytesRef(val)));
+                }
             }
         }
 
         // add the product references
         for (Reference r : product.getProductReferences()) {
             doc.add(new Field("reference_orig", r.getOrigReference(),
-                Field.Store.YES, Field.Index.NO));
+                    StringField.TYPE_STORED));
             doc
                 .add(new Field("reference_data_store", r
-                    .getDataStoreReference(), Field.Store.YES,
-                    Field.Index.NO));
+                    .getDataStoreReference(), StringField.TYPE_STORED));
             doc.add(new Field("reference_fileSize", String.valueOf(r
-                .getFileSize()), Field.Store.YES, Field.Index.NO));
+                .getFileSize()), StringField.TYPE_STORED));
             doc.add(new Field("reference_mimeType", r.getMimeType() != null ? r
-                .getMimeType().getName() : "", Field.Store.YES,
-                Field.Index.UN_TOKENIZED));
+                .getMimeType().getName() : "", StringField.TYPE_STORED));
         }
 
         // add special field for all products
         // then can use that field to retrieve back all products
-        doc.add(new Field("myfield", "myvalue", Field.Store.NO,
-                Field.Index.TOKENIZED));
+        doc.add(new Field("myfield", "myvalue", StringField.TYPE_STORED));
 
         return doc;
     }
@@ -1236,15 +1308,19 @@ public class LuceneCatalog implements Catalog {
         IndexSearcher searcher = null;
 
         int numHits = -1;
-
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            reader = DirectoryReader.open(indexDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            searcher = new IndexSearcher(reader);
 
             // construct a Boolean query here
-            BooleanQuery booleanQuery = new BooleanQuery();
+            BooleanQuery.Builder booleanQuery =  new BooleanQuery.Builder();
 
             // add the product type as the first clause
-            TermQuery prodTypeTermQuery = new TermQuery(new Term(
+            org.apache.lucene.search.Query prodTypeTermQuery = new TermQuery(new Term(
                     "product_type_id", type.getProductTypeId()));
             booleanQuery.add(prodTypeTermQuery, BooleanClause.Occur.MUST);
 
@@ -1255,8 +1331,12 @@ public class LuceneCatalog implements Catalog {
 
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
-            Hits hits = searcher.search(booleanQuery);
-            numHits = hits.length();
+
+            //TODO FIX returned records
+            TopDocs hits = searcher.search(booleanQuery.build(), 1);
+
+
+            numHits = hits.totalHits;
         } catch (IOException e) {
             LOG.log(Level.WARNING,
                     "IOException when opening index directory: ["
@@ -1266,7 +1346,7 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
+                    //TODO CLOSE
                 } catch (Exception ignore) {
                 }
             }
@@ -1285,12 +1365,16 @@ public class LuceneCatalog implements Catalog {
         if (pageNum == -1) {
             doSkip = false;
         }
-
         try {
-            searcher = new IndexSearcher(indexFilePath);
+            reader = DirectoryReader.open(indexDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            searcher = new IndexSearcher(reader);
 
             // construct a Boolean query here
-            BooleanQuery booleanQuery = new BooleanQuery();
+            BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
 
             // add the product type as the first clause
             TermQuery prodTypeTermQuery = new TermQuery(new Term(
@@ -1303,37 +1387,43 @@ public class LuceneCatalog implements Catalog {
             }
             
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
-                    SortField.STRING, true));
+                    SortField.Type.STRING, true));
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
-            Hits hits = searcher.search(booleanQuery, sort);
-            
+            //TODO FIX NUMBER OF RECORDS
+            TopDocs check = searcher.search(booleanQuery.build(),1, sort);
+            TopDocs topDocs = searcher.search(booleanQuery.build(),check.totalHits, sort);
+
             // Calculate page size and set it while we have the results
             if (page != null) {
-            	page.setTotalPages(PaginationUtils.getTotalPage(hits.length(), pageSize));
+            	page.setTotalPages(PaginationUtils.getTotalPage(topDocs.totalHits, pageSize));
             }
-            
-            if (hits.length() > 0) {
+
+            ScoreDoc[] hits = topDocs.scoreDocs;
+
+            if (hits.length > 0) {
 
                 int startNum = (pageNum - 1) * pageSize;
                 if (doSkip) {
-                    if (startNum > hits.length()) {
+                    if (startNum > hits.length) {
                         startNum = 0;
                     }
 
                     products = new Vector<Product>(pageSize);
 
-                    for (int i = startNum; i < Math.min(hits.length(),
+                    for (int i = startNum; i < Math.min(hits.length,
                             (startNum + pageSize)); i++) {
-                        Document productDoc = hits.doc(i);
+                        Document productDoc = searcher.doc(hits[i].doc);
+
                         CompleteProduct prod = toCompleteProduct(productDoc,
                                 false, false);
                         products.add(prod.getProduct());
                     }
                 } else {
-                    products = new Vector<Product>(hits.length());
-                    for (int i = 0; i < hits.length(); i++) {
-                        Document productDoc = hits.doc(i);
+                    products = new Vector<Product>(hits.length);
+                    for (int i = 0; i < hits.length; i++) {
+                        Document productDoc = searcher.doc(hits[i].doc);
+
                         CompleteProduct prod = toCompleteProduct(productDoc,
                                 false, false);
                         products.add(prod.getProduct());
@@ -1355,7 +1445,7 @@ public class LuceneCatalog implements Catalog {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
+                    //TODO CLOSE
                 } catch (Exception ignore) {
                 }
             }
@@ -1366,7 +1456,7 @@ public class LuceneCatalog implements Catalog {
 
     private org.apache.lucene.search.Query getQuery(QueryCriteria queryCriteria) throws CatalogException {
         if (queryCriteria instanceof BooleanQueryCriteria) {
-            BooleanQuery booleanQuery = new BooleanQuery();
+            BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
             BooleanClause.Occur occur;
             switch (((BooleanQueryCriteria) queryCriteria).getOperator()) {
             case BooleanQueryCriteria.AND:
@@ -1388,7 +1478,7 @@ public class LuceneCatalog implements Catalog {
                 booleanQuery.add(this.getQuery(qc), occur);
             }
 
-            return booleanQuery;
+            return booleanQuery.build();
         } else if (queryCriteria instanceof TermQueryCriteria) {
             String val = ((TermQueryCriteria) queryCriteria).getValue();
             return new TermQuery(new Term(queryCriteria.getElementName(), val));
@@ -1396,16 +1486,12 @@ public class LuceneCatalog implements Catalog {
             String startVal = ((RangeQueryCriteria) queryCriteria).getStartValue();
             String endVal = ((RangeQueryCriteria) queryCriteria).getEndValue();
             boolean inclusive = ((RangeQueryCriteria) queryCriteria).getInclusive();
-            Term startTerm = null, endTerm = null;
+            Term startTerm = null;
             if (!startVal.equals("")) {
                 startTerm = new Term(queryCriteria.getElementName(), startVal);
             }
 
-            if (!endVal.equals("")) {
-                endTerm = new Term(queryCriteria.getElementName(), endVal);
-            }
-
-            return new RangeQuery(startTerm, endTerm, inclusive);
+            return TermRangeQuery.newStringRange(startTerm.field(), startVal, endVal, inclusive,inclusive);
         }else {
             throw new CatalogException("Invalid QueryCriteria ["
                     + queryCriteria.getClass().getCanonicalName() + "]");

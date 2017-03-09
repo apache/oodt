@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.13-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-curator</artifactId>
@@ -81,22 +81,10 @@ the License.
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
   <build>

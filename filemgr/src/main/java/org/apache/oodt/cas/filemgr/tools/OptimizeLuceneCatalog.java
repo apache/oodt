@@ -19,12 +19,14 @@ package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.*;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * @author mattmann
@@ -39,6 +41,9 @@ public class OptimizeLuceneCatalog {
 
     public static final double DOUBLE = 1000.0;
     public static final int INT = 20;
+    private DirectoryReader reader;
+    private IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+
     /* the path to the lucene index directory */
     private String catalogPath = null;
 
@@ -55,6 +60,12 @@ public class OptimizeLuceneCatalog {
     public OptimizeLuceneCatalog(String catPath, int mf) {
         this.catalogPath = catPath;
         this.mergeFactor = mf;
+        try {
+            reader = DirectoryReader.open(FSDirectory.open(Paths.get(catalogPath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void doOptimize() {
@@ -62,11 +73,14 @@ public class OptimizeLuceneCatalog {
         boolean createIndex = false;
 
         try {
-            writer = new IndexWriter(catalogPath, new StandardAnalyzer(),
-                false);
-            writer.setMergeFactor(this.mergeFactor);
+            writer = new IndexWriter(reader.directory(), config);
+            LogMergePolicy lmp =new LogDocMergePolicy();
+            lmp.setMergeFactor(this.mergeFactor);
+            config.setMergePolicy(lmp);
+
             long timeBefore = System.currentTimeMillis();
-            writer.optimize();
+            //TODO http://blog.trifork.com/2011/11/21/simon-says-optimize-is-bad-for-you/
+            //writer.optimize();
             long timeAfter = System.currentTimeMillis();
             double numSeconds = ((timeAfter - timeBefore) * 1.0) / DOUBLE;
             LOG.log(Level.INFO, "LuceneCatalog: [" + this.catalogPath

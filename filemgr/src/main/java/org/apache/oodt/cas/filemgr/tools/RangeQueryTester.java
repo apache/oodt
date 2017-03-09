@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -26,15 +27,10 @@ import java.util.logging.Logger;
 
 //Lucene imports
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.*;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * @author mattmann
@@ -66,6 +62,7 @@ public final class RangeQueryTester {
     private static final Logger LOG = Logger.getLogger(RangeQueryTester.class
             .getName());
 
+    DirectoryReader reader;
     /**
      * 
      */
@@ -75,12 +72,16 @@ public final class RangeQueryTester {
     public List doRangeQuery(String productTypeId) {
         List products = null;
         IndexSearcher searcher = null;
-
         try {
-            searcher = new IndexSearcher(this.indexPath);
+             reader = DirectoryReader.open(FSDirectory.open(Paths.get(this.indexPath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            searcher = new IndexSearcher(reader);
 
             // construct a Boolean query here
-            BooleanQuery booleanQuery = new BooleanQuery();
+            BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
 
             // add the product type as the first clause
             TermQuery prodTypeTermQuery = new TermQuery(new Term(
@@ -99,8 +100,8 @@ public final class RangeQueryTester {
                         this.startFieldEndValue);
             }
 
-            RangeQuery query1 = new RangeQuery(startFieldStartTerm,
-                    startFieldEndTerm, true);
+            TermRangeQuery query1 = new TermRangeQuery(startFieldEndTerm.field(),startFieldStartTerm.bytes(),
+                    startFieldEndTerm.bytes(), true, true);
             booleanQuery.add(query1, BooleanClause.Occur.MUST);
 
             if (this.endFieldName != null
@@ -117,18 +118,22 @@ public final class RangeQueryTester {
                             this.endFieldEndValue);
                 }
 
-                RangeQuery query2 = new RangeQuery(endFieldStartTerm,
-                        endFieldEndTerm, true);
+                TermRangeQuery query2 = new TermRangeQuery(endFieldEndTerm.field(),endFieldStartTerm.bytes(),
+                        endFieldEndTerm.bytes(), true, true);
                 booleanQuery.add(query2, BooleanClause.Occur.MUST);
             }
 
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
-                    SortField.STRING, true));
-            Hits hits = searcher.search(booleanQuery, sort);
-            if (hits.length() > 0) {
-                products = new Vector(hits.length());
-                for (int i = 0; i < hits.length(); i++) {
-                    Document productDoc = hits.doc(i);
+                    SortField.Type.STRING, true));
+            //TODO Fix number
+            TopFieldDocs topDocs = searcher.search(booleanQuery.build(), 1, sort);
+            ScoreDoc[] hits = topDocs.scoreDocs;
+
+            if (topDocs.totalHits > 0) {
+                products = new Vector(topDocs.totalHits);
+                for (int i = 0; i < topDocs.totalHits; i++) {
+                    Document productDoc = searcher.doc(hits[i].doc);
+
                     products.add(productDoc.get("reference_data_store"));
                 }
             } else {
@@ -146,7 +151,8 @@ public final class RangeQueryTester {
         } finally {
             if (searcher != null) {
                 try {
-                    searcher.close();
+                    //TODO CLOSE SEARCH
+                   // searcher.close();
                 } catch (Exception ignore) {
                 }
             }

@@ -25,7 +25,7 @@ the License.
   </parent>
   <groupId>org.apache.oodt</groupId>
   <artifactId>oodt-core</artifactId>
-  <version>0.13-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>OODT Core</name>
   <properties>
@@ -41,6 +41,13 @@ the License.
     <jetty.version>6.1.25</jetty.version>
     <sonar.language>java</sonar.language>
   </properties>
+  <distributionManagement>
+    <site>
+      <id>www.yourcompany.com</id>
+      <url>scp://www.yourcompany.com/www/docs/project/</url>
+    </site>
+  </distributionManagement>
+
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
        Once the dependency is in the core pom, it can then be used in other modules without the version tags.
        For example, within core/pom.xml:
@@ -62,6 +69,11 @@ the License.
   -->
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>6.4.2</version>
+      </dependency>
       <dependency>
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk</artifactId>
@@ -287,8 +299,20 @@ the License.
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
-        <version>2.2.0</version>
+        <version>6.1.0</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>6.1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
+        <version>6.1.0</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>cas-cli</artifactId>
@@ -397,6 +421,7 @@ the License.
         <version>6.2.1</version>
       </dependency>
       <dependency>
+
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
         <version>1.10</version>
@@ -600,7 +625,6 @@ mm
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.9</version>
         <configuration>
-          <outputEncoding>UTF-8</outputEncoding>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
           <encoding>UTF-8</encoding>
@@ -641,9 +665,8 @@ mm
       <!-- Produce JavaDoc -->
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
+        <version>2.10.4</version>
         <configuration>
-          <outputEncoding>UTF-8</outputEncoding>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
           <encoding>UTF-8</encoding>
@@ -696,7 +719,7 @@ mm
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>2.0-beta-7</version>
+        <version>3.5.1</version>
         <configuration>
           <outputEncoding>UTF-8</outputEncoding>
         </configuration>
@@ -941,16 +964,18 @@ mm
   <profiles>
     <profile>
       <id>jdk1.8</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
+	  <activation>
+	     <jdk>[1.8,)</jdk>
+	  </activation>
+	  <properties>
+	     <additionalparam>-Xdoclint:none</additionalparam>
+	  </properties>
       <build>
         <plugins>
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.10.3</version>
             <configuration>
-              <outputEncoding>UTF-8</outputEncoding>
               <charset>UTF-8</charset>
               <docencoding>UTF-8</docencoding>
               <encoding>UTF-8</encoding>
