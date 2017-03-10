@@ -41,6 +41,7 @@ public class Configuration {
     public static final String FILEMANAGER_PROP_CONFIG = "org.apache.oodt.cas.curator.filemanager.prop";
     public static final String DIRECTORYBACKEND_VALIDATOR = "org.apache.oodt.cas.curator.directory.validator";
     public static final String POLICY_UPLOAD_PATH = "org.apache.oodt.cas.curator.dataDefinition.uploadPath";
+    public static final String AWS_BUCKET_CONFIG = "org.apache.oodt.cas.curator.bucket.name";
 
     //Stores the configuration object as a Properties object
     private static Properties config = new Properties();
