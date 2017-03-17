@@ -67,10 +67,16 @@ public class S3DirectoryListing implements DirectoryListing {
       DirectoryValidator validator) {
 
     Map<String, S3DirectoryListing> S3DirectoryMap = new HashMap<>();
+    String staging = Configuration.getWithReplacement(Configuration.S3_STAGING_AREA_CONFIG);
     String S3FileSeparator = "/";
-    S3DirectoryListing root = new S3DirectoryListing(Type.DIRECTORY, "", "", null);
-    S3DirectoryMap.put("", root);
+    S3DirectoryListing root = new S3DirectoryListing(Type.DIRECTORY,
+        staging.substring(0,staging.length()-1), staging,
+        validator.validate(staging, Configuration.getAllProperties()));
+    S3DirectoryMap.put(staging.substring(0,staging.length()-1), root);
     for (String file : paths) {
+      if (!file.contains(staging)) {
+        continue;
+      }
       String[] filePathElements = file.split(S3FileSeparator);
       String currentPath = "";
       String parent = "";
@@ -93,6 +99,7 @@ public class S3DirectoryListing implements DirectoryListing {
         currentPath += "/";
       }
     }
-    return S3DirectoryMap.get(root.name);
+
+    return S3DirectoryMap.get(staging.substring(0,staging.length()-1));
   }
 }
