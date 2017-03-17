@@ -40,8 +40,15 @@ public class Configuration {
     public static final String FILEMANAGER_URL_CONFIG = "org.apache.oodt.cas.curator.filemanager.url";
     public static final String FILEMANAGER_PROP_CONFIG = "org.apache.oodt.cas.curator.filemanager.prop";
     public static final String DIRECTORYBACKEND_VALIDATOR = "org.apache.oodt.cas.curator.directory.validator";
+    public static final String S3BACKEND_VALIDATOR = "org.apache.oodt.cas.curator.s3.validator";
     public static final String POLICY_UPLOAD_PATH = "org.apache.oodt.cas.curator.dataDefinition.uploadPath";
     public static final String AWS_BUCKET_CONFIG = "org.apache.oodt.cas.curator.bucket.name";
+    public static final String S3_STAGING_AREA_CONFIG = "org.apache.oodt.cas.curator.s3.staging.area";
+    public static final String S3_METADATA_KEY = "s3";
+    public static final String LOCAL_METADATA_KEY = "local";
+    public static final String S3_DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.S3DataTransferFactory";
+    public static final String LOCAL_DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
+
 
     //Stores the configuration object as a Properties object
     private static Properties config = new Properties();
