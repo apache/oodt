@@ -42,7 +42,7 @@ import javax.ws.rs.Produces;
  */
 @Path("directory")
 public class DirectoryBackend {
-    private DirectoryValidator validator;
+    private Map<String, DirectoryValidator> validators = new HashMap<>();
     Map<String,Directory> types = new HashMap<String,Directory>();
     Gson gson = new Gson();
     /**
@@ -61,7 +61,7 @@ public class DirectoryBackend {
         if (types.get("files") == null)
             bootstrapValidator("files");
             types.put("files", new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
-             validator));
+                validators.get("files")));
         return gson.toJson(types.keySet());
     }
 
@@ -78,14 +78,16 @@ public class DirectoryBackend {
             if (types.get("s3")== null) {
                 bootstrapValidator(type);
                 types.put("s3", new S3Directory(Configuration.getWithReplacement(Configuration.S3_STAGING_AREA_CONFIG),
-                    validator,
+                    validators.get(type),
                     Configuration.getWithReplacement(Configuration.AWS_BUCKET_CONFIG)));
             }
         }
-        else if (types.get("files") == null)
-            bootstrapValidator(type);
-            types.put("files", new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
-             validator));
+        else if (types.get("files") == null) {
+          bootstrapValidator(type);
+          types.put("files",
+              new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
+                  validators.get(type)));
+        }
         return gson.toJson(types.get(type).list());
     }
 
@@ -94,7 +96,7 @@ public class DirectoryBackend {
    */
 
   private void bootstrapValidator(String type){
-        if(validator==null) {
+        if(validators.get(type)==null) {
             String vclass = type.equals("s3")? Configuration.getWithReplacement(Configuration.S3BACKEND_VALIDATOR):
                 Configuration.getWithReplacement(Configuration.DIRECTORYBACKEND_VALIDATOR);
             if (vclass != null && !vclass.equals("")) {
@@ -103,7 +105,7 @@ public class DirectoryBackend {
                     clazz = Class.forName(vclass);
 
                     Constructor<?> constructor = clazz.getConstructor();
-                    this.validator = (DirectoryValidator) constructor.newInstance();
+                    this.validators.put(type, (DirectoryValidator) constructor.newInstance());
 
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
