@@ -17,22 +17,18 @@
 
 package org.apache.oodt.cas.curation.directory;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.oodt.cas.curation.util.AmazonS3Utils;
 import org.apache.oodt.commons.validation.DirectoryValidator;
 
 public class S3Directory implements Directory {
 
   String directory = null;
-  private  AWSCredentials credentials = null;
   private DirectoryValidator validator;
   private  String bucketName = null;
   /**
@@ -44,19 +40,10 @@ public class S3Directory implements Directory {
     this.directory = directory;
     this.validator = validator;
     this.bucketName = bucketName;
-    this.loadCredentials();
-  }
-
-  private void loadCredentials() {
-    try {
-      credentials = new ProfileCredentialsProvider().getCredentials();
-    } catch (Exception e) {
-      System.out.print(e);
-    }
   }
 
   private List<String> listObjects() {
-    AmazonS3 s3 = new AmazonS3Client(credentials);
+    AmazonS3 s3 = AmazonS3Utils.getClient();
     List<String> files = new ArrayList<String>();
     ObjectListing listing = s3.listObjects(new ListObjectsRequest()
         .withBucketName(bucketName));
