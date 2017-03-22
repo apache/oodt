@@ -102,7 +102,7 @@ public class IngestRest {
      * @return response object
      */
     public Response remove(@QueryParam("user") String user,
-        @QueryParam("dest") String dest) {
+        @DefaultValue(Configuration.LOCAL_METADATA_KEY)@QueryParam("fsType") String dest) {
         try {
           if (dest.equals(Configuration.S3_METADATA_KEY)) {
             setup(Configuration.S3_DATA_TRANSFER_SERVICE);
