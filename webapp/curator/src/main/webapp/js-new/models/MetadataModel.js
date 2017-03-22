@@ -41,7 +41,7 @@ define(["jquery",
                   query += "?extractor="+extractor+"&fsType=s3";  
                 }
                 else{
-                  query += "?extractor="+extractor;  
+                  query += "?extractor="+extractor+"&fsType=local";
                 }
                 
             if (GLOBAL_USER != "" && typeof(GLOBAL_USER) !== "undefined") {   
