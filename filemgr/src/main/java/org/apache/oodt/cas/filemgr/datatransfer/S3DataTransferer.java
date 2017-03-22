@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.datatransfer;
 import static com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.amazonaws.services.s3.AmazonS3URI;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,6 +63,13 @@ public class S3DataTransferer implements DataTransfer {
 
 	@Override
 	public void transferProduct(Product product) throws DataTransferException, IOException {
+		boolean move = Boolean.getBoolean("org.apache.oodt.cas.filemgr.datatransferer.s3.move");
+		if (move) {
+			for (Reference ref: product.getProductReferences()) {
+				moveProduct(ref, product);
+			}
+			return;
+		}
 		for (Reference ref : product.getProductReferences()) {
       String origRef = stripProtocol(ref.getOrigReference(), false);
 		  String dataStoreRef = stripProtocol(ref.getDataStoreReference(), true);
@@ -80,6 +88,16 @@ public class S3DataTransferer implements DataTransfer {
 				    dataStoreRef), e);
 			}
 		}
+	}
+
+	private void moveProduct(Reference ref, Product p) throws IOException{
+		String origRef = ref.getOrigReference();
+		AmazonS3URI uri = new AmazonS3URI(origRef);
+		String key = uri.getKey();
+    String sourceBucketName = uri.getBucket();
+		String dataStoreRef = stripProtocol(ref.getDataStoreReference(), true);
+
+		s3Client.copyObject(sourceBucketName, key, bucketName, dataStoreRef);
 	}
 
 	@Override

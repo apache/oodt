@@ -82,6 +82,28 @@ public interface Ingester {
             throws IngestException;
 
     /**
+     * Ingests a {@link Product} to the file manager service object identified
+     * by the given {@link URL} parameter. The product {@link Metadata} is
+     * provided a priori.
+     *
+     * @param fmUrl
+     *            The {@link URL} pointer to the file manager service.
+     * @param prodFile
+     *            The {@link File} pointer to the product file.
+     * @param met
+     *            The given {@link Metadata} object already extracted from the
+     *            {@link Product}.
+     * @param destType
+     *            The destination type of the ingest, ex "s3" or "local"
+     * @return The ID returned by the file manager for the newly ingested
+     *         product.
+     * @throws IngestException
+     *             If there is an error ingesting the {@link Product}
+     */
+    String ingest(URL fmUrl, File prodFile, Metadata met, String destType)
+            throws IngestException;
+
+  /**
      * 
      * @param fmUrl
      *            The {@link URL} pointer to the file manager service.

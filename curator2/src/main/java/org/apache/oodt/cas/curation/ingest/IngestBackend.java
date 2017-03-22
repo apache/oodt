@@ -26,7 +26,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  * @author starchmd
  */
 public class IngestBackend {
-    private static final String DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
+
     private static final String IN_PROGRESS = "IN PROGRESS";
     private static final String DONE = "DONE";
     private static final Logger LOG = Logger.getLogger(IngestRest.class.getName());
@@ -40,10 +40,10 @@ public class IngestBackend {
      * Setup this backend
      * @throws IngestException
      */
-    public IngestBackend() throws IngestException {
+    public IngestBackend(String dataTransferService) throws IngestException {
         try {
             this.url = new URL(Configuration.getWithReplacement(Configuration.FILEMANAGER_URL_CONFIG));
-            this.ingester = new StdIngester(DATA_TRANSFER_SERVICE);
+            this.ingester = new StdIngester(dataTransferService);
             LOG.log(Level.INFO,"Connecting to File Manager at:"+this.url.toString());
             this.client = new XmlRpcFileManagerClient(this.url);
         } catch(Exception e) {
@@ -56,7 +56,7 @@ public class IngestBackend {
      * @param input - input struct
      * @param user - user to isolate requests
      */
-    public void ingest(InputStruct input,String user) {
+    public void ingest(InputStruct input,String user, String destType) {
         if (!current.containsKey(user)) {
             current.put(user, new LinkedList<InputEntry>());
         }
@@ -65,7 +65,7 @@ public class IngestBackend {
         }
         for (InputStruct.InputEntry entry : input.entries) {
             try {
-                ingest(entry.file,user);
+                ingest(entry.file,user, destType);
             } catch(IngestException e) {
                 entry.error = e;
             }
@@ -77,7 +77,7 @@ public class IngestBackend {
      * @param user - user to isolate requests
      * @throws IngestException  - error on ingestion
      */
-    private void ingest(String file, String user) throws IngestException {
+    private void ingest(String file, String user, String destType) throws IngestException {
         try {
             file = URLDecoder.decode(file);
             File full = null;
@@ -90,24 +90,30 @@ public class IngestBackend {
             FlatDirMetadataHandler handler = new FlatDirMetadataHandler();
             Metadata meta = handler.get(file,user);
             System.out.println("File: "+file+" URL: "+this.url+" Full: "+full.getAbsoluteFile()+" Metadata: "+meta);
-            ingester.ingest(this.url, full.getAbsoluteFile(), meta);
+            ingester.ingest(this.url, full.getAbsoluteFile(), meta, destType);
             //Remove metadata file after successful ingest
             handler.remove(file,user);
-            org.apache.commons.io.FileUtils.deleteQuietly(full);
-            LOG.log(Level.FINE,"Checking if directory can be removed:"+full.getParent());
-            File p = full.getParentFile();
-            String test = Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG).trim();
 
-            if(test.endsWith("/")){
-                test=test.substring(0, test.length()-1);;
-            }
-            while(p!=null && !p.getAbsolutePath().equals(test))
-            if(p.exists() && p.isDirectory()){
+            if (destType.equals(Configuration.LOCAL_METADATA_KEY)) {
+                org.apache.commons.io.FileUtils.deleteQuietly(full);
+                LOG.log(Level.FINE, "Checking if directory can be removed:" + full.getParent());
 
-                if(p.list().length==0){
-                    FileUtils.deleteDirectory(p);
+                File p = full.getParentFile();
+                String test = Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)
+                    .trim();
+
+                if (test.endsWith("/")) {
+                    test = test.substring(0, test.length() - 1);
+                    ;
                 }
-                p = p.getParentFile();
+                while (p != null && !p.getAbsolutePath().equals(test))
+                    if (p.exists() && p.isDirectory()) {
+
+                        if (p.list().length == 0) {
+                            FileUtils.deleteDirectory(p);
+                        }
+                        p = p.getParentFile();
+                    }
             }
         } catch(Exception e) {
             LOG.log(Level.WARNING,"Error: failed ingesting product: "+e);
