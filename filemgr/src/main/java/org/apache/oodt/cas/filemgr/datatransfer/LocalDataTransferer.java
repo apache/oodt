@@ -18,7 +18,6 @@
 package org.apache.oodt.cas.filemgr.datatransfer;
 
 //APACHE Imports
-import org.apache.commons.compress.compressors.FileNameUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.oodt.cas.filemgr.structs.Product;

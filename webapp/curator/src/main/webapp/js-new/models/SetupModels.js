@@ -16,16 +16,27 @@ define(["js-new/models/DirectoryModel",
          */
         var models = {
             "directory":new DirectoryModel({"id":"files"}),
+            "s3directory":new DirectoryModel({"id":"s3"}),
             "extractor":new ExtractorCollection([],{"id":"extractor"}),
             "upload": UploadModel,
             "ingest": new IngestModel({"id":"ingest"}),
             "datamodel" : new MetadataDataModel({"id":"datamodel"}),
-            "refresh" : function(inview) {
-                    models.directory.fetch();
+            "refresh" : function(inview, torefresh) {
+                    if(torefresh==="S3"){
+                      models.s3directory.fetch();
+                    }
+                    else {
+                      models.directory.fetch();
+                    }
                     models.ingest.fetch({"success":inview.render.bind(inview)});
                 },
-            "refreshTree": function(){
+            "refreshTree": function(torefresh){
+              if(torefresh === "S3"){
+                models.s3directory.fetch();
+              }
+              else {
                 models.directory.fetch();
+              }
             },
             "working": new Metadata({"id":"working-set"})
         };
