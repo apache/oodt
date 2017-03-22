@@ -214,14 +214,10 @@ define(["jquery",
             });
             this._updateSelection = getSelectionUpdater(this.selection,this);
             //Register view update on directory change
-            if($("#treetype").find(":selected").text() === "S3") {
                 this.s3directory.on("change:files", this.render, this);
                 this.s3directory.on('change', this.render, this);
-            }
-            else{
                 this.directory.on("change:files", this.render, this);
                 this.directory.on('change', this.render, this);
-            }
 
             this.render();
         };
