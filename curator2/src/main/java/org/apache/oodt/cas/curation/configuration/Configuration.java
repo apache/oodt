@@ -46,7 +46,7 @@ public class Configuration {
     public static final String S3_STAGING_AREA_CONFIG = "org.apache.oodt.cas.curator.s3.staging.area";
     public static final String S3_METADATA_KEY = "s3";
     public static final String LOCAL_METADATA_KEY = "local";
-    public static final String S3_DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.S3DataTransferFactory";
+    public static final String S3_DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.S3DataTransfererFactory";
     public static final String LOCAL_DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
 
