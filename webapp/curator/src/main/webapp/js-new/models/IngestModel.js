@@ -16,13 +16,14 @@ define(["jquery",
                 query += ((query == "")?"?":"&")+ "user="+GLOBAL_USER;
             }
           //var extractor = this.collection.extractors.get("selected");
-          //if (extractor != "" && extractor != null && typeof(extractor) !== "undefined")
-          //  if(extractor==="celgene-s3extractor"){
-          //    query += "&fsType=s3"
-          //  }
-          //  else{
-          //    query += "&fsType=local"
-          //  }
+          var extractor = $("#extractors").find(":selected").text();
+          if (extractor != "" && extractor != null && typeof(extractor) !== "undefined")
+            if(extractor==="celgene-s3extractor"){
+              query += "&fsType=s3"
+            }
+            else{
+              query += "&fsType=local"
+            }
 
           return Config.INGEST_REST_SERVICE + query;
         }
