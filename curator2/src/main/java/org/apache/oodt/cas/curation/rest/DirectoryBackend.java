@@ -19,6 +19,7 @@ package org.apache.oodt.cas.curation.rest;
 import org.apache.oodt.cas.curation.configuration.Configuration;
 import org.apache.oodt.cas.curation.directory.Directory;
 import org.apache.oodt.cas.curation.directory.FileDirectory;
+import org.apache.oodt.cas.curation.directory.S3Directory;
 import org.apache.oodt.commons.validation.DirectoryValidator;
 
 import com.google.gson.Gson;
@@ -41,7 +42,7 @@ import javax.ws.rs.Produces;
  */
 @Path("directory")
 public class DirectoryBackend {
-    private DirectoryValidator validator;
+    private Map<String, DirectoryValidator> validators = new HashMap<>();
     Map<String,Directory> types = new HashMap<String,Directory>();
     Gson gson = new Gson();
     /**
@@ -58,9 +59,9 @@ public class DirectoryBackend {
     public String getDirectoryTypes() {
         //TODO: update this loading code to be user-configured and be fed off of "type"
         if (types.get("files") == null)
-            bootstrapValidator();
+            bootstrapValidator("files");
             types.put("files", new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
-             validator));
+                validators.get("files")));
         return gson.toJson(types.keySet());
     }
 
@@ -73,26 +74,38 @@ public class DirectoryBackend {
      */
     public String list(@PathParam("type") String type) throws Exception {
         //TODO: update this loading code to be user-configured and be fed off of "type"
-        if (types.get("files") == null)
-            bootstrapValidator();
-            types.put("files", new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
-             validator));
+        if (type.equals("s3")) {
+            if (types.get("s3")== null) {
+                bootstrapValidator(type);
+                types.put("s3", new S3Directory(Configuration.getWithReplacement(Configuration.S3_STAGING_AREA_CONFIG),
+                    validators.get(type),
+                    Configuration.getWithReplacement(Configuration.AWS_BUCKET_CONFIG)));
+            }
+        }
+        else if (types.get("files") == null) {
+          bootstrapValidator(type);
+          types.put("files",
+              new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
+                  validators.get(type)));
+        }
         return gson.toJson(types.get(type).list());
     }
 
   /**
    * Initialise the validator engine as defined in web.xml.
    */
-  private void bootstrapValidator(){
-        if(validator==null) {
-            String vclass = Configuration.getWithReplacement(Configuration.DIRECTORYBACKEND_VALIDATOR);
+
+  private void bootstrapValidator(String type){
+        if(validators.get(type)==null) {
+            String vclass = type.equals("s3")? Configuration.getWithReplacement(Configuration.S3BACKEND_VALIDATOR):
+                Configuration.getWithReplacement(Configuration.DIRECTORYBACKEND_VALIDATOR);
             if (vclass != null && !vclass.equals("")) {
                 Class<?> clazz = null;
                 try {
                     clazz = Class.forName(vclass);
 
                     Constructor<?> constructor = clazz.getConstructor();
-                    this.validator = (DirectoryValidator) constructor.newInstance();
+                    this.validators.put(type, (DirectoryValidator) constructor.newInstance());
 
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();

@@ -291,7 +291,7 @@ public final class VersioningUtils {
 
         try {
             fileRef = new File(new URI(uri));
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             LOG.log(Level.WARNING,
                     "URISyntaxException when getting file size from uri: ["
                             + uri + "]: Message: " + e.getMessage());

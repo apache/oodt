@@ -14,17 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.commons.validation;
+package org.apache.oodt.cas.curation.metadata;
 
-import java.util.Map;
+public class CuratorMetadata {
 
-/**
- * Interface for Directory Validation inside CAS Curator
- *
- * @author tbarber
- */
-public interface DirectoryValidator {
-
-  ValidationOutput validate(Object f, Map<String,String> stagingpath);
-
+  public static final String AMAZON_S3_FS_KEY = "s3";
+  public static final String LOCAL_FS_KEY = "localFS";
 }

@@ -14,17 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.commons.validation;
+package org.apache.oodt.cas.curation.util;
 
-import java.util.Map;
 
-/**
- * Interface for Directory Validation inside CAS Curator
- *
- * @author tbarber
- */
-public interface DirectoryValidator {
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3Client;
 
-  ValidationOutput validate(Object f, Map<String,String> stagingpath);
+public class AmazonS3Utils {
 
+  private static AWSCredentials credentials = null;
+  private static AmazonS3Client client;
+
+  private static void setup() {
+    if (client == null) {
+      credentials = new ProfileCredentialsProvider().getCredentials();
+      client = new AmazonS3Client(credentials);
+    }
+  }
+
+  public static AmazonS3Client getClient() {
+    if (client == null) {
+      setup();
+    }
+    return client;
+  }
 }

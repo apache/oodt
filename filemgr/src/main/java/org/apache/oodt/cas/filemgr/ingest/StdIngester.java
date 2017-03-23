@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
+import com.amazonaws.services.s3.AmazonS3URI;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -219,6 +220,91 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
         return productID;
 
+    }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.apache.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
+   *      java.io.File, org.apache.oodt.cas.metadata.Metadata, java.lang.String)
+   */
+    public String ingest(URL fmUrl, File prodFile, Metadata met, String destType)
+        throws IngestException {
+        // TODO: Retrieve value of destType from some configuration
+        if (destType.equals("s3")) {
+        checkOrSetFileManager(fmUrl);
+        String productType = met.getMetadata(PRODUCT_TYPE);
+        String fileLocation = met.getMetadata(FILE_LOCATION);
+        String fileName = met.getMetadata(FILENAME);
+
+        if (!check(productType, PRODUCT_TYPE)
+            || !check(fileLocation, FILE_LOCATION)
+            || !check(fileName, FILENAME)) {
+            throw new IngestException("Must specify: " + PRODUCT_TYPE + " and "
+                + FILENAME + " and " + FILE_LOCATION
+                + " within metadata file. Cannot ingest product: ["
+                + prodFile.getAbsolutePath() + "]");
+        }
+
+        // allow user to override default product name (Filename)
+        String productName = met.getMetadata(PRODUCT_NAME) != null ? met
+            .getMetadata(PRODUCT_NAME) : fileName;
+
+        // check to see if product structure was specified
+        String productStructure = met.getMetadata(PRODUCT_STRUCTURE);
+        if (productStructure == null) {
+            // try and guess the structure
+            if (prodFile.isDirectory()) {
+                productStructure = Product.STRUCTURE_HIERARCHICAL;
+            } else {
+                productStructure = Product.STRUCTURE_FLAT;
+            }
+        }
+
+        // create the product
+        Product product = new Product();
+        product.setProductName(productName);
+        product.setProductStructure(productStructure);
+        product.setProductType(getProductType(productType));
+
+        List<String> references = new Vector<String>();
+        if (!fileLocation.endsWith("/")) {
+            fileLocation += "/";
+        }
+
+        String fullFilePath = fileLocation + fileName;
+        references.add(new AmazonS3URI(fullFilePath).getURI().toString());
+
+        if (productStructure.equals(Product.STRUCTURE_HIERARCHICAL)) {
+            references.addAll(VersioningUtils.getURIsFromDir(new File(
+                fullFilePath)));
+        }
+
+        // build refs and attach to product
+        VersioningUtils.addRefsFromUris(product, references);
+
+        LOG.log(Level.INFO, "StdIngester: ingesting product: " + PRODUCT_NAME
+            + ": [" + productName + "]: " + PRODUCT_TYPE + ": ["
+            + productType + "]: " + FILE_LOCATION + ": [" + fileLocation
+            + "]");
+
+        String productID;
+
+        try {
+            productID = fmClient.ingestProduct(product, met, true);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.log(Level.WARNING, "exception ingesting product: ["
+                + productName + "]: Message: " + e.getMessage());
+            throw new IngestException("exception ingesting product: ["
+                + productName + "]: Message: " + e.getMessage());
+        }
+
+        return productID;
+
+    }
+    // Default back to LocalFS
+      return ingest(fmUrl, prodFile, met);
     }
 
     /*
