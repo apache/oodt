@@ -56,7 +56,7 @@ define(["jquery",
                     },
                     {
                         "class" :   TreeView,
-                        "params" :  {"name":"tree-view","directory":Models.directory,"selection":Models.metadata},
+                        "params" :  {"name":"tree-view","directory":Models.directory,"s3directory":Models.s3directory,"selection":Models.metadata},
                         "element" : "files"
                     },
                     {
