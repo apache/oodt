@@ -102,4 +102,13 @@ public class S3DirectoryListing implements DirectoryListing {
 
     return S3DirectoryMap.get(staging.substring(0,staging.length()-1));
   }
+
+  public String getPath() {
+    return this.path;
+  }
+
+  @Override
+  public void addChild(DirectoryListing child) {
+
+  }
 }
