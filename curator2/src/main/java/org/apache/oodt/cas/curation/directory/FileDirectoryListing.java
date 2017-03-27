@@ -66,7 +66,7 @@ public class FileDirectoryListing implements DirectoryListing {
       if (file.equals(root))
         continue;
       //Remove all directories off stack until file starts with last's path
-      while (!file.getPath().startsWith(stack.peekLast().path))
+      while (!file.getPath().startsWith(stack.peekLast().getPath()))
         stack.removeLast();
       //Get type and name of this file path and create dl object
       DirectoryListing.Type type =  file.isDirectory() ? DirectoryListing.Type.DIRECTORY : DirectoryListing.Type.OBJECT;
@@ -75,11 +75,19 @@ public class FileDirectoryListing implements DirectoryListing {
               null);
 
       //Add to last's children
-      stack.peekLast().children.add(dl);
+      stack.peekLast().addChild(dl);
       if (type == DirectoryListing.Type.DIRECTORY) {
         stack.addLast(dl);
       }
     }
     return stack.peekFirst();
+  }
+
+  public String getPath() {
+    return this.path;
+  }
+
+  public void addChild(DirectoryListing child) {
+    this.children.add(child);
   }
 }

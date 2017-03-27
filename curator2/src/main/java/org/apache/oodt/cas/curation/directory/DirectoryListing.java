@@ -45,4 +45,9 @@ public interface DirectoryListing {
 
     //Children listings (only valid for directory types)
     List<DirectoryListing> children = new LinkedList<DirectoryListing>();
+
+  public String getPath();
+
+  public void addChild(DirectoryListing child);
+
 }
