@@ -20,6 +20,8 @@ import static com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.amazonaws.services.s3.AmazonS3URI;
+import com.amazonaws.services.s3.model.CopyObjectRequest;
+import com.amazonaws.services.s3.model.CopyObjectResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -97,7 +99,17 @@ public class S3DataTransferer implements DataTransfer {
     String sourceBucketName = uri.getBucket();
 		String dataStoreRef = stripProtocol(ref.getDataStoreReference(), true);
 
-		s3Client.copyObject(sourceBucketName, key, bucketName, dataStoreRef);
+		CopyObjectRequest copyObjReq = new CopyObjectRequest(
+				sourceBucketName, key, bucketName, dataStoreRef);
+
+		if (encrypt) {
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setServerSideEncryption(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION);
+			copyObjReq.setNewObjectMetadata(objectMetadata);
+		}
+
+		CopyObjectResult response = s3Client.copyObject(copyObjReq);
+		System.out.println("Object copied with Etag " + response.getETag());
 	}
 
 	@Override

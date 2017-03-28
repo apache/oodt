@@ -31,6 +31,7 @@ public class S3Directory implements Directory {
   String directory = null;
   private DirectoryValidator validator;
   private  String bucketName = null;
+  private boolean useInstanceCreds = false;
   /**
    * Build the object around a set directory
    * @param directory
@@ -42,10 +43,27 @@ public class S3Directory implements Directory {
     this.bucketName = bucketName;
   }
 
+  public S3Directory(String directory, DirectoryValidator validator,
+      String bucketName, String instanceCreds) {
+
+    if (instanceCreds.equals("true")) {
+      useInstanceCreds = true;
+    }
+    this.directory = directory;
+    this.validator = validator;
+    this.bucketName = bucketName;
+  }
+
   private List<String> listObjects() {
-    AmazonS3 s3 = AmazonS3Utils.getClient();
+    AmazonS3 s3Client;
+    if (useInstanceCreds) {
+      s3Client = AmazonS3Utils.getClientUsingInstanceCreds();
+    }
+    else {
+      s3Client = AmazonS3Utils.getClient();
+    }
     List<String> files = new ArrayList<String>();
-    ObjectListing listing = s3.listObjects(new ListObjectsRequest()
+    ObjectListing listing = s3Client.listObjects(new ListObjectsRequest()
         .withBucketName(bucketName));
     for (S3ObjectSummary objectSummary : listing.getObjectSummaries()) {
       files.add(objectSummary.getKey());

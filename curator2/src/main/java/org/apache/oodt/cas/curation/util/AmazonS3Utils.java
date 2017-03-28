@@ -18,6 +18,7 @@ package org.apache.oodt.cas.curation.util;
 
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3Client;
 
@@ -33,10 +34,23 @@ public class AmazonS3Utils {
     }
   }
 
+  private static void setupFromInstanceCredentials() {
+    credentials = new InstanceProfileCredentialsProvider().getCredentials();
+    client = new AmazonS3Client(credentials);
+  }
+
   public static AmazonS3Client getClient() {
     if (client == null) {
       setup();
     }
     return client;
   }
+
+  public static AmazonS3Client getClientUsingInstanceCreds() {
+    if (client == null) {
+      setupFromInstanceCredentials();
+    }
+    return client;
+  }
+
 }

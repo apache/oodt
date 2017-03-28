@@ -79,7 +79,8 @@ public class DirectoryBackend {
                 bootstrapValidator(type);
                 types.put("s3", new S3Directory(Configuration.getWithReplacement(Configuration.S3_STAGING_AREA_CONFIG),
                     validators.get(type),
-                    Configuration.getWithReplacement(Configuration.AWS_BUCKET_CONFIG)));
+                    Configuration.getWithReplacement(Configuration.AWS_BUCKET_CONFIG),
+                    Configuration.getWithReplacement(Configuration.USE_INSTANCE_CREDENTIALS)));
             }
         }
         else if (types.get("files") == null) {
