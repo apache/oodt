@@ -50,7 +50,7 @@ public class S3DataTransfererFactory implements DataTransferFactory {
 		AmazonS3Client s3;
 
 		if (Boolean.getBoolean(USE_INSTANCE_CREDENTIALS)) {
-			s3 = new AmazonS3Client(new InstanceProfileCredentialsProvider());
+			s3 = new AmazonS3Client(new InstanceProfileCredentialsProvider().getCredentials());
 		}
 		else {
 			String accessKey = System.getProperty(ACCESS_KEY_PROPERTY);
