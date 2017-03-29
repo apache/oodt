@@ -104,7 +104,7 @@ public class S3DataTransferer implements DataTransfer {
 
 		if (encrypt) {
 			ObjectMetadata objectMetadata = new ObjectMetadata();
-			objectMetadata.setServerSideEncryption(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION);
+			objectMetadata.setSSEAlgorithm(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION);
 			copyObjReq.setNewObjectMetadata(objectMetadata);
 		}
 
