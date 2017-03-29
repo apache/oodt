@@ -64,10 +64,9 @@ public class S3DirectoryListing implements DirectoryListing {
    * @return top-level directory listing object
    */
   public static DirectoryListing lisingFromFileObjects(Collection<String> paths,
-      DirectoryValidator validator) {
+      DirectoryValidator validator, String staging) {
 
     Map<String, S3DirectoryListing> S3DirectoryMap = new HashMap<>();
-    String staging = Configuration.getWithReplacement(Configuration.S3_STAGING_AREA_CONFIG);
     String S3FileSeparator = "/";
     S3DirectoryListing root = new S3DirectoryListing(Type.DIRECTORY,
         staging.substring(0,staging.length()-1), staging,

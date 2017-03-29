@@ -16,6 +16,7 @@
  */
 package org.apache.oodt.cas.curation.rest;
 
+import javax.ws.rs.QueryParam;
 import org.apache.oodt.cas.curation.configuration.Configuration;
 import org.apache.oodt.cas.curation.directory.Directory;
 import org.apache.oodt.cas.curation.directory.FileDirectory;
@@ -72,24 +73,31 @@ public class DirectoryBackend {
      * Returns the listing of the given directory type
      * @param type - type of directory to list
      */
-    public String list(@PathParam("type") String type) throws Exception {
-        //TODO: update this loading code to be user-configured and be fed off of "type"
-        if (type.equals("s3")) {
-            if (types.get("s3")== null) {
-                bootstrapValidator(type);
-                types.put("s3", new S3Directory(Configuration.getWithReplacement(Configuration.S3_STAGING_AREA_CONFIG),
-                    validators.get(type),
-                    Configuration.getWithReplacement(Configuration.AWS_BUCKET_CONFIG),
-                    Configuration.getWithReplacement(Configuration.USE_INSTANCE_CREDENTIALS)));
-            }
+    public String list(@PathParam("type") String type,
+        @QueryParam("s3user")String s3user) throws Exception {
+      //TODO: update this loading code to be user-configured and be fed off of "type"
+      if (type.equals("s3")) {
+
+        bootstrapValidator(type);
+        String s3StagingArea = Configuration.getWithReplacement(Configuration.S3_STAGING_AREA_CONFIG);
+        if (s3user != null) {
+          if (!s3user.endsWith("/")) {
+            s3StagingArea = s3user + "/";
+          }
         }
-        else if (types.get("files") == null) {
-          bootstrapValidator(type);
-          types.put("files",
-              new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
-                  validators.get(type)));
-        }
-        return gson.toJson(types.get(type).list());
+        types.put("s3", new S3Directory(s3StagingArea,
+            validators.get(type),
+            Configuration.getWithReplacement(Configuration.AWS_BUCKET_CONFIG),
+            Configuration.getWithReplacement(Configuration.USE_INSTANCE_CREDENTIALS)));
+
+      }
+      else if (types.get("files") == null) {
+        bootstrapValidator(type);
+        types.put("files",
+            new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG),
+                validators.get(type)));
+      }
+      return gson.toJson(types.get(type).list());
     }
 
   /**

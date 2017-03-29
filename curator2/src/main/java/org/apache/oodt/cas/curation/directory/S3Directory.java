@@ -73,7 +73,7 @@ public class S3Directory implements Directory {
 
   @Override
   public DirectoryListing list() throws Exception {
-    return S3DirectoryListing.lisingFromFileObjects(this.listObjects(), validator);
+    return S3DirectoryListing.lisingFromFileObjects(this.listObjects(), this.validator, this.directory);
   }
 
 }

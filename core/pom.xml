@@ -414,6 +414,12 @@ the License.
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-core</artifactId>
         <version>6.2.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.solr</groupId>
