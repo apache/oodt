@@ -24,7 +24,7 @@ define(["js-new/models/DirectoryModel",
             "refresh" : function(inview, torefresh) {
                     if(torefresh==="S3"){
                       models.s3directory.set({s3user: $('#s3name').val()})
-                      models.s3directory.fetch();
+                      models.s3directory.fetch({data : {s3user: $('#s3name').val()}});
                     }
                     else {
                       models.directory.fetch();
@@ -34,7 +34,7 @@ define(["js-new/models/DirectoryModel",
             "refreshTree": function(torefresh){
               if(torefresh === "S3"){
                 models.s3directory.set({s3user: $('#s3name').val()})
-                models.s3directory.fetch();
+                models.s3directory.fetch({data : {s3user: $('#s3name').val()}});
               }
               else {
                 models.directory.fetch();
