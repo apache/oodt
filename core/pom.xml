@@ -248,6 +248,11 @@ the License.
         <version>8.7</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>curator-framework</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-frontend-jaxrs</artifactId>
         <version>2.6.0</version>
@@ -356,6 +361,11 @@ the License.
       <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-commons</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>oodt-conf</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <dependency>
