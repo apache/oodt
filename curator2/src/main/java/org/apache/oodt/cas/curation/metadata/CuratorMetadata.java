@@ -19,5 +19,5 @@ package org.apache.oodt.cas.curation.metadata;
 public class CuratorMetadata {
 
   public static final String AMAZON_S3_FS_KEY = "s3";
-  public static final String LOCAL_FS_KEY = "localFS";
+  public static final String LOCAL_FS_KEY = "local";
 }
