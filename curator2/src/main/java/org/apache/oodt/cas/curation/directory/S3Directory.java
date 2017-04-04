@@ -57,7 +57,7 @@ public class S3Directory implements Directory {
   private List<String> listObjects() {
     AmazonS3 s3Client;
     if (useInstanceCreds) {
-      s3Client = AmazonS3Utils.getClientUsingInstanceCreds();
+      s3Client = AmazonS3Utils.getClientUsingInstanceCreds(bucketName);
     }
     else {
       s3Client = AmazonS3Utils.getClient();

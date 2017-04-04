@@ -47,13 +47,13 @@ public class AmazonS3Utils {
     return client;
   }
 
-  public static AmazonS3Client getClientUsingInstanceCreds() {
+  public static AmazonS3Client getClientUsingInstanceCreds(String bucketName) {
     if (client == null) {
       setupFromInstanceCredentials();
     }
     else {
       try {
-        client.getRegionName();
+        client.listObjects(bucketName);
       } catch (AmazonS3Exception AwsException) {
         setupFromInstanceCredentials();
       }
