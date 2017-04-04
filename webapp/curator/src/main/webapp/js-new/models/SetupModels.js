@@ -21,26 +21,30 @@ define(["js-new/models/DirectoryModel",
             "upload": UploadModel,
             "ingest": new IngestModel({"id":"ingest"}),
             "datamodel" : new MetadataDataModel({"id":"datamodel"}),
-            "refresh" : function(inview, torefresh) {
-                    if(torefresh==="S3"){
-                      models.s3directory.set({s3user: $('#s3name').val()})
-                      models.s3directory.fetch({data : {s3user: $('#s3name').val()}});
-                    }
-                    else {
-                      models.directory.fetch();
-                    }
-                    models.ingest.fetch({"success":inview.render.bind(inview)});
-                },
-            "refreshTree": function(torefresh){
-              if(torefresh === "S3"){
-                models.s3directory.set({s3user: $('#s3name').val()})
-                models.s3directory.fetch({data : {s3user: $('#s3name').val()}});
-              }
-              else {
-                models.directory.fetch();
-              }
-            },
-            "working": new Metadata({"id":"working-set"})
+          "refresh" : function(inview, torefresh) {
+            if(torefresh==="S3"){
+              models.s3directory.set({s3user: $('#s3name').val()})
+              //models.s3directory.unset('files');
+              models.s3directory.fetch({data : {s3user: $('#s3name').val()}});
+            }
+            else {
+              //models.directory.unset('files');
+              models.directory.fetch();
+            }
+            models.ingest.fetch({"success":inview.render.bind(inview)});
+          },
+          "refreshTree": function(torefresh, fsuccess){
+            if(torefresh === "S3"){
+              models.s3directory.set({s3user: $('#s3name').val()})
+              //models.s3directory.unset('files');
+              models.s3directory.fetch({data : {s3user: $('#s3name').val()}}).done(fsuccess);
+            }
+            else {
+              //models.directory.unset('files');
+              models.directory.fetch().done(fsuccess);
+            }
+          },
+          "working": new Metadata({"id":"working-set"})
         };
         //models.datamodel.fetch();
         models.metadata = new MetadataCollection([],{"id":"metadata","extractors":models.extractor,"datamodel":models.datamodel});

@@ -213,12 +213,6 @@ define(["jquery",
                 }
             });
             this._updateSelection = getSelectionUpdater(this.selection,this);
-            //Register view update on directory change
-                this.s3directory.on("change:files", this.render, this);
-                this.s3directory.on('change', this.render, this);
-                this.directory.on("change:files", this.render, this);
-                this.directory.on('change', this.render, this);
-
             this.render();
         };
         /**
@@ -245,7 +239,7 @@ define(["jquery",
         /**
          * Render this view
          */
-        function render() {
+        function render(t) {
             //Turn off updates
             $("#"+this.name).off("changed.jstree");
             if($("#treetype").find(":selected").text() === "S3") {
@@ -261,15 +255,18 @@ define(["jquery",
             $("#"+this.name).jstree(true).refresh();
         };
 
+
         function refresh_tree() {
+            s =  this;
             if($("#treetype").find(":selected").text() === "S3"){
-                Models.refreshTree("S3");
+                Models.refreshTree("S3", function(){s.render(s)});
             }
             else{
-                Models.refreshTree("NFS");
+                Models.refreshTree("NFS", function(){s.render(s)});
             }
 
         };
+
         /**
          * Tree view object
          */
