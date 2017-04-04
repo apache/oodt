@@ -183,9 +183,10 @@ public class MetadataBackend {
         ((MetadataProvidedMetExtractor)metExtractor).attachMetadata(metadata);
       }
       System.out.println("Here6");
-      String parent = new File(Configuration.getWithReplacement(fsType.equals(CuratorMetadata.LOCAL_FS_KEY)?
-          Configuration.STAGING_AREA_CONFIG:
-          Configuration.S3_STAGING_AREA_CONFIG)).getParent();
+        String parent = null;
+      if (fsType.equals(CuratorMetadata.LOCAL_FS_KEY)) {
+        parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
+      }
       File full = new File(parent,file);
       return metExtractor.extractMetadata(full.getAbsolutePath());
     }

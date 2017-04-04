@@ -21,6 +21,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 public class AmazonS3Utils {
 
@@ -49,6 +50,13 @@ public class AmazonS3Utils {
   public static AmazonS3Client getClientUsingInstanceCreds() {
     if (client == null) {
       setupFromInstanceCredentials();
+    }
+    else {
+      try {
+        client.getRegionName();
+      } catch (AmazonS3Exception AwsException) {
+        setupFromInstanceCredentials();
+      }
     }
     return client;
   }
