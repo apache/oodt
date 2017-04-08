@@ -84,7 +84,12 @@ public class IngestBackend {
             if (!file.startsWith("/")) {
                 String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
                 full = new File(parent,file);
-            } else {
+            }
+            else if (file.startsWith("/") && destType.equals(Configuration.S3_METADATA_KEY)) {
+                file = file.substring(1); // removing the preceding /
+                full = new File(file);
+            }
+            else {
                 full = new File(file);
             }
             FlatDirMetadataHandler handler = new FlatDirMetadataHandler();
