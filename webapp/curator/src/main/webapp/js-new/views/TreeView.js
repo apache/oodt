@@ -260,12 +260,16 @@ define(["jquery",
             s =  this;
             if($("#treetype").find(":selected").text() === "S3"){
                 Models.refreshTree("S3", function(){s.render(s)});
+                $('#extractors option[value=celgene-s3extractor]').prop('selected',true);
             }
             else{
                 Models.refreshTree("NFS", function(){s.render(s)});
+                $('#extractors option[value=celgene-extractor]').prop('selected',true);
+
             }
 
         };
+
 
         /**
          * Tree view object

@@ -35,9 +35,15 @@ define(["js-new/models/DirectoryModel",
           },
           "refreshTree": function(torefresh, fsuccess){
             if(torefresh === "S3"){
-              models.s3directory.set({s3user: $('#s3name').val()})
-              //models.s3directory.unset('files');
-              models.s3directory.fetch({data : {s3user: $('#s3name').val()}}).done(fsuccess);
+              if($('#s3name').val()===undefined || $('#s3name').val()===""){
+                alert("Please set an S3 bucket name");
+              }
+              else {
+                models.s3directory.set({s3user: $('#s3name').val()})
+                //models.s3directory.unset('files');
+                models.s3directory.fetch(
+                    {data: {s3user: $('#s3name').val()}}).done(fsuccess);
+              }
             }
             else {
               //models.directory.unset('files');
