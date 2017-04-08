@@ -1,6 +1,7 @@
 package org.apache.oodt.cas.curation.rest;
 
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,45 +36,53 @@ public class IngestRest {
     private static final Logger LOG = Logger.getLogger(IngestRest.class.getName());
     //GSON serialization object using Google GSON
     private Gson gson = new GsonBuilder().create();
-    private IngestBackend backend = null;
+//    private IngestBackend backend = null;
+    private HashMap<String, IngestBackend> backends = new HashMap<>();
     /**
      * Construct a directory backend with hard-coded directories
      */
     public IngestRest() {}
-    @PUT
-    @Consumes("application/json")
-    /**
-     * Runs the ingest
-     * @param user - user to isolate requests
-     * @param extractor - optional extractor to run
-     * @param fsType - destination filesystem type for ingestion
-     * @param json - new json for file
-     */
-    public Response ingest(@QueryParam("user") String user,
-        @QueryParam("extractor") String extractor,
-        @DefaultValue(Configuration.LOCAL_METADATA_KEY)@QueryParam("fsType") String dest,
-        String json) {
-        try {
-            if (dest.equals(Configuration.S3_METADATA_KEY)) {
-              setup(Configuration.S3_DATA_TRANSFER_SERVICE);
-            }
-            else {
-              setup(Configuration.LOCAL_DATA_TRANSFER_SERVICE);
-            }
+  @PUT
+  @Consumes("application/json")
+  /**
+   * Runs the ingest
+   * @param user - user to isolate requests
+   * @param extractor - optional extractor to run
+   * @param fsType - destination filesystem type for ingestion
+   * @param json - new json for file
+   */
+  public Response ingest(@QueryParam("user") String user,
+      @QueryParam("extractor") String extractor,
+      @DefaultValue(Configuration.LOCAL_METADATA_KEY)@QueryParam("fsType") String dest,
+      String json) {
+    IngestBackend backend = null;
+    try {
+      if (dest.equals(Configuration.S3_METADATA_KEY)) {
+        backend = setup(Configuration.S3_DATA_TRANSFER_SERVICE);
+      }
+      else {
+        backend = setup(Configuration.LOCAL_DATA_TRANSFER_SERVICE);
+      }
 
-            InputStruct input = gson.fromJson(json, InputStruct.class);
-            List<String> files = new LinkedList<String>();
-            for (InputStruct.InputEntry entry : input.entries) {
-                files.add(entry.file);
-            }
-            LOG.log(Level.INFO, "Ingesting files: "+StringUtils.join(files,","));
-            this.backend.ingest(input,user, dest);
-            return Response.ok().build();
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE,"Exception occurred calling ingest REST endpoint", e);
-            return ExceptionResponseHandler.BuildExceptionResponse(e);
-        }
+      InputStruct input = gson.fromJson(json, InputStruct.class);
+      List<String> files = new LinkedList<String>();
+      for (InputStruct.InputEntry entry : input.entries) {
+        files.add(entry.file);
+      }
+      LOG.log(Level.INFO, "Ingesting files: "+StringUtils.join(files,","));
+      if (backend!=null) {
+        backend.ingest(input,user, dest);
+      }
+      else {
+        throw new IllegalArgumentException("No backend exists for "+ dest);
+      }
+
+      return Response.ok().build();
+    } catch (Exception e) {
+      LOG.log(Level.SEVERE,"Exception occurred calling ingest REST endpoint", e);
+      return ExceptionResponseHandler.BuildExceptionResponse(e);
     }
+  }
     @GET
     @Produces("application/json")
     /**
@@ -82,19 +91,25 @@ public class IngestRest {
      */
     public Response status(@QueryParam("user") String user,
         @DefaultValue(Configuration.LOCAL_METADATA_KEY)@QueryParam("fsType") String dest) {
-        try {
-          if (dest.equals(Configuration.S3_METADATA_KEY)) {
-            setup(Configuration.S3_DATA_TRANSFER_SERVICE);
-          }
-          else {
-            setup(Configuration.LOCAL_DATA_TRANSFER_SERVICE);
-          }
-            LOG.log(Level.INFO, "Reading current status");
-            return Response.ok().entity(gson.toJson(this.backend.status(user))).build();
-        } catch(Exception e) {
-            LOG.log(Level.SEVERE,"Exception occurred calling ingest REST endpoint", e);
-            return ExceptionResponseHandler.BuildExceptionResponse(e);
+      IngestBackend backend = null;
+      try {
+        if (dest.equals(Configuration.S3_METADATA_KEY)) {
+          backend = setup(Configuration.S3_DATA_TRANSFER_SERVICE);
         }
+        else {
+          backend = setup(Configuration.LOCAL_DATA_TRANSFER_SERVICE);
+        }
+        LOG.log(Level.INFO, "Reading current status");
+        if (backend!=null) {
+          return Response.ok().entity(gson.toJson(backend.status(user))).build();
+        }
+        else {
+          throw new IllegalArgumentException("No backend exists for "+ dest);
+        }
+      } catch(Exception e) {
+        LOG.log(Level.SEVERE,"Exception occurred calling ingest REST endpoint", e);
+        return ExceptionResponseHandler.BuildExceptionResponse(e);
+      }
     }
     @DELETE
     /**
@@ -103,31 +118,42 @@ public class IngestRest {
      */
     public Response remove(@QueryParam("user") String user,
         @DefaultValue(Configuration.LOCAL_METADATA_KEY)@QueryParam("fsType") String dest) {
-        try {
-          if (dest.equals(Configuration.S3_METADATA_KEY)) {
-            setup(Configuration.S3_DATA_TRANSFER_SERVICE);
-          }
-          else {
-            setup(Configuration.LOCAL_DATA_TRANSFER_SERVICE);
-          }
-            LOG.log(Level.INFO, "Deleting current errors");
-            this.backend.clearErrors(user);
-            return Response.ok().build();
-        } catch(Exception e) {
-            LOG.log(Level.SEVERE,"Exception occurred calling ingest REST endpoint", e);
-            return ExceptionResponseHandler.BuildExceptionResponse(e);
-        }        
+      IngestBackend backend = null;
+      try {
+        if (dest.equals(Configuration.S3_METADATA_KEY)) {
+          backend = setup(Configuration.S3_DATA_TRANSFER_SERVICE);
+        }
+        else {
+          backend = setup(Configuration.LOCAL_DATA_TRANSFER_SERVICE);
+        }
+        if (backend != null) {
+          LOG.log(Level.INFO, "Deleting current errors");
+          backend.clearErrors(user);
+          return Response.ok().build();
+        }
+        else {
+          throw new IllegalArgumentException("No backend exists for "+ dest);
+        }
+      } catch(Exception e) {
+        LOG.log(Level.SEVERE,"Exception occurred calling ingest REST endpoint", e);
+        return ExceptionResponseHandler.BuildExceptionResponse(e);
+      }
     }
-    /**
-     * Setup the backend
-     * @throws IngestException
-     */
-    public synchronized void setup(String dataTransferService) throws IngestException {
-        LOG.log(Level.INFO, "Setting up ingest backend");
-        this.backend = new IngestBackend(dataTransferService);
+  /**
+   * Setup the backend
+   * @throws IngestException
+   */
+  public synchronized IngestBackend setup(String dataTransferService) throws IngestException {
+    if (backends.containsKey(dataTransferService)) {
+      return backends.get(dataTransferService);
     }
+    LOG.log(Level.INFO, "Setting up ingest backend");
+    IngestBackend backend = new IngestBackend(dataTransferService);
+    backends.put(dataTransferService, backend);
+    return backend;
+  }
 
-    public IngestBackend getBackend() {
-        return backend;
+    public IngestBackend getBackend(String dataTransferService) {
+        return backends.get(dataTransferService);
     }
 }
