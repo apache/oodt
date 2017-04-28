@@ -49,7 +49,7 @@ public class DataSourceMetExtractor extends AbstractMetExtractor {
   }
 
   @Override
-  protected Metadata extrMetadata(File file) throws MetExtractionException {
+  protected Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
     String key = getKey(file);
     DataSourceMetExtractorConfig dsConfig = (DataSourceMetExtractorConfig) config;
     DataSource dataSource = DatabaseConnectionBuilder.buildDataSource(dsConfig.getUserName(),

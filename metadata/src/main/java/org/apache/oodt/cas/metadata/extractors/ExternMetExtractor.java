@@ -34,7 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
 import org.apache.oodt.commons.exec.ExecUtils;
 
 /**
@@ -61,7 +60,7 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
      * 
      * @see org.apache.oodt.cas.metadata.AbstractMetExtractor#extractMetadata(java.io.File)
      */
-    public Metadata extrMetadata(File file) throws MetExtractionException {
+    public Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
 
         // determine working directory
         String workingDirPath = ((ExternalMetExtractorConfig) this.config)

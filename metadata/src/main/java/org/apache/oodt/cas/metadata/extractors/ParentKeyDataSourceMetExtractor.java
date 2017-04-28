@@ -40,14 +40,14 @@ public class ParentKeyDataSourceMetExtractor extends DataSourceMetExtractor {
   private String key;
   
   @Override
-  protected Metadata extrMetadata(File file) throws MetExtractionException {
+  protected Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
     try {
       key = getPrimaryKey(file);
-      return super.extrMetadata(file);
+      return super.extrMetadata(absolutePath, file);
     } catch (MetExtractionException e) {
       key = getParentKey(file);
       if (key != null) {
-        return super.extrMetadata(file);
+        return super.extrMetadata(absolutePath, file);
       } else {
         throw e;
       }

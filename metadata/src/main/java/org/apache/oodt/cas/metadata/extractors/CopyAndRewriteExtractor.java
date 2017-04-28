@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
 /**
@@ -73,7 +72,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
    * 
    * @see gov.nasa.jpl.oodt.cas.metadata.AbstractMetExtractor#extractMetadata(java.io.File)
    */
-  public Metadata extrMetadata(File file) throws MetExtractionException {
+  public Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
       if (this.config == null) {
           throw new MetExtractionException(
                   "No config file defined: unable to copy and rewrite metadata!");

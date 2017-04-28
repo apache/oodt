@@ -53,13 +53,15 @@ public abstract class AbstractMetExtractor implements MetExtractor {
     /**
      * Extracts {@link Metadata} from the given {@link File}
      * 
+     *
+     * @param absolutePath
      * @param file
      *            The {@link File} from which {@link Metadata} will be extracted
      * @return The {@link Metadata} extracted
      * @throws MetExtractionException
      *             If any error occurs
      */
-    protected abstract Metadata extrMetadata(File file)
+    protected abstract Metadata extrMetadata(String absolutePath, File file)
             throws MetExtractionException;
 
     /*
@@ -71,7 +73,7 @@ public abstract class AbstractMetExtractor implements MetExtractor {
         if (f == null || !f.exists()) {
             throw new MetExtractionException("File '" + f + "' does not exist");
         }
-        return this.extrMetadata(this.safeGetCanonicalFile(f));
+        return this.extrMetadata(f.getAbsolutePath(), this.safeGetCanonicalFile(f));
     }
 
     /*

@@ -71,7 +71,7 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
      * .io.File)
      */
     @Override
-    public Metadata extrMetadata(File file) throws MetExtractionException {
+    public Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
 
         try {
             org.apache.tika.metadata.Metadata tikaMet = 
