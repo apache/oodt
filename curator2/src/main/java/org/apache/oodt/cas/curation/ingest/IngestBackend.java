@@ -122,7 +122,7 @@ public class IngestBackend {
             }
         } catch(Exception e) {
             LOG.log(Level.WARNING,"Error: failed ingesting product: "+e);
-            throw new IngestException("Error: problem while ingesting",e);
+            throw new IngestException("Error: problem while ingesting: " + e.getMessage(),e);
         }
     }
     /**
