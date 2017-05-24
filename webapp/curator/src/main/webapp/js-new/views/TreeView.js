@@ -270,6 +270,12 @@ define(["jquery",
 
         };
 
+       function keyPressEventHandler(event){
+          if(event.keyCode == 13){
+            refresh_tree();
+          }
+        }
+
 
         /**
          * Tree view object
@@ -284,7 +290,8 @@ define(["jquery",
 
             events: {
                 'click .refresh-tree' : 'refresh_tree',
-                'change #treetype' : 'refresh_tree'
+                'change #treetype' : 'refresh_tree',
+                'keyup #s3name' : 'keyPressEventHandler'
             }
         });
     }
