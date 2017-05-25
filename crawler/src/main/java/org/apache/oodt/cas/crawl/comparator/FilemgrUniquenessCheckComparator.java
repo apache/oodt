@@ -43,7 +43,7 @@ import org.springframework.beans.factory.annotation.Required;
 public class FilemgrUniquenessCheckComparator extends
         PreConditionComparator<Boolean> {
 
-    private String filemgrUrl;
+    private String filemgrUrl = "http://localhost:9000";
 
     @Override
     protected int performCheck(File product, Boolean compareItem)
