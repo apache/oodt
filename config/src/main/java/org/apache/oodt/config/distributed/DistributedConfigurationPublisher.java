@@ -17,43 +17,49 @@
 
 package org.apache.oodt.config.distributed;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.ACLProvider;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.Constants;
-import org.apache.oodt.config.Constants.Properties;
 import org.apache.oodt.config.utils.CuratorUtils;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
 
 /**
- * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to connect
- * to zookeeper
+ * The class to publish configuration to Zookeeper
  *
- * @author Imesha Sudasingha.
+ * @author Imesha Sudasingha
  */
-public class DistributedConfigurationManager extends ConfigurationManager {
+public class DistributedConfigurationPublisher {
 
-    private static final Logger logger = LoggerFactory.getLogger(DistributedConfigurationManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DistributedConfigurationPublisher.class);
 
-    /** Variables required to connect to zookeeper */
+    private Map<String, String> propertiesFiles;
     private String connectString;
     private CuratorFramework client;
+    private ZPaths zPaths;
 
-    public DistributedConfigurationManager(String component, List<String> propertiesFiles) {
-        super(component, propertiesFiles);
+    public DistributedConfigurationPublisher(String component, Map<String, String> propertiesFiles) {
+        this.propertiesFiles = propertiesFiles;
+        this.zPaths = new ZPaths(component);
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
@@ -79,14 +85,14 @@ public class DistributedConfigurationManager extends ConfigurationManager {
 
     /**
      * Creates a {@link CuratorFramework} instance and start it. This method will wait a maximum amount of
-     * {@link Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
+     * {@link Constants.Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
      */
     private void startZookeeper() {
-        int connectionTimeoutMs = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "15"));
-        int sessionTimeoutMs = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "60"));
-        int retryInitialWaitMs = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "1000"));
-        int maxRetryCount = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "3"));
-        int startupTimeOutMs = Integer.parseInt(System.getProperty(Properties.ZK_STARTUP_TIMEOUT, "30000"));
+        int connectionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "15000"));
+        int sessionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "60000"));
+        int retryInitialWaitMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "1000"));
+        int maxRetryCount = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "3"));
+        int startupTimeOutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_STARTUP_TIMEOUT, "30000"));
 
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
                 .connectString(connectString)
@@ -100,8 +106,8 @@ public class DistributedConfigurationManager extends ConfigurationManager {
          * info will only be required whenever a client is accessing an already create ZNode. For another client of
          * another node to make use of a ZNode created by this node, it should also provide the same auth info.
          */
-        if (System.getProperty(Properties.ZK_USERNAME) != null && System.getProperty(Properties.ZK_PASSWORD) != null) {
-            String authenticationString = System.getProperty(Properties.ZK_USERNAME) + ":" + System.getProperty(Properties.ZK_PASSWORD);
+        if (System.getProperty(Constants.Properties.ZK_USERNAME) != null && System.getProperty(Constants.Properties.ZK_PASSWORD) != null) {
+            String authenticationString = System.getProperty(Constants.Properties.ZK_USERNAME) + ":" + System.getProperty(Constants.Properties.ZK_PASSWORD);
             builder.authorization("digest", authenticationString.getBytes())
                     .aclProvider(new ACLProvider() {
                         public List<ACL> getDefaultAcl() {
@@ -135,28 +141,60 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         logger.info("CuratorFramework client started successfully");
     }
 
-    @Override
-    public String getProperty(String key) {
-        // Todo Implement using curator
-        return null;
-    }
+    public void publishConfiguration() throws Exception {
+        for (Map.Entry<String, String> entry : propertiesFiles.entrySet()) {
+            logger.info("Publishing configuration {} - {}", entry.getKey(), entry.getValue());
+            URL resource = Thread.currentThread().getContextClassLoader().getResource(entry.getKey());
 
-    @Override
-    public void loadProperties() {
-        // todo Implement the logic with Curator
-    }
+            String content;
+            try {
+                content = FileUtils.readFileToString(new File(resource.toURI()));
+            } catch (IOException | URISyntaxException e) {
+                logger.error("Unable to read file : {}", entry.getKey(), e);
+                continue;
+            }
 
-    public File getPropertiesFile(String filePath) {
-        return null;
-    }
-
-    public File getConfigurationFile(String filePath) {
-        return null;
-    }
-
-    public void publishConfiguration() {
-        for (String propertyFile : propertiesFiles) {
-
+            String zNodePath = zPaths.getPropertiesZNodePath(entry.getValue());
+            if (client.checkExists().forPath(zNodePath) != null) {
+                byte[] bytes = client.getData().forPath(zNodePath);
+                String existingData = new String(bytes);
+                if (content.equals(existingData)) {
+                    logger.info("{} already exists in zookeeper at {}", entry.getKey(), entry.getValue());
+                    continue;
+                } else {
+                    Stat stat = client.setData().forPath(zNodePath, content.getBytes());
+                    if (stat != null) {
+                        logger.info("Published {} to {}", entry.getKey(), entry.getValue());
+                    }
+                }
+            } else {
+                client.create().creatingParentContainersIfNeeded().forPath(zNodePath, content.getBytes());
+            }
         }
+    }
+
+    public static void main(String[] args) {
+        if (args.length < 2) {
+            logger.warn("Component name and at least one properties file needs to be given configuration publishing");
+            throw new IllegalArgumentException("Requires at least two arguments, component and one properties file");
+        }
+
+        logger.debug("Starting publishing configuration. Component : {}", args[0]);
+
+        String[] fileMapping = Arrays.copyOfRange(args, 1, args.length);
+        Map<String, String> propertiesFiles = new HashMap<>();
+        for (String entry : fileMapping) {
+            String[] strings = entry.split("=");
+            propertiesFiles.put(strings[0], strings[1]);
+        }
+
+        DistributedConfigurationPublisher distributedConfigurationPublisher = new DistributedConfigurationPublisher(args[0], propertiesFiles);
+        try {
+            distributedConfigurationPublisher.publishConfiguration();
+        } catch (Exception e) {
+            logger.error("Error occurred when publishing configuration to zookeeper", e);
+        }
+
+        logger.info("Published configuration successfully");
     }
 }

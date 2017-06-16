@@ -32,22 +32,23 @@ import static org.apache.oodt.config.Constants.Properties.ENABLE_DISTRIBUTED_CON
  */
 public class ConfigurationManagerFactory {
 
-  /** Logger instance for this class */
-  private static final Logger logger = Logger.getLogger(ConfigurationManagerFactory.class.getName());
+    /** Logger instance for this class */
+    private static final Logger logger = Logger.getLogger(ConfigurationManagerFactory.class.getName());
 
-  private ConfigurationManagerFactory() {}
-
-  /**
-   * Returns the {@link ConfigurationManager} to be used by the calling class. Whether to use the standalone version or
-   * the distributed version of the configuration manager will be determined by the value of the property
-   * <pre>org.apache.oodt.config.zookeeper == true</pre>
-   *
-   * @return ConfigurationManager instance to used by the corresponding component.
-   */
-  public static ConfigurationManager getConfigurationManager(String component, List<String> propertiesFiles, List<String> otherFiles) {
-    if (System.getProperty(ENABLE_DISTRIBUTED_CONFIGURATION) != null) {
-      return new DistributedConfigurationManager(component, propertiesFiles, otherFiles);
+    private ConfigurationManagerFactory() {
     }
-    return new StandaloneConfigurationManager(component, propertiesFiles, otherFiles);
-  }
+
+    /**
+     * Returns the {@link ConfigurationManager} to be used by the calling class. Whether to use the standalone version or
+     * the distributed version of the configuration manager will be determined by the value of the property
+     * <pre>org.apache.oodt.config.zookeeper == true</pre>
+     *
+     * @return ConfigurationManager instance to used by the corresponding component.
+     */
+    public static ConfigurationManager getConfigurationManager(String component, List<String> propertiesFiles) {
+        if (System.getProperty(ENABLE_DISTRIBUTED_CONFIGURATION) != null) {
+            return new DistributedConfigurationManager(component, propertiesFiles);
+        }
+        return new StandaloneConfigurationManager(component, propertiesFiles);
+    }
 }

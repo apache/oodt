@@ -108,7 +108,7 @@ public class XmlRpcFileManager {
   /* whether or not to expand a product instance into met */
   private boolean expandProductMet;
 
-  /** Configuration Manager instance which will handle the configiration aspect in distributed/standalone manner */
+  /** Configuration Manager instance which will handle the configuration aspect in distributed/standalone manner */
   private ConfigurationManager configurationManager;
 
   /**
@@ -132,9 +132,9 @@ public class XmlRpcFileManager {
 
       List<String> propertiesFiles = new ArrayList<String>();
       propertiesFiles.add(System.getProperty("org.apache.oodt.cas.filemgr.properties"));
-      configurationManager = ConfigurationManagerFactory.getConfigurationManager(componentName, propertiesFiles,null);
+      configurationManager = ConfigurationManagerFactory.getConfigurationManager(componentName, propertiesFiles);
     } else {
-      configurationManager = ConfigurationManagerFactory.getConfigurationManager(componentName,null,null);
+      configurationManager = ConfigurationManagerFactory.getConfigurationManager(componentName,null);
     }
 
     this.loadConfiguration();

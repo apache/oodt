@@ -30,28 +30,24 @@ import java.util.List;
  */
 public abstract class ConfigurationManager {
 
-  protected String component;
-  protected List<String> propertiesFiles;
-  protected List<String> otherFiles;
+    protected String component;
+    protected List<String> propertiesFiles;
 
-  public ConfigurationManager(String component, List<String> propertiesFiles, List<String> otherFiles) {
-    this.component = component;
-    this.propertiesFiles = propertiesFiles != null ? propertiesFiles : new ArrayList<String>();
-    this.otherFiles = otherFiles != null ? otherFiles : new ArrayList<String>();
-  }
+    public ConfigurationManager(String component, List<String> propertiesFiles) {
+        this.component = component;
+        this.propertiesFiles = propertiesFiles != null ? propertiesFiles : new ArrayList<String>();
+    }
 
-  /**
-   * Retrieves a given property from the underlying configuration storage. For example, If we want to get the
-   * value of the property org.foo.bar, we have to call this method with <pre>org.foo.bar</pre> as the parameter.
-   *
-   * @param key Name of the property to be retrieved.
-   * @return Value of the requested property | null
-   */
-  public abstract String getProperty(String key);
+    /**
+     * Retrieves a given property from the underlying configuration storage. For example, If we want to get the
+     * value of the property org.foo.bar, we have to call this method with <pre>org.foo.bar</pre> as the parameter.
+     *
+     * @param key Name of the property to be retrieved.
+     * @return Value of the requested property | null
+     */
+    public abstract String getProperty(String key);
 
-  public abstract void loadProperties() throws IOException;
+    public abstract void loadProperties() throws IOException;
 
-  public abstract File getPropertiesFile(String filePath) throws FileNotFoundException;
-
-  public abstract File getConfigurationFile(String filePath) throws FileNotFoundException;
+    public abstract File getPropertiesFile(String filePath) throws FileNotFoundException;
 }

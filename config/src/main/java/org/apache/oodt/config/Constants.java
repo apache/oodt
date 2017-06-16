@@ -24,33 +24,51 @@ package org.apache.oodt.config;
  */
 public class Constants {
 
-  private Constants() {}
+    private Constants() {
+    }
 
-  /** Node name to be used when the configuration manager is the standalone version */
-  public static final String STANDALONE_NODE_NAME = "local";
+    /** Node name to be used when the configuration manager is the standalone version */
+    public static final String STANDALONE_NODE_NAME = "local";
 
-  /** Default environment name to be used */
-  public static final String DEFAULT_ENVIRONMENT = "default";
+    /** Default environment name to be used */
+    public static final String DEFAULT_ENVIRONMENT = "default";
 
-  public static class Properties {
+    public static class Properties {
+        /** The system property to be set in order to enable distributed configuration management */
+        public static final String ENABLE_DISTRIBUTED_CONFIGURATION = "org.apache.oodt.config.distributed";
 
-    /** The system property to be set in order to enable distributed configuration management */
-    public static final String ENABLE_DISTRIBUTED_CONFIGURATION = "org.apache.oodt.config.distributed";
+        /** System property, which will holf the location of the zookeeper properties file */
+        public static final String ZK_PROPERTIES_FILE = "org.apache.oodt.config.zkProperties";
 
-    /** System property, which will holf the location of the zookeeper properties file */
-    public static final String ZK_PROPERTIES_FILE = "org.apache.oodt.config.zkProperties";
+        /** Property name to fetch connect string to connect to a zookeeper ensemble. */
+        public static final String ZK_CONNECT_STRING = "org.apache.oodt.config.zk.connectString";
 
-    /** Property name to fetch connect string to connect to a zookeeper ensemble. */
-    public static final String ZK_CONNECT_STRING = "org.apache.oodt.config.zk.connectString";
+        public static final String ZK_CONNECTION_TIMEOUT = "org.apache.oodt.config.zk.connectionTimeoutMs";
+        public static final String ZK_SESSION_TIMEOUT = "org.apache.oodt.config.zk.sessionTimeoutMs";
 
-    public static final String ZK_CONNECTION_TIMEOUT = "org.apache.oodt.config.zk.connectionTimeoutMs";
-    public static final String ZK_SESSION_TIMEOUT = "org.apache.oodt.config.zk.sessionTimeoutMs";
+        public static final String ZK_RETRY_INITIAL_WAIT = "org.apache.oodt.config.zk.retryInitialWaitMs";
+        public static final String ZK_RETRY_MAX_RETRIES = "org.apache.oodt.config.zk.maxRetries";
+        public static final String ZK_STARTUP_TIMEOUT = "org.apache.oodt.config.zk.startupTimeoutMs";
 
-    public static final String ZK_RETRY_INITIAL_WAIT = "org.apache.oodt.config.zk.retryInitialWaitMs";
-    public static final String ZK_RETRY_MAX_RETRIES = "org.apache.oodt.config.zk.maxRetries";
-    public static final String ZK_STARTUP_TIMEOUT = "org.apache.oodt.config.zk.startupTimeoutMs";
+        public static final String ZK_USERNAME = "org.apache.oodt.config.zk.username";
+        public static final String ZK_PASSWORD = "org.apache.oodt.config.zk.password";
+    }
 
-    public static final String ZK_USERNAME = "org.apache.oodt.config.zk.username";
-    public static final String ZK_PASSWORD = "org.apache.oodt.config.zk.password";
-  }
+    public static class Components {
+        public static final String FILE_MANAGER = "filemgr";
+    }
+
+    public static class ZPaths {
+        /** Separator for ZNode paths */
+        public static final String SEPARATOR = "/";
+
+        /** Namespace to be used when creating ZNodes in Zookeeper */
+        public static final String NAMESPACE = "oodt";
+
+        /** Where OODT components related configuration are stored */
+        public static final String COMPONENTS_PATH_NAME = "components";
+
+        /** Where properties files are stored inside each component */
+        public static final String PROPERTIES_PATH_NAME = "properties";
+    }
 }
