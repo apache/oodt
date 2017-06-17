@@ -117,7 +117,7 @@ public class XmlRpcFileManager {
    *
    * @param port The web server port to run the XML Rpc server on, defaults to 1999.
    */
-  public XmlRpcFileManager(int port) throws IOException {
+  public XmlRpcFileManager(int port) throws Exception {
     webServerPort = port;
 
     // start up the web server
@@ -1197,7 +1197,7 @@ public class XmlRpcFileManager {
   }
 
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
     int portNum = -1;
     String usage = "FileManager --portNum <port number for xml rpc service>\n";
 
@@ -1536,8 +1536,8 @@ public class XmlRpcFileManager {
     return pMet;
   }
 
-  private void loadConfiguration() throws IOException {
-    configurationManager.loadProperties();
+  private void loadConfiguration() throws Exception {
+    configurationManager.loadConfiguration();
 
     String metaFactory, dataFactory, transferFactory;
 

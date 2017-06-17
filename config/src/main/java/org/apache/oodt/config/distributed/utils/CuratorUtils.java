@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.config.utils;
+package org.apache.oodt.config.distributed.utils;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -31,9 +31,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
+import static org.apache.oodt.config.Constants.ZPaths.*;
 
 public class CuratorUtils {
 
@@ -84,6 +86,13 @@ public class CuratorUtils {
         return client.checkExists().forPath(path) != null ? new String(client.getData().forPath(path)) : null;
     }
 
+    /**
+     * Builds a {@link CuratorFramework} instance using the given connectString.
+     *
+     * @param connectString connection string to connect to zookeeper
+     * @param logger        {@link Logger} instance of the calling class
+     * @return Newly created CuratorFramework instance.
+     */
     public static CuratorFramework getCuratorFrameworkClient(String connectString, Logger logger) {
         int connectionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "15000"));
         int sessionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "60000"));
@@ -123,4 +132,20 @@ public class CuratorUtils {
         return client;
     }
 
+    public static List<String> getLeafZNodePaths(CuratorFramework client, String parentZNodePath) throws Exception {
+        List<String> leafZNodePaths = new ArrayList<>();
+
+        List<String> childNodes = client.getChildren().forPath(parentZNodePath);
+        if (childNodes != null && childNodes.size() > 0) {
+            for (String child : childNodes) {
+                String childZNodePath = parentZNodePath + SEPARATOR + child;
+                leafZNodePaths.addAll(getLeafZNodePaths(client, childZNodePath));
+            }
+        } else {
+            // Then, current ZNode path is a leaf node
+            leafZNodePaths.add(parentZNodePath);
+        }
+
+        return leafZNodePaths;
+    }
 }

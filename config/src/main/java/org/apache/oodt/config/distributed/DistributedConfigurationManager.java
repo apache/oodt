@@ -17,15 +17,20 @@
 
 package org.apache.oodt.config.distributed;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.Constants.Properties;
-import org.apache.oodt.config.utils.CuratorUtils;
+import org.apache.oodt.config.distributed.utils.CuratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
@@ -41,12 +46,17 @@ public class DistributedConfigurationManager extends ConfigurationManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributedConfigurationManager.class);
 
-    /** Variables required to connect to zookeeper */
+    /** Connection string required to connect to zookeeper */
     private String connectString;
     private CuratorFramework client;
+    /** Name of the OODT component, to which this class is providing configuration support */
+    private String componentName;
+    private ZNodePaths zNodePaths;
 
     public DistributedConfigurationManager(String component) {
         super(component);
+        this.componentName = component;
+        this.zNodePaths = new ZNodePaths(component);
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
@@ -96,7 +106,72 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     }
 
     @Override
-    public void loadProperties() {
-        // todo Implement the logic with Curator
+    public void loadConfiguration() throws Exception {
+        logger.debug("Loading properties for : {}", componentName);
+        loadProperties();
+        logger.info("Properties loaded for : {}", componentName);
+
+        logger.debug("Saving configuration files for : {}", componentName);
+        saveConfigFiles();
+        logger.info("Configuration files saved for : {}", componentName);
+
+    }
+
+    /**
+     * This method will fetch <pre>.properties</pre> files stored in zookeeper and load the properties in those files
+     * to {@link System#props}.
+     *
+     * @throws Exception Zookeeper exceptions
+     */
+    private void loadProperties() throws Exception {
+        String propertiesZNodePath = zNodePaths.getPropertiesZNodePath();
+        List<String> propertiesFilesZNodePaths = CuratorUtils.getLeafZNodePaths(client, propertiesZNodePath);
+
+        if (propertiesFilesZNodePaths.contains(propertiesZNodePath)) {
+            propertiesFilesZNodePaths.remove(propertiesZNodePath);
+        }
+
+        for (String propertiesFileZNodePath : propertiesFilesZNodePaths) {
+            logger.debug("Loading properties from ZNode at : {}", propertiesFileZNodePath);
+            byte[] bytes = client.getData().forPath(propertiesFileZNodePath);
+            try (InputStream in = new ByteArrayInputStream(bytes)) {
+                System.getProperties().load(in);
+            }
+
+            logger.info("Properties loaded from ZNode at : {}", propertiesFileZNodePath);
+        }
+    }
+
+    /**
+     * Fetch and save all the configuration files from zookeeper. Local directories are created accordingly.
+     * For example, if there is a ZNode under <pre>/components/{component}/configuration/etc/mime-types.xml</pre>, it
+     * will be fetched and stored in the local path <pre>etc/mime-types.xml</pre>
+     *
+     * @throws Exception IOException or Zookeeper exception
+     */
+    private void saveConfigFiles() throws Exception {
+        String configParentZNodePath = zNodePaths.getConfigurationZNodePath();
+        List<String> configFilesZNodePaths = CuratorUtils.getLeafZNodePaths(client, configParentZNodePath);
+
+        if (configFilesZNodePaths.contains(configParentZNodePath)) {
+            configFilesZNodePaths.remove(configParentZNodePath);
+        }
+
+        for (String configFileZNodePath : configFilesZNodePaths) {
+            logger.debug("Fetching configuration file from ZNode at : {}", configFileZNodePath);
+            byte[] bytes = client.getData().forPath(configFileZNodePath);
+
+            String localFilePath = zNodePaths.getLocalConfigFilePath(configFileZNodePath);
+            FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
+            logger.info("Config file from ZNode at {} saved to {}", configFileZNodePath);
+        }
+    }
+
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public ZNodePaths getzNodePaths() {
+        return zNodePaths;
     }
 }

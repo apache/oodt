@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class StandaloneConfigurationManager extends ConfigurationManager {
 
     /** {@inheritDoc} */
     @Override
-    public void loadProperties() throws IOException {
+    public void loadConfiguration() throws Exception {
         for (String file : propertiesFiles) {
             logger.debug("Loading properties from file : {}", file);
             System.getProperties().load(new FileInputStream(new File(file)));

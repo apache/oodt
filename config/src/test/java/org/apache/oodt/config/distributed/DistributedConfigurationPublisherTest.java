@@ -95,8 +95,10 @@ public class DistributedConfigurationPublisherTest {
 
                 Assert.assertEquals(fileContent, storedContent);
             }
-
         }
+
+//        DistributedConfigurationManager configurationManager = new DistributedConfigurationManager(Constants.Components.FILE_MANAGER);
+//        configurationManager.loadConfiguration();
     }
 
     @AfterClass

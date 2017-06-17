@@ -77,4 +77,8 @@ public class ZNodePaths {
     public String getConfigurationZNodePath(String subPath) {
         return configurationZNodeRoot + (subPath.startsWith(SEPARATOR) ? subPath.substring(1) : subPath);
     }
+
+    public String getLocalConfigFilePath(String zNodePath) {
+        return zNodePath.substring(configurationZNodeRoot.length());
+    }
 }

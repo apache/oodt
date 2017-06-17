@@ -17,10 +17,8 @@
 
 package org.apache.oodt.config;
 
-import java.io.IOException;
-
 /**
- * The abstract class to define functionalities of the configuration managers.
+ * The abstract class to define functions of the configuration managers.
  *
  * @author Imesha Sudasingha
  */
@@ -32,5 +30,9 @@ public abstract class ConfigurationManager {
         this.component = component;
     }
 
-    public abstract void loadProperties() throws IOException;
+    public abstract void loadConfiguration() throws Exception;
+
+    public String getComponent() {
+        return component;
+    }
 }

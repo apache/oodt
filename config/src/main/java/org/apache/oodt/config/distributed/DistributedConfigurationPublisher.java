@@ -20,7 +20,7 @@ package org.apache.oodt.config.distributed;
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.oodt.config.Constants;
-import org.apache.oodt.config.utils.CuratorUtils;
+import org.apache.oodt.config.distributed.utils.CuratorUtils;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +114,8 @@ public class DistributedConfigurationPublisher {
         logger.debug("Publishing config files : {}", configFiles);
         publishConfiguration(configFiles, false);
         logger.info("Config files published successfully");
+
+        // TODO: 6/17/17 Verify whether the given configuration are published correctly
     }
 
     private void publishConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
@@ -135,7 +137,6 @@ public class DistributedConfigurationPublisher {
                 String existingData = new String(bytes);
                 if (content.equals(existingData)) {
                     logger.warn("{} already exists in zookeeper at {}", entry.getKey(), entry.getValue());
-                    continue;
                 } else {
                     Stat stat = client.setData().forPath(zNodePath, content.getBytes());
                     if (stat != null) {
@@ -143,6 +144,10 @@ public class DistributedConfigurationPublisher {
                     }
                 }
             } else {
+                /*
+                 * Creating these ZNodes with parent 'Containers' is important since containers are automatically deleted
+                 * when no child node is present under them.
+                 */
                 client.create().creatingParentContainersIfNeeded().forPath(zNodePath, content.getBytes());
             }
         }
