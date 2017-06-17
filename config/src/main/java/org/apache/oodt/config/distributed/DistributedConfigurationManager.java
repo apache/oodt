@@ -18,21 +18,14 @@
 package org.apache.oodt.config.distributed;
 
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.api.ACLProvider;
-import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.Constants.Properties;
 import org.apache.oodt.config.utils.CuratorUtils;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.data.ACL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
@@ -52,8 +45,8 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     private String connectString;
     private CuratorFramework client;
 
-    public DistributedConfigurationManager(String component, List<String> propertiesFiles) {
-        super(component, propertiesFiles);
+    public DistributedConfigurationManager(String component) {
+        super(component);
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
@@ -82,45 +75,12 @@ public class DistributedConfigurationManager extends ConfigurationManager {
      * {@link Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
      */
     private void startZookeeper() {
-        int connectionTimeoutMs = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "15"));
-        int sessionTimeoutMs = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "60"));
-        int retryInitialWaitMs = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "1000"));
-        int maxRetryCount = Integer.parseInt(System.getProperty(Properties.ZK_CONNECTION_TIMEOUT, "3"));
-        int startupTimeOutMs = Integer.parseInt(System.getProperty(Properties.ZK_STARTUP_TIMEOUT, "30000"));
-
-        CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
-                .connectString(connectString)
-                .retryPolicy(new ExponentialBackoffRetry(retryInitialWaitMs, maxRetryCount))
-                .connectionTimeoutMs(connectionTimeoutMs)
-                .sessionTimeoutMs(sessionTimeoutMs);
-
-        /*
-         * If authorization information is available, those will be added to the client. NOTE: These auth info are
-         * for access control, therefore no authentication will happen when the client is being started. These
-         * info will only be required whenever a client is accessing an already create ZNode. For another client of
-         * another node to make use of a ZNode created by this node, it should also provide the same auth info.
-         */
-        if (System.getProperty(Properties.ZK_USERNAME) != null && System.getProperty(Properties.ZK_PASSWORD) != null) {
-            String authenticationString = System.getProperty(Properties.ZK_USERNAME) + ":" + System.getProperty(Properties.ZK_PASSWORD);
-            builder.authorization("digest", authenticationString.getBytes())
-                    .aclProvider(new ACLProvider() {
-                        public List<ACL> getDefaultAcl() {
-                            return ZooDefs.Ids.CREATOR_ALL_ACL;
-                        }
-
-                        public List<ACL> getAclForPath(String path) {
-                            return ZooDefs.Ids.CREATOR_ALL_ACL;
-                        }
-                    });
-        }
-
-        client = builder.build();
-        logger.debug("CuratorFramework client built successfully with connectString: {}, sessionTimeout: {} and connectionTimeout: {}",
-                connectString, sessionTimeoutMs, connectionTimeoutMs);
+        client = CuratorUtils.getCuratorFrameworkClient(connectString, logger);
 
         client.start();
         logger.info("Curator framework start operation invoked");
 
+        int startupTimeOutMs = Integer.parseInt(System.getProperty(Properties.ZK_STARTUP_TIMEOUT, "30000"));
         try {
             logger.info("Waiting to connect to zookeeper, startupTimeout : {}", startupTimeOutMs);
             client.blockUntilConnected(startupTimeOutMs, TimeUnit.MILLISECONDS);
@@ -136,27 +96,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     }
 
     @Override
-    public String getProperty(String key) {
-        // Todo Implement using curator
-        return null;
-    }
-
-    @Override
     public void loadProperties() {
         // todo Implement the logic with Curator
-    }
-
-    public File getPropertiesFile(String filePath) {
-        return null;
-    }
-
-    public File getConfigurationFile(String filePath) {
-        return null;
-    }
-
-    public void publishConfiguration() {
-        for (String propertyFile : propertiesFiles) {
-
-        }
     }
 }

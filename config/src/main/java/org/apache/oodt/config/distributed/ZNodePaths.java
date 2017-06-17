@@ -17,8 +17,6 @@
 
 package org.apache.oodt.config.distributed;
 
-import java.util.List;
-
 import static org.apache.oodt.config.Constants.ZPaths.*;
 
 /**
@@ -26,22 +24,26 @@ import static org.apache.oodt.config.Constants.ZPaths.*;
  *
  * @author Imesha Sudasingha
  */
-public class ZPaths {
+public class ZNodePaths {
 
     /** ZNode for distinct components. /components/${component} */
-    public String componentZNodePath;
-    public String componentZNodeRoot;
+    private String componentZNodePath;
+    private String componentZNodeRoot;
 
     /** ZNode path for properties files. /components/${component}/properties */
-    public String propertiesZNodePath;
-    public String propertiesZNodeRoot;
+    private String propertiesZNodePath;
+    private String propertiesZNodeRoot;
+
+    /** ZNode path for other configuration files. /components/${component}/configuration */
+    private String configurationZNodePath;
+    private String configurationZNodeRoot;
 
     /**
      * Creates the ZNode path structure accordingly to the <pre>componentName</pre> and <pre>propertiesFileNames</pre> given.
      *
      * @param componentName Name of the OODT component
      */
-    public ZPaths(String componentName) {
+    public ZNodePaths(String componentName) {
         if (componentName == null) {
             throw new IllegalArgumentException("Component name cannot be null");
         }
@@ -51,6 +53,9 @@ public class ZPaths {
 
         propertiesZNodePath = componentZNodeRoot + PROPERTIES_PATH_NAME;
         propertiesZNodeRoot = propertiesZNodePath + SEPARATOR;
+
+        configurationZNodePath = componentZNodeRoot + CONFIGURATION_PATH_NAME;
+        configurationZNodeRoot = configurationZNodePath + SEPARATOR;
     }
 
     public String getComponentZNodePath() {
@@ -61,7 +66,15 @@ public class ZPaths {
         return propertiesZNodePath;
     }
 
+    public String getConfigurationZNodePath() {
+        return configurationZNodePath;
+    }
+
     public String getPropertiesZNodePath(String subPath) {
         return propertiesZNodeRoot + (subPath.startsWith(SEPARATOR) ? subPath.substring(1) : subPath);
+    }
+
+    public String getConfigurationZNodePath(String subPath) {
+        return configurationZNodeRoot + (subPath.startsWith(SEPARATOR) ? subPath.substring(1) : subPath);
     }
 }

@@ -43,11 +43,15 @@ public class ConfigurationManagerFactory {
      * the distributed version of the configuration manager will be determined by the value of the property
      * <pre>org.apache.oodt.config.zookeeper == true</pre>
      *
+     * @param component       Name of the OODT component, to which the created configuration manager instance will be providing
+     *                        configuration support
+     * @param propertiesFiles List of <pre>.properties</pre> files which are to be used in the case of standalone configuration
+     *                        management
      * @return ConfigurationManager instance to used by the corresponding component.
      */
     public static ConfigurationManager getConfigurationManager(String component, List<String> propertiesFiles) {
         if (System.getProperty(ENABLE_DISTRIBUTED_CONFIGURATION) != null) {
-            return new DistributedConfigurationManager(component, propertiesFiles);
+            return new DistributedConfigurationManager(component);
         }
         return new StandaloneConfigurationManager(component, propertiesFiles);
     }

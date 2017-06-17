@@ -26,16 +26,19 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
+import java.util.Map;
 
-import static org.apache.oodt.config.Constants.Components.FILE_MANAGER;
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 
 public class DistributedConfigurationPublisherTest {
+
+    private static final String DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG = "distributed-config-publisher.xml";
 
     private static TestingServer zookeeper;
     private static CuratorFramework client;
@@ -56,27 +59,43 @@ public class DistributedConfigurationPublisherTest {
 
     @Test
     public void publishConfiguration() throws Exception {
-        String args[] = new String[]{
-                FILE_MANAGER,
-                "filemgr.properties=/etc/filemgr.properties",
-                "mime-types.xml=/etc/mime-types.xml"
-        };
-        DistributedConfigurationPublisher.main(args);
+        DistributedConfigurationPublisher.main(new String[]{DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG});
 
-        String[] fileMappings = Arrays.copyOfRange(args, 1, args.length);
-        ZPaths zPaths = new ZPaths(FILE_MANAGER);
-        for (String mapping : fileMappings) {
-            String[] parts = mapping.split("=");
-            String zNodePath = zPaths.getPropertiesZNodePath(parts[1]);
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG);
+        Map distributedConfigurationPublisher = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
-            Assert.assertNotNull(client.checkExists().forPath(zNodePath));
+        for (Object bean : distributedConfigurationPublisher.values()) {
+            DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
+            ZNodePaths zNodePaths = publisher.getZNodePaths();
 
-            String storedContent = new String(client.getData().forPath(zNodePath));
+            // Checking for configuration files
+            for (Map.Entry<String, String> entry : publisher.getPropertiesFiles().entrySet()) {
+                String zNodePath = zNodePaths.getPropertiesZNodePath(entry.getValue());
 
-            URI file = Thread.currentThread().getContextClassLoader().getResource(parts[0]).toURI();
-            String fileContent = FileUtils.readFileToString(new File(file));
+                Assert.assertNotNull(client.checkExists().forPath(zNodePath));
 
-            Assert.assertEquals(fileContent, storedContent);
+                String storedContent = new String(client.getData().forPath(zNodePath));
+
+                URI file = Thread.currentThread().getContextClassLoader().getResource(entry.getKey()).toURI();
+                String fileContent = FileUtils.readFileToString(new File(file));
+
+                Assert.assertEquals(fileContent, storedContent);
+            }
+
+            // Checking for configuration files
+            for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
+                String zNodePath = zNodePaths.getConfigurationZNodePath(entry.getValue());
+
+                Assert.assertNotNull(client.checkExists().forPath(zNodePath));
+
+                String storedContent = new String(client.getData().forPath(zNodePath));
+
+                URI file = Thread.currentThread().getContextClassLoader().getResource(entry.getKey()).toURI();
+                String fileContent = FileUtils.readFileToString(new File(file));
+
+                Assert.assertEquals(fileContent, storedContent);
+            }
+
         }
     }
 

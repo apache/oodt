@@ -18,13 +18,20 @@
 package org.apache.oodt.config.utils;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.api.ACLProvider;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.oodt.config.Constants;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.ZooDefs;
+import org.apache.zookeeper.data.ACL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
 
@@ -75,6 +82,45 @@ public class CuratorUtils {
      */
     public static String getIfExists(CuratorFramework client, String path) throws Exception {
         return client.checkExists().forPath(path) != null ? new String(client.getData().forPath(path)) : null;
+    }
+
+    public static CuratorFramework getCuratorFrameworkClient(String connectString, Logger logger) {
+        int connectionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "15000"));
+        int sessionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "60000"));
+        int retryInitialWaitMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "1000"));
+        int maxRetryCount = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "3"));
+
+        CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
+                .connectString(connectString)
+                .retryPolicy(new ExponentialBackoffRetry(retryInitialWaitMs, maxRetryCount))
+                .connectionTimeoutMs(connectionTimeoutMs)
+                .sessionTimeoutMs(sessionTimeoutMs);
+
+        /*
+         * If authorization information is available, those will be added to the client. NOTE: These auth info are
+         * for access control, therefore no authentication will happen when the client is being started. These
+         * info will only be required whenever a client is accessing an already create ZNode. For another client of
+         * another node to make use of a ZNode created by this node, it should also provide the same auth info.
+         */
+        if (System.getProperty(Constants.Properties.ZK_USERNAME) != null && System.getProperty(Constants.Properties.ZK_PASSWORD) != null) {
+            String authenticationString = System.getProperty(Constants.Properties.ZK_USERNAME) + ":" + System.getProperty(Constants.Properties.ZK_PASSWORD);
+            builder.authorization("digest", authenticationString.getBytes())
+                    .aclProvider(new ACLProvider() {
+                        public List<ACL> getDefaultAcl() {
+                            return ZooDefs.Ids.CREATOR_ALL_ACL;
+                        }
+
+                        public List<ACL> getAclForPath(String path) {
+                            return ZooDefs.Ids.CREATOR_ALL_ACL;
+                        }
+                    });
+        }
+
+        CuratorFramework client = builder.build();
+        logger.debug("CuratorFramework client built successfully with connectString: {}, sessionTimeout: {} and connectionTimeout: {}",
+                connectString, sessionTimeoutMs, connectionTimeoutMs);
+
+        return client;
     }
 
 }

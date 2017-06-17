@@ -70,5 +70,8 @@ public class Constants {
 
         /** Where properties files are stored inside each component */
         public static final String PROPERTIES_PATH_NAME = "properties";
+
+        /** Where other configuration files will be stored */
+        public static final String CONFIGURATION_PATH_NAME = "configuration";
     }
 }

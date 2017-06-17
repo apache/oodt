@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,35 +34,22 @@ import java.util.List;
  */
 public class StandaloneConfigurationManager extends ConfigurationManager {
 
-    /** Logger instance for logging */
     private static final Logger logger = LoggerFactory.getLogger(StandaloneConfigurationManager.class);
 
-    public StandaloneConfigurationManager(String component, List<String> propertiesFiles) {
-        super(component, propertiesFiles);
-    }
+    private List<String> propertiesFiles;
 
-    /** {@inheritDoc} */
-    @Override
-    public String getProperty(String key) {
-        return System.getProperty(key);
+    public StandaloneConfigurationManager(String component, List<String> propertiesFiles) {
+        super(component);
+        this.propertiesFiles = propertiesFiles != null ? propertiesFiles : new ArrayList<String>();
     }
 
     /** {@inheritDoc} */
     @Override
     public void loadProperties() throws IOException {
         for (String file : propertiesFiles) {
+            logger.debug("Loading properties from file : {}", file);
             System.getProperties().load(new FileInputStream(new File(file)));
+            logger.debug("Properties loaded from file : {}", file);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public File getPropertiesFile(String filePath) throws FileNotFoundException {
-        File file = new File(filePath);
-        if (!propertiesFiles.contains(filePath) || !file.exists()) {
-            throw new FileNotFoundException("Couldn't find properties file located at: " + filePath);
-        }
-
-        return file;
     }
 }
