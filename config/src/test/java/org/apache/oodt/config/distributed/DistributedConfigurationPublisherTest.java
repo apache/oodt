@@ -17,11 +17,11 @@
 
 package org.apache.oodt.config.distributed;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.curator.test.TestingServer;
+import org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -29,16 +29,12 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
-
-import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 
 public class DistributedConfigurationPublisherTest {
 
-    private static final String DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG = "distributed-config-publisher.xml";
+    private static final String DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG = "etc/config-publisher.xml";
 
     private static TestingServer zookeeper;
     private static CuratorFramework client;
@@ -53,52 +49,22 @@ public class DistributedConfigurationPublisherTest {
                 .retryPolicy(new RetryNTimes(3, 1000))
                 .build();
         client.start();
-
-        System.setProperty(ZK_CONNECT_STRING, zookeeper.getConnectString());
     }
 
     @Test
-    public void publishConfiguration() throws Exception {
-        DistributedConfigurationPublisher.main(new String[]{DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG});
+    public void publishConfigurationTest() throws Exception {
+        DistributedConfigurationPublisher.main(new String[]{
+                "-connectString", zookeeper.getConnectString(),
+                "-publish"
+        });
 
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG);
-        Map distributedConfigurationPublisher = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
+        Map distributedConfigurationPublishers = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
-        for (Object bean : distributedConfigurationPublisher.values()) {
+        for (Object bean : distributedConfigurationPublishers.values()) {
             DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
-            ZNodePaths zNodePaths = publisher.getZNodePaths();
-
-            // Checking for configuration files
-            for (Map.Entry<String, String> entry : publisher.getPropertiesFiles().entrySet()) {
-                String zNodePath = zNodePaths.getPropertiesZNodePath(entry.getValue());
-
-                Assert.assertNotNull(client.checkExists().forPath(zNodePath));
-
-                String storedContent = new String(client.getData().forPath(zNodePath));
-
-                URI file = Thread.currentThread().getContextClassLoader().getResource(entry.getKey()).toURI();
-                String fileContent = FileUtils.readFileToString(new File(file));
-
-                Assert.assertEquals(fileContent, storedContent);
-            }
-
-            // Checking for configuration files
-            for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
-                String zNodePath = zNodePaths.getConfigurationZNodePath(entry.getValue());
-
-                Assert.assertNotNull(client.checkExists().forPath(zNodePath));
-
-                String storedContent = new String(client.getData().forPath(zNodePath));
-
-                URI file = Thread.currentThread().getContextClassLoader().getResource(entry.getKey()).toURI();
-                String fileContent = FileUtils.readFileToString(new File(file));
-
-                Assert.assertEquals(fileContent, storedContent);
-            }
+            Assert.assertTrue(publisher.verifyPublishedConfiguration());
         }
-
-//        DistributedConfigurationManager configurationManager = new DistributedConfigurationManager(Constants.Components.FILE_MANAGER);
-//        configurationManager.loadConfiguration();
     }
 
     @AfterClass

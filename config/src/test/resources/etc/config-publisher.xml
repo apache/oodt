@@ -19,36 +19,30 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
-
+    <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher">
         <constructor-arg value="filemgr"/>
-
         <property name="propertiesFiles">
-            <map>
-                <entry key="filemgr.properties" value="/etc/filemgr.properties"/>
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="src/main/resources/examples/filemgr.properties" value="/etc/filemgr.properties"/>
             </map>
         </property>
-
         <property name="configFiles">
-            <map>
-                <entry key="mime-types.xml" value="/etc/mime-types.xml"/>
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="src/main/resources/examples/mime-types.xml" value="/etc/mime-types.xml"/>
             </map>
         </property>
     </bean>
 
-    <bean id="resmgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
-
+    <bean id="resmgr-config-publisher" class="org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher">
         <constructor-arg value="resmgr"/>
-
         <property name="propertiesFiles">
-            <map>
-                <entry key="filemgr.properties" value="/etc/resmgr.properties"/>
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="src/main/resources/examples/filemgr.properties" value="/etc/resmgr.properties"/>
             </map>
         </property>
-
         <property name="configFiles">
-            <map>
-                <entry key="mime-types.xml" value="/etc/mime-types.xml"/>
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="src/main/resources/examples/mime-types.xml" value="/etc/mime-types.xml"/>
             </map>
         </property>
     </bean>

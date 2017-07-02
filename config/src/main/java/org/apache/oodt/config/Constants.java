@@ -17,6 +17,8 @@
 
 package org.apache.oodt.config;
 
+import java.io.File;
+
 /**
  * Constants to be used by the config package
  *
@@ -27,11 +29,16 @@ public class Constants {
     private Constants() {
     }
 
+    public static final String SEPARATOR = File.separator;
+
     /** Node name to be used when the configuration manager is the standalone version */
     public static final String STANDALONE_NODE_NAME = "local";
 
     /** Default environment name to be used */
     public static final String DEFAULT_ENVIRONMENT = "default";
+
+    /** The XML file name in which the configuration to be published to zookeeper is defined */
+    public static final String CONFIG_PUBLISHER_XML = "etc" + SEPARATOR + "config-publisher.xml";
 
     public static class Properties {
         /** The system property to be set in order to enable distributed configuration management */

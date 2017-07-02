@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.config.distributed;
+package org.apache.oodt.config.distributed.cli;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.oodt.config.Constants;
+import org.apache.oodt.config.distributed.ZNodePaths;
 import org.apache.oodt.config.distributed.utils.CuratorUtils;
 import org.apache.zookeeper.data.Stat;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -30,8 +33,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +60,7 @@ public class DistributedConfigurationPublisher {
         this.componentName = componentName;
         this.zNodePaths = new ZNodePaths(componentName);
 
-        if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
+        if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
         }
 
@@ -71,11 +72,11 @@ public class DistributedConfigurationPublisher {
             }
         }
 
-        if (System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
+        if (System.getProperty(ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires a proper connect string to connect to zookeeper ensemble");
         }
 
-        connectString = System.getProperty(Constants.Properties.ZK_CONNECT_STRING);
+        connectString = System.getProperty(ZK_CONNECT_STRING);
         logger.info("Using zookeeper connect string : {}", connectString);
 
         startZookeeper();
@@ -106,6 +107,12 @@ public class DistributedConfigurationPublisher {
         logger.info("CuratorFramework client started successfully");
     }
 
+    /**
+     * Publishes the configuration files specified to zookeeper. If an exception is thrown while configuration being
+     * published, no further publishing attempts will be carried on. Error will be reported to user.
+     *
+     * @throws Exception Zookeeper errors
+     */
     public void publishConfiguration() throws Exception {
         logger.debug("Publishing properties files : {}", propertiesFiles);
         publishConfiguration(propertiesFiles, true);
@@ -114,33 +121,43 @@ public class DistributedConfigurationPublisher {
         logger.debug("Publishing config files : {}", configFiles);
         publishConfiguration(configFiles, false);
         logger.info("Config files published successfully");
+    }
 
-        // TODO: 6/17/17 Verify whether the given configuration are published correctly
+    /**
+     * Verified whether the actual content of the local files specified to be published are 100% similar to the ones that
+     * has been published and stored in zookeeper at the moment.
+     *
+     * @return true | if content are up to date and similar
+     */
+    public boolean verifyPublishedConfiguration() {
+        try {
+            return verifyPublishedConfiguration(propertiesFiles, true) && verifyPublishedConfiguration(configFiles, false);
+        } catch (Exception e) {
+            logger.error("Error occurred when checking published config", e);
+            return false;
+        }
     }
 
     private void publishConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
-            logger.debug("Publishing configuration {} - {}", entry.getKey(), entry.getValue());
-            URL resource = Thread.currentThread().getContextClassLoader().getResource(entry.getKey());
+            String filePath = entry.getKey();
+            String relativeZNodePath = entry.getValue();
+            logger.info("Publishing configuration {} - {}", filePath, relativeZNodePath);
 
-            String content;
-            try {
-                content = FileUtils.readFileToString(new File(resource.toURI()));
-            } catch (IOException | URISyntaxException e) {
-                logger.error("Unable to read file : {}", entry.getKey(), e);
-                continue;
-            }
+            String content = getFileContent(filePath);
 
-            String zNodePath = isProperties ? zNodePaths.getPropertiesZNodePath(entry.getValue()) : zNodePaths.getConfigurationZNodePath(entry.getValue());
+            String zNodePath = isProperties ? zNodePaths.getPropertiesZNodePath(relativeZNodePath) : zNodePaths.getConfigurationZNodePath(relativeZNodePath);
             if (client.checkExists().forPath(zNodePath) != null) {
                 byte[] bytes = client.getData().forPath(zNodePath);
                 String existingData = new String(bytes);
                 if (content.equals(existingData)) {
-                    logger.warn("{} already exists in zookeeper at {}", entry.getKey(), entry.getValue());
+                    logger.warn("{} already exists in zookeeper at {}", filePath, relativeZNodePath);
                 } else {
                     Stat stat = client.setData().forPath(zNodePath, content.getBytes());
                     if (stat != null) {
-                        logger.info("Published configuration file {} to {}", entry.getKey(), entry.getValue());
+                        logger.info("Published configuration file {} to {}", filePath, relativeZNodePath);
+                    } else {
+                        logger.warn("Unable to publish configuration file {} to {}", filePath, relativeZNodePath);
                     }
                 }
             } else {
@@ -149,8 +166,50 @@ public class DistributedConfigurationPublisher {
                  * when no child node is present under them.
                  */
                 client.create().creatingParentContainersIfNeeded().forPath(zNodePath, content.getBytes());
+                logger.info("Replaced old published configuration at {} with content of file : {}", relativeZNodePath, filePath);
             }
         }
+    }
+
+    private boolean verifyPublishedConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
+        boolean noError = true;
+        for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
+            String filePath = entry.getKey();
+            String relativeZNodePath = entry.getValue();
+            logger.info("Checking published configuration for {} - {}", filePath, relativeZNodePath);
+
+            String originalContent = getFileContent(filePath);
+
+            String zNodePath = isProperties ? zNodePaths.getPropertiesZNodePath(relativeZNodePath) : zNodePaths.getConfigurationZNodePath(relativeZNodePath);
+            if (client.checkExists().forPath(zNodePath) == null) {
+                logger.error("File : {} hasn't been published to ZNode : {}", filePath, relativeZNodePath);
+                noError = false;
+                continue;
+            }
+
+            String publishedContent = new String(client.getData().forPath(zNodePath));
+            if (!publishedContent.equals(originalContent)) {
+                logger.error("Content of local file : {} and content published to {} are not similar", filePath, relativeZNodePath);
+                noError = false;
+                continue;
+            }
+
+            logger.info("{} - {} configuration checked and OK", filePath, relativeZNodePath);
+        }
+
+        return noError;
+    }
+
+    private String getFileContent(String file) {
+        String content;
+        try {
+            content = FileUtils.readFileToString(new File(file));
+        } catch (IOException e) {
+            logger.error("Unable to read file : {}", file, e);
+            throw new IllegalArgumentException("Unable to read content of the file : " + file);
+        }
+
+        return content;
     }
 
     public Map<String, String> getPropertiesFiles() {
@@ -173,30 +232,63 @@ public class DistributedConfigurationPublisher {
         return zNodePaths;
     }
 
-    public static void main(String[] args) {
-        if (args.length < 1) {
-            logger.error("Spring configuration file needs to be given as an argument");
+    public static void main(String[] args) throws Exception {
+        CmdLineOptions cmdLineOptions = new CmdLineOptions();
+        CmdLineParser parser = new CmdLineParser(cmdLineOptions);
+
+        try {
+            parser.parseArgument(args);
+        } catch (CmdLineException e) {
+            System.err.println("There's an error in your command");
+            parser.printUsage(System.err);
             return;
         }
 
-        logger.info("Starting publishing configuration. Spring conf : {}", args[0]);
+        if (cmdLineOptions.getConnectString() == null && System.getProperty(ZK_CONNECT_STRING) == null) {
+            System.err.println("Zookeeper connect string is not found");
+            parser.printUsage(System.err);
+            return;
+        } else {
+            System.setProperty(ZK_CONNECT_STRING, cmdLineOptions.getConnectString());
+        }
+
+        System.out.println("Starting configuration publishing");
 
         try {
-            ApplicationContext applicationContext = new ClassPathXmlApplicationContext(args[0]);
+            ApplicationContext applicationContext = new ClassPathXmlApplicationContext(Constants.CONFIG_PUBLISHER_XML);
             Map distributedConfigurationPublisher = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
+
             for (Object bean : distributedConfigurationPublisher.values()) {
                 DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
+                System.out.println(String.format("\nProcessing commands for component : %s", publisher.getComponentName()));
 
-                logger.debug("Publishing configuration for : {}", publisher.getComponentName());
-                publisher.publishConfiguration();
-                logger.info("Published configuration for : {}", publisher.getComponentName());
+                if (cmdLineOptions.isPublish()) {
+                    System.out.println(String.format("Publishing configuration for : %s", publisher.getComponentName()));
+                    publisher.publishConfiguration();
+                    System.out.println(String.format("Published configuration for : %s", publisher.getComponentName()));
+                    System.out.printf("\n");
+                }
+
+                if (cmdLineOptions.isVerify()) {
+                    System.out.println(String.format("Verifying configuration for : %s", publisher.getComponentName()));
+                    publisher.verifyPublishedConfiguration();
+                    System.out.println(String.format("Verified configuration for : %s", publisher.getComponentName()));
+                    System.out.printf("\n");
+                }
+
+                if (cmdLineOptions.isClear()) {
+                    System.out.println(String.format("Clearing configuration for : %s", publisher.getComponentName()));
+                    // TODO: 7/2/17 Implement configuration removal
+                    System.out.println(String.format("Cleared configuration for : %s", publisher.getComponentName()));
+                    System.out.printf("\n");
+                }
             }
         } catch (BeansException e) {
             logger.error("Error occurred when obtaining configuration publisher beans", e);
-            return;
+            throw e;
         } catch (Exception e) {
             logger.error("Error occurred when publishing configuration to zookeeper", e);
-            return;
+            throw e;
         }
 
         logger.info("Published configuration successfully");

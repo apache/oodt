@@ -100,6 +100,7 @@ public class CuratorUtils {
         int maxRetryCount = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "3"));
 
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
+                .namespace(NAMESPACE)
                 .connectString(connectString)
                 .retryPolicy(new ExponentialBackoffRetry(retryInitialWaitMs, maxRetryCount))
                 .connectionTimeoutMs(connectionTimeoutMs)

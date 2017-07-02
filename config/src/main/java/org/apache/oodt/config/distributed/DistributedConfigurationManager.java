@@ -114,7 +114,6 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         logger.debug("Saving configuration files for : {}", componentName);
         saveConfigFiles();
         logger.info("Configuration files saved for : {}", componentName);
-
     }
 
     /**
