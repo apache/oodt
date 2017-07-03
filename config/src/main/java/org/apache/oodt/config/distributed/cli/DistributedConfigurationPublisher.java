@@ -87,7 +87,7 @@ public class DistributedConfigurationPublisher {
      * {@link Constants.Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
      */
     private void startZookeeper() {
-        client = CuratorUtils.getCuratorFrameworkClient(connectString, logger);
+        client = CuratorUtils.newCuratorFrameworkClient(connectString, logger);
 
         client.start();
         logger.info("Curator framework start operation invoked");
@@ -105,6 +105,17 @@ public class DistributedConfigurationPublisher {
         }
 
         logger.info("CuratorFramework client started successfully");
+    }
+
+    public void destroy() {
+        logger.debug("Destroying configuration publisher");
+        try {
+            client.close();
+        } catch (Exception e) {
+            logger.error("Error occurred when trying to close Curator client : {}", e);
+        }
+
+        logger.info("Configuration publisher destroyed");
     }
 
     /**
@@ -138,6 +149,19 @@ public class DistributedConfigurationPublisher {
         }
     }
 
+    /**
+     * Removes all the nodes from zookeeper where the configuration corresponding to component {@link #componentName} is
+     * stored
+     *
+     * @throws Exception zookeeper errors
+     */
+    public void clearConfiguration() throws Exception {
+        logger.debug("Clearing configuration from zookeeper");
+        CuratorUtils.deleteChildNodes(client, zNodePaths.getPropertiesZNodePath());
+        CuratorUtils.deleteChildNodes(client, zNodePaths.getConfigurationZNodePath());
+        logger.info("Configuration cleared!");
+    }
+
     private void publishConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
             String filePath = entry.getKey();
@@ -150,7 +174,7 @@ public class DistributedConfigurationPublisher {
             if (client.checkExists().forPath(zNodePath) != null) {
                 byte[] bytes = client.getData().forPath(zNodePath);
                 String existingData = new String(bytes);
-                if (content.equals(existingData)) {
+                if (existingData.equals(content)) {
                     logger.warn("{} already exists in zookeeper at {}", filePath, relativeZNodePath);
                 } else {
                     Stat stat = client.setData().forPath(zNodePath, content.getBytes());
@@ -266,22 +290,28 @@ public class DistributedConfigurationPublisher {
                     System.out.println(String.format("Publishing configuration for : %s", publisher.getComponentName()));
                     publisher.publishConfiguration();
                     System.out.println(String.format("Published configuration for : %s", publisher.getComponentName()));
-                    System.out.printf("\n");
+                    System.out.println();
                 }
 
                 if (cmdLineOptions.isVerify()) {
                     System.out.println(String.format("Verifying configuration for : %s", publisher.getComponentName()));
-                    publisher.verifyPublishedConfiguration();
-                    System.out.println(String.format("Verified configuration for : %s", publisher.getComponentName()));
-                    System.out.printf("\n");
+                    if (publisher.verifyPublishedConfiguration()) {
+                        System.out.println("OK... Configuration verified");
+                        System.out.println(String.format("Verified configuration for : %s", publisher.getComponentName()));
+                    } else {
+                        System.err.println("ERROR... Published configuration doesn't match the local files. Please check above logs");
+                    }
+                    System.out.println();
                 }
 
                 if (cmdLineOptions.isClear()) {
                     System.out.println(String.format("Clearing configuration for : %s", publisher.getComponentName()));
-                    // TODO: 7/2/17 Implement configuration removal
+                    publisher.clearConfiguration();
                     System.out.println(String.format("Cleared configuration for : %s", publisher.getComponentName()));
-                    System.out.printf("\n");
+                    System.out.println();
                 }
+
+                publisher.destroy();
             }
         } catch (BeansException e) {
             logger.error("Error occurred when obtaining configuration publisher beans", e);
@@ -291,7 +321,7 @@ public class DistributedConfigurationPublisher {
             throw e;
         }
 
-        logger.info("Published configuration successfully");
+        logger.info("Exiting CLI ...");
     }
 
     public String getComponentName() {

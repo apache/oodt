@@ -23,12 +23,17 @@
         <constructor-arg value="filemgr"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
-                <entry key="../examples/filemgr.properties" value="/etc/filemgr.properties"/>
+                <entry key="../examples/filemgr/filemgr.properties" value="/etc/filemgr.properties"/>
             </map>
         </property>
         <property name="configFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
-                <entry key="../examples/mime-types.xml" value="/etc/mime-types.xml"/>
+                <entry key="../examples/filemgr/mime-types.xml" value="/etc/mime-types.xml"/>
+                <entry key="../examples/filemgr/cmd-line-actions.xml" value="/policy/cmd-line-actions.xml"/>
+                <entry key="../examples/filemgr/cmd-line-options.xml" value="/policy/cmd-line-options.xml"/>
+                <entry key="../examples/filemgr/oodt/elements.xml" value="/policy/oodt/elements.xml"/>
+                <entry key="../examples/filemgr/oodt/product-types.xml" value="/policy/oodt/product-types.xml"/>
+                <entry key="../examples/filemgr/oodt/product-type-element-map.xml" value="/policy/oodt/product-type-element-map.xml"/>
             </map>
         </property>
     </bean>

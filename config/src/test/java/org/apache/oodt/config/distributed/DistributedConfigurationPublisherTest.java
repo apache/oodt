@@ -17,59 +17,96 @@
 
 package org.apache.oodt.config.distributed;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.RetryNTimes;
-import org.apache.curator.test.TestingServer;
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.IOException;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class DistributedConfigurationPublisherTest {
+import static org.apache.oodt.config.Constants.CONFIG_PUBLISHER_XML;
 
-    private static final String DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG = "etc/config-publisher.xml";
-
-    private static TestingServer zookeeper;
-    private static CuratorFramework client;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        zookeeper = new TestingServer();
-        zookeeper.start();
-
-        client = CuratorFrameworkFactory.builder()
-                .connectString(zookeeper.getConnectString())
-                .retryPolicy(new RetryNTimes(3, 1000))
-                .build();
-        client.start();
-    }
+/**
+ * Testing the functionality of {@link DistributedConfigurationPublisher} and its CLI
+ *
+ * @author Imesha Sudasingha
+ */
+public class DistributedConfigurationPublisherTest extends AbstractTestCase{
 
     @Test
     public void publishConfigurationTest() throws Exception {
+        // Publishing configuration through CLI and verifying whether they were stored correctly
         DistributedConfigurationPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
-                "-publish"
+                "-publish",
+                "-verify"
         });
 
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(DISTRIBUTED_CONFIG_PUBLISHER_SPRING_CONFIG);
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_PUBLISHER_XML);
         Map distributedConfigurationPublishers = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
+        List<DistributedConfigurationPublisher> publishers = new ArrayList<>(distributedConfigurationPublishers.values().size());
         for (Object bean : distributedConfigurationPublishers.values()) {
-            DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
-            Assert.assertTrue(publisher.verifyPublishedConfiguration());
+            publishers.add((DistributedConfigurationPublisher) bean);
         }
-    }
 
-    @AfterClass
-    public static void tearDown() throws IOException {
-        client.close();
-        zookeeper.stop();
+        for (DistributedConfigurationPublisher publisher : publishers) {
+            Assert.assertTrue(publisher.verifyPublishedConfiguration());
+
+            ZNodePaths zNodePaths = publisher.getZNodePaths();
+
+            // Checking for configuration files
+            for (Map.Entry<String, String> entry : publisher.getPropertiesFiles().entrySet()) {
+                String zNodePath = zNodePaths.getPropertiesZNodePath(entry.getValue());
+                Assert.assertNotNull(client.checkExists().forPath(zNodePath));
+
+                String storedContent = new String(client.getData().forPath(zNodePath));
+                String fileContent = FileUtils.readFileToString(new File(entry.getKey()));
+                Assert.assertEquals(fileContent, storedContent);
+            }
+
+            // Checking for configuration files
+            for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
+                String zNodePath = zNodePaths.getConfigurationZNodePath(entry.getValue());
+                Assert.assertNotNull(client.checkExists().forPath(zNodePath));
+
+                String storedContent = new String(client.getData().forPath(zNodePath));
+                String fileContent = FileUtils.readFileToString(new File(entry.getKey()));
+                Assert.assertEquals(fileContent, storedContent);
+            }
+        }
+
+        // Clearing configuration through CLI and checking whether the configuration has actually been gone
+        DistributedConfigurationPublisher.main(new String[]{
+                "-connectString", zookeeper.getConnectString(),
+                "-clear"
+        });
+
+        for (DistributedConfigurationPublisher publisher : publishers) {
+            Assert.assertFalse(publisher.verifyPublishedConfiguration());
+
+            ZNodePaths zNodePaths = publisher.getZNodePaths();
+
+            // Checking for configuration files
+            for (Map.Entry<String, String> entry : publisher.getPropertiesFiles().entrySet()) {
+                String zNodePath = zNodePaths.getPropertiesZNodePath(entry.getValue());
+                Assert.assertNull(client.checkExists().forPath(zNodePath));
+            }
+
+            // Checking for configuration files
+            for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
+                String zNodePath = zNodePaths.getConfigurationZNodePath(entry.getValue());
+                Assert.assertNull(client.checkExists().forPath(zNodePath));
+            }
+        }
+
+        for (DistributedConfigurationPublisher publisher : publishers) {
+            publisher.destroy();
+        }
     }
 }

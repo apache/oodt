@@ -85,7 +85,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
      * {@link Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
      */
     private void startZookeeper() {
-        client = CuratorUtils.getCuratorFrameworkClient(connectString, logger);
+        client = CuratorUtils.newCuratorFrameworkClient(connectString, logger);
 
         client.start();
         logger.info("Curator framework start operation invoked");

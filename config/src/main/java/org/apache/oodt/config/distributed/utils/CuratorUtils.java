@@ -87,13 +87,24 @@ public class CuratorUtils {
     }
 
     /**
+     * Builds a {@link CuratorFramework} instance with given connect string. Will use the {@link CuratorUtils#logger} for
+     * logging.
+     *
+     * @param connectString zookeeper connect string
+     * @return CuratorFramework instance created
+     */
+    public static CuratorFramework newCuratorFrameworkClient(String connectString) {
+        return newCuratorFrameworkClient(connectString, logger);
+    }
+
+    /**
      * Builds a {@link CuratorFramework} instance using the given connectString.
      *
      * @param connectString connection string to connect to zookeeper
      * @param logger        {@link Logger} instance of the calling class
      * @return Newly created CuratorFramework instance.
      */
-    public static CuratorFramework getCuratorFrameworkClient(String connectString, Logger logger) {
+    public static CuratorFramework newCuratorFrameworkClient(String connectString, Logger logger) {
         int connectionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "15000"));
         int sessionTimeoutMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "60000"));
         int retryInitialWaitMs = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "1000"));
@@ -133,6 +144,14 @@ public class CuratorUtils {
         return client;
     }
 
+    /**
+     * Get the leaf nodes in a given sub tree starting from a given ZNode.
+     *
+     * @param client          {@link CuratorFramework} instance
+     * @param parentZNodePath root ZNode of the sub tree
+     * @return List of leaf nodes
+     * @throws Exception zookeeper exceptions
+     */
     public static List<String> getLeafZNodePaths(CuratorFramework client, String parentZNodePath) throws Exception {
         List<String> leafZNodePaths = new ArrayList<>();
 
@@ -148,5 +167,26 @@ public class CuratorUtils {
         }
 
         return leafZNodePaths;
+    }
+
+    /**
+     * Delete all the child ZNodes under a given ZNode.
+     *
+     * @param client          {@link CuratorFramework} instance
+     * @param parentZNodePath ZNode path of which all the children are to be deleted
+     * @throws Exception
+     */
+    public static void deleteChildNodes(CuratorFramework client, String parentZNodePath) throws Exception {
+        if (client.checkExists().forPath(parentZNodePath) != null) {
+            List<String> children = client.getChildren().forPath(parentZNodePath);
+            for (String child : children) {
+                String zNodePath = parentZNodePath + SEPARATOR + child;
+                logger.debug("Deleting child ZNode '{}' at {}", child, zNodePath);
+                client.delete().deletingChildrenIfNeeded().forPath(zNodePath);
+            }
+            logger.debug("Deleted children ZNodes of {}", parentZNodePath);
+        } else {
+            logger.warn("ZNode - {} doesn't exist. Nothing to delete");
+        }
     }
 }

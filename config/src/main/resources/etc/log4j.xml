@@ -31,4 +31,10 @@
         <appender-ref ref="console"/>
     </root>
 
+    <logger name="org.apache.zookeeper">
+        <level value="ERROR"/>
+    </logger>
+    <logger name="org.apache.curator">
+        <level value="ERROR"/>
+    </logger>
 </log4j:configuration>

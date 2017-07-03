@@ -63,6 +63,7 @@ public class Constants {
 
     public static class Components {
         public static final String FILE_MANAGER = "filemgr";
+        public static final String RESOURCE_MANAGER = "resmgr";
     }
 
     public static class ZPaths {

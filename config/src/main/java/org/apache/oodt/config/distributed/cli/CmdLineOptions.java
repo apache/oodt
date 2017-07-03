@@ -31,10 +31,10 @@ public class CmdLineOptions {
 
     @Option(name = "-publish", usage = "Publishes configuration specified in the spring config file to zookeeper. " +
             "Any current similar config in zookeeper will be overwritten. If not specified, command will be assumed as a publish")
-    private boolean publish = true;
+    private boolean publish = false;
 
     @Option(name = "-verify", usage = "Verifies the content in the local files and the published ones. Results will be printed.")
-    private boolean verify = true;
+    private boolean verify = false;
 
     @Option(name = "-clear", usage = "Unpublish any configuration which has been published earlier using the same spring config file")
     private boolean clear = false;
