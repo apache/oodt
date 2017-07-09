@@ -25,7 +25,7 @@ import org.junit.BeforeClass;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 
-public abstract class AbstractTestCase {
+public abstract class AbstractDistributedConfigurationTest {
 
     protected static TestingServer zookeeper;
     protected static CuratorFramework client;

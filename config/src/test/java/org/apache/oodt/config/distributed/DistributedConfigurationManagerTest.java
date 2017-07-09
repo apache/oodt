@@ -44,13 +44,13 @@ import static org.apache.oodt.config.Constants.SEPARATOR;
  *
  * @author Imesha Sudasingha
  */
-public class DistributedConfigurationManagerTest extends AbstractTestCase {
+public class DistributedConfigurationManagerTest extends AbstractDistributedConfigurationTest {
 
-    private static List<DistributedConfigurationPublisher> publishers;
+    protected static List<DistributedConfigurationPublisher> publishers;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        AbstractTestCase.setUp();
+        AbstractDistributedConfigurationTest.setUp();
 
         DistributedConfigurationPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
@@ -64,8 +64,6 @@ public class DistributedConfigurationManagerTest extends AbstractTestCase {
         for (Object bean : distributedConfigurationPublishers.values()) {
             DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
             publishers.add(publisher);
-            ConfigurationManager configurationManager = new DistributedConfigurationManager(publisher.getComponentName());
-            configurationManager.loadConfiguration();
         }
     }
 
@@ -117,6 +115,6 @@ public class DistributedConfigurationManagerTest extends AbstractTestCase {
                 "-clear"
         });
 
-        AbstractTestCase.tearDown();
+        AbstractDistributedConfigurationTest.tearDown();
     }
 }

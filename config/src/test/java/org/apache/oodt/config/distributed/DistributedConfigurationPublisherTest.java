@@ -36,7 +36,7 @@ import static org.apache.oodt.config.Constants.CONFIG_PUBLISHER_XML;
  *
  * @author Imesha Sudasingha
  */
-public class DistributedConfigurationPublisherTest extends AbstractTestCase{
+public class DistributedConfigurationPublisherTest extends AbstractDistributedConfigurationTest {
 
     @Test
     public void publishConfigurationTest() throws Exception {

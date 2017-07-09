@@ -18,26 +18,15 @@
 package org.apache.oodt.cas.filemgr.system;
 
 
+import com.google.common.collect.Lists;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
 import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.filemgr.structs.*;
+import org.apache.oodt.cas.filemgr.structs.exceptions.*;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
@@ -56,13 +45,7 @@ import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.ConfigurationManagerFactory;
 import org.apache.xmlrpc.WebServer;
 
-import com.google.common.collect.Lists;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -70,6 +53,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.apache.oodt.config.Constants.Components.FILE_MANAGER;
 
 
 /**
@@ -80,9 +65,6 @@ import java.util.logging.Logger;
  *          <p> An XML RPC-based File manager. </p>
  */
 public class XmlRpcFileManager {
-
-  /** Name of this OODT component. TO be used by the configuration management */
-  private static final String componentName = "file-mgr";
 
   /* the port to run the XML RPC web server on, default is 1999 */
   private int webServerPort = 1999;
@@ -134,7 +116,7 @@ public class XmlRpcFileManager {
       propertiesFiles.add(System.getProperty("org.apache.oodt.cas.filemgr.properties"));
     }
 
-    configurationManager = ConfigurationManagerFactory.getConfigurationManager(componentName, propertiesFiles);
+    configurationManager = ConfigurationManagerFactory.getConfigurationManager(FILE_MANAGER, propertiesFiles);
 
     this.loadConfiguration();
     LOG.log(Level.INFO, "File Manager started by " + System.getProperty("user.name", "unknown"));

@@ -19,6 +19,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+    <!-- Configuration publisher for File Manager OODT Component -->
     <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher">
         <constructor-arg value="filemgr"/>
         <property name="propertiesFiles">
