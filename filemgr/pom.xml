@@ -130,6 +130,10 @@
       <artifactId>oodt-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-conf</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-core</artifactId>
       <scope>compile</scope>
