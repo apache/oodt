@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
+import static org.apache.oodt.config.Constants.SEPARATOR;
 
 /**
  * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to connect
@@ -50,13 +51,13 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     private String connectString;
     private CuratorFramework client;
     /** Name of the OODT component, to which this class is providing configuration support */
-    private String componentName;
+    private Constants.Component component;
     private ZNodePaths zNodePaths;
 
-    public DistributedConfigurationManager(String component) {
+    public DistributedConfigurationManager(Constants.Component component) {
         super(component);
-        this.componentName = component;
-        this.zNodePaths = new ZNodePaths(component);
+        this.component = component;
+        this.zNodePaths = new ZNodePaths(this.component.getName());
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
@@ -107,13 +108,13 @@ public class DistributedConfigurationManager extends ConfigurationManager {
 
     @Override
     public void loadConfiguration() throws Exception {
-        logger.debug("Loading properties for : {}", componentName);
+        logger.debug("Loading properties for : {}", component);
         loadProperties();
-        logger.info("Properties loaded for : {}", componentName);
+        logger.info("Properties loaded for : {}", component);
 
-        logger.debug("Saving configuration files for : {}", componentName);
+        logger.debug("Saving configuration files for : {}", component);
         saveConfigFiles();
-        logger.info("Configuration files saved for : {}", componentName);
+        logger.info("Configuration files saved for : {}", component);
     }
 
     /**
@@ -136,8 +137,12 @@ public class DistributedConfigurationManager extends ConfigurationManager {
             try (InputStream in = new ByteArrayInputStream(bytes)) {
                 System.getProperties().load(in);
             }
-
             logger.info("Properties loaded from ZNode at : {}", propertiesFileZNodePath);
+
+            String localFilePath = zNodePaths.getLocalPropertiesFilePath(propertiesFileZNodePath);
+            localFilePath = fixForComponentHome(localFilePath);
+            FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
+            logger.info("Properties file from ZNode at {} saved to {}", propertiesFileZNodePath, localFilePath);
         }
     }
 
@@ -161,13 +166,24 @@ public class DistributedConfigurationManager extends ConfigurationManager {
             byte[] bytes = client.getData().forPath(configFileZNodePath);
 
             String localFilePath = zNodePaths.getLocalConfigFilePath(configFileZNodePath);
+            localFilePath = fixForComponentHome(localFilePath);
             FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
-            logger.info("Config file from ZNode at {} saved to {}", configFileZNodePath);
+            logger.info("Config file from ZNode at {} saved to {}", configFileZNodePath, localFilePath);
         }
     }
 
-    public String getComponentName() {
-        return componentName;
+    private String fixForComponentHome(String suffixPath) {
+        String prefix = System.getenv().get(component.getHome());
+        StringBuilder path = new StringBuilder();
+        if (prefix != null) {
+            path.append(prefix.endsWith(SEPARATOR) ? prefix : prefix + SEPARATOR);
+        }
+        path.append(suffixPath.startsWith(SEPARATOR) ? suffixPath.substring(1) : suffixPath);
+        return path.toString();
+    }
+
+    public Constants.Component getComponent() {
+        return component;
     }
 
     public ZNodePaths getzNodePaths() {

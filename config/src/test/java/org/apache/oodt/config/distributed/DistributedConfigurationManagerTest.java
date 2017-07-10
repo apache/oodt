@@ -70,20 +70,25 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
     @Test
     public void loadConfigurationTest() throws Exception {
         for (DistributedConfigurationPublisher publisher : publishers) {
-            ConfigurationManager configurationManager = new DistributedConfigurationManager(publisher.getComponentName());
+            ConfigurationManager configurationManager = new DistributedConfigurationManager(publisher.getComponent());
             configurationManager.loadConfiguration();
 
             // Checking for configuration files
             for (Map.Entry<String, String> entry : publisher.getPropertiesFiles().entrySet()) {
-                File file = new File(entry.getKey());
+                File originalFile = new File(entry.getKey());
                 Properties properties = new Properties();
-                try (InputStream in = new FileInputStream(file)) {
+                try (InputStream in = new FileInputStream(originalFile)) {
                     properties.load(in);
                 }
 
                 for (String key : properties.stringPropertyNames()) {
                     Assert.assertEquals(properties.getProperty(key), System.getProperty(key));
                 }
+
+                String fileName = entry.getValue();
+                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
+                File downloadedFile = new File(fileName);
+                Assert.assertTrue(downloadedFile.exists());
             }
 
             // Checking for configuration files

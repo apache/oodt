@@ -18,6 +18,7 @@
 package org.apache.oodt.config.standalone;
 
 import org.apache.oodt.config.ConfigurationManager;
+import org.apache.oodt.config.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class StandaloneConfigurationManager extends ConfigurationManager {
 
     private List<String> propertiesFiles;
 
-    public StandaloneConfigurationManager(String component, List<String> propertiesFiles) {
+    public StandaloneConfigurationManager(Constants.Component component, List<String> propertiesFiles) {
         super(component);
         this.propertiesFiles = propertiesFiles != null ? propertiesFiles : new ArrayList<String>();
     }

@@ -19,9 +19,10 @@ package org.apache.oodt.config;
 
 import org.apache.oodt.config.distributed.DistributedConfigurationManager;
 import org.apache.oodt.config.standalone.StandaloneConfigurationManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.apache.oodt.config.Constants.Properties.ENABLE_DISTRIBUTED_CONFIGURATION;
 
@@ -33,7 +34,7 @@ import static org.apache.oodt.config.Constants.Properties.ENABLE_DISTRIBUTED_CON
 public class ConfigurationManagerFactory {
 
     /** Logger instance for this class */
-    private static final Logger logger = Logger.getLogger(ConfigurationManagerFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationManagerFactory.class);
 
     private ConfigurationManagerFactory() {
     }
@@ -49,10 +50,13 @@ public class ConfigurationManagerFactory {
      *                        management
      * @return ConfigurationManager instance to used by the corresponding component.
      */
-    public static ConfigurationManager getConfigurationManager(String component, List<String> propertiesFiles) {
-        if (System.getProperty(ENABLE_DISTRIBUTED_CONFIGURATION) != null) {
+    public static ConfigurationManager getConfigurationManager(Constants.Component component, List<String> propertiesFiles) {
+        if (Boolean.getBoolean(ENABLE_DISTRIBUTED_CONFIGURATION)) {
+            logger.info("Using distributed configuration management for {}", component);
             return new DistributedConfigurationManager(component);
         }
+
+        logger.info("Using standalone configuration management for {}", component);
         return new StandaloneConfigurationManager(component, propertiesFiles);
     }
 }

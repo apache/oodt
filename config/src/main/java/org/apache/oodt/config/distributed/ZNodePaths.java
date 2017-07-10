@@ -81,4 +81,8 @@ public class ZNodePaths {
     public String getLocalConfigFilePath(String zNodePath) {
         return zNodePath.substring(configurationZNodeRoot.length());
     }
+
+    public String getLocalPropertiesFilePath(String zNodePath) {
+        return zNodePath.substring(propertiesZNodeRoot.length());
+    }
 }

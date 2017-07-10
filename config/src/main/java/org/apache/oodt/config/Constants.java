@@ -61,9 +61,25 @@ public class Constants {
         public static final String ZK_PASSWORD = "org.apache.oodt.config.zk.password";
     }
 
-    public static class Components {
-        public static final String FILE_MANAGER = "filemgr";
-        public static final String RESOURCE_MANAGER = "resmgr";
+    public enum Component {
+        FILE_MANAGER("filemgr", "FILEMGR_HOME"),
+        RESOURCE_MANAGER("resmgr", "RESMGR_HOME");
+
+        String name;
+        String home;
+
+        Component(String name, String home) {
+            this.name = name;
+            this.home = home;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getHome() {
+            return home;
+        }
     }
 
     public static class ZPaths {

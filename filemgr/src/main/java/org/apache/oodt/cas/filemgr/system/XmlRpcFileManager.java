@@ -43,6 +43,7 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.ConfigurationManagerFactory;
+import org.apache.oodt.config.Constants;
 import org.apache.xmlrpc.WebServer;
 
 import java.io.*;
@@ -53,9 +54,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.apache.oodt.config.Constants.Components.FILE_MANAGER;
-
 
 /**
  * @author mattmann
@@ -111,12 +109,10 @@ public class XmlRpcFileManager {
 
     // set up the configuration, if there is any
     if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
-      String propertiesFile = System.getProperty("org.apache.oodt.cas.filemgr.properties");
-      LOG.log(Level.INFO, "Using File Manager Configuration Properties file : [" + propertiesFile + "]");
       propertiesFiles.add(System.getProperty("org.apache.oodt.cas.filemgr.properties"));
     }
 
-    configurationManager = ConfigurationManagerFactory.getConfigurationManager(FILE_MANAGER, propertiesFiles);
+    configurationManager = ConfigurationManagerFactory.getConfigurationManager(Constants.Component.FILE_MANAGER, propertiesFiles);
 
     this.loadConfiguration();
     LOG.log(Level.INFO, "File Manager started by " + System.getProperty("user.name", "unknown"));

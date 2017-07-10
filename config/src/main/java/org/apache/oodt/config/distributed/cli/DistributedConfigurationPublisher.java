@@ -54,11 +54,11 @@ public class DistributedConfigurationPublisher {
     private String connectString;
     private CuratorFramework client;
     private ZNodePaths zNodePaths;
-    private String componentName;
+    private Constants.Component component;
 
-    public DistributedConfigurationPublisher(String componentName) {
-        this.componentName = componentName;
-        this.zNodePaths = new ZNodePaths(componentName);
+    public DistributedConfigurationPublisher(Constants.Component component) {
+        this.component = component;
+        this.zNodePaths = new ZNodePaths(this.component.getName());
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
@@ -150,7 +150,7 @@ public class DistributedConfigurationPublisher {
     }
 
     /**
-     * Removes all the nodes from zookeeper where the configuration corresponding to component {@link #componentName} is
+     * Removes all the nodes from zookeeper where the configuration corresponding to component {@link #component} is
      * stored
      *
      * @throws Exception zookeeper errors
@@ -284,20 +284,20 @@ public class DistributedConfigurationPublisher {
 
             for (Object bean : distributedConfigurationPublisher.values()) {
                 DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
-                System.out.println(String.format("\nProcessing commands for component : %s", publisher.getComponentName()));
+                System.out.println(String.format("\nProcessing commands for component : %s", publisher.getComponent()));
 
                 if (cmdLineOptions.isPublish()) {
-                    System.out.println(String.format("Publishing configuration for : %s", publisher.getComponentName()));
+                    System.out.println(String.format("Publishing configuration for : %s", publisher.getComponent()));
                     publisher.publishConfiguration();
-                    System.out.println(String.format("Published configuration for : %s", publisher.getComponentName()));
+                    System.out.println(String.format("Published configuration for : %s", publisher.getComponent()));
                     System.out.println();
                 }
 
                 if (cmdLineOptions.isVerify()) {
-                    System.out.println(String.format("Verifying configuration for : %s", publisher.getComponentName()));
+                    System.out.println(String.format("Verifying configuration for : %s", publisher.getComponent()));
                     if (publisher.verifyPublishedConfiguration()) {
                         System.out.println("OK... Configuration verified");
-                        System.out.println(String.format("Verified configuration for : %s", publisher.getComponentName()));
+                        System.out.println(String.format("Verified configuration for : %s", publisher.getComponent()));
                     } else {
                         System.err.println("ERROR... Published configuration doesn't match the local files. Please check above logs");
                     }
@@ -305,9 +305,9 @@ public class DistributedConfigurationPublisher {
                 }
 
                 if (cmdLineOptions.isClear()) {
-                    System.out.println(String.format("Clearing configuration for : %s", publisher.getComponentName()));
+                    System.out.println(String.format("Clearing configuration for : %s", publisher.getComponent()));
                     publisher.clearConfiguration();
-                    System.out.println(String.format("Cleared configuration for : %s", publisher.getComponentName()));
+                    System.out.println(String.format("Cleared configuration for : %s", publisher.getComponent()));
                     System.out.println();
                 }
 
@@ -324,7 +324,7 @@ public class DistributedConfigurationPublisher {
         logger.info("Exiting CLI ...");
     }
 
-    public String getComponentName() {
-        return componentName;
+    public Constants.Component getComponent() {
+        return component;
     }
 }

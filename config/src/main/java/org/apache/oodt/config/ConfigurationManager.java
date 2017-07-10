@@ -24,15 +24,15 @@ package org.apache.oodt.config;
  */
 public abstract class ConfigurationManager {
 
-    protected String component;
+    protected Constants.Component component;
 
-    public ConfigurationManager(String component) {
+    public ConfigurationManager(Constants.Component component) {
         this.component = component;
     }
 
     public abstract void loadConfiguration() throws Exception;
 
-    public String getComponent() {
+    public Constants.Component getComponent() {
         return component;
     }
 }

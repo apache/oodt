@@ -20,7 +20,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
     <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher">
-        <constructor-arg value="filemgr"/>
+        <constructor-arg value="FILE_MANAGER"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
                 <entry key="src/main/resources/examples/filemgr/filemgr.properties" value="/etc/filemgr.properties"/>
@@ -39,7 +39,7 @@
     </bean>
 
     <bean id="resmgr-config-publisher" class="org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher">
-        <constructor-arg value="resmgr"/>
+        <constructor-arg value="RESOURCE_MANAGER"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
                 <entry key="src/main/resources/examples/resmgr/resource.properties" value="/etc/resource.properties"/>
