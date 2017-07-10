@@ -1,6 +1,4 @@
-=============================================================
- Welcome to Apache OODT  <http://oodt.apache.org/>
-=============================================================
+# Welcome to Apache OODT  <http://oodt.apache.org/>
 
 OODT is a grid middleware framework used on a number of successful projects at
 NASA's Jet Propulsion Laboratory/California Institute of Technology, and many
