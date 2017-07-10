@@ -18,26 +18,15 @@
 package org.apache.oodt.cas.filemgr.system;
 
 
+import com.google.common.collect.Lists;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
 import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.filemgr.structs.*;
+import org.apache.oodt.cas.filemgr.structs.exceptions.*;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
@@ -52,28 +41,19 @@ import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.commons.date.DateUtils;
+import org.apache.oodt.config.ConfigurationManager;
+import org.apache.oodt.config.ConfigurationManagerFactory;
+import org.apache.oodt.config.Constants;
 import org.apache.xmlrpc.WebServer;
 
-import com.google.common.collect.Lists;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  * @author mattmann
@@ -108,13 +88,16 @@ public class XmlRpcFileManager {
   /* whether or not to expand a product instance into met */
   private boolean expandProductMet;
 
+  /** Configuration Manager instance which will handle the configuration aspect in distributed/standalone manner */
+  private ConfigurationManager configurationManager;
+
   /**
    * <p> Creates a new XmlRpcFileManager with the given metadata store factory, and the given data store factory, on the
    * given port. </p>
    *
    * @param port The web server port to run the XML Rpc server on, defaults to 1999.
    */
-  public XmlRpcFileManager(int port) throws IOException {
+  public XmlRpcFileManager(int port) throws Exception {
     webServerPort = port;
 
     // start up the web server
@@ -122,10 +105,17 @@ public class XmlRpcFileManager {
     webServer.addHandler("filemgr", this);
     webServer.start();
 
-    this.loadConfiguration();
-    LOG.log(Level.INFO, "File Manager started by "
-                        + System.getProperty("user.name", "unknown"));
+    List<String> propertiesFiles = new ArrayList<>();
 
+    // set up the configuration, if there is any
+    if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
+      propertiesFiles.add(System.getProperty("org.apache.oodt.cas.filemgr.properties"));
+    }
+
+    configurationManager = ConfigurationManagerFactory.getConfigurationManager(Constants.Component.FILE_MANAGER, propertiesFiles);
+
+    this.loadConfiguration();
+    LOG.log(Level.INFO, "File Manager started by " + System.getProperty("user.name", "unknown"));
   }
 
   public void setCatalog(Catalog catalog) {
@@ -1185,7 +1175,7 @@ public class XmlRpcFileManager {
   }
 
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
     int portNum = -1;
     String usage = "FileManager --portNum <port number for xml rpc service>\n";
 
@@ -1524,16 +1514,8 @@ public class XmlRpcFileManager {
     return pMet;
   }
 
-  private void loadConfiguration() throws IOException {
-    // set up the configuration, if there is any
-    if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
-      String configFile = System
-          .getProperty("org.apache.oodt.cas.filemgr.properties");
-      LOG.log(Level.INFO,
-          "Loading File Manager Configuration Properties from: [" + configFile
-          + "]");
-      System.getProperties().load(new FileInputStream(new File(configFile)));
-    }
+  private void loadConfiguration() throws Exception {
+    configurationManager.loadConfiguration();
 
     String metaFactory, dataFactory, transferFactory;
 

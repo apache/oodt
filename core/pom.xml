@@ -247,6 +247,26 @@ the License.
         <artifactId>saxon-dom</artifactId>
         <version>8.7</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>curator-framework</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>curator-test</artifactId>
+        <version>3.3.0</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>args4j</groupId>
+        <artifactId>args4j</artifactId>
+        <version>2.33</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -356,6 +376,11 @@ the License.
       <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-commons</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>oodt-conf</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <dependency>
