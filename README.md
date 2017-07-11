@@ -1,4 +1,6 @@
-# Welcome to Apache OODT  <http://oodt.apache.org/>
+=============================================================
+ Welcome to Apache OODT  <http://oodt.apache.org/>
+=============================================================
 
 OODT is a grid middleware framework used on a number of successful projects at
 NASA's Jet Propulsion Laboratory/California Institute of Technology, and many
@@ -17,7 +19,8 @@ other research institutions and universities, specifically those part of the:
 OODT is a Top Level project of the Apache Software Foundation
 <http://www.apache.org/>.
 
-## Getting Started
+Getting Started
+===============
 
 OODT is primarily written in Java, with some components available in Python.
 It requires Java 5 and uses the Maven 2 <http://maven.apache.org/> build
@@ -28,8 +31,8 @@ this directory:
 
 For the Python components, see the "agility" subdirectory.
 
-## Contributing
-
+Contributing
+============
 To contribute a patch, follow these instructions (note that installing
 [Hub](http://hub.github.com) is not strictly required, but is recommended).
 
@@ -50,7 +53,8 @@ To contribute a patch, follow these instructions (note that installing
 ```
 
 
-## License (see also LICENSE.txt)
+License (see also LICENSE.txt)
+==============================
 
 Collective work: Copyright 2010-2012 The Apache Software Foundation.
 
@@ -73,7 +77,8 @@ Apache OODT includes a number of subcomponents with separate copyright
 notices and license terms. Your use of these subcomponents is subject to
 the terms and conditions of the licenses listed in the LICENSE.txt file.
 
-## Export control
+Export control
+==============
 
 This distribution includes cryptographic software.  The country in which you
 currently reside may have restrictions on the import, possession, use, and/or
@@ -99,7 +104,8 @@ The following provides more details on the included cryptographic software:
     encrypted PDF files.  See http://www.bouncycastle.org/ for more details on
     Bouncy Castle.
 
-## Documentation
+Documentation
+=============
 
 You can build a local copy of the OODT documentation including JavaDocs using
 the following Maven 2 command in the OODT source directory:
@@ -119,7 +125,8 @@ than likely you'll need to add to the MAVEN_OPTS environment variable in order
 to set the Java heap maximum size with "-Xmx512m" or larger before attempting
 to run "mvn site".
 
-## Mailing Lists
+Mailing Lists
+=============
 
 Discussion about OODT takes place on the following mailing lists:
 
@@ -137,7 +144,8 @@ dev-subscribe@oodt...).  To unsubscribe, send a message to
 <LIST>-unsubscribe@oodt.apache.org.  For more instructions, send a
 message to <LIST>-help@oodt.apache.org.
 
-## Issue Tracker
+Issue Tracker
+=============
 
 If you encounter errors in OODT or want to suggest an improvement or a new
 feature, please visit the OODT issue tracker 

@@ -19,6 +19,7 @@ package org.apache.oodt.config.distributed.cli;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.oodt.config.Component;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.distributed.ZNodePaths;
 import org.apache.oodt.config.distributed.utils.CuratorUtils;
@@ -54,9 +55,9 @@ public class DistributedConfigurationPublisher {
     private String connectString;
     private CuratorFramework client;
     private ZNodePaths zNodePaths;
-    private Constants.Component component;
+    private Component component;
 
-    public DistributedConfigurationPublisher(Constants.Component component) {
+    public DistributedConfigurationPublisher(Component component) {
         this.component = component;
         this.zNodePaths = new ZNodePaths(this.component.getName());
 
@@ -83,8 +84,8 @@ public class DistributedConfigurationPublisher {
     }
 
     /**
-     * Creates a {@link CuratorFramework} instance and start it. This method will wait a maximum amount of
-     * {@link Constants.Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
+     * Creates a {@link CuratorFramework} instance and start it. This method will wait a maximum amount of {@link
+     * Constants.Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
      */
     private void startZookeeper() {
         client = CuratorUtils.newCuratorFrameworkClient(connectString, logger);
@@ -135,8 +136,8 @@ public class DistributedConfigurationPublisher {
     }
 
     /**
-     * Verified whether the actual content of the local files specified to be published are 100% similar to the ones that
-     * has been published and stored in zookeeper at the moment.
+     * Verified whether the actual content of the local files specified to be published are 100% similar to the ones
+     * that has been published and stored in zookeeper at the moment.
      *
      * @return true | if content are up to date and similar
      */
@@ -324,7 +325,7 @@ public class DistributedConfigurationPublisher {
         logger.info("Exiting CLI ...");
     }
 
-    public Constants.Component getComponent() {
+    public Component getComponent() {
         return component;
     }
 }

@@ -17,7 +17,10 @@
 
 package org.apache.oodt.config.distributed;
 
-import static org.apache.oodt.config.Constants.ZPaths.*;
+import static org.apache.oodt.config.Constants.ZPaths.COMPONENTS_PATH_NAME;
+import static org.apache.oodt.config.Constants.ZPaths.CONFIGURATION_PATH_NAME;
+import static org.apache.oodt.config.Constants.ZPaths.PROPERTIES_PATH_NAME;
+import static org.apache.oodt.config.Constants.ZPaths.SEPARATOR;
 
 /**
  * Class responsible for handling all the Zookeeper ZNode paths related to configuration
@@ -39,7 +42,8 @@ public class ZNodePaths {
     private String configurationZNodeRoot;
 
     /**
-     * Creates the ZNode path structure accordingly to the <pre>componentName</pre> and <pre>propertiesFileNames</pre> given.
+     * Creates the ZNode path structure accordingly to the <pre>componentName</pre> and <pre>propertiesFileNames</pre>
+     * given.
      *
      * @param componentName Name of the OODT component
      */

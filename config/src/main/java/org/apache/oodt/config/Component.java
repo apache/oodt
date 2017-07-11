@@ -18,21 +18,33 @@
 package org.apache.oodt.config;
 
 /**
- * The abstract class to define functions of the configuration managers.
+ * An enum to represent available OODT components and their corresponding names to be used when setting up configuration
+ * management.
  *
  * @author Imesha Sudasingha
  */
-public abstract class ConfigurationManager {
+public enum Component {
+    FILE_MANAGER("filemgr", "FILEMGR_HOME"),
+    RESOURCE_MANAGER("resmgr", "RESMGR_HOME");
 
-    protected Component component;
+    /** Shorthand name of the component. Will be used when creating ZNodes in zookeeper */
+    String name;
+    /**
+     * Environment variable of ${COMPONENT_HOME} which will be set by the executing script when running that component.
+     * For example, ${FILEMGR_HOME} will be set by the {@link #FILE_MANAGER} bash script.
+     */
+    String home;
 
-    public ConfigurationManager(Component component) {
-        this.component = component;
+    Component(String name, String home) {
+        this.name = name;
+        this.home = home;
     }
 
-    public abstract void loadConfiguration() throws Exception;
+    public String getName() {
+        return name;
+    }
 
-    public Component getComponent() {
-        return component;
+    public String getHome() {
+        return home;
     }
 }

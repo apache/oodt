@@ -30,7 +30,8 @@ public class CmdLineOptions {
     private String connectString;
 
     @Option(name = "-publish", usage = "Publishes configuration specified in the spring config file to zookeeper. " +
-            "Any current similar config in zookeeper will be overwritten. If not specified, command will be assumed as a publish")
+                                               "Any current similar config in zookeeper will be overwritten. If not specified, " +
+                                               "command will be assumed as a publish")
     private boolean publish = false;
 
     @Option(name = "-verify", usage = "Verifies the content in the local files and the published ones. Results will be printed.")

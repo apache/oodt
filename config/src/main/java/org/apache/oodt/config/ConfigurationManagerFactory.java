@@ -50,7 +50,7 @@ public class ConfigurationManagerFactory {
      *                        management
      * @return ConfigurationManager instance to used by the corresponding component.
      */
-    public static ConfigurationManager getConfigurationManager(Constants.Component component, List<String> propertiesFiles) {
+    public static ConfigurationManager getConfigurationManager(Component component, List<String> propertiesFiles) {
         if (Boolean.getBoolean(ENABLE_DISTRIBUTED_CONFIGURATION)) {
             logger.info("Using distributed configuration management for {}", component);
             return new DistributedConfigurationManager(component);

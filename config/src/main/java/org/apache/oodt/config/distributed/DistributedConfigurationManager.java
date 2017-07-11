@@ -19,6 +19,7 @@ package org.apache.oodt.config.distributed;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.oodt.config.Component;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.Constants.Properties;
@@ -38,8 +39,8 @@ import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
 import static org.apache.oodt.config.Constants.SEPARATOR;
 
 /**
- * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to connect
- * to zookeeper
+ * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to
+ * connect to zookeeper
  *
  * @author Imesha Sudasingha.
  */
@@ -51,10 +52,10 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     private String connectString;
     private CuratorFramework client;
     /** Name of the OODT component, to which this class is providing configuration support */
-    private Constants.Component component;
+    private Component component;
     private ZNodePaths zNodePaths;
 
-    public DistributedConfigurationManager(Constants.Component component) {
+    public DistributedConfigurationManager(Component component) {
         super(component);
         this.component = component;
         this.zNodePaths = new ZNodePaths(this.component.getName());
@@ -182,7 +183,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         return path.toString();
     }
 
-    public Constants.Component getComponent() {
+    public Component getComponent() {
         return component;
     }
 

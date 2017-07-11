@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
-import static org.apache.oodt.config.Constants.ZPaths.*;
+import static org.apache.oodt.config.Constants.ZPaths.NAMESPACE;
+import static org.apache.oodt.config.Constants.ZPaths.SEPARATOR;
 
 public class CuratorUtils {
 
@@ -111,11 +112,11 @@ public class CuratorUtils {
         int maxRetryCount = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "3"));
 
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
-                .namespace(NAMESPACE)
-                .connectString(connectString)
-                .retryPolicy(new ExponentialBackoffRetry(retryInitialWaitMs, maxRetryCount))
-                .connectionTimeoutMs(connectionTimeoutMs)
-                .sessionTimeoutMs(sessionTimeoutMs);
+                                                          .namespace(NAMESPACE)
+                                                          .connectString(connectString)
+                                                          .retryPolicy(new ExponentialBackoffRetry(retryInitialWaitMs, maxRetryCount))
+                                                          .connectionTimeoutMs(connectionTimeoutMs)
+                                                          .sessionTimeoutMs(sessionTimeoutMs);
 
         /*
          * If authorization information is available, those will be added to the client. NOTE: These auth info are
