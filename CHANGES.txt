@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-847 New FilemgrMetExtractor to extract File System Attributes (Aditya Dhulipala, rverma via mattmann)
+
 * OODT-948 Fix dockerfile (magicaltrout/R B Krishna)
 
 * OODT-938 update netcdf (magicaltrout)
