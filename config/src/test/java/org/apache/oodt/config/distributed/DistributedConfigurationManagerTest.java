@@ -26,6 +26,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -96,7 +97,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 String fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), entry.getValue());
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
                 File downloadedFile = new File(fileName);
-		Assert.notNull(downloadedFile);
+		Assert.assertNotNull(downloadedFile);
                 Assert.assertTrue(downloadedFile.exists());
             }
 
