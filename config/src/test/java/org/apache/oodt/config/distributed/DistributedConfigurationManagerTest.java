@@ -25,6 +25,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.fail;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -83,6 +84,10 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 try (InputStream in = new FileInputStream(originalFile)) {
                     properties.load(in);
                 }
+		catch (Exception e){
+		    e.printStackTrace();
+		    fail(e.getMessage());
+		}
 
                 for (String key : properties.stringPropertyNames()) {
                     Assert.assertEquals(properties.getProperty(key), System.getProperty(key));
@@ -91,6 +96,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 String fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), entry.getValue());
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
                 File downloadedFile = new File(fileName);
+		Assert.notNull(downloadedFile);
                 Assert.assertTrue(downloadedFile.exists());
             }
 
