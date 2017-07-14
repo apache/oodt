@@ -18,6 +18,7 @@
 package org.apache.oodt.config.distributed.utils;
 
 import org.apache.oodt.config.Component;
+import org.apache.oodt.config.Constants.ZPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +34,12 @@ public class FilePathUtils {
     public static String fixForComponentHome(Component component, String suffixPath) {
         String prefix = System.getenv().get(component.getHome());
         StringBuilder path = new StringBuilder();
-        if (prefix != null) {
+        if (prefix != null && !prefix.trim().isEmpty()) {
+            prefix = prefix.trim();
             logger.debug("Found prefix {}:{} for suffixPath: {}", component.getHome(), prefix, suffixPath);
             path.append(prefix.endsWith(SEPARATOR) ? prefix : prefix + SEPARATOR);
         }
-        path.append(suffixPath.startsWith(SEPARATOR) ? suffixPath.substring(1) : suffixPath);
+        path.append(suffixPath.startsWith(ZPaths.SEPARATOR) ? suffixPath.substring(ZPaths.SEPARATOR.length()) : suffixPath);
         logger.debug("Fixed path for {} is {}", suffixPath, path.toString());
         return path.toString();
     }

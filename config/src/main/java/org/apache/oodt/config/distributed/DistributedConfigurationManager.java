@@ -143,6 +143,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
 
             String localFilePath = zNodePaths.getLocalPropertiesFilePath(propertiesFileZNodePath);
             localFilePath = FilePathUtils.fixForComponentHome(component, localFilePath);
+            logger.debug("Storing configuration in file: {}", localFilePath);
             FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
             logger.info("Properties file from ZNode at {} saved to {}", propertiesFileZNodePath, localFilePath);
         }
