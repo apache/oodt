@@ -94,8 +94,9 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                     Assert.assertEquals(properties.getProperty(key), System.getProperty(key));
                 }
 
-                String fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), entry.getValue());
-                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
+                String fileName = entry.getValue();
+                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(SEPARATOR.length()) : fileName;
+                fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), fileName);
                 File downloadedFile = new File(fileName);
 		Assert.assertNotNull(downloadedFile);
                 Assert.assertTrue(downloadedFile.exists());
@@ -103,8 +104,9 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
 
             // Checking for configuration files
             for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
-                String fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), entry.getValue());
-                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
+                String fileName = entry.getValue();
+                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(SEPARATOR.length()) : fileName;
+                fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), fileName);
                 File file = new File(fileName);
                 Assert.assertTrue(file.exists());
             }
@@ -124,8 +126,9 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 String fileName = entry.getValue();
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
 
-                String confDir = System.getenv(publisher.getComponent().getHome()) != null ?
-                        System.getenv(publisher.getComponent().getHome()) + SEPARATOR + fileName.split(SEPARATOR)[0] : fileName.split(SEPARATOR)[0];
+                String prefixPath = System.getenv(publisher.getComponent().getHome());
+                String confDir = prefixPath != null && !prefixPath.trim().isEmpty() ?
+                        prefixPath.trim() + SEPARATOR + fileName.split(SEPARATOR)[0] : fileName.split(SEPARATOR)[0];
 
                 File dir = new File(confDir);
                 FileUtils.deleteDirectory(dir);
