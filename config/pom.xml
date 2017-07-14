@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>oodt</artifactId>
+        <artifactId>oodt-core</artifactId>
         <groupId>org.apache.oodt</groupId>
         <version>1.1-SNAPSHOT</version>
         <relativePath>../core/pom.xml</relativePath>
@@ -19,6 +19,7 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
+	    
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
