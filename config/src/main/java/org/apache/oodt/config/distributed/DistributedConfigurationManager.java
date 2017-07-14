@@ -24,6 +24,7 @@ import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.Constants.Properties;
 import org.apache.oodt.config.distributed.utils.CuratorUtils;
+import org.apache.oodt.config.distributed.utils.FilePathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +142,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
             logger.info("Properties loaded from ZNode at : {}", propertiesFileZNodePath);
 
             String localFilePath = zNodePaths.getLocalPropertiesFilePath(propertiesFileZNodePath);
-            localFilePath = fixForComponentHome(localFilePath);
+            localFilePath = FilePathUtils.fixForComponentHome(component, localFilePath);
             FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
             logger.info("Properties file from ZNode at {} saved to {}", propertiesFileZNodePath, localFilePath);
         }
@@ -167,20 +168,10 @@ public class DistributedConfigurationManager extends ConfigurationManager {
             byte[] bytes = client.getData().forPath(configFileZNodePath);
 
             String localFilePath = zNodePaths.getLocalConfigFilePath(configFileZNodePath);
-            localFilePath = fixForComponentHome(localFilePath);
+            localFilePath = FilePathUtils.fixForComponentHome(component, localFilePath);
             FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
             logger.info("Config file from ZNode at {} saved to {}", configFileZNodePath, localFilePath);
         }
-    }
-
-    private String fixForComponentHome(String suffixPath) {
-        String prefix = System.getenv().get(component.getHome());
-        StringBuilder path = new StringBuilder();
-        if (prefix != null) {
-            path.append(prefix.endsWith(SEPARATOR) ? prefix : prefix + SEPARATOR);
-        }
-        path.append(suffixPath.startsWith(SEPARATOR) ? suffixPath.substring(1) : suffixPath);
-        return path.toString();
     }
 
     public Component getComponent() {

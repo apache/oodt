@@ -20,6 +20,7 @@ package org.apache.oodt.config.distributed;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher;
+import org.apache.oodt.config.distributed.utils.FilePathUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -31,9 +32,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import static org.apache.oodt.config.Constants.CONFIG_PUBLISHER_XML;
 import static org.apache.oodt.config.Constants.SEPARATOR;
@@ -85,7 +88,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                     Assert.assertEquals(properties.getProperty(key), System.getProperty(key));
                 }
 
-                String fileName = entry.getValue();
+                String fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), entry.getValue());
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
                 File downloadedFile = new File(fileName);
                 Assert.assertTrue(downloadedFile.exists());
@@ -93,7 +96,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
 
             // Checking for configuration files
             for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
-                String fileName = entry.getValue();
+                String fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), entry.getValue());
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
                 File file = new File(fileName);
                 Assert.assertTrue(file.exists());
@@ -106,10 +109,17 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
         for (DistributedConfigurationPublisher publisher : publishers) {
             publisher.destroy();
 
-            for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
+            // deleting all locally created conf file directories
+            Set<Map.Entry<String, String>> files = new HashSet<>(publisher.getConfigFiles().entrySet());
+            files.addAll(publisher.getPropertiesFiles().entrySet());
+
+            for (Map.Entry<String, String> entry : files) {
                 String fileName = entry.getValue();
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
-                String confDir = fileName.split(SEPARATOR)[0];
+
+                String confDir = System.getenv(publisher.getComponent().getHome()) != null ?
+                        System.getenv(publisher.getComponent().getHome()) + SEPARATOR + fileName.split(SEPARATOR)[0] : fileName.split(SEPARATOR)[0];
+
                 File dir = new File(confDir);
                 FileUtils.deleteDirectory(dir);
             }
