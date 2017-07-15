@@ -26,9 +26,20 @@
         </layout>
     </appender>
 
+    <appender name="file" class="org.apache.log4j.FileAppender">
+        <param name="file" value="logs/log.out"/>
+        <param name="immediateFlush" value="true"/>
+        <param name="threshold" value="debug"/>
+        <param name="append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p %c{1} - %m%n"/>
+        </layout>
+    </appender>
+
     <root>
         <priority value="DEBUG"/>
         <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
     </root>
 
     <logger name="org.apache.zookeeper">
