@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-775 XSD's for pushpull's mimetypes.xml (Lewis John McGibbney via mattmann)
+
 * OODT-847 New FilemgrMetExtractor to extract File System Attributes (Aditya Dhulipala, rverma via mattmann)
 
 * OODT-948 Fix dockerfile (magicaltrout/R B Krishna)
