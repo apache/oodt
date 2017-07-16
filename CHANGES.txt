@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-836, OODT-837 Remove Non-Essential Components (mattmann, mdstarch, magicaltrout)
+
 * OODT-213 Reading/Writing API for XML-based Workflow Task policy (mattmann)
 
 * OODT-775 XSD's for pushpull's mimetypes.xml (Lewis John McGibbney via mattmann)
