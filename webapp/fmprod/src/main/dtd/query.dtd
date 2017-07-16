@@ -1,0 +1,100 @@
+<?xml encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+  <!ELEMENT query
+	(queryAttributes,
+         queryResultModeId,
+         queryPropogationType,
+	 queryPropogationLevels,
+         queryMimeAccept*,
+         queryMaxResults,
+         queryResults,
+         queryKWQString,
+	 queryStatistics?,
+         querySelectSet,
+         queryFromSet,
+	 queryWhereSet,
+	 queryResultSet)>
+
+    <!ELEMENT queryAttributes
+      (queryId, queryTitle*, queryDesc*, queryType*,
+       queryStatusId*, querySecurityType*, 
+       queryParentId*, queryChildId*,
+       queryRevisionNote*,
+       queryDataDictId*)>
+
+    <!ELEMENT queryStatistics (statistic*)>
+
+    <!ELEMENT querySelectSet
+	(queryElement*)>
+
+    <!ELEMENT queryFromSet
+	(queryElement*)>
+
+    <!ELEMENT queryWhereSet
+	(queryElement*)>
+
+      <!ELEMENT queryElement
+        (tokenRole*, tokenValue*)>
+
+    <!ELEMENT statistic (url, time)>
+
+    <!ELEMENT queryResultSet
+	(resultElement*)>
+
+      <!ELEMENT resultElement
+        (resultId*, resultMimeType*,
+         profId*, identifier*, resultHeader,
+         resultValue*)>
+      <!ATTLIST resultElement classified (true|false) 'false'>
+      <!ATTLIST resultElement validity CDATA #IMPLIED>
+
+    <!ELEMENT resultHeader (headerElement*)>
+    <!ELEMENT headerElement (elemName, elemType?, elemUnit?)>
+
+    <!ELEMENT queryId (#PCDATA)>
+    <!ELEMENT queryTitle (#PCDATA)>
+    <!ELEMENT queryType (#PCDATA)>
+    <!ELEMENT queryDesc (#PCDATA)>
+    <!ELEMENT queryParentId (#PCDATA)>
+    <!ELEMENT queryChildId (#PCDATA)>
+    <!ELEMENT queryStatusId (#PCDATA)>
+    <!ELEMENT querySecurityType (#PCDATA)>
+    <!ELEMENT queryRevisionNote (#PCDATA)>
+    <!ELEMENT queryDataDictId (#PCDATA)>
+    <!ELEMENT queryResultModeId (#PCDATA)>
+    <!ELEMENT queryPropogationType (#PCDATA)>
+    <!ELEMENT queryPropogationLevels (#PCDATA)>
+    <!ELEMENT queryMimeAccept (#PCDATA)>
+    <!ELEMENT queryMaxResults (#PCDATA)>
+    <!ELEMENT queryResults (#PCDATA)>
+    <!ELEMENT queryKWQString (#PCDATA)>
+    <!ELEMENT url (#PCDATA)>
+    <!ELEMENT time (#PCDATA)>
+    <!ELEMENT elemName (#PCDATA)>
+    <!ELEMENT elemType (#PCDATA)>
+    <!ELEMENT elemUnit (#PCDATA)>
+    <!ELEMENT elemValue (#PCDATA)>
+    <!ELEMENT resultId (#PCDATA)>
+    <!ELEMENT resultMimeType (#PCDATA)>
+    <!ELEMENT resultValue (#PCDATA)>
+    <!ATTLIST resultValue xml:space (default|preserve) 'default'>
+    <!ELEMENT profId (#PCDATA)>
+    <!ELEMENT identifier (#PCDATA)>
+    <!ELEMENT tokenRole (#PCDATA)>
+    <!ELEMENT tokenValue (#PCDATA)>

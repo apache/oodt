@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<document>
+  <properties>
+    <title>Developing a Query Handler</title>
+    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+  </properties>
+
+  <body>
+    <section name="Developing a Query Handler">
+      <p>In the <a href="../ps/">last tutorial</a>, we started a
+	product server.  But this wasn't a very useful product server;
+	it could answer queries but always respond with no results.
+	That's because it had no query handlers.  Query handlers have
+	the responsibility of actually handling product queries.  In
+	this tutorial, we'll develop a query handler, install it into
+	our product server, and query it to see if it works.
+      </p>
+
+      <p>To do this tutorial, you'll need mastery of two things:</p>
+      <ul>
+	<li>Using the <code>XMLQuery</code> class.  Follow the <a
+	    href="/edm-query/tutorial/">query expression tutorail</a>
+	    now if you're not familiar with it.
+	</li>
+
+	<li>Running and querying a product server.  Follow the <a
+	    href="../ps/">Your First Product Server</a> tutorial to
+	    get your product server up and running.  In this tutorial,
+	    we'll build on that product server, so it's especially
+	    important to have it in good shape.
+	</li>
+      </ul>
+    </section>
+
+    <section name="Serving Up Constants">
+      <p>Product servers delegate to query handlers.  It's the job of
+	query handlers to interpret incoming queries (expressed as
+	<code>XMLQuery</code> objects), search for, retrieve, convert,
+	or synthesize matching product results, adorn the
+	<code>XMLQuery</code> object with <code>Result</code> objects,
+	and return the modified query.  At that point the OODT
+	framework takes over again and tries other installed query
+	handlers, eventually returning the completed
+	<code>XMLQuery</code> back to the product client that made the
+	query in the first place.
+      </p>
+
+      <p>We'll make a query handler that serves mathematical
+	constants.  Have you ever been in a position where you needed,
+	say, the value of the third Flajolet number or perhaps
+	Zeta(9)?  No?  Well, just pretend for now you did.  What we'll
+	do is develop a query handler for a product server that will
+	serve values of various mathematical constants.
+      </p>
+
+      <p>The approach we'll take has three simple steps:</p>
+
+      <ol>
+	<li>Get some handy constants.</li>
+	<li>Define the query expression.</li>
+	<li>Write a query handler.  The query handler will:
+	  <ol>
+	    <li>Examine the query expression to see if it's a request
+	      for a constant, and if so, what constant is
+	      requested.
+	    </li>
+	    <li>Examine the query's list of acceptable MIME types.</li>
+	    <li>If both check out, look up the desired constant's value.</li>
+	    <li>If found, add it as a <code>Result</code> in the <code>XMLQuery</code>.</li>
+	  </ol>
+	</li>
+      </ol>
+    </section>
+
+    <section name="Writing the Code">
+      <p>In this section, we'll build up the query handler source code
+	in pieces, examining each piece thoroughly.  We'll then
+	present the entire source file.
+      </p>
+
+      <subsection name='Gathering Handy Constants'>
+	<p>The wonderful world of science and mathematics is replete
+	  with useful constant values.  For this example, let's just pick three:
+	</p>
+
+	<ul>
+	  <li><var>pi</var> = 3.14159265...</li>
+	  <li><var>e</var> = 2.7182818285...</li>
+	  <li><var>gamma</var> = 0.577215664...</li>
+	</ul>
+
+	<p>In Java code, we can set up those values as a
+	  <code>Map</code> in a static field.  Thus we start forming our
+	  source file, <code>ConstantHandler.java</code>:
+	</p>
+
+	<source>import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import jpl.eda.product.QueryHandler;
+public class ConstantHandler
+  implements QueryHandler {
+  private static final Map CONSTANTS = new ConcurrentHashMap();
+  static {
+    CONSTANTS.put("pi",    "3.14159265...");
+    CONSTANTS.put("e",     "2.7182818285...");
+    CONSTANTS.put("gamma", "0.577215664...");
+  }
+}</source>
+
+	<p>As you can see, we're storing both the constant name and its
+	  value as <code>java.lang.String</code> objects.
+	</p>
+      </subsection>
+
+      <subsection name='Defining the Query Expression'>
+	<p>Recall that the <code>XMLQuery</code> class can use parsed
+	  queries (where it generates postfix boolean stacks) or
+	  unparsed ones.  While unparsed ones are easier, we'll go with
+	  parsed ones to demonstrate how on the server-side you deal
+	  with those postfix stacks.
+	</p>
+
+	<p>Using the XMLQuery's expression language, we'll look for
+	  queries of the form:</p>
+	
+	<p><code>constant = <var>name</var></code></p>
+
+	<p>where <var>name</var> is the name of a constant.  That will
+	  form a postfix "where" stack with exactly three
+	  <code>QueryElement</code> objects on it:
+	</p>
+
+	<ol>
+	  <li>The first (top) <code>QueryElement</code> will have role =
+	    <code>elemName</code> and value = <code>constant</code>.
+	  </li>
+
+	  <li>The second (middle) <code>QueryElement</code> will have
+	    role = <code>LITERAL</code> and a value equal to the
+	    constant <var>name</var>.
+	  </li>
+
+	  <li>The third (bottom) <code>QueryElement</code> will have
+	    role = <code>RELOP</code> and value = <code>EQ</code>.
+	  </li>
+	</ol>
+
+	<p>If we get any other kind of stack, we'll reject it and return
+	  no matching results.  That's reasonable behavior; after all, a
+	  query for <code>donutsEaten &gt; 5 AND RETURN =
+	    episodeNumber</code> may be handled by a
+	  <code>SimpsonsEpisodeQueryHandler</code> that's <em>also</em>
+	  installed in the same product server.
+	</p>
+
+	<p>We'll define a utility method, <code>getConstantName</code>,
+	  that will take the <code>XMLQuery</code>, check for the
+	  postfix "where" stack as described, and return the matching
+	  constant <var>name</var>.  If it gets a stack whose structure
+	  doesn't match, it will return <code>null</code>.  We'll add
+	  this method to our <code>ConstantHandler.java</code> file:
+	</p>
+
+	<source>import java.util.List;
+import jpl.eda.xmlquery.XMLQuery;
+import jpl.eda.xmlquery.QueryElement;
+...
+public class ConstantHandler
+  implements QueryHandler {
+  ...
+  private static String getConstantName(XMLQuery q) {
+    List stack = q.getWhereElementSet();
+    if (stack.size() != 3) return null;
+    QueryElement e = (QueryElement) stack.get(0);
+    if (!"elemName".equals(e.getRole())
+      || !"constant".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(2);
+    if (!"RELOP".equals(e.getRole())
+      || !"EQ".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(1);
+    if (!"LITERAL".equals(e.getRole()))
+	return null;
+    return e.getValue();
+  }
+}</source>
+
+	<p>Here, we first check to make sure there's exactly three
+	  elements, returning null if not.  There's no need to go further.
+	</p>
+
+	<p>Assuming there's three elements, the code then checks the
+	  topmost element.  For an expression <code>constant =
+	    <var>name</var></code>, the topmost element will have role
+	  <code>elemName</code> and value <code>constant</code>.  If
+	  neither condition is true, we return null right away.  No need
+	  to check further.
+	</p>
+
+	<p>If the topmost element checks out, we then check the
+	  bottommost element.  For <code>constant =
+	    <var>name</var></code>, the bottom element is generated from
+	  the equals sign.  It will have role <code>RELOP</code>
+	  (relational operator) and value <code>EQ</code>, meaning
+	  "equals".
+	</p>
+
+	<p>If it checks out, all we have to do is check the middle
+	  element.  The infix expression <code>constant =
+	    <var>name</var></code> generates a postfix middle element of
+	  <var>name</var> as the value, with a role of
+	  <code>LITERAL</code>.  We make sure it's <code>LITERAL</code>.
+	  If not, we're done; it's not a valid expression for our query
+	  handler.
+	</p>
+
+	<p>But if so, then the value of that query element is the name
+	  of the desired constant.  So we return it, regardless of what
+	  it is.
+	</p>
+      </subsection>
+
+      <subsection name='Checking for Acceptable MIME Types'>
+	<p>Since all of our mathematical constants are strings, we'll
+	  say that the result MIME type of our products is
+	  <code>text/plain</code>.  That means that any incoming
+	  <code>XMLQuery</code> must include any of the following MIME types:
+	</p>
+	<ol>
+	  <li><code>text/plain</code></li>
+	  <li><code>text/*</code></li>
+	  <li><code>*/*</code></li>
+	</ol>
+	<p>All of these match <code>text/plain</code>, which is the only
+	  product type we're capable of serving.  (In your own product
+	  servers, you might have more complex logic; for example, you
+	  could write code to draw the numbers into an image file if the
+	  requested type is <code>image/jpeg</code> ... but I wouldn't
+	  want to.)
+	</p>
+	<p>To support this in our query handler, we'll write another
+	  utility method.  It'll be called
+	  <code>isAcceptableType</code>, and it will take the
+	  <code>XMLQuery</code> and examine it to see what MIME types
+	  are acceptable to the caller.  If it finds any of the ones in
+	  the above list, it will return <code>true</code>, and the
+	  caller can continue to process the query.  If not, it will
+	  return <code>false</code>, and the query handler will stop
+	  processing and return the <code>XMLQuery</code> unadorned with
+	  any results.
+	</p>
+	<p>Here's the code:</p>
+
+	<source>import java.util.Iterator;
+...
+public class ConstantHandler
+  implements QueryHandler {
+  ...
+  private static boolean isAcceptableType(XMLQuery q) {
+    List mimes = q.getMimeAccept();
+    if (mimes.isEmpty()) return true;
+    for (Iterator i = mimes.iterator(); i.hasNext();) {
+      String type = (String) i.next();
+      if ("text/plain".equals(type)
+        || "text/*".equals(type)
+        || "*/*".equals(type)) return true;
+    }
+    return false;
+  }
+}</source>
+
+	<p>Here, we check if the list of acceptable MIME types is empty.
+	  An empty list is the same as saying <code>*/*</code>, so that
+	  automatically says we've got an acceptable type.  For a
+	  non-empty list, we go through each type one-by-one.  If it's
+	  any of the strings <code>text/plain</code>,
+	  <code>text/*</code>, or <code>*/*</code>, then that's an
+	  acceptable type.
+	</p>
+
+	<p>However, if we get through the entire list and we don't find
+	  any type that the user wants that we can provide, we return
+	  <code>false</code>.  The query handler will check for a
+	  <code>false</code> value and return early from handling the
+	  query, leaving the <code>XMLQuery</code> untouched.
+	</p>
+      </subsection>
+
+      <subsection name='Inserting the Result'>
+	<p>Assuming the query handler has found an acceptable MIME type,
+	  and has found a valid query and the name of the desired
+	  constant, it can lookup the constant in the
+	  <code>CONSTANTS</code> map.  And assuming it finds a matching
+	  constant in that map, it can insert the value as a
+	  <code>Result</code> object.
+	</p>
+
+	<p>To insert the constant's value, we'll develop yet another
+	  utility method, this time called <code>insert</code>.  This
+	  method will take the name of the constant, its value, and the
+	  <code>XMLQuery</code>.  It will add a <code>Result</code>
+	  object to the <code>XMLQuery</code>.  When the query handler
+	  returns this modified <code>XMLQuery</code> object, the
+	  framework will return it to the product client, which can then
+	  display the matching result.
+	</p>
+
+	<p><code>Result</code> objects can also have optional
+	  <code>Header</code> objects that serve as "column headings"
+	  for tabular like results.  Our result isn't tabular, it's just
+	  a single value, but we'll add a heading anyway just to
+	  demonstrate how it's done.  (You could argue that it's a
+	  one-by-one table, too!)  The header's name will be the same as
+	  the constant's name; the data type will be <code>real</code>
+	  and the units will be <code>none</code>.
+	</p>
+
+	<p>Here's the code:</p>
+
+	<source>import java.util.Collections;
+import jpl.eda.xmlquery.Header;
+import jpl.eda.xmlquery.Result;
+...
+public class ConstantHandler
+  implements QueryHandler {
+  ...
+  private static void insert(String name,
+    String value, XMLQuery q) {
+    Header h = new Header(name, "real", "none");
+    Result r = new Result(name, "text/plain",
+      /*profileID*/null, /*resourceID*/null,
+      Collections.singletonList(h),
+      value, /*classified*/false, Result.INFINITE);
+    q.getResults().add(r);
+  }
+}</source>
+
+	<p>In this method, we first create the header.  Then we create
+	  the result; the result's ID (which differentiates it from
+	  other results in the same <code>XMLQuery</code> is just the
+	  name of the constant.  Its MIME type is
+	  <code>text/plain</code>.  We set the profile ID and resource
+	  ID fields to <code>null</code>, as recommended back in the <a
+	    href="/edm-query/tutorial/">XMLQuery Tutorial</a>.  Then we
+	  add our sole header.  Then we add the mathematical constant's
+	  value.  Finally, this constant isn't classified, so we set the
+	  classified flag to <code>false</code>.  Also, these
+	  mathematical constants should be valid forever, so we set the
+	  validity period to <code>Result.INFINITE</code>, a special
+	  value that means a never-ending validity period.
+	</p>
+      </subsection>
+
+      <subsection name='Handling the Query'>
+	<p>With all of these utility methods in hand, it's easy to
+	  handle the query now.  The
+	  <code>jpl.eda.product.QueryHandler</code> interface
+	  specifies a single method that we must implement,
+	  <code>query</code>.  This method accepts an
+	  <code>XMLQuery</code> object and returns an
+	  <code>XMLQuery</code> object.  The returned one may or may
+	  not be adorned with matching results.
+	</p>
+
+	<p>Here's what we have to do:</p>
+	<ol>
+	  <li>Get the constant name with <code>getConstantName</code>.
+	    If we get <code>null</code>, it means the query's not of
+	    the form <code>constant = <var>name</var></code>, so we
+	    ignore it.
+	  </li>
+
+	  <li>See if the user's willing to accept a
+	    <code>text/plain</code> MIME type.  If not, we ignore this query.
+	  </li>
+
+	  <li>Find the constant in our <code>CONSTANTS</code> map.  If
+	    it's not there, we ignore this query.
+	  </li>
+
+	  <li>Insert the constant's value into the <code>XMLQuery</code>.</li>
+
+	  <li>Returned the modified <code>XMLQuery</code>.</li>
+	</ol>
+
+	<p>The source:</p>
+
+	<source>public class ConstantHandler
+  implements QueryHandler {
+  ...
+  public XMLQuery query(XMLQuery q) {
+    String name = getConstantName(q);
+    if (name == null) return q;
+    if (!isAcceptableType(q)) return q;
+    String value = (String) CONSTANTS.get(name);
+    if (value == null) return q;
+    insert(name, value, q);
+    return q;
+  }
+}</source>
+
+      </subsection>
+
+      <subsection name='Complete Source Code'>
+	<p>Here is the complete source file,
+	<code>ConstantHandler.java</code>:</p>
+
+	<source>import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import jpl.eda.product.QueryHandler;
+import jpl.eda.xmlquery.Header;
+import jpl.eda.xmlquery.Result;
+import jpl.eda.xmlquery.QueryElement;
+import jpl.eda.xmlquery.XMLQuery;
+
+public class ConstantHandler
+  implements QueryHandler {
+  private static final Map CONSTANTS = new ConcurrentHashMap();
+  static {
+    CONSTANTS.put("pi",    "3.14159265...");
+    CONSTANTS.put("e",     "2.7182818285...");
+    CONSTANTS.put("gamma", "0.577215664...");
+  }
+  private static String getConstantName(XMLQuery q) {
+    List stack = q.getWhereElementSet();
+    if (stack.size() != 3) return null;
+    QueryElement e = (QueryElement) stack.get(0);
+    if (!"elemName".equals(e.getRole())
+      || !"constant".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(2);
+    if (!"RELOP".equals(e.getRole())
+      || !"EQ".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(1);
+    if (!"LITERAL".equals(e.getRole()))
+	return null;
+    return e.getValue();
+  }
+  private static boolean isAcceptableType(XMLQuery q) {
+    List mimes = q.getMimeAccept();
+    if (mimes.isEmpty()) return true;
+    for (Iterator i = mimes.iterator(); i.hasNext();) {
+      String type = (String) i.next();
+      if ("text/plain".equals(type)
+        || "text/*".equals(type)
+        || "*/*".equals(type)) return true;
+    }
+    return false;
+  }
+  private static void insert(String name,
+    String value, XMLQuery q) {
+    Header h = new Header(name, "real", "none");
+    Result r = new Result(name, "text/plain",
+      /*profileID*/null, /*resourceID*/null,
+      Collections.singletonList(h),
+      value, /*classified*/false, Result.INFINITE);
+    q.getResults().add(r);
+  }
+  public XMLQuery query(XMLQuery q) {
+    String name = getConstantName(q);
+    if (name == null) return q;
+    if (!isAcceptableType(q)) return q;
+    String value = (String) CONSTANTS.get(name);
+    if (value == null) return q;
+    insert(name, value, q);
+    return q;
+  }
+}</source>
+
+	<p>How should you go about compiling this and installing it in
+	  a product server?  Read on!
+	</p>
+      </subsection>
+    </section>
+
+    <section name="Compiling the Code">
+      <p>We'll compile this code using the J2SDK command-line tools,
+	but if you're more comfortable with some kind of Integrated
+	Development Environment (IDE), adjust as necessary.
+      </p>
+
+      <p>First, let's go back to the <code>$PS_HOME</code> directory
+	we made earlier and make directories to hold both the source
+	code and classes that we'll compile from it:
+      </p>
+
+      <source>% <b>cd $PS_HOME</b>
+% <b>mkdir classes src</b></source>
+
+      <p>Then, create <code>$PS_HOME/src/ConstantHandler.java</code> using
+	your favorite text editor (or by cutting and pasting the source
+	from this page, or whatever).  Finally, compile the file as follows:
+      </p>
+
+      <source>% <b>javac -extdirs lib \
+  -d classes src/ConstantHandler.java</b>
+% ls -l classes
+total 4
+-rw-r--r--  1 kelly  kelly  2524 25 Feb 15:46 ConstantHandler.class</source>
+
+      <p>The <code>javac</code> command is the Java compiler.  The
+	<code>-extdirs lib</code> arguments tell the compiler where to
+	find extension jars.  In this case, the code references things
+	defined in edm-query-2.0.2.jar and grid-product-3.0.3.jar.
+	The <code>-d classes</code> tells where compiled classes
+	should go.
+      </p>
+
+      <p>Next, make a jar file that contains your compiled class:</p>
+
+      <source>% <b>jar -cf lib/my-handlers.jar \
+  -C classes ConstantHandler.class</b>
+% <b>jar -tf lib/my-handlers.jar</b>
+META-INF/
+META-INF/MANIFEST.MF
+ConstantHandler.class</source>
+
+      <p>We now have a new jar file of our own creation in the
+	<code>$PS_HOME/lib</code> directory; this means that the
+	product server will be able to find out new query handler.
+	All we have to do now is tell our product server about it.
+      </p>
+    </section>
+
+    <section name='Specfying the Query Handler'>
+      <p>Query handlers aren't really <em>installed</em> into product
+	servers.  What you do is tell the product server what query
+	handlers you want it to use by naming their classes.  The
+	product server will instantiate an object of each class and,
+	as queries come in, it will delegate queries to each
+	instantiated query handler.
+      </p>
+
+      <p>To tell a product server what query handlers to instantiate,
+	you specify a system property called <code>handlers</code>.
+	You set this property to a comma-separated list of class
+	names.  These should be fully-qualified class names (with
+	package prefixes, if you used packages when making your query
+	handlers), separated by commas.  In this tutorial, we made
+	just one query handler, and we didn't put it into a package,
+	so we'll just use <code>ConstantHandler</code>.
+      </p>
+
+      <p>First, stop any product server you have running now by
+	pressing CTRL+C (or whatever your interrupt key is) in the
+	window that was running the product server.  Next, modify the
+	<code>$PS_HOME/bin/ps</code> file so it reads as follows:
+      </p>
+
+      <source>#!/bin/sh
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+    -Dhandlers=ConstantHandler \
+    jpl.eda.ExecServer \
+    jpl.eda.product.rmi.ProductServiceImpl \
+    urn:eda:rmi:MyProductService</source>
+
+      <p>We specified a system property on the command line using
+	Java's <code>-D</code> option.  This defines the system
+	property <code>handlers</code> as having the value
+	<code>ConstantHandler</code>.  Finally, start the product
+	server again by running <code>$PS_HOME/bin/ps</code>.
+      </p>
+    </section>
+
+    <section name='Querying for Constants'>
+      <p>Once again, edit the <code>$PS_HOME/bin/pc</code> script and
+	change <code>-xml</code> back to <code>-out</code> so that
+	instead of the XML output we'll see the raw product data.
+	Then run it and see what happens:
+      </p>
+
+      <source>% <b>$PS_HOME/bin/pc 'constant = pi'</b>
+3.14159265...% </source>
+
+      <p>Because the raw product data was the string
+	<code>3.14159265...</code> without any trailing newline, the
+	shell's prompt appeared right at the end of the product
+	result.  You might try piping the output of the above command
+	through a pager like <code>more</code> or <code>less</code> to
+	avoid this.
+      </p>
+
+      <p>Here's what happened when we ran this command:</p>
+
+      <ol>
+	<li>The product client created an <code>XMLQuery</code> object
+	  out of the string query <code>constant = pi</code>.
+	</li>
+
+	<li>It asked the RMI Registry to tell it where (network
+	  address) it could find the product service named
+	  <code>MyProductService</code>.
+	</li>
+
+	<li>After getting the response back from the RMI Registry, it
+	  then contacted the product service over a network connection
+	  (even if to the same local system) and asked it to handle
+	  the query, passing the query object.
+	</li>
+
+	<li>The product service had only one query handler, the
+	  <code>ConstantHandler</code>, to which to delegate, so it
+	  passed the XMLQuery to it.
+	</li>
+
+	<li>The <code>ConstantHandler</code>'s <code>query</code>
+	  method was called.  It checked if the query was the kind it
+	  wanted, extracted the desired mathematical constant's name,
+	  checked for an acceptable requested MIME type, looked up the
+	  constant's value, inserted it as a <code>Result</code> into
+	  the <code>XMLQuery</code>, and returned the modified query.
+	</li>
+
+	<li>The product service, seeing it had no other handlers to
+	  try, returned the modified <code>XMLQuery</code> to the
+	  product client over the network connection.
+	</li>
+
+	<li>The product client took the first <code>Result</code> out
+	  of the <code>XMLQuery</code>, called
+	  <code>Result.getInputStream</code>, and copied each byte of
+	  the result to the standard output.  This wrote
+	  <code>3.14159265...</code> to your window.
+	</li>
+      </ol>
+
+      <p>If you change the <code>$PS_HOME/bin/pc</code> script again
+	so that instead of <code>-out</code> it's <code>-xml</code>,
+	you'll again see the XMLQuery as an XML document.  The interesting part is the <code>&lt;queryResultSet&gt;</code>:
+      </p>
+
+      <source><![CDATA[<queryResultSet>
+  <resultElement classified="false" validity="-1">
+    <resultId>pi</resultId>
+    <resultMimeType>text/plain</resultMimeType>
+    <profId/>
+    <identifier/>
+    <resultHeader>
+      <headerElement>
+	<elemName>pi</elemName>
+	<elemType>real</elemType>
+	<elemUnit>none</elemUnit>
+      </headerElement>
+    </resultHeader>
+    <resultValue xml:space="preserve">3.14159265...</resultValue>
+  </resultElement>
+</queryResultSet>]]></source>
+
+      <p>I'll let you figure out how this maps to the
+	<code>Result</code> object we created in the code.  OK, so is
+	this really interesting?  Not really, except to note that the
+	actual result data, <code>3.1415265...</code>, appears in the
+	XML document.  In the OODT framework, we call this a "small"
+	result, because the product data was embedded in the XMLQuery
+	object.  Text data like <code>text/plain</code> products
+	appear just as text.  Binary data like <code>image/jpeg</code>
+	and <code>application/octet-stream</code> get base-64 encoded
+	into text.
+      </p>
+      <p>As you can guess, there's a point at which encoded data goes
+	from being nice and small and tidy to just too large to
+	contain in a single object.  In the OODT framework, we can use
+	a special query handler for such large products, but that's
+	another tutorial.
+      </p>
+    </section>
+
+    <section name='Conclusion'>
+      <p>In this tutorial, we learned how to write a complete query
+	handler for a product server, including handling of postfix
+	boolean "where" stacks, lists of acceptable MIME types, and
+	result headers.  We compiled the query handler, put it into a
+	jar file, and specified it to our product server.  And we
+	could even query it and get data back.
+      </p>
+
+      <p>Don't toss out this product server yet, though.  Another
+	tutorial will use it and cover the infamous
+	<code>LargeProductQueryHandler</code>.
+      </p>
+    </section>
+  </body>
+</document>
