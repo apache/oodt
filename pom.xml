@@ -35,13 +35,6 @@ the License.
     <module>cli</module>
     <module>pcs/input</module>
     <module>metadata</module>
-    <module>protocol/api</module>
-    <module>protocol/ftp</module>
-    <module>protocol/http</module>
-    <module>protocol/imaps</module>
-    <module>protocol/sftp</module>
-    <module>xmlquery</module>
-    <module>sso</module>
     <module>filemgr</module>
     <module>catalog</module>
     <module>workflow</module>
@@ -52,18 +45,10 @@ the License.
     <module>pge</module>
     <module>mvn/plugins/cas-install</module>
     <module>mvn/archetypes</module>
-    <module>pushpull</module>
-    <module>product</module>
-    <module>profile</module>
-    <module>grid</module>
-    <module>xmlps</module>
-    <module>opendapps</module>
     <module>webapp/components</module>
     <module>webapp/fmbrowser</module>
     <module>webapp/fmprod</module>
     <module>webapp/wmonitor</module>
-    <module>app/fmbrowser</module>
-    <module>app/weditor</module>
     <module>pcs/core</module>
     <module>pcs/opsui</module>
     <module>pcs/services</module>
