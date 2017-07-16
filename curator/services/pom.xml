@@ -83,10 +83,6 @@ the License.
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-sso</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
     </dependency>

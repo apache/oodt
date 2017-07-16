@@ -68,8 +68,6 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
   protected final static String FORMAT_HTML = "html";
   
   protected final static String UNKNOWN_OUT_FORMAT = "Unsupported Output Format!";
-  
-  protected SingleSignOn sso;
 
   /**
    * Default Constructor.
