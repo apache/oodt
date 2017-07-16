@@ -47,8 +47,9 @@ the License.
     <module>mvn/archetypes</module>
     <module>webapp/components</module>
     <module>webapp/fmbrowser</module>
-    <module>webapp/fmprod</module>
     <module>webapp/wmonitor</module>
+    <module>webapp/fmprod</module>
+    <module>webapp/wmservices</module>
     <module>pcs/core</module>
     <module>pcs/opsui</module>
     <module>pcs/services</module>
