@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-563 Task editing and Workflow execution (varun, mattmann)
+
 * OODT-212 Rollback capability for Workflows (sherylj via mattmann)
 
 * OODT-836, OODT-837 Remove Non-Essential Components (mattmann, mdstarch, magicaltrout)
