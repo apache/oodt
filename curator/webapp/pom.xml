@@ -62,10 +62,6 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-sso</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-webapp-components</artifactId>
       <exclusions>
         <exclusion>
