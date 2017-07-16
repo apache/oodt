@@ -334,11 +334,6 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-protocol-api</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
         <artifactId>cas-resource</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
@@ -360,27 +355,12 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
-        <artifactId>oodt-product</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>oodt-profile</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>oodt-sso</artifactId>
+        <artifactId>curator-sso</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-webapp-components</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>oodt-xmlquery</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <dependency>

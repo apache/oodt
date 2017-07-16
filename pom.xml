@@ -39,6 +39,7 @@ the License.
     <module>workflow</module>
     <module>crawler</module>
     <module>resource</module>
+    <module>curator/sso</module>
     <module>curator/services</module>
     <module>curator/webapp</module>
     <module>pge</module>

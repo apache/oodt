@@ -117,8 +117,9 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
    * {@link OpenSSOImpl#getSSOToken()}.
    * 
    * @return A {@link List} of String LMMP groups for the User.
-   * @throws Exception
+   * @throws SingleSignOnException
    *           If any error (e.g., HTTP REST error) occurs.
+   * @throws IOException If the SSO token cannot be read.
    */
   public List<String> getGroupsForUser() throws IOException, SingleSignOnException {
     String token = this.getSSOToken();
