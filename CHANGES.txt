@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-753 Move FM and WM Python APIs into "agility" component (kelly, mattmann)
+
 * OODT-563 Task editing and Workflow execution (varun, mattmann)
 
 * OODT-212 Rollback capability for Workflows (sherylj via mattmann)
