@@ -17,7 +17,7 @@
 
 
 import xmlrpclib
-from oodt_metadata import MetaData
+from metadata import MetaData
 
 
 class OODTWorkFlowWrapper(object):
