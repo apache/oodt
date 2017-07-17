@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-305 Make the Resource Manager manage different queues of jobs independently (resneck, mattmann)
+
 * OODT-753 Move FM and WM Python APIs into "agility" component (kelly, mattmann)
 
 * OODT-563 Task editing and Workflow execution (varun, mattmann)
