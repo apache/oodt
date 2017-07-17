@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.product.handlers.ofsn;
 
 import org.apache.oodt.commons.xml.XMLUtils;
@@ -44,7 +43,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * 
  * An extensible implementation of the PDS-inspired Online File Specification
@@ -58,14 +56,14 @@ import java.util.logging.Logger;
 public class OFSNFileHandler implements LargeProductQueryHandler,
     XMLQueryMetKeys, OFSNXMLMetKeys, OFSNMetKeys, OFSNXMLConfigMetKeys {
 
-  private static final Logger LOG = Logger.getLogger(OFSNFileHandler.class
-      .getName());
+  private static final Logger LOG = Logger
+      .getLogger(OFSNFileHandler.class.getName());
 
   private static final String CMD_SEPARATOR = ";";
 
   // by default return dir size on listing commands
   private boolean computeDirSize = true;
-  
+
   // by default return file size on listing commands
   private boolean computeFileSize = true;
 
@@ -79,7 +77,6 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     this.computeDirSize = Boolean.getBoolean(OFSN_COMPUTE_DIR_SIZE);
     this.computeFileSize = Boolean.getBoolean(OFSN_COMPUTE_FILE_SIZE);
 
-
     if (xmlConfigFilePath == null) {
       throw new InstantiationException(
           "Must define xml configuration file path via property : ["
@@ -90,8 +87,8 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
       this.conf = OFSNFileHandlerConfigurationReader
           .getConfig(xmlConfigFilePath);
     } catch (FileNotFoundException e) {
-      throw new InstantiationException("xml configuration file: ["
-          + xmlConfigFilePath + "] not found!");
+      throw new InstantiationException(
+          "xml configuration file: [" + xmlConfigFilePath + "] not found!");
     }
 
     if (this.conf.getProductRoot() == null) {
@@ -106,7 +103,8 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.oodt.product.QueryHandler#query(org.apache.oodt.xmlquery.XMLQuery)
+   * @see org.apache.oodt.product.QueryHandler#query(org.apache.oodt.xmlquery.
+   * XMLQuery)
    */
   public XMLQuery query(XMLQuery xmlQuery) throws ProductException {
     String ofsn = OFSNUtils.extractFieldFromQuery(xmlQuery, OFSN);
@@ -123,38 +121,40 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
       OFSNListHandler handler = getListHandler(cmd, cfg.getClassName());
       File[] fileList = handler.getListing(realPath);
       generateOFSNXml(fileList, cfg, outStream);
-      xmlQuery.getResults().add(
-          new Result(cmdId, XML_MIME_TYPE, null, cmdId, Collections.EMPTY_LIST,
-              outStream.toString()));
+      xmlQuery.getResults().add(new Result(cmdId, XML_MIME_TYPE, null, cmdId,
+          Collections.EMPTY_LIST, outStream.toString()));
     } else if (isGetCmd(cmd)) {
       OFSNGetHandler handler = getGetHandler(cmd, cfg.getClassName());
       String rtAndPath = cmd + CMD_SEPARATOR + realPath;
       String mimeType;
-      
+
       // check for and use mimetype conf property if available
       if (cfg.getHandlerConf().containsKey(PROPERTY_MIMETYPE_ATTR)) {
-    	  MediaType mediaType = MediaType.parse(cfg.getHandlerConf()
-    			  .getProperty(PROPERTY_MIMETYPE_ATTR));
-    	  if (mediaType == null) {
-    		  LOG.log(Level.WARNING, "MIME type ["
-    				  +cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR)+"] specified "
-    				  +"for handler ["+cfg.getClassName()+"] invalid. Defaulting to MIME type ["
-    				  +MediaType.OCTET_STREAM.toString()+"]");
-    		  mediaType = MediaType.OCTET_STREAM;
-    	  }
-    	  mimeType = mediaType.toString();
+        MediaType mediaType = MediaType
+            .parse(cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR));
+        if (mediaType == null) {
+          LOG.log(Level.WARNING,
+              "MIME type ["
+                  + cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR)
+                  + "] specified " + "for handler [" + cfg.getClassName()
+                  + "] invalid. Defaulting to MIME type ["
+                  + MediaType.OCTET_STREAM.toString() + "]");
+          mediaType = MediaType.OCTET_STREAM;
+        }
+        mimeType = mediaType.toString();
       } else { // use default mimetype of product on disk
-          try {
-              mimeType = MimeTypesFactory.create().getMimeType(new File(realPath)).getName();
-          } catch (Exception e) {
-              mimeType = null;
-          }
+        try {
+          mimeType = MimeTypesFactory.create().getMimeType(new File(realPath))
+              .getName();
+        } catch (Exception e) {
+          mimeType = null;
+        }
       }
-      
-      xmlQuery.getResults().add(
-          new LargeResult(/* id */rtAndPath,/* mimeType */ mimeType, /* profileID */null, 
-        		  /* resourceID */new File(realPath).getName(), Collections.EMPTY_LIST, 
-        		  handler.sizeOf(realPath)));
+
+      xmlQuery.getResults()
+          .add(new LargeResult(/* id */rtAndPath, /* mimeType */ mimeType,
+              /* profileID */null, /* resourceID */new File(realPath).getName(),
+              Collections.EMPTY_LIST, handler.sizeOf(realPath)));
     } else {
       throw new ProductException("return type: [" + cmd + "] is unsupported!");
     }
@@ -166,18 +166,28 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.oodt.product.LargeProductQueryHandler#close(java.lang.String)
+   * @see
+   * org.apache.oodt.product.LargeProductQueryHandler#close(java.lang.String)
    */
   public void close(String id) {
     // nothing to do
   }
 
   /*
+   * Get the file handler configuration.
+   *
+   * @return The file handler configuration.
+   */
+  public OFSNFileHandlerConfiguration getOfsnFileHandlerConfiguration() {
+    return this.conf;
+  }
+
+  /*
    * (non-Javadoc)
    * 
    * @see
-   * org.apache.oodt.product.LargeProductQueryHandler#retrieveChunk(java.lang.String,
-   * long, int)
+   * org.apache.oodt.product.LargeProductQueryHandler#retrieveChunk(java.lang.
+   * String, long, int)
    */
   public byte[] retrieveChunk(String id, long offset, int length)
       throws ProductException {
@@ -186,17 +196,17 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     String rtType = rtTypeAndPathArr[0];
     String filepath = rtTypeAndPathArr[1];
 
-    OFSNGetHandler handler = getGetHandler(rtType, this.conf
-        .getHandlerClass(rtType));
-    
+    OFSNGetHandler handler = getGetHandler(rtType,
+        this.conf.getHandlerClass(rtType));
+
     return handler.retrieveChunk(filepath, offset, length);
   }
 
   private void generateOFSNXml(File[] mlsFileList, OFSNHandlerConfig cfg,
       OutputStream outStream) {
     XMLUtils.writeXmlToStream(OFSNUtils.getOFSNDoc(Arrays.asList(mlsFileList),
-        cfg, this.conf.getProductRoot(), this.computeDirSize, this.computeFileSize),
-        outStream);
+        cfg, this.conf.getProductRoot(), this.computeDirSize,
+        this.computeFileSize), outStream);
   }
 
   private void validate(String ofsn, String cmd) throws ProductException {
@@ -219,7 +229,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
       return (OFSNListHandler) HANDLER_CACHE.get(rtType);
     } else {
       OFSNListHandler handler = OFSNObjectFactory.getListHandler(className);
-      LOG.log(Level.INFO, "Getting handler config for RT: ["+rtType+"]");
+      LOG.log(Level.INFO, "Getting handler config for RT: [" + rtType + "]");
       handler.configure(this.conf.getHandlerConfig(rtType).getHandlerConf());
       HANDLER_CACHE.put(rtType, handler);
       return handler;
