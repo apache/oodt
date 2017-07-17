@@ -89,10 +89,13 @@ public class IngestionResource extends CurationService {
   private static final String RESP_SUCCESS = "success";
 
   private IngestionTaskList taskList;
+  
+  private String taskListSaveLocPath;
 
   public IngestionResource() {
     super();
     this.taskList = new IngestionTaskList();
+    this.taskListSaveLocPath = "/tmp/tasklist.xml";
     IngestionTask task = new IngestionTask();
     task.setCreateDate(new Date());
 
@@ -357,6 +360,7 @@ public class IngestionResource extends CurationService {
       return taskList;
     }
 
+    //TODO: write method to load ingest task list from XML file    
     public void exportTaskListAsXMLToFile(String fileName) {
       try {
         Document xmlDocument = generateXMLDocument();
