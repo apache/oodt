@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-877 Fix 2 failures in o.a.o.commons.util.XMLTest on Windows 2008 Server (lewismc, mattmann)
+
 * OODT-305 Make the Resource Manager manage different queues of jobs independently (resneck, mattmann)
 
 * OODT-753 Move FM and WM Python APIs into "agility" component (kelly, mattmann)
