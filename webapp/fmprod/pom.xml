@@ -101,16 +101,6 @@
       <artifactId>oodt-commons</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-product</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-xmlquery</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
     </dependency>
@@ -134,6 +124,18 @@
     </dependency>
   </dependencies>
   <build>
+    <resources>
+      <resource>
+        <targetPath>org/apache/oodt/xmlquery</targetPath>
+        <directory>${basedir}/src/main/conf</directory>
+        <includes>
+          <include>mime.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/dtd</directory>
+      </resource>
+    </resources>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
       <!--
@@ -176,6 +178,7 @@
           </systemProperties>
           <excludes>
             <exclude>org/apache/oodt/cas/product/service/resources/ResourceTestBase.java</exclude>
+            <exclude>org/apache/oodt/xmlquery/CodecTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

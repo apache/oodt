@@ -49,6 +49,9 @@ public class Job {
 
     /* the status of this job */
     private String status = null;
+    
+    /* ready or not ? */
+    private boolean ready = true;
 
     /**
      * Default Constructor.
@@ -77,6 +80,7 @@ public class Job {
         this.jobInputClassName = jobInputClassName;
         this.loadValue = loadValue;
         this.queueName = queueName;
+        this.ready = true;
     }
 
     /**
@@ -168,6 +172,14 @@ public class Job {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+    public boolean getReady(){
+      return this.ready;
+    }
+  
+    public void setReady(boolean readyValue){
+      this.ready = readyValue;
     }
 
 }

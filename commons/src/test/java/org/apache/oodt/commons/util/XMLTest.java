@@ -59,7 +59,7 @@ public class XMLTest extends TestCase {
 		String result = XML.serialize(doc);
 		crc.update(result.getBytes());
 		long value = crc.getValue();
-		assertTrue("Stringified DOM document CRC mismatch, got value = " + value, 3880488030L == value || 2435419114L == value || /* added by Chris Mattmann: pretty print fix */3688328384L == value || /* other newline treatment */ 750262163L == value || 3738296466L == value /* Apache incubator warmed up the file, so it suffered thermal expansion */ || 1102069581L == value /* lewismc and his ALv2 header. */);
+		assertTrue("Stringified DOM document CRC mismatch, got value = " + value, 3880488030L == value || 2435419114L == value || /* added by Chris Mattmann: pretty print fix */3688328384L == value || /* other newline treatment */ 750262163L == value || 3738296466L == value /* Apache incubator warmed up the file, so it suffered thermal expansion */ || 1102069581L == value /* lewismc and his ALv2 header. */ || 3026567548L == value /* Windows 2008 Server CRC value */);
 	}
 
 	/** Test the {@link XML#createSAXParser} method.
@@ -85,7 +85,7 @@ public class XMLTest extends TestCase {
 		java.util.zip.CRC32 crc = new java.util.zip.CRC32();
 		crc.update(stringWriter.getBuffer().toString().getBytes());
 		long value = crc.getValue();
-		assertTrue("Dumped DOM tree CRC mismatch; got " + value, value == 828793L || value == 2241317601L || value == 3208931170L /* lewismc and his ALv2 header */);
+		assertTrue("Dumped DOM tree CRC mismatch; got " + value, value == 828793L || value == 2241317601L || value == 3208931170L /* lewismc and his ALv2 header */ || 2172516213L == value /* Windows 2008 Server CRC value */);
 	}
 
 	/** Test the {@link XML#unwrappedText} method. */

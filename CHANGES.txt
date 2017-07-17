@@ -3,6 +3,26 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-526 Add base functionality in Curator for Task List persistence (mjoyce, mattmann)
+
+* OODT-525 Export IngestTaskList from Curator (mjoyce, mattmann)
+
+* OODT-304 Add a Getter method to get the file handler configuration (Michael Cayanan via mattmann)
+
+* OODT-877 Fix 2 failures in o.a.o.commons.util.XMLTest on Windows 2008 Server (lewismc, mattmann)
+
+* OODT-305 Make the Resource Manager manage different queues of jobs independently (resneck, mattmann)
+
+* OODT-753 Move FM and WM Python APIs into "agility" component (kelly, mattmann)
+
+* OODT-563 Task editing and Workflow execution (varun, mattmann)
+
+* OODT-212 Rollback capability for Workflows (sherylj via mattmann)
+
+* OODT-836, OODT-837 Remove Non-Essential Components (mattmann, mdstarch, magicaltrout)
+
+* OODT-213 Reading/Writing API for XML-based Workflow Task policy (mattmann)
+
 * OODT-775 XSD's for pushpull's mimetypes.xml (Lewis John McGibbney via mattmann)
 
 * OODT-847 New FilemgrMetExtractor to extract File System Attributes (Aditya Dhulipala, rverma via mattmann)
