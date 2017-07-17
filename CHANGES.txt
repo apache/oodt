@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 1.1 - Current Development
 
+* OODT-526 Add base functionality in Curator for Task List persistence (mjoyce, mattmann)
+
 * OODT-525 Export IngestTaskList from Curator (mjoyce, mattmann)
 
 * OODT-304 Add a Getter method to get the file handler configuration (Michael Cayanan via mattmann)

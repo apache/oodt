@@ -320,6 +320,10 @@ function createIngestionTaskRow(data) {
     $('#ingestionTaskListItems > tbody').replace(data);
 }
 
+function initIngestTaskList() {
+	$.get('./services/ingest/init');
+}
+		
 function removeIngestionTask(id) {
 	$.get('./services/ingest/remove',
 			{ 'taskId' : id },

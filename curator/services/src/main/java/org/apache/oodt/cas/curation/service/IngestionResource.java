@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.curation.service;
 
+import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 //OODT imports
 import org.apache.oodt.cas.curation.structs.IngestionTask;
 import org.apache.oodt.cas.curation.util.DateUtils;
@@ -33,12 +34,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
@@ -50,7 +54,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 
@@ -89,7 +95,7 @@ public class IngestionResource extends CurationService {
   private static final String RESP_SUCCESS = "success";
 
   private IngestionTaskList taskList;
-  
+
   private String taskListSaveLocPath;
 
   public IngestionResource() {
@@ -130,7 +136,16 @@ public class IngestionResource extends CurationService {
     newTask.setPolicy(policy);
     newTask.setProductType(productType);
     newTask.setStatus(IngestionTask.NOT_STARTED);
-    return this.taskList.addIngestionTask(newTask);
+    String addedTaskID = this.taskList.addIngestionTask(newTask);
+    saveTaskListState();
+    return addedTaskID;
+  }
+
+  @GET
+  @Path("init")
+  @Produces("text/plain")
+  public void initTaskList() {
+    loadSavedTaskListState();
   }
 
   @GET
@@ -138,6 +153,7 @@ public class IngestionResource extends CurationService {
   @Produces("text/plain")
   public void removeTask(@QueryParam("taskId") String ingestTaskId) {
     this.taskList.removeIngestionTask(ingestTaskId);
+    saveTaskListState();
   }
 
   @GET
@@ -195,7 +211,10 @@ public class IngestionResource extends CurationService {
       task.setStatus(IngestionTask.FINISHED);
     }
 
-    return this.encodeIngestResponseAsHTML(true, null);
+    String response = this.encodeIngestResponseAsHTML(true, null);
+    saveTaskListState();
+    return response;
+
   }
 
   private String encodeTaskListAsHTML(List<IngestionTask> taskList) {
@@ -320,12 +339,123 @@ public class IngestionResource extends CurationService {
     }
   }
 
+  private void saveTaskListState() {
+    this.taskList.exportTaskListAsXMLToFile(this.taskListSaveLocPath);
+  }
+
+  private void loadSavedTaskListState() {
+    File state = new File(this.taskListSaveLocPath);
+    if (state.exists())
+      parseXMLState(state);
+  }
+
+  private void parseXMLState(File stateFile) {
+    try {
+      Document document = buildXMLDocument(stateFile);
+      rebuildTaskList(document);
+    } catch (Exception e) {
+      LOG.log(Level.WARNING,
+          "parseXMLState: Unable to process saved TaskList state");
+    }
+  }
+
+  private Document buildXMLDocument(File stateFile)
+      throws ParserConfigurationException, SAXException, IOException {
+
+    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
+        .newInstance();
+    DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+    Document document = docBuilder.parse(stateFile);
+    document.getDocumentElement().normalize();
+    return document;
+  }
+
+  private void rebuildTaskList(Document document)
+      throws FileNotFoundException, IOException, ParseException {
+
+    NodeList tasks = document.getElementsByTagName("Task");
+
+    for (int i = 0; i < tasks.getLength(); i++) {
+      Element taskElement = (Element) tasks.item(i);
+
+      String id = getNodeValue(taskElement, "ID");
+      String dateString = getNodeValue(taskElement, "CreateDate");
+      List<String> newFileList = getTaskFileList(taskElement);
+      String policy = getNodeValue(taskElement, "Policy");
+      String productType = getNodeValue(taskElement, "ProductType");
+      String status = getNodeValue(taskElement, "Status");
+      String[] extConfParams = getTaskExtractorConfigParams(taskElement);
+
+      IngestionTask newTask = createTaskFromParameters(id, dateString,
+          newFileList, policy, productType, status, extConfParams);
+
+      this.taskList.addIngestionTaskWithoutIdGen(newTask);
+    }
+  }
+
+  private List<String> getTaskFileList(Element parent) {
+    NodeList files = parent.getElementsByTagName("File");
+    List<String> newFileList = new Vector<String>();
+
+    for (int i = 0; i < files.getLength(); i++) {
+      Element fileNode = (Element) files.item(i);
+      newFileList.add(fileNode.getFirstChild().getNodeValue());
+    }
+
+    return newFileList;
+  }
+
+  private String[] getTaskExtractorConfigParams(Element parent) {
+    String[] params = new String[2];
+
+    NodeList extData = parent.getElementsByTagName("ExtractorConfig");
+    Element extDataElm = (Element) extData.item(0);
+    params[0] = extDataElm.getElementsByTagName("UploadPath").item(0)
+        .getFirstChild().getNodeValue();
+    params[1] = extDataElm.getElementsByTagName("ID").item(0).getFirstChild()
+        .getNodeValue();
+
+    return params;
+  }
+
+  private IngestionTask createTaskFromParameters(String id, String dateString,
+      List<String> fileList, String policy, String productType, String status,
+      final String[] extConfParams)
+      throws FileNotFoundException, IOException, ParseException {
+
+    Date date = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy",
+        Locale.ENGLISH).parse(dateString);
+    ExtractorConfig extConf = ExtractorConfigReader
+        .readFromDirectory(new File(extConfParams[0]), extConfParams[1]);
+
+    IngestionTask newTask = new IngestionTask();
+    newTask.setId(id);
+    newTask.setCreateDate(date);
+    newTask.setFileList(fileList);
+    newTask.setPolicy(policy);
+    newTask.setProductType(productType);
+    newTask.setStatus(status);
+    newTask.setExtConf(extConf);
+
+    return newTask;
+  }
+
+  private String getNodeValue(Element element, String tag) {
+    NodeList nodeList = element.getElementsByTagName(tag).item(0)
+        .getChildNodes();
+    return ((Node) nodeList.item(0)).getNodeValue();
+  }
+
   class IngestionTaskList {
 
     private ConcurrentHashMap<String, IngestionTask> taskMap;
 
     public IngestionTaskList() {
       this.taskMap = new ConcurrentHashMap<String, IngestionTask>();
+    }
+
+    public int getNumberOfTasks() {
+      return taskMap.size();
     }
 
     public synchronized String addIngestionTask(IngestionTask task) {
@@ -336,6 +466,12 @@ public class IngestionResource extends CurationService {
 
     public synchronized void removeIngestionTask(String taskId) {
       taskMap.remove(taskId);
+    }
+
+    public synchronized String addIngestionTaskWithoutIdGen(
+        IngestionTask task) {
+      taskMap.put(task.getId(), task);
+      return task.getId();
     }
 
     public IngestionTask getIngestionTaskById(String taskId) {
@@ -360,7 +496,7 @@ public class IngestionResource extends CurationService {
       return taskList;
     }
 
-    //TODO: write method to load ingest task list from XML file    
+    // TODO: write method to load ingest task list from XML file
     public void exportTaskListAsXMLToFile(String fileName) {
       try {
         Document xmlDocument = generateXMLDocument();
