@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
@@ -30,6 +29,9 @@ import org.apache.oodt.cas.metadata.Metadata;
 import net.sf.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +44,15 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -61,6 +72,7 @@ import javax.ws.rs.core.UriInfo;
  * Manager via CAS Curator and a REST-ful interface.
  * 
  * @author mattmann
+ * @author mjoyce
  * @version $Revision$
  * 
  */
@@ -69,8 +81,8 @@ public class IngestionResource extends CurationService {
 
   private static final long serialVersionUID = -7514150767897700936L;
 
-  private static final Logger LOG = Logger.getLogger(IngestionResource.class
-      .getName());
+  private static final Logger LOG = Logger
+      .getLogger(IngestionResource.class.getName());
 
   private static final String DATA_TRANSFER_SERVICE = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
@@ -101,8 +113,8 @@ public class IngestionResource extends CurationService {
     IngestionTask newTask = new IngestionTask();
     newTask.setCreateDate(new Date());
     try {
-      newTask.setExtConf(ExtractorConfigReader.readFromDirectory(new File(
-          CurationService.config.getMetExtrConfUploadPath()),
+      newTask.setExtConf(ExtractorConfigReader.readFromDirectory(
+          new File(CurationService.config.getMetExtrConfUploadPath()),
           metExtractorConfigId));
     } catch (Exception e) {
       LOG.log(Level.SEVERE, e.getMessage());
@@ -122,7 +134,7 @@ public class IngestionResource extends CurationService {
   @Path("remove")
   @Produces("text/plain")
   public void removeTask(@QueryParam("taskId") String ingestTaskId) {
-	  this.taskList.removeIngestionTask(ingestTaskId);
+    this.taskList.removeIngestionTask(ingestTaskId);
   }
 
   @GET
@@ -156,13 +168,13 @@ public class IngestionResource extends CurationService {
     for (String file : task.getFileList()) {
       Metadata fileMet;
       try {
-        String vFilePath = this.getVirtualPath(CurationService.config
-            .getStagingAreaPath(), file);
+        String vFilePath = this
+            .getVirtualPath(CurationService.config.getStagingAreaPath(), file);
         LOG.log(Level.FINE,
             "IngestionResource: getting staging metadata for virtual path: ["
                 + vFilePath + "]");
-        fileMet = metService.getStagingMetadata(vFilePath, task.getExtConf()
-            .getIdentifier(), false);
+        fileMet = metService.getStagingMetadata(vFilePath,
+            task.getExtConf().getIdentifier(), false);
       } catch (Exception e) {
         LOG.log(Level.SEVERE, e.getMessage());
         return this.encodeIngestResponseAsHTML(false, e.getMessage());
@@ -208,13 +220,15 @@ public class IngestionResource extends CurationService {
       out.append(task.getStatus());
       out.append("</td>");
       if (!task.getStatus().equals(IngestionTask.FINISHED)) {
-        out.append("<td><input type=\"button\" rel=\"_taskid_\" value=\"Start\" onclick=\"startIngestionTask('");
+        out.append(
+            "<td><input type=\"button\" rel=\"_taskid_\" value=\"Start\" onclick=\"startIngestionTask('");
         out.append(task.getId());
         out.append("')\"/></td>");
       } else {
-		out.append("<td><input type=\"button\" rel=\"_taskid_\" value=\"Remove\" onclick=\"removeIngestionTask('");
-		out.append(task.getId());
-		out.append("')\"></td>");
+        out.append(
+            "<td><input type=\"button\" rel=\"_taskid_\" value=\"Remove\" onclick=\"removeIngestionTask('");
+        out.append(task.getId());
+        out.append("')\"></td>");
       }
 
       out.append("</tr>");
@@ -227,15 +241,15 @@ public class IngestionResource extends CurationService {
     for (IngestionTask task : taskList) {
       Map<String, String> taskPropMap = new ConcurrentHashMap<String, String>();
       taskPropMap.put("id", task.getId());
-      taskPropMap.put("createDate", DateUtils.getDateAsISO8601String(task
-          .getCreateDate()));
+      taskPropMap.put("createDate",
+          DateUtils.getDateAsISO8601String(task.getCreateDate()));
       taskPropMap.put("policy", task.getPolicy());
       taskPropMap.put("productType", task.getProductType());
       taskPropMap.put("status", task.getStatus());
       taskPropMap.put("fileList", task.getFileList().toString());
       taskPropMap.put("extractorClass", task.getExtConf().getClassName());
-      taskPropMap.put("extractorConfFiles", task.getExtConf().getConfigFiles()
-          .toString());
+      taskPropMap.put("extractorConfFiles",
+          task.getExtConf().getConfigFiles().toString());
       jsonFriendlyTaskList.add(taskPropMap);
     }
 
@@ -326,8 +340,8 @@ public class IngestionResource extends CurationService {
     }
 
     public List<IngestionTask> getTaskList() {
-      List<IngestionTask> taskList = Arrays.asList(taskMap.values().toArray(
-          new IngestionTask[taskMap.values().size()]));
+      List<IngestionTask> taskList = Arrays.asList(
+          taskMap.values().toArray(new IngestionTask[taskMap.values().size()]));
       Collections.sort(taskList, new Comparator<IngestionTask>() {
 
         public int compare(IngestionTask o1, IngestionTask o2) {
@@ -341,6 +355,108 @@ public class IngestionResource extends CurationService {
         }
       });
       return taskList;
+    }
+
+    public void exportTaskListAsXMLToFile(String fileName) {
+      try {
+        Document xmlDocument = generateXMLDocument();
+
+        OutputFormat format = new OutputFormat(xmlDocument);
+        format.setIndenting(true);
+
+        // Output the Document content
+        FileOutputStream fos = new FileOutputStream(fileName);
+        XMLSerializer serializer = new XMLSerializer(fos, format);
+        serializer.asDOMSerializer();
+        serializer.serialize(xmlDocument.getDocumentElement());
+        fos.close();
+      } catch (ParserConfigurationException e) {
+        LOG.log(Level.WARNING,
+            "IngestionTaskList: Unable to generate XML from task list when exporting to file.");
+      } catch (FileNotFoundException e) {
+        LOG.log(Level.WARNING,
+            "IngestionTaskList: Unable to open file for XML output at "
+                + fileName);
+      } catch (IOException e) {
+        LOG.log(Level.WARNING,
+            "IngestionTaskList: IOException while serializing XML.");
+      }
+    }
+
+    public Document getTaskListAsXML() throws ParserConfigurationException {
+      return generateXMLDocument();
+    }
+
+    private Document generateXMLDocument() throws ParserConfigurationException {
+      DocumentBuilderFactory documentFactory = DocumentBuilderFactory
+          .newInstance();
+      DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+
+      Document xmlDocument = documentBuilder.newDocument();
+
+      // Add root "Tasks" node
+      Element root = xmlDocument.createElement("Tasks");
+      xmlDocument.appendChild(root);
+
+      // For each task, generate the following...
+      List<IngestionTask> taskList = getTaskList();
+      for (IngestionTask task : taskList) {
+        Element taskNode = xmlDocument.createElement("Task");
+        root.appendChild(taskNode);
+
+        // Task ID Node
+        Element ID = xmlDocument.createElement("ID");
+        ID.appendChild(xmlDocument.createTextNode(task.getId()));
+        taskNode.appendChild(ID);
+
+        // Task creation date Node
+        Element createDate = xmlDocument.createElement("CreateDate");
+        createDate.appendChild(
+            xmlDocument.createTextNode(task.getCreateDate().toString()));
+        taskNode.appendChild(createDate);
+
+        // Task file list Node
+        Element fileList = xmlDocument.createElement("Files");
+        for (String file : task.getFileList()) {
+          // Individual file Node
+          Element fileNode = xmlDocument.createElement("File");
+          fileNode.appendChild(xmlDocument.createTextNode(file));
+          fileList.appendChild(fileNode);
+        }
+        taskNode.appendChild(fileList);
+
+        // Task policy Node
+        Element policy = xmlDocument.createElement("Policy");
+        policy.appendChild(xmlDocument.createTextNode(task.getPolicy()));
+        taskNode.appendChild(policy);
+
+        // Task product type Node
+        Element productType = xmlDocument.createElement("ProductType");
+        productType
+            .appendChild(xmlDocument.createTextNode(task.getProductType()));
+        taskNode.appendChild(productType);
+
+        // Task status Node
+        Element status = xmlDocument.createElement("Status");
+        status.appendChild(xmlDocument.createTextNode(task.getStatus()));
+        taskNode.appendChild(status);
+
+        // Task extractor configuration Node
+        Element extractorConf = xmlDocument.createElement("ExtractorConfig");
+        // Extractor configuration upload path Node
+        Element uploadPath = xmlDocument.createElement("UploadPath");
+        uploadPath.appendChild(xmlDocument
+            .createTextNode(CurationService.config.getMetExtrConfUploadPath()));
+        extractorConf.appendChild(uploadPath);
+        // Extractor configuration ID Node
+        Element extractID = xmlDocument.createElement("ID");
+        extractID.appendChild(
+            xmlDocument.createTextNode(task.getExtConf().getIdentifier()));
+        extractorConf.appendChild(extractID);
+        taskNode.appendChild(extractorConf);
+      }
+
+      return xmlDocument;
     }
 
     private void provideTaskId(IngestionTask task) {
