@@ -1,7 +1,21 @@
 Apache OODT Change Log
 ======================
 
-Release 1.1 - Current Development
+Release 1.1 - 07/18/2017
+
+*** NOTE: A change was introduced in this version that causes a forced upgrade to your
+Lucene Workflow Instance repository catalog. If you are using Lucene in the workflow manager,
+the best bet is to blow away your old workflow instance catalog, and then allow it to be 
+rebuilt automatically. You can detect if you are affected by this issue if you see a message
+akin to the below.
+Jul 19, 2017 10:45:02 AM org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepository addWorkflowInstanceToCatalog
+WARNING: Unable to index workflow instance: [d8dad567-6c90-11e7-9e4e-7574e3a12106]: Message: Format version is not supported 
+(resource BufferedChecksumIndexInput(MMapIndexInput(path="/project/oodt/dev/jedi/data/workflow/slothrop/segments"))): -1 (needs 
+to be between 1071082519 and 1071082519). This version of Lucene only supports indexes created with release 5.0 and later.
+java.lang.NullPointerException
+****
+
+* OODT-954 CAS-PGE FileManagerFileStager has NPE b/c it does not set Product Structure (mattmann)
 
 * OODT-526 Add base functionality in Curator for Task List persistence (mjoyce, mattmann)
 
