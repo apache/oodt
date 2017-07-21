@@ -246,6 +246,11 @@ public class RSSProductServlet extends HttpServlet {
                                               + p.getProductId());
 
           Metadata m = this.safeGetMetadata(p);
+          if (m == null){
+            LOG.warning("Cannot identify metadata for product: "+p.getProductId()+": setting default met object and received time.");
+            m = new Metadata();
+            m.addMetadata("CAS.ProductReceivedTime", DateConvert.isoFormat(new Date()));
+          }
           String productReceivedTime = m.getMetadata("CAS.ProductReceivedTime");
           Date receivedTime = null;
 
