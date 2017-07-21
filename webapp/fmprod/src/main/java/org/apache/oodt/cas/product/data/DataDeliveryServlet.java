@@ -222,8 +222,21 @@ public class DataDeliveryServlet extends HttpServlet implements
   private void deliverProductFile(HttpServletRequest req,
       HttpServletResponse res, int index, String productID)
       throws CatalogException, IOException {
-    Product product = client.getProductById(productID);
-    List refs = client.getProductReferences(product);
+    Product product = null; 
+    List refs = null;
+    
+    try{
+      product = client.getProductById(productID);
+      refs = client.getProductReferences(product);      
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      LOG.warning("Unable to deliver product: ID: ["+productID+"]: "
+          + "Message: "+e.getMessage()+" throwing 404.");
+      res.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+    
     Reference ref = (Reference) refs.get(index);
     res.addHeader(CONTENT_LENGTH_HDR, String.valueOf(ref.getFileSize()));
     String contentType = (ref.getMimeType() != null
