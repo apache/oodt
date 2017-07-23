@@ -230,7 +230,6 @@ public class DataDeliveryServlet extends HttpServlet implements
       refs = client.getProductReferences(product);      
     }
     catch(Exception e){
-      e.printStackTrace();
       LOG.warning("Unable to deliver product: ID: ["+productID+"]: "
           + "Message: "+e.getMessage()+" throwing 404.");
       res.sendError(HttpServletResponse.SC_NOT_FOUND);
