@@ -114,7 +114,40 @@ public final class QueryTool {
           System.exit(-1);
       }
       return luceneQ;
-    }    
+    } 
+    
+    public void generateCASQuery(
+        org.apache.oodt.cas.filemgr.structs.Query casQuery,
+        Query luceneQuery) {
+    if (luceneQuery instanceof TermQuery) {
+        Term t = ((TermQuery) luceneQuery).getTerm();
+        if (!t.field().equals(freeTextBlock)) {
+            casQuery.addCriterion(new TermQueryCriteria(t.field(), 
+                    t.text()));
+        }
+    } else if (luceneQuery instanceof PhraseQuery) {
+        Term[] t = ((PhraseQuery) luceneQuery).getTerms();
+        if (!t[0].field().equals(freeTextBlock)) {
+            for (Term aT : t) {
+                casQuery.addCriterion(new TermQueryCriteria(
+                    aT.field(), aT.text()));
+            }
+        }
+    } else if (luceneQuery instanceof TermRangeQuery) {
+        BytesRef startT = ((TermRangeQuery) luceneQuery).getLowerTerm();
+        BytesRef endT = ((TermRangeQuery) luceneQuery).getUpperTerm();
+        casQuery.addCriterion(new RangeQueryCriteria(((TermRangeQuery) luceneQuery).getField(), startT.utf8ToString(), endT.utf8ToString()));
+    } else if (luceneQuery instanceof BooleanQuery) {
+        List<BooleanClause> clauses = ((BooleanQuery) luceneQuery).clauses();
+        for (BooleanClause clause : clauses) {
+            generateCASQuery(casQuery, (clause).getQuery());
+        }
+    } else {
+        throw new RuntimeException(
+                "Error parsing query! Cannot determine clause type: ["
+                        + luceneQuery.getClass().getName() + "] !");
+    }
+}    
     
     public static void main(String[] args)
         throws MalformedURLException, InstantiationException, CatalogException, QueryFormulationException,
@@ -191,38 +224,6 @@ public final class QueryTool {
 
     }
 
-     private void generateCASQuery(
-            org.apache.oodt.cas.filemgr.structs.Query casQuery,
-            Query luceneQuery) {
-        if (luceneQuery instanceof TermQuery) {
-            Term t = ((TermQuery) luceneQuery).getTerm();
-            if (!t.field().equals(freeTextBlock)) {
-                casQuery.addCriterion(new TermQueryCriteria(t.field(), 
-                        t.text()));
-            }
-        } else if (luceneQuery instanceof PhraseQuery) {
-            Term[] t = ((PhraseQuery) luceneQuery).getTerms();
-            if (!t[0].field().equals(freeTextBlock)) {
-                for (Term aT : t) {
-                    casQuery.addCriterion(new TermQueryCriteria(
-                        aT.field(), aT.text()));
-                }
-            }
-        } else if (luceneQuery instanceof TermRangeQuery) {
-            BytesRef startT = ((TermRangeQuery) luceneQuery).getLowerTerm();
-            BytesRef endT = ((TermRangeQuery) luceneQuery).getUpperTerm();
-            casQuery.addCriterion(new RangeQueryCriteria(((TermRangeQuery) luceneQuery).getField(), startT.utf8ToString(), endT.utf8ToString()));
-        } else if (luceneQuery instanceof BooleanQuery) {
-            List<BooleanClause> clauses = ((BooleanQuery) luceneQuery).clauses();
-            for (BooleanClause clause : clauses) {
-                generateCASQuery(casQuery, (clause).getQuery());
-            }
-        } else {
-            throw new RuntimeException(
-                    "Error parsing query! Cannot determine clause type: ["
-                            + luceneQuery.getClass().getName() + "] !");
-        }
-    }
 
     private List safeGetProductTypes() {
         List prodTypes = null;
