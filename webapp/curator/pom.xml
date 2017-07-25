@@ -73,7 +73,7 @@ the License.
       <id>ibiblio</id>
       <name>Ibiblio Repository</name>
       <layout>default</layout>
-      <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+      <url>http://maven.ibiblio.org/maven2/</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
