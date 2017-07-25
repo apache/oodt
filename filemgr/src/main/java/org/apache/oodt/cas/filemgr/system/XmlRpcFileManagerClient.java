@@ -290,6 +290,27 @@ public class XmlRpcFileManagerClient {
     return success;
   }
 
+  public boolean duplicateProduct(Product product, String newPath)
+      throws DataTransferException {
+    Map<String, Object> productHash = XmlRpcStructFactory
+        .getXmlRpcProduct(product);
+    Vector<Object> argList = new Vector<Object>();
+    argList.add(productHash);
+    argList.add(newPath);
+
+    boolean success;
+
+    try {
+      success = (Boolean) client.execute("filemgr.duplicateProduct", argList);
+    } catch (XmlRpcException e) {
+      throw new DataTransferException(e);
+    } catch (IOException e) {
+      throw new DataTransferException(e);
+    }
+
+    return success;
+  }
+
   public boolean moveProduct(Product product, String newPath)
       throws DataTransferException {
     Map<String, Object> productHash = XmlRpcStructFactory
@@ -1324,6 +1345,16 @@ public class XmlRpcFileManagerClient {
                                      + e);
     }
 
+  }
+
+  public String duplicateProduct(String productID, Metadata newMetadata)
+      throws XmlRpcException, IOException {
+
+
+    Vector<Object> argList = new Vector<Object>();
+    String productId = (String) client.execute("filemgr.duplicateProduct",
+        argList);
+    return null;
   }
 
   @SuppressWarnings("unchecked")

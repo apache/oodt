@@ -826,6 +826,61 @@ public class XmlRpcFileManager {
     return this.addProductReferencesCore(productHash);
   }
 
+  public boolean duplicateProduct(Map<String, Object> productHash, String newPath)
+      throws CatalogException, DataTransferException {
+
+    Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
+
+    // first thing we care about is if the product is flat or heirarchical
+    if (p.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
+      // we just need to get its first reference
+      if (p.getProductReferences() == null || (p.getProductReferences().size() != 1)) {
+        throw new DataTransferException(
+            "Flat products must have a single reference: cannot move");
+      }
+
+      // okay, it's fine to move it
+      // first, we need to update the data store ref
+      Reference r = p.getProductReferences().get(0);
+      if (r.getDataStoreReference().equals(
+          new File(newPath).toURI().toString())) {
+        throw new DataTransferException("cannot move product: ["
+            + p.getProductName() + "] to same location: ["
+            + r.getDataStoreReference() + "]");
+      }
+
+      // create a copy of the current data store path: we'll need it to
+      // do the data transfer
+      Reference copyRef = new Reference(r);
+
+      // update the copyRef to have the data store ref as the orig ref
+      // the the newLoc as the new ref
+      copyRef.setOrigReference(r.getDataStoreReference());
+      copyRef.setDataStoreReference(new File(newPath).toURI().toString());
+
+      p.getProductReferences().clear();
+      p.getProductReferences().add(copyRef);
+
+      // now transfer it
+      try {
+        this.dataTransfer.transferProduct(p);
+      } catch (IOException e) {
+        throw new DataTransferException(e);
+      }
+
+      // now save the updated reference
+      try {
+        this.catalog.addProduct(p);
+        return true;
+      } catch (CatalogException e) {
+        throw new DataTransferException(e.getMessage(), e);
+      }
+    } else {
+      throw new UnsupportedOperationException(
+          "Moving of heirarhical and stream products not supported yet");
+    }
+  }
+
   public String ingestProduct(Hashtable<String, Object> ph, Hashtable<String, String> m, boolean ct)
       throws CatalogException {
     return this.ingestProductCore(ph, m, ct);

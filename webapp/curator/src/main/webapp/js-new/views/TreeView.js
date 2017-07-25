@@ -212,7 +212,8 @@ define(["jquery",
                     }
                 }
             });
-            this._updateSelection = getSelectionUpdater(this.selection,this);
+
+          this._updateSelection = getSelectionUpdater(this.selection,this);
             this.render();
         };
         /**
@@ -287,6 +288,7 @@ define(["jquery",
             //Private functions
             gussy: gussy,
             refresh_tree: refresh_tree,
+            keyPressEventHandler: keyPressEventHandler,
 
             events: {
                 'click .refresh-tree' : 'refresh_tree',
