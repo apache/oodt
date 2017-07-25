@@ -51,7 +51,6 @@ import java.util.logging.Logger;
  * A tool to return product ids given a {@link Query} against the File Manager.
  * </p>
  */
-@Deprecated
 public final class QueryTool {
 
     private static String freeTextBlock = "__FREE__";
@@ -69,20 +68,6 @@ public final class QueryTool {
         } catch (ConnectionException e) {
             throw new InstantiationException(e.getMessage());
         }
-    }
-
-    public static Query parseQuery(String query) {
-        QueryParser parser;
-        // note that "__FREE__" is a control work for free text searching
-        parser = new QueryParser(freeTextBlock, new CASAnalyzer());
-        Query luceneQ = null;
-        try {
-            luceneQ = (Query) parser.parse(query);
-        } catch (ParseException e) {
-            System.out.println("Error parsing query text.");
-            System.exit(-1);
-        }
-        return luceneQ;
     }
 
     public List query(org.apache.oodt.cas.filemgr.structs.Query query) {
@@ -115,55 +100,22 @@ public final class QueryTool {
         return prodIds;
 
     }
-
-    public void generateCASQuery(
-            org.apache.oodt.cas.filemgr.structs.Query casQuery,
-            Query luceneQuery) {
-        if (luceneQuery instanceof TermQuery) {
-            Term t = ((TermQuery) luceneQuery).getTerm();
-            if (!t.field().equals(freeTextBlock)) {
-                casQuery.addCriterion(new TermQueryCriteria(t.field(), 
-                        t.text()));
-            }
-        } else if (luceneQuery instanceof PhraseQuery) {
-            Term[] t = ((PhraseQuery) luceneQuery).getTerms();
-            if (!t[0].field().equals(freeTextBlock)) {
-                for (Term aT : t) {
-                    casQuery.addCriterion(new TermQueryCriteria(
-                        aT.field(), aT.text()));
-                }
-            }
-        } else if (luceneQuery instanceof TermRangeQuery) {
-            BytesRef startT = ((TermRangeQuery) luceneQuery).getLowerTerm();
-            BytesRef endT = ((TermRangeQuery) luceneQuery).getUpperTerm();
-            casQuery.addCriterion(new RangeQueryCriteria(((TermRangeQuery) luceneQuery).getField(), startT.utf8ToString(), endT.utf8ToString()));
-        } else if (luceneQuery instanceof BooleanQuery) {
-            List<BooleanClause> clauses = ((BooleanQuery) luceneQuery).clauses();
-            for (BooleanClause clause : clauses) {
-                generateCASQuery(casQuery, (clause).getQuery());
-            }
-        } else {
-            throw new RuntimeException(
-                    "Error parsing query! Cannot determine clause type: ["
-                            + luceneQuery.getClass().getName() + "] !");
-        }
-    }
-
-    private List safeGetProductTypes() {
-        List prodTypes = null;
-
-        try {
-            prodTypes = client.getProductTypes();
-        } catch (RepositoryManagerException e) {
-            LOG.log(Level.WARNING,
-                    "Error obtaining product types from file manager: ["
-                            + client.getFileManagerUrl() + "]: Message: "
-                            + e.getMessage());
-        }
-
-        return prodTypes;
-    }
-
+    
+    
+    public static Query parseQuery(String query) {
+      QueryParser parser;
+      // note that "__FREE__" is a control work for free text searching
+      parser = new QueryParser(freeTextBlock, new CASAnalyzer());
+      Query luceneQ = null;
+      try {
+          luceneQ = (Query) parser.parse(query);
+      } catch (ParseException e) {
+          System.out.println("Error parsing query text.");
+          System.exit(-1);
+      }
+      return luceneQ;
+    }    
+    
     public static void main(String[] args)
         throws MalformedURLException, InstantiationException, CatalogException, QueryFormulationException,
         ConnectionException {
@@ -178,7 +130,7 @@ public final class QueryTool {
             + "         -query <query> \n"
             + "         -sortBy <metadata-key> \n"
             + "         -outputFormat <output-format-string> \n";
-            		
+                
         String fmUrlStr = null, queryStr = null, sortBy = null, outputFormat = null, delimiter = null;
         QueryType queryType = null;
         for (int i = 0; i < args.length; i++) {
@@ -237,6 +189,54 @@ public final class QueryTool {
             System.out.println(performSqlQuery(queryStr, sortBy, outputFormat, delimiter != null ? delimiter : "\n", fmUrlStr));
         }
 
+    }
+
+     private void generateCASQuery(
+            org.apache.oodt.cas.filemgr.structs.Query casQuery,
+            Query luceneQuery) {
+        if (luceneQuery instanceof TermQuery) {
+            Term t = ((TermQuery) luceneQuery).getTerm();
+            if (!t.field().equals(freeTextBlock)) {
+                casQuery.addCriterion(new TermQueryCriteria(t.field(), 
+                        t.text()));
+            }
+        } else if (luceneQuery instanceof PhraseQuery) {
+            Term[] t = ((PhraseQuery) luceneQuery).getTerms();
+            if (!t[0].field().equals(freeTextBlock)) {
+                for (Term aT : t) {
+                    casQuery.addCriterion(new TermQueryCriteria(
+                        aT.field(), aT.text()));
+                }
+            }
+        } else if (luceneQuery instanceof TermRangeQuery) {
+            BytesRef startT = ((TermRangeQuery) luceneQuery).getLowerTerm();
+            BytesRef endT = ((TermRangeQuery) luceneQuery).getUpperTerm();
+            casQuery.addCriterion(new RangeQueryCriteria(((TermRangeQuery) luceneQuery).getField(), startT.utf8ToString(), endT.utf8ToString()));
+        } else if (luceneQuery instanceof BooleanQuery) {
+            List<BooleanClause> clauses = ((BooleanQuery) luceneQuery).clauses();
+            for (BooleanClause clause : clauses) {
+                generateCASQuery(casQuery, (clause).getQuery());
+            }
+        } else {
+            throw new RuntimeException(
+                    "Error parsing query! Cannot determine clause type: ["
+                            + luceneQuery.getClass().getName() + "] !");
+        }
+    }
+
+    private List safeGetProductTypes() {
+        List prodTypes = null;
+
+        try {
+            prodTypes = client.getProductTypes();
+        } catch (RepositoryManagerException e) {
+            LOG.log(Level.WARNING,
+                    "Error obtaining product types from file manager: ["
+                            + client.getFileManagerUrl() + "]: Message: "
+                            + e.getMessage());
+        }
+
+        return prodTypes;
     }
     
     private static String performSqlQuery(String query, String sortBy, String outputFormat, String delimiter, String filemgrUrl) 

@@ -332,7 +332,6 @@ public class CatalogSearch {
 
         String fileManagerUrl = null;
         String welcomeMessage = "CatalogSearch v0.1\n";
-        welcomeMessage += "Copyright 2006. California Institute of Technology.\n";
         String usage = "CatalogSearch --url <url to File Manager service>\n";
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
