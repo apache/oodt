@@ -24,6 +24,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.*;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -307,6 +308,42 @@ public class LuceneWorkflowInstanceRepository extends
         }
 
         return wInsts;
+    }
+    
+    @Override
+    public synchronized boolean clearWorkflowInstances() throws InstanceRepositoryException {
+      IndexWriter writer = null;
+      try {
+          IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+          config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+          LogMergePolicy lmp =new LogDocMergePolicy();
+          lmp.setMergeFactor(mergeFactor);
+          config.setMergePolicy(lmp);
+
+          writer = new IndexWriter(indexDir, config);
+          LOG.log(Level.FINE,
+                  "LuceneWorkflowEngine: remove all workflow instances");
+          writer.deleteDocuments(new Term("myfield", "myvalue"));
+      } catch (IOException e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          LOG
+                  .log(Level.WARNING,
+                          "Exception removing workflow instances from index: Message: "
+                                  + e.getMessage());
+          throw new InstanceRepositoryException(e.getMessage());
+      } finally {
+        if (writer != null){
+          try{
+            writer.close();
+          }
+          catch(Exception ignore){}
+          
+          writer = null;
+        }
+
+      }
+      
+      return true;
     }
 
     /*

@@ -218,4 +218,10 @@ public class MemoryWorkflowInstanceRepository extends
         return cnt;
     }
 
+    @Override
+    public synchronized boolean clearWorkflowInstances() throws InstanceRepositoryException {
+      this.workflowInstMap.clear();
+      return true;
+    }
+
 }

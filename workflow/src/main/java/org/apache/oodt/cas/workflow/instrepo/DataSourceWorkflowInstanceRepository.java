@@ -174,6 +174,60 @@ public class DataSourceWorkflowInstanceRepository extends
         }
 
     }
+    
+
+    @Override
+    public synchronized boolean clearWorkflowInstances() throws InstanceRepositoryException {
+      Connection conn = null;
+      Statement statement = null;
+
+      try {
+          conn = dataSource.getConnection();
+          conn.setAutoCommit(false);
+          statement = conn.createStatement();
+          
+          String deleteSql = "DELETE FROM workflow_instances";
+          
+          LOG.log(Level.FINE, "deleteSql: Executing: "
+                  + deleteSql);
+          statement.execute(deleteSql);
+          conn.commit();
+
+      } catch (Exception e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.log(Level.WARNING,
+                  "Exception deleting all workflow instances. Message: "
+                          + e.getMessage());
+          try {
+              if (conn != null) {
+                  conn.rollback();
+              }
+          } catch (SQLException e2) {
+              LOG.log(Level.SEVERE,
+                      "Unable to rollback delete workflow instances "
+                              + "transaction. Message: " + e2.getMessage());
+          }
+          throw new InstanceRepositoryException(e.getMessage());
+      } finally {
+          if (statement != null) {
+              try {
+                  statement.close();
+              } catch (SQLException ignore) {
+              }
+
+          }
+
+          if (conn != null) {
+              try {
+                  conn.close();
+
+              } catch (SQLException ignore) {
+              }
+
+          }
+      }
+      return true;
+    }
 
     /*
      * (non-Javadoc)

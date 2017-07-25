@@ -496,6 +496,14 @@ public class XmlRpcWorkflowManager {
       return null;
     }
   }
+  
+  public synchronized boolean clearWorkflowInstances() throws InstanceRepositoryException{
+    String numInsts = String.valueOf(this.getNumWorkflowInstances());
+    LOG.info("Removing ["+numInsts+"] total workflow "
+        + "instances from the instance repository.");
+    this.engine.getInstanceRepository().clearWorkflowInstances();
+    return true;
+  }
 
   public List getWorkflows() throws RepositoryException {
     List workflowList = repo.getWorkflows();
