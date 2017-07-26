@@ -19,17 +19,23 @@ package org.apache.oodt.cas.filemgr.tools;
 
 
 //Lucene imports
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 
 //JDK imports
 import java.io.Reader;
 import java.util.Set;
+import org.apache.lucene.util.AttributeFactory;
 
 
 /**
@@ -44,6 +50,7 @@ import java.util.Set;
  */
 public class CASAnalyzer extends Analyzer {
     private Set stopSet;
+    AttributeFactory factory = AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY;
 
     /**
      * An array containing some common English words that are usually not useful
@@ -60,17 +67,19 @@ public class CASAnalyzer extends Analyzer {
     @Override
     protected TokenStreamComponents createComponents(String fieldName) {
         TokenStream result = new WhitespaceTokenizer(/*reader*/);
-        result = new StandardFilter(result);
+        /*result = new StandardFilter(result);
         result = new StopFilter(result, STOP_WORDS);
 
-
-        //TODO FIX
         try {
-            throw new Exception("needs fixing");
-        } catch (Exception e) {
+            result.reset();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return null; //new TokenStreamComponents();
+        StandardTokenizer tokenizer = new StandardTokenizer(factory);
+
+        return new TokenStreamComponents(tokenizer, result);*/
+        return new TokenStreamComponents(new WhitespaceTokenizer());
+
     }
 
     public void tokenStreams(String fname, Reader reader){
@@ -78,7 +87,13 @@ public class CASAnalyzer extends Analyzer {
     }
     /** Builds an analyzer with the given stop words. */
     public CASAnalyzer(CharArraySet stopWords) {
-        stopSet = StopFilter.makeStopSet(stopWords.toArray(new String[stopWords.size()]));
+        Iterator iter = stopWords.iterator();
+        List<String> sw = new ArrayList<>();
+        while(iter.hasNext()) {
+            char[] stopWord = (char[]) iter.next();
+            sw.add(new String(stopWord));
+        }
+        stopSet = StopFilter.makeStopSet(sw);
 
     }
 

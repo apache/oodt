@@ -70,6 +70,7 @@ public final class QueryTool {
         }
     }
 
+
     public List query(org.apache.oodt.cas.filemgr.structs.Query query) {
         List prodIds = new Vector();
         List products;
