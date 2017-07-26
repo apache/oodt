@@ -36,6 +36,8 @@ public abstract class AbstractDistributedConfigurationTest {
         zookeeper.start();
 
         System.setProperty(ZK_CONNECT_STRING, zookeeper.getConnectString());
+        System.setProperty("org.apache.oodt.cas.cli.action.spring.config", "src/main/resources/cmd-line-actions.xml");
+        System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "src/main/resources/cmd-line-options.xml");
 
         client = CuratorUtils.newCuratorFrameworkClient(zookeeper.getConnectString());
         client.start();

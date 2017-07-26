@@ -58,7 +58,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
 
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
-                "-publish"
+                "-a", "publish"
         });
 
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_PUBLISHER_XML);
@@ -140,7 +140,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
 
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
-                "-clear"
+                "-a", "clear"
         });
 
         AbstractDistributedConfigurationTest.tearDown();

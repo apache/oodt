@@ -40,7 +40,23 @@
         </fileSet>
         <fileSet>
             <directory>${basedir}/src/main/resources</directory>
-            <outputDirectory>.</outputDirectory>
+            <outputDirectory>etc</outputDirectory>
+            <includes>
+                <include>config-publisher.xml</include>
+                <include>log4j.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources</directory>
+            <outputDirectory>policy</outputDirectory>
+            <includes>
+                <include>cmd-line-actions.xml</include>
+                <include>cmd-line-options.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/examples</directory>
+            <outputDirectory>examples</outputDirectory>
             <includes/>
         </fileSet>
     </fileSets>

@@ -43,8 +43,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
         // Publishing configuration through CLI and verifying whether they were stored correctly
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
-                "-publish",
-                "-verify"
+                "-a", "publish"
         });
 
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_PUBLISHER_XML);
@@ -84,7 +83,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
         // Clearing configuration through CLI and checking whether the configuration has actually been gone
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
-                "-clear"
+                "-a", "clear"
         });
 
         for (DistributedConfigurationPublisher publisher : publishers) {
