@@ -22,12 +22,14 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.exceptions.NamingConventionException;
 import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
+import org.apache.oodt.cas.metadata.preconditions.PreCondEvalUtils;
 import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 
 /**
@@ -58,14 +60,29 @@ public class MetExtractorProductCrawler extends ProductCrawler {
     @Override
     protected boolean passesPreconditions(File product) {
         if (this.getPreCondIds() != null) {
-            for (String preCondId : this.getPreCondIds()) {
-                if (!((PreConditionComparator<?>) this.getApplicationContext()
-                        .getBean(preCondId)).passes(product)) {
-                  return false;
-                }
-            }
+          PreCondEvalUtils evalUtils = new PreCondEvalUtils(
+              this.getApplicationContext());
+          if (!evalUtils.eval(this.getPreCondIds(), product)) {
+            return false;
+          }          
         }
-        return product.exists() && product.length() > 0;
+        
+        String preCondComparatorId = "ProductFileExistsCheck";
+        String preCondComparatorIdLength = "ProductLengthGreaterZeroCheck";
+        
+        boolean existsFlag = true, lengthFlag = true;
+        
+        if (!product.exists()){
+          existsFlag = false;
+          logConditionMessage(existsFlag, preCondComparatorId, product);
+        }
+        
+        if (product.length() == 0){
+          lengthFlag = false;
+          logConditionMessage(lengthFlag, preCondComparatorIdLength, product);
+        }
+        
+        return existsFlag && lengthFlag;
     }
 
     @Override
@@ -119,5 +136,11 @@ public class MetExtractorProductCrawler extends ProductCrawler {
 
     public String getNamingConventionId() {
        return namingConventionId;
+    }
+    
+    private void logConditionMessage(boolean flag, String preCondComparatorId, File product){
+      String startMsg = flag ? "Passed":"Failed";
+      LOG.log(Level.INFO, startMsg + " precondition comparator id "
+          + preCondComparatorId+" file: "+product);      
     }
 }

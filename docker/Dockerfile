@@ -1,10 +1,10 @@
 FROM ubuntu:latest
 MAINTAINER Tom Barber
 
-ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
-RUN sudo apt-get update 
-RUN sudo apt-get install -y openjdk-7-jre-headless openjdk-7-jre maven curl
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jre-headless openjdk-8-jre maven curl
 #RUN sudo apt-get install maven2
 WORKDIR /usr/src
 

@@ -20,15 +20,12 @@ package org.apache.oodt.cas.filemgr.cli.action;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang.Validate;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.*;
+import org.apache.lucene.util.BytesRef;
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
@@ -84,8 +81,7 @@ public class LuceneQueryCliAction extends AbstractQueryCliAction {
 
    private Query parseQuery(String query) throws ParseException {
       // note that "__FREE__" is a control work for free text searching
-      return (Query) new QueryParser(FREE_TEXT_BLOCK, new CASAnalyzer())
-            .parse(query);
+      return (Query) new QueryParser(FREE_TEXT_BLOCK, new WhitespaceAnalyzer()).parse(query);
    }
 
    private QueryCriteria generateCASQuery(Query luceneQuery)
@@ -110,13 +106,18 @@ public class LuceneQueryCliAction extends AbstractQueryCliAction {
             }
             return bqc;
          }
-      } else if (luceneQuery instanceof RangeQuery) {
-         Term startT = ((RangeQuery) luceneQuery).getLowerTerm();
-         Term endT = ((RangeQuery) luceneQuery).getUpperTerm();
-         return new RangeQueryCriteria(startT.field(), startT
-               .text(), endT.text(), ((RangeQuery) luceneQuery).isInclusive());
+      } else if (luceneQuery instanceof TermRangeQuery) {
+         BytesRef startT = ((TermRangeQuery) luceneQuery).getLowerTerm();
+         BytesRef endT = ((TermRangeQuery) luceneQuery).getUpperTerm();
+         //TODO CHECK Inclusive
+         boolean inc = false;
+         if(((TermRangeQuery) luceneQuery).includesLower() && ((TermRangeQuery) luceneQuery).includesUpper()){
+            inc = true;
+         }
+         return new RangeQueryCriteria(((TermRangeQuery) luceneQuery).getField(), startT
+               .utf8ToString(), endT.utf8ToString(), inc);
       } else if (luceneQuery instanceof BooleanQuery) {
-         BooleanClause[] clauses = ((BooleanQuery) luceneQuery).getClauses();
+         List<BooleanClause> clauses = ((BooleanQuery) luceneQuery).clauses();
          BooleanQueryCriteria bqc = new BooleanQueryCriteria();
          bqc.setOperator(BooleanQueryCriteria.AND);
          for (BooleanClause clause : clauses) {
