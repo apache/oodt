@@ -133,7 +133,7 @@ public class SolrIndexer {
 
 		LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
 		SystemDefaultHttpClient httpClient = new SystemDefaultHttpClient();
-		server = new HttpSolrClient(this.solrUrl, httpClient);
+		server = new HttpSolrClient.Builder(this.solrUrl).build();
 
 //		server = new SolrClient(this.solrUrl);
 
