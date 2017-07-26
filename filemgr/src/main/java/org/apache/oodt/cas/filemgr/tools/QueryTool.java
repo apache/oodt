@@ -77,6 +77,7 @@ public final class QueryTool {
         QueryParser parser;
         // note that "__FREE__" is a control work for free text searching
         parser = new QueryParser(freeTextBlock, new CASAnalyzer());
+
         Query luceneQ = null;
         try {
             luceneQ = (Query) parser.parse(query);
