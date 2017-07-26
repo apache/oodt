@@ -19,14 +19,12 @@ package org.apache.oodt.config.distributed;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.config.ConfigurationManager;
-import org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher;
+import org.apache.oodt.config.distributed.cli.ConfigPublisher;
 import org.apache.oodt.config.distributed.utils.FilePathUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -42,6 +40,7 @@ import java.util.Set;
 
 import static org.apache.oodt.config.Constants.CONFIG_PUBLISHER_XML;
 import static org.apache.oodt.config.Constants.SEPARATOR;
+import static org.junit.Assert.fail;
 
 /**
  * Testing the {@link DistributedConfigurationManager} whether it is downloading and storing the configuration correctly
@@ -57,7 +56,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
     public static void setUp() throws Exception {
         AbstractDistributedConfigurationTest.setUp();
 
-        DistributedConfigurationPublisher.main(new String[]{
+        ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
                 "-publish"
         });
@@ -68,6 +67,8 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
         publishers = new ArrayList<>(distributedConfigurationPublishers.values().size());
         for (Object bean : distributedConfigurationPublishers.values()) {
             DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
+
+            System.setProperty(publisher.getComponent().getHome(), ".");
             publishers.add(publisher);
         }
     }
@@ -84,11 +85,10 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 Properties properties = new Properties();
                 try (InputStream in = new FileInputStream(originalFile)) {
                     properties.load(in);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    fail(e.getMessage());
                 }
-		catch (Exception e){
-		    e.printStackTrace();
-		    fail(e.getMessage());
-		}
 
                 for (String key : properties.stringPropertyNames()) {
                     Assert.assertEquals(properties.getProperty(key), System.getProperty(key));
@@ -98,7 +98,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(SEPARATOR.length()) : fileName;
                 fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), fileName);
                 File downloadedFile = new File(fileName);
-		Assert.assertNotNull(downloadedFile);
+                Assert.assertNotNull(downloadedFile);
                 Assert.assertTrue(downloadedFile.exists());
             }
 
@@ -126,7 +126,10 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 String fileName = entry.getValue();
                 fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
 
-                String prefixPath = System.getenv(publisher.getComponent().getHome());
+                String prefixPath = System.getProperty(publisher.getComponent().getHome());
+                if (prefixPath == null) {
+                    prefixPath = System.getenv(publisher.getComponent().getHome());
+                }
                 String confDir = prefixPath != null && !prefixPath.trim().isEmpty() ?
                         prefixPath.trim() + SEPARATOR + fileName.split(SEPARATOR)[0] : fileName.split(SEPARATOR)[0];
 
@@ -135,7 +138,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
             }
         }
 
-        DistributedConfigurationPublisher.main(new String[]{
+        ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
                 "-clear"
         });

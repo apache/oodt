@@ -32,7 +32,11 @@ public class FilePathUtils {
     }
 
     public static String fixForComponentHome(Component component, String suffixPath) {
-        String prefix = System.getenv().get(component.getHome());
+        String prefix = System.getProperty(component.getHome());
+        if (prefix == null) {
+            prefix = System.getenv().get(component.getHome());
+        }
+
         StringBuilder path = new StringBuilder();
         if (prefix != null && !prefix.trim().isEmpty()) {
             prefix = prefix.trim();

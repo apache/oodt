@@ -18,7 +18,7 @@
 package org.apache.oodt.config.distributed;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher;
+import org.apache.oodt.config.distributed.cli.ConfigPublisher;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -41,7 +41,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
     @Test
     public void publishConfigurationTest() throws Exception {
         // Publishing configuration through CLI and verifying whether they were stored correctly
-        DistributedConfigurationPublisher.main(new String[]{
+        ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
                 "-publish",
                 "-verify"
@@ -82,7 +82,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
         }
 
         // Clearing configuration through CLI and checking whether the configuration has actually been gone
-        DistributedConfigurationPublisher.main(new String[]{
+        ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
                 "-clear"
         });

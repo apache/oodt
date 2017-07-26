@@ -37,12 +37,15 @@
     </appender>
 
     <root>
-        <priority value="DEBUG"/>
+        <priority value="INFO"/>
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </root>
 
     <logger name="org.apache.zookeeper">
+        <level value="ERROR"/>
+    </logger>
+    <logger name="org.springframework">
         <level value="ERROR"/>
     </logger>
     <logger name="org.apache.curator">

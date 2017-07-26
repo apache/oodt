@@ -19,7 +19,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher">
+    <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
         <constructor-arg value="FILE_MANAGER"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
@@ -38,7 +38,7 @@
         </property>
     </bean>
 
-    <bean id="resmgr-config-publisher" class="org.apache.oodt.config.distributed.cli.DistributedConfigurationPublisher">
+    <bean id="resmgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
         <constructor-arg value="RESOURCE_MANAGER"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">

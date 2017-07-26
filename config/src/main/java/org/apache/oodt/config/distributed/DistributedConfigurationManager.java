@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
-import static org.apache.oodt.config.Constants.SEPARATOR;
 
 /**
  * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to
