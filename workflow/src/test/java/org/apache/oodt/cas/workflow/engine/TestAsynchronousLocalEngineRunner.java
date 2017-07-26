@@ -29,6 +29,9 @@ import org.apache.oodt.commons.util.DateConvert;
 
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,7 +41,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import junit.framework.TestCase;
+import static org.junit.Assume.*;
+import static org.junit.Assert.*;
 
 //APACHE imports
 //OODT imports
@@ -53,7 +57,7 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  */
-public class TestAsynchronousLocalEngineRunner extends TestCase {
+public class TestAsynchronousLocalEngineRunner {
   private static Logger LOG = Logger.getLogger(TestAsynchronousLocalEngineRunner.class.getName());
   private AsynchronousLocalEngineRunner runner;
 
@@ -61,6 +65,7 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
 
   private QuerierAndRunnerUtils utils;
 
+  @Test
   public void testRun() {
     TaskProcessor taskProcessor1 = null;
     TaskProcessor taskProcessor2 = null;
@@ -98,8 +103,8 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
       try {
         String line = FileUtils.readFileToString(f);
         String[] toks = line.split(",");
-        assertEquals("Toks not equal to 2: toks=[" + Arrays.asList(toks) + "]",
-            2, toks.length);
+        assumeTrue("Toks not equal to 2: toks=[" + Arrays.asList(toks) + "]", 
+            toks.length == 2);
         Date dateTime = DateConvert.isoParse(toks[1]);
         Seconds seconds = Seconds.secondsBetween(new DateTime(dateTime),
             new DateTime());
@@ -125,13 +130,8 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     return ranFast;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#setUp()
-   */
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setupTest() throws Exception {
     String parentPath = File.createTempFile("test", "txt").getParentFile()
         .getAbsolutePath();
     parentPath = parentPath.endsWith("/") ? parentPath : parentPath + "/";
@@ -142,13 +142,8 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     this.utils = new QuerierAndRunnerUtils();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#tearDown()
-   */
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
 
     // blow away test file
     deleteAllFiles(testDir.getAbsolutePath());
