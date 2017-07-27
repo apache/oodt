@@ -19,7 +19,6 @@ package org.apache.oodt.config.distributed.cli;
 
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
-import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.distributed.DistributedConfigurationPublisher;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -27,6 +26,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Map;
 
+import static org.apache.oodt.config.Constants.DEFAULT_CONFIG_PUBLISHER_XML;
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 
 /**
@@ -41,6 +41,8 @@ public class CLIAction extends CmdLineAction {
     }
 
     private String connectString;
+    private String configFile = DEFAULT_CONFIG_PUBLISHER_XML;
+
     private Action action;
 
     public CLIAction(Action action) {
@@ -50,7 +52,7 @@ public class CLIAction extends CmdLineAction {
     @Override
     public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
         try {
-            ApplicationContext applicationContext = new ClassPathXmlApplicationContext(Constants.CONFIG_PUBLISHER_XML);
+            ApplicationContext applicationContext = new ClassPathXmlApplicationContext(configFile);
             Map distributedConfigurationPublisher = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
             for (Object bean : distributedConfigurationPublisher.values()) {
@@ -112,5 +114,13 @@ public class CLIAction extends CmdLineAction {
     public void setConnectString(String connectString) {
         System.setProperty(ZK_CONNECT_STRING, connectString);
         this.connectString = connectString;
+    }
+
+    public String getConfigFile() {
+        return configFile;
+    }
+
+    public void setConfigFile(String configFile) {
+        this.configFile = configFile;
     }
 }

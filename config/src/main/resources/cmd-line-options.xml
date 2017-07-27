@@ -29,7 +29,11 @@
         <property name="requirementRules">
             <list>
                 <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-                      p:actionName="publishConfiguration" p:relation="REQUIRED"/>
+                      p:actionName="publish" p:relation="REQUIRED"/>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="clear" p:relation="REQUIRED"/>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="verify" p:relation="REQUIRED"/>
             </list>
         </property>
         <property name="handler">
@@ -42,6 +46,37 @@
                               p:actionName="verify" p:methodName="setConnectString"/>
                         <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
                               p:actionName="clear" p:methodName="setConnectString"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="publisherXML" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+        <property name="shortOption" value="c"/>
+        <property name="longOption" value="config"/>
+        <property name="description" value="Configuration publisher spring configuration XML"/>
+        <property name="hasArgs" value="true"/>
+        <property name="requirementRules">
+            <list>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="publish" p:relation="OPTIONAL"/>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="clear" p:relation="OPTIONAL"/>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="verify" p:relation="OPTIONAL"/>
+            </list>
+        </property>
+        <property name="handler">
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+                <property name="applyToActions">
+                    <list>
+                        <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+                              p:actionName="publish" p:methodName="setConfigFile"/>
+                        <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+                              p:actionName="verify" p:methodName="setConfigFile"/>
+                        <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+                              p:actionName="clear" p:methodName="setConfigFile"/>
                     </list>
                 </property>
             </bean>

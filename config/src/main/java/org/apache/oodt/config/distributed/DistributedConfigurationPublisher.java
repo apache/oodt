@@ -161,7 +161,7 @@ public class DistributedConfigurationPublisher {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
             String filePath = entry.getKey();
             String relativeZNodePath = entry.getValue();
-            logger.info("Publishing configuration {} - {}", filePath, relativeZNodePath);
+            logger.info("Publishing configuration {} to {}", filePath, relativeZNodePath);
 
             String content = getFileContent(filePath);
 
@@ -174,9 +174,9 @@ public class DistributedConfigurationPublisher {
                 } else {
                     Stat stat = client.setData().forPath(zNodePath, content.getBytes());
                     if (stat != null) {
-                        logger.info("Published configuration file {} to {}", filePath, relativeZNodePath);
+                        logger.info("Replaced old published configuration at {} with content of file : {}", relativeZNodePath, filePath);
                     } else {
-                        logger.warn("Unable to publish configuration file {} to {}", filePath, relativeZNodePath);
+                        logger.warn("Unable to replace published configuration at {} with file: {}", relativeZNodePath, filePath);
                     }
                 }
             } else {
@@ -185,7 +185,7 @@ public class DistributedConfigurationPublisher {
                  * when no child node is present under them.
                  */
                 client.create().creatingParentContainersIfNeeded().forPath(zNodePath, content.getBytes());
-                logger.info("Replaced old published configuration at {} with content of file : {}", relativeZNodePath, filePath);
+                logger.info("Published configuration file {} to {}", filePath, relativeZNodePath);
             }
         }
     }

@@ -27,6 +27,8 @@ import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 
 public abstract class AbstractDistributedConfigurationTest {
 
+    protected static final String CONFIG_PUBLISHER_XML = "config-publisher.xml";
+
     protected static TestingServer zookeeper;
     protected static CuratorFramework client;
 

@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.oodt.config.Constants.CONFIG_PUBLISHER_XML;
-
 /**
  * Testing the functionality of {@link DistributedConfigurationPublisher} and its CLI
  *
@@ -43,6 +41,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
         // Publishing configuration through CLI and verifying whether they were stored correctly
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
+                "-config", CONFIG_PUBLISHER_XML,
                 "-a", "publish"
         });
 
@@ -83,6 +82,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
         // Clearing configuration through CLI and checking whether the configuration has actually been gone
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
+                "-config", CONFIG_PUBLISHER_XML,
                 "-a", "clear"
         });
 

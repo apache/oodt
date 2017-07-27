@@ -55,9 +55,34 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/src/main/resources/examples</directory>
-            <outputDirectory>examples</outputDirectory>
-            <includes/>
+            <directory>${basedir}/../filemgr/src/main/resources/examples</directory>
+            <outputDirectory>examples/filemgr</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../filemgr/src/main/resources</directory>
+            <outputDirectory>examples/filemgr</outputDirectory>
+            <includes>
+                <include>filemgr.properties</include>
+                <include>logging.properties</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../resource/src/main/resources/examples</directory>
+            <outputDirectory>examples/resmgr</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../resource/src/main/resources</directory>
+            <outputDirectory>examples/resmgr</outputDirectory>
+            <includes>
+                <include>resource.properties</include>
+                <include>logging.properties</include>
+            </includes>
         </fileSet>
     </fileSets>
     <dependencySets>

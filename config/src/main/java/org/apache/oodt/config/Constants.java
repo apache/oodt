@@ -38,7 +38,7 @@ public class Constants {
     public static final String DEFAULT_ENVIRONMENT = "default";
 
     /** The XML file name in which the configuration to be published to zookeeper is defined */
-    public static final String CONFIG_PUBLISHER_XML = "etc" + SEPARATOR + "config-publisher.xml";
+    public static final String DEFAULT_CONFIG_PUBLISHER_XML = "etc" + SEPARATOR + "config-publisher.xml";
 
     public static class Properties {
         /** The system property to be set in order to enable distributed configuration management */

@@ -187,7 +187,7 @@ public class CuratorUtils {
             }
             logger.debug("Deleted children ZNodes of {}", parentZNodePath);
         } else {
-            logger.warn("ZNode - {} doesn't exist. Nothing to delete");
+            logger.warn("ZNode - {} doesn't exist. Nothing to delete", parentZNodePath);
         }
     }
 }

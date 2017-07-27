@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.apache.oodt.config.Constants.CONFIG_PUBLISHER_XML;
 import static org.apache.oodt.config.Constants.SEPARATOR;
 import static org.junit.Assert.fail;
 
@@ -58,6 +57,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
 
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
+                "-config", CONFIG_PUBLISHER_XML,
                 "-a", "publish"
         });
 
@@ -140,6 +140,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
 
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
+                "-config", CONFIG_PUBLISHER_XML,
                 "-a", "clear"
         });
 

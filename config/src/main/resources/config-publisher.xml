@@ -19,22 +19,56 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <!-- Configuration publisher for File Manager OODT Component -->
+    <!-- File Manager example configuration publisher -->
     <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
         <constructor-arg value="FILE_MANAGER"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
                 <entry key="examples/filemgr/filemgr.properties" value="/etc/filemgr.properties"/>
+                <entry key="examples/filemgr/logging.properties" value="/etc/logging.properties"/>
             </map>
         </property>
         <property name="configFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
-                <entry key="examples/filemgr/mime-types.xml" value="/etc/mime-types.xml"/>
-                <entry key="examples/filemgr/cmd-line-actions.xml" value="/policy/cmd-line-actions.xml"/>
-                <entry key="examples/filemgr/cmd-line-options.xml" value="/policy/cmd-line-options.xml"/>
-                <entry key="examples/filemgr/oodt/elements.xml" value="/policy/oodt/elements.xml"/>
-                <entry key="examples/filemgr/oodt/product-types.xml" value="/policy/oodt/product-types.xml"/>
-                <entry key="examples/filemgr/oodt/product-type-element-map.xml" value="/policy/oodt/product-type-element-map.xml"/>
+                <!-- Examples - Core-->
+                <entry key="examples/filemgr/core/elements.xml" value="/policy/core/elements.xml"/>
+                <entry key="examples/filemgr/core/product-types.xml" value="/policy/core/product-types.xml"/>
+                <entry key="examples/filemgr/core/product-type-element-map.xml" value="/policy/core/product-type-element-map.xml"/>
+
+                <!-- Examples - Geo-->
+                <entry key="examples/filemgr/geo/elements.xml" value="/policy/geo/elements.xml"/>
+                <entry key="examples/filemgr/geo/product-types.xml" value="/policy/geo/product-types.xml"/>
+                <entry key="examples/filemgr/geo/product-type-element-map.xml" value="/policy/geo/product-type-element-map.xml"/>
+
+                <!-- Examples - Trace-->
+                <entry key="examples/filemgr/trace/elements.xml" value="/policy/trace/elements.xml"/>
+                <entry key="examples/filemgr/trace/product-types.xml" value="/policy/trace/product-types.xml"/>
+                <entry key="examples/filemgr/trace/product-type-element-map.xml" value="/policy/trace/product-type-element-map.xml"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- Resource Manager example configuration publisher -->
+    <bean id="resmgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
+        <constructor-arg value="RESOURCE_MANAGER"/>
+        <property name="propertiesFiles">
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="examples/resmgr/resource.properties" value="/etc/resource.properties"/>
+                <entry key="examples/resmgr/logging.properties" value="/etc/logging.properties"/>
+            </map>
+        </property>
+        <property name="configFiles">
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="examples/resmgr/node-to-queue-mapping.xml" value="/policy/node-to-queue-mapping.xml"/>
+                <entry key="examples/resmgr/nodes.xml" value="/policy/nodes.xml"/>
+                <entry key="examples/resmgr/queue-to-backend-mapping.xml" value="/policy/queue-to-backend-mapping.xml"/>
+
+                <entry key="examples/resmgr/jobs/exJob.xml" value="/policy/jobs/exJob.xml"/>
+                <entry key="examples/resmgr/jobs/exLongJob.xml" value="/policy/jobs/exLongJob.xml"/>
+                <entry key="examples/resmgr/jobs/exPalindrome.xml" value="/policy/jobs/exPalindrome.xml"/>
+                <entry key="examples/resmgr/jobs/exSparkJob.xml" value="/policy/jobs/exSparkJob.xml"/>
+                <entry key="examples/resmgr/jobs/exSparkPalindrome.xml" value="/policy/jobs/exSparkPalindrome.xml"/>
+                <entry key="examples/resmgr/jobs/exStreamingPalindrome.xml" value="/policy/jobs/exStreamingPalindrome.xml"/>
             </map>
         </property>
     </bean>
