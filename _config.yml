@@ -28,6 +28,9 @@ markdown: kramdown
 gems: ['jekyll-less']
 
 oodt_releases:
+      - version: "1.1"
+      	date: JUL-2017
+	pgp_signature: 2048R/0C1E654B Chris Mattmann (CODE SIGNING KEY - Apr 2016) <mattmann@apache.org>
       - version: "1.0"
         date: JUN-2016
         pgp_signature: 783CE7BB Tom Barber
