@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
+import java.util.Collections;
 //JDK imports
 import java.util.List;
 import java.util.Vector;
@@ -176,6 +177,7 @@ public class ProductPage {
         blank.setPageNum(0);
         blank.setTotalPages(0);
         blank.setPageSize(0);
+        blank.setPageProducts(Collections.EMPTY_LIST);
         return blank;
     }
     

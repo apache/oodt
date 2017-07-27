@@ -22,6 +22,7 @@ import org.apache.oodt.pcs.metadata.PCSConfigMetadata;
 import org.apache.oodt.pcs.query.FilenameQuery;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.Reference;
@@ -321,6 +322,42 @@ public class FileManagerUtils implements PCSConfigMetadata {
     }
 
     return p;
+  }
+  
+
+  /**
+   * Gets the number of products for the given type.
+   * @param type The given type.
+   * @return The number of products.
+   */
+  public int safeGetNumProducts(ProductType type){
+    int numProducts = -1;
+    try{
+      numProducts = this.fmgrClient.getNumProducts(type);
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      LOG.warning("Exception getting num products by type: ["+type.getName()+"]: "
+          + "Message: "+e.getLocalizedMessage());
+    }
+    
+    return numProducts;
+  }
+
+  
+  /**
+   * Get a first page of Products using the pagination API.
+   * @param type Gets the first page of products for this type.
+   * @return The first page of products for this type.
+   */
+  public ProductPage safeFirstPage(ProductType type) {
+    ProductPage page = null;
+    try {
+      page = this.fmgrClient.getFirstPage(type);
+    } catch (Exception e) {
+      LOG.info("No products found for: " + type.getName());
+    }
+    return page;
   }
 
   public String getFilePath(Product prod) {

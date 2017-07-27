@@ -133,6 +133,7 @@ public class SolrIndexer {
 
 		LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
 
+
 		try {
 			server = new CommonsHttpSolrServer(this.solrUrl);
 		} catch (MalformedURLException e) {

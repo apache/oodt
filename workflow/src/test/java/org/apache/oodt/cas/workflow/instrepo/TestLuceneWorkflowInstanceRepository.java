@@ -176,6 +176,25 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
             fail(e.getMessage());
         }
     }
+    
+    public void testClearInstances(){
+      try{
+        repo.addWorkflowInstance(testInst);
+        assertEquals(1, repo.getNumWorkflowInstances());
+        repo.clearWorkflowInstances();
+        assertEquals(0, repo.getNumWorkflowInstances());
+        
+        for(int i=0; i < 25; i++){
+          repo.addWorkflowInstance(testInst);
+        }
+        assertEquals(25, repo.getNumWorkflowInstances());
+        repo.clearWorkflowInstances();
+        assertEquals(0, repo.getNumWorkflowInstances());
+      }
+      catch(InstanceRepositoryException e){
+        fail(e.getLocalizedMessage());
+      }      
+    }
 
     public void testUpdateDocumentAndPreserveId() {
         try {

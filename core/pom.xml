@@ -70,11 +70,6 @@ the License.
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-solrj</artifactId>
-        <version>1.3.0</version>
-      </dependency>
-      <dependency>
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk</artifactId>
         <version>1.7.4</version>
@@ -418,6 +413,11 @@ the License.
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-core</artifactId>
         <version>1.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>6.2.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tika</groupId>
