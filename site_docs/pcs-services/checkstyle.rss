@@ -6,10 +6,10 @@
     <link>http://oodt.apache.org/pcs-services/</link>
     <description>OODT Process Control System JAX-RS service layer - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 7,
-             Errors: 454,
+             Errors: 459,
              Warnings: 0,
              Infos: 0
       </title>
@@ -43,20 +43,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/pcs-services//checkstyle.html#org.apache.oodt.pcs.services.HealthResource.java">org/apache/oodt/pcs/services/HealthResource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  346
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/pcs-services//checkstyle.html#org.apache.oodt.pcs.services.config.PCSServiceConfig.java">org/apache/oodt/pcs/services/config/PCSServiceConfig.java</a>
                 </td>
                 <td>
@@ -67,6 +53,20 @@
                 </td>
                 <td>
                   33
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/pcs-services//checkstyle.html#org.apache.oodt.pcs.services.HealthResource.java">org/apache/oodt/pcs/services/HealthResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  351
                 </td>
               </tr>
                           <tr>
@@ -85,20 +85,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/pcs-services//checkstyle.html#org.apache.oodt.pcs.services.PCSService.java">org/apache/oodt/pcs/services/PCSService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  14
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/pcs-services//checkstyle.html#org.apache.oodt.pcs.services.config.PCSServiceConfMetKeys.java">org/apache/oodt/pcs/services/config/PCSServiceConfMetKeys.java</a>
                 </td>
                 <td>
@@ -109,6 +95,20 @@
                 </td>
                 <td>
                   16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/pcs-services//checkstyle.html#org.apache.oodt.pcs.services.PCSService.java">org/apache/oodt/pcs/services/PCSService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
                 </td>
               </tr>
                           <tr>

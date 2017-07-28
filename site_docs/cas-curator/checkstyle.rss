@@ -6,7 +6,7 @@
     <link>http://oodt.apache.org/cas-curator/</link>
     <description>CAS Curation Interface - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 8,
              Errors: 183,
@@ -57,20 +57,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-curator//checkstyle.html#org.apache.oodt.cas.curation.workbench.WorkbenchPage.java">org/apache/oodt/cas/curation/workbench/WorkbenchPage.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-curator//checkstyle.html#org.apache.oodt.cas.curation.CurationSession.java">org/apache/oodt/cas/curation/CurationSession.java</a>
                 </td>
                 <td>
@@ -81,6 +67,20 @@
                 </td>
                 <td>
                   15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-curator//checkstyle.html#org.apache.oodt.cas.curation.workbench.WorkbenchPage.java">org/apache/oodt/cas/curation/workbench/WorkbenchPage.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
                 </td>
               </tr>
                           <tr>

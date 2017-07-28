@@ -6,10 +6,10 @@
     <link>http://oodt.apache.org/curator-services/</link>
     <description>CAS Curation Web Services - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 21,
-             Errors: 1136,
+             Errors: 1190,
              Warnings: 0,
              Infos: 0
       </title>
@@ -66,7 +66,7 @@
                   0
                 </td>
                 <td>
-                  135
+                  189
                 </td>
               </tr>
                           <tr>
@@ -99,20 +99,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/curator-services//checkstyle.html#org.apache.oodt.cas.curation.service.package.html">org/apache/oodt/cas/curation/service/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/curator-services//checkstyle.html#org.apache.oodt.cas.curation.util.package.html">org/apache/oodt/cas/curation/util/package.html</a>
                 </td>
                 <td>
@@ -127,7 +113,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/curator-services//checkstyle.html#org.apache.oodt.cas.curation.structs.IngestionTaskStatus.java">org/apache/oodt/cas/curation/structs/IngestionTaskStatus.java</a>
+                  <a href="http://oodt.apache.org/curator-services//checkstyle.html#org.apache.oodt.cas.curation.service.package.html">org/apache/oodt/cas/curation/service/package.html</a>
                 </td>
                 <td>
                   0
@@ -136,7 +122,7 @@
                   0
                 </td>
                 <td>
-                  6
+                  1
                 </td>
               </tr>
                           <tr>
@@ -151,6 +137,20 @@
                 </td>
                 <td>
                   28
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/curator-services//checkstyle.html#org.apache.oodt.cas.curation.structs.IngestionTaskStatus.java">org/apache/oodt/cas/curation/structs/IngestionTaskStatus.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
                 </td>
               </tr>
                           <tr>

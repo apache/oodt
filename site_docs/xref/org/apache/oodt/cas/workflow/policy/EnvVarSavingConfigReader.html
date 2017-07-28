@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>EnvVarSavingConfigReader xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/org/apache/oodt/cas/workflow/policy/EnvVarSavingConfigReader.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_comment">//Copyright (c) 2008, California Institute of Technology.</em>
+<a name="2" href="#2">2</a>   <em class="jxr_comment">//ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.</em>
+<a name="3" href="#3">3</a>   <em class="jxr_comment">//</em>
+<a name="4" href="#4">4</a>   <em class="jxr_comment">//$Id$</em>
+<a name="5" href="#5">5</a>   
+<a name="6" href="#6">6</a>   <strong class="jxr_keyword">package</strong> org.apache.oodt.cas.workflow.policy;
+<a name="7" href="#7">7</a>   
+<a name="8" href="#8">8</a>   <em class="jxr_comment">//JDK imports</em>
+<a name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.w3c.dom.Element;
+<a name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.Node;
+<a name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.NodeList;
+<a name="12" href="#12">12</a>  
+<a name="13" href="#13">13</a>  <em class="jxr_javadoccomment">/**</em>
+<a name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> * @author mattmann</em>
+<a name="15" href="#15">15</a>  <em class="jxr_javadoccomment"> * @version $Revision$</em>
+<a name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> * Provides a utility method to read in a {@link WorkflowConfiguration} from an</em>
+<a name="19" href="#19">19</a>  <em class="jxr_javadoccomment"> * XML {@link Node}, preserving its envReplace information.</em>
+<a name="20" href="#20">20</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;.</em>
+<a name="21" href="#21">21</a>  <em class="jxr_javadoccomment"> */</em>
+<a name="22" href="#22">22</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/apache/oodt/cas/workflow/policy/EnvVarSavingConfigReader.html">EnvVarSavingConfigReader</a> {
+<a name="23" href="#23">23</a>  
+<a name="24" href="#24">24</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/apache/oodt/cas/workflow/policy/EnvVarSavingConfigReader.html">EnvVarSavingConfigReader</a>() <strong class="jxr_keyword">throws</strong> InstantiationException {
+<a name="25" href="#25">25</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InstantiationException(<span class="jxr_string">"Don't construct readers!"</span>);
+<a name="26" href="#26">26</a>      }
+<a name="27" href="#27">27</a>  
+<a name="28" href="#28">28</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../../org/apache/oodt/cas/workflow/policy/EnvSavingConfiguration.html">EnvSavingConfiguration</a> getConfiguration(Node node) {
+<a name="29" href="#29">29</a>          Element configNode = (Element) node;
+<a name="30" href="#30">30</a>  
+<a name="31" href="#31">31</a>          NodeList configProperties = configNode.getElementsByTagName(<span class="jxr_string">"property"</span>);
+<a name="32" href="#32">32</a>  
+<a name="33" href="#33">33</a>          <a href="../../../../../../org/apache/oodt/cas/workflow/policy/EnvSavingConfiguration.html">EnvSavingConfiguration</a> config = <strong class="jxr_keyword">null</strong>;
+<a name="34" href="#34">34</a>  
+<a name="35" href="#35">35</a>          <strong class="jxr_keyword">if</strong> (configProperties == <strong class="jxr_keyword">null</strong>) {
+<a name="36" href="#36">36</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="37" href="#37">37</a>          }
+<a name="38" href="#38">38</a>  
+<a name="39" href="#39">39</a>          config = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/apache/oodt/cas/workflow/policy/EnvSavingConfiguration.html">EnvSavingConfiguration</a>();
+<a name="40" href="#40">40</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; configProperties.getLength(); i++) {
+<a name="41" href="#41">41</a>              Element propElem = (Element) configProperties.item(i);
+<a name="42" href="#42">42</a>              String value = propElem.getAttribute(<span class="jxr_string">"value"</span>);
+<a name="43" href="#43">43</a>              <strong class="jxr_keyword">boolean</strong> doReplace = Boolean.valueOf(
+<a name="44" href="#44">44</a>                      propElem.getAttribute(<span class="jxr_string">"envReplace"</span>)).booleanValue();
+<a name="45" href="#45">45</a>  
+<a name="46" href="#46">46</a>              config.addConfigProperty(propElem.getAttribute(<span class="jxr_string">"name"</span>), value,
+<a name="47" href="#47">47</a>                      doReplace);
+<a name="48" href="#48">48</a>          }
+<a name="49" href="#49">49</a>  
+<a name="50" href="#50">50</a>          <strong class="jxr_keyword">return</strong> config;
+<a name="51" href="#51">51</a>      }
+<a name="52" href="#52">52</a>  
+<a name="53" href="#53">53</a>  }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

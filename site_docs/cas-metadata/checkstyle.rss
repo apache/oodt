@@ -6,7 +6,7 @@
     <link>http://oodt.apache.org/cas-metadata/</link>
     <description>Catalog and Archive Service Generic Multi-valued Metadata Container - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 58,
              Errors: 1917,
@@ -71,20 +71,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.preconditions.PreConditionComparator.java">org/apache/oodt/cas/metadata/preconditions/PreConditionComparator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  48
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor.java">org/apache/oodt/cas/metadata/extractors/CmdLineMetExtractor.java</a>
                 </td>
                 <td>
@@ -95,6 +81,20 @@
                 </td>
                 <td>
                   13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.preconditions.PreConditionComparator.java">org/apache/oodt/cas/metadata/preconditions/PreConditionComparator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  48
                 </td>
               </tr>
                           <tr>
@@ -491,20 +491,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.filenaming.NamingConvention.java">org/apache/oodt/cas/metadata/filenaming/NamingConvention.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.extractors.CopyAndRewriteConfig.java">org/apache/oodt/cas/metadata/extractors/CopyAndRewriteConfig.java</a>
                 </td>
                 <td>
@@ -515,6 +501,20 @@
                 </td>
                 <td>
                   3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.filenaming.NamingConvention.java">org/apache/oodt/cas/metadata/filenaming/NamingConvention.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
               </tr>
                           <tr>
@@ -701,20 +701,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.extractors.ExternMetExtractor.java">org/apache/oodt/cas/metadata/extractors/ExternMetExtractor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.extractors.ExternalMetExtractorConfig.java">org/apache/oodt/cas/metadata/extractors/ExternalMetExtractorConfig.java</a>
                 </td>
                 <td>
@@ -725,6 +711,20 @@
                 </td>
                 <td>
                   29
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-metadata//checkstyle.html#org.apache.oodt.cas.metadata.extractors.ExternMetExtractor.java">org/apache/oodt/cas/metadata/extractors/ExternMetExtractor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
                 </td>
               </tr>
                           <tr>

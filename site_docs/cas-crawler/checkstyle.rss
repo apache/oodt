@@ -6,7 +6,7 @@
     <link>http://oodt.apache.org/cas-crawler/</link>
     <description>Catalog and Archive Crawling Framework - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 53,
              Errors: 1652,
@@ -337,20 +337,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-crawler//checkstyle.html#org.apache.oodt.cas.crawl.action.IngestAncillary.java">org/apache/oodt/cas/crawl/action/IngestAncillary.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  102
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-crawler//checkstyle.html#org.apache.oodt.cas.crawl.action.ExternAction.java">org/apache/oodt/cas/crawl/action/ExternAction.java</a>
                 </td>
                 <td>
@@ -361,6 +347,20 @@
                 </td>
                 <td>
                   18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-crawler//checkstyle.html#org.apache.oodt.cas.crawl.action.IngestAncillary.java">org/apache/oodt/cas/crawl/action/IngestAncillary.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  102
                 </td>
               </tr>
                           <tr>
@@ -421,20 +421,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-crawler//checkstyle.html#org.apache.oodt.cas.crawl.cli.option.handler.CrawlerActionInfoHandler.java">org/apache/oodt/cas/crawl/cli/option/handler/CrawlerActionInfoHandler.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  16
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-crawler//checkstyle.html#org.apache.oodt.cas.crawl.action.TernaryAction.java">org/apache/oodt/cas/crawl/action/TernaryAction.java</a>
                 </td>
                 <td>
@@ -445,6 +431,20 @@
                 </td>
                 <td>
                   21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-crawler//checkstyle.html#org.apache.oodt.cas.crawl.cli.option.handler.CrawlerActionInfoHandler.java">org/apache/oodt/cas/crawl/cli/option/handler/CrawlerActionInfoHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
                 </td>
               </tr>
                           <tr>
