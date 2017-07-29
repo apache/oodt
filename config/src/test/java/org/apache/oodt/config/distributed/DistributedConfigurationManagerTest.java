@@ -21,9 +21,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.distributed.cli.ConfigPublisher;
 import org.apache.oodt.config.distributed.utils.FilePathUtils;
-import org.junit.AfterClass;
+import org.apache.oodt.config.test.AbstractDistributedConfigurationTest;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -49,11 +50,14 @@ import static org.junit.Assert.fail;
  */
 public class DistributedConfigurationManagerTest extends AbstractDistributedConfigurationTest {
 
-    protected static List<DistributedConfigurationPublisher> publishers;
+    private static final String CONFIG_PUBLISHER_XML = "config-publisher.xml";
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        AbstractDistributedConfigurationTest.setUp();
+    private List<DistributedConfigurationPublisher> publishers;
+
+    @Before
+    public void setUpTest() throws Exception {
+        System.setProperty("org.apache.oodt.cas.cli.action.spring.config", "src/main/resources/cmd-line-actions.xml");
+        System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "src/main/resources/cmd-line-options.xml");
 
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
@@ -113,8 +117,8 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
         }
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @After
+    public void tearDownTest() throws Exception {
         for (DistributedConfigurationPublisher publisher : publishers) {
             publisher.destroy();
 
@@ -144,6 +148,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 "-a", "clear"
         });
 
-        AbstractDistributedConfigurationTest.tearDown();
+        System.clearProperty("org.apache.oodt.cas.cli.action.spring.config");
+        System.clearProperty("org.apache.oodt.cas.cli.option.spring.config");
     }
 }

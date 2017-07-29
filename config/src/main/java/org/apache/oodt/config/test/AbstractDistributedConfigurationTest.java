@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.config.distributed;
+package org.apache.oodt.config.test;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.test.TestingServer;
@@ -27,8 +27,6 @@ import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 
 public abstract class AbstractDistributedConfigurationTest {
 
-    protected static final String CONFIG_PUBLISHER_XML = "config-publisher.xml";
-
     protected static TestingServer zookeeper;
     protected static CuratorFramework client;
 
@@ -38,8 +36,6 @@ public abstract class AbstractDistributedConfigurationTest {
         zookeeper.start();
 
         System.setProperty(ZK_CONNECT_STRING, zookeeper.getConnectString());
-        System.setProperty("org.apache.oodt.cas.cli.action.spring.config", "src/main/resources/cmd-line-actions.xml");
-        System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "src/main/resources/cmd-line-options.xml");
 
         client = CuratorUtils.newCuratorFrameworkClient(zookeeper.getConnectString());
         client.start();
@@ -47,6 +43,8 @@ public abstract class AbstractDistributedConfigurationTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        System.clearProperty(ZK_CONNECT_STRING);
+
         client.close();
         zookeeper.stop();
     }

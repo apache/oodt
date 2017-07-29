@@ -19,7 +19,10 @@ package org.apache.oodt.config.distributed;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.config.distributed.cli.ConfigPublisher;
+import org.apache.oodt.config.test.AbstractDistributedConfigurationTest;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -35,6 +38,20 @@ import java.util.Map;
  * @author Imesha Sudasingha
  */
 public class DistributedConfigurationPublisherTest extends AbstractDistributedConfigurationTest {
+
+    private static final String CONFIG_PUBLISHER_XML = "config-publisher.xml";
+
+    @Before
+    public void setUpTest() {
+        System.setProperty("org.apache.oodt.cas.cli.action.spring.config", "src/main/resources/cmd-line-actions.xml");
+        System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "src/main/resources/cmd-line-options.xml");
+    }
+
+    @After
+    public void tearDownTest() {
+        System.clearProperty("org.apache.oodt.cas.cli.action.spring.config");
+        System.clearProperty("org.apache.oodt.cas.cli.option.spring.config");
+    }
 
     @Test
     public void publishConfigurationTest() throws Exception {
