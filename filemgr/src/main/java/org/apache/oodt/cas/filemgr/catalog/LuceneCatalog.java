@@ -526,25 +526,26 @@ public class LuceneCatalog implements Catalog {
                     SortField.Type.STRING, true));
             //TODO FIX NUMBER OF RECORDS
             TopDocs check = searcher.search(query, 1, sort);
-            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
+            if(check.totalHits>0) {
+                TopDocs topDocs = searcher.search(query, check.totalHits, sort);
 
-            ScoreDoc[] hits = topDocs.scoreDocs;
+                ScoreDoc[] hits = topDocs.scoreDocs;
 
-            // should be > 0 hits
-            if (hits.length > 0) {
-                products = new Vector<Product>(hits.length);
-                for (ScoreDoc hit : hits) {
-                    Document productDoc = searcher.doc(hit.doc);
-                    CompleteProduct prod = toCompleteProduct(productDoc,
+                // should be > 0 hits
+                if (hits.length > 0) {
+                    products = new Vector<Product>(hits.length);
+                    for (ScoreDoc hit : hits) {
+                        Document productDoc = searcher.doc(hit.doc);
+                        CompleteProduct prod = toCompleteProduct(productDoc,
                             getRefs, false);
-                    products.add(prod.getProduct());
-                }
-            } else {
-                LOG.log(Level.FINEST,
+                        products.add(prod.getProduct());
+                    }
+                } else {
+                    LOG.log(Level.FINEST,
                         "Request for products returned no results");
-                return null;
+                    return null;
+                }
             }
-
         } catch (IOException e) {
             LOG.log(Level.WARNING,
                     "IOException when opening index directory: ["
@@ -592,23 +593,25 @@ public class LuceneCatalog implements Catalog {
                     SortField.Type.STRING, true));
             //TODO FIX NUMBER OF RECORDS
             TopDocs check = searcher.search(query, 1, sort);
-            TopDocs topDocs = searcher.search(query, check.totalHits, sort);
+            if(check.totalHits>0) {
+                TopDocs topDocs = searcher.search(query, check.totalHits, sort);
 
-            ScoreDoc[] hits = topDocs.scoreDocs;
+                ScoreDoc[] hits = topDocs.scoreDocs;
 
-            // should be > 0 hits
-            if (hits.length > 0) {
-                products = new Vector<Product>(hits.length);
-                for (ScoreDoc hit : hits) {
-                    Document productDoc = searcher.doc(hit.doc);
-                    CompleteProduct prod = toCompleteProduct(productDoc,
+                // should be > 0 hits
+                if (hits.length > 0) {
+                    products = new Vector<Product>(hits.length);
+                    for (ScoreDoc hit : hits) {
+                        Document productDoc = searcher.doc(hit.doc);
+                        CompleteProduct prod = toCompleteProduct(productDoc,
                             getRefs, false);
-                    products.add(prod.getProduct());
-                }
-            } else {
-                LOG.log(Level.FINEST, "Request for products by type: ["
+                        products.add(prod.getProduct());
+                    }
+                } else {
+                    LOG.log(Level.FINEST, "Request for products by type: ["
                         + type.getProductTypeId() + "] returned no results");
-                return null;
+                    return null;
+                }
             }
 
         } catch (IOException e) {
@@ -796,7 +799,9 @@ public class LuceneCatalog implements Catalog {
 
         for (int pageNum = 1; pageNum < numPages + 1; pageNum++) {
             List<Product> pageProducts = paginateQuery(query, type, pageNum, null);
+            if(pageProducts!=null) {
                 products.addAll(pageProducts);
+            }
         }
 
         if(n<=products.size()) {
@@ -1372,59 +1377,61 @@ public class LuceneCatalog implements Catalog {
             TermQuery prodTypeTermQuery = new TermQuery(new Term(
                     "product_type_id", type.getProductTypeId()));
             booleanQuery.add(prodTypeTermQuery, BooleanClause.Occur.MUST);
-            
+
             //convert filemgr query into a lucene query
             for (QueryCriteria queryCriteria : query.getCriteria()) {
                 booleanQuery.add(this.getQuery(queryCriteria), BooleanClause.Occur.MUST);
             }
-            
+
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
                     SortField.Type.STRING, true));
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
             //TODO FIX NUMBER OF RECORDS
             TopDocs check = searcher.search(booleanQuery.build(),1, sort);
-            TopDocs topDocs = searcher.search(booleanQuery.build(),check.totalHits, sort);
+            if(check.totalHits>0) {
+                TopDocs topDocs = searcher.search(booleanQuery.build(), check.totalHits, sort);
 
-            // Calculate page size and set it while we have the results
-            if (page != null) {
-            	page.setTotalPages(PaginationUtils.getTotalPage(topDocs.totalHits, pageSize));
-            }
+                // Calculate page size and set it while we have the results
+                if (page != null) {
+                    page.setTotalPages(PaginationUtils.getTotalPage(topDocs.totalHits, pageSize));
+                }
 
-            ScoreDoc[] hits = topDocs.scoreDocs;
+                ScoreDoc[] hits = topDocs.scoreDocs;
 
-            if (hits.length > 0) {
+                if (hits.length > 0) {
 
-                int startNum = (pageNum - 1) * pageSize;
-                if (doSkip) {
-                    if (startNum > hits.length) {
-                        startNum = 0;
-                    }
+                    int startNum = (pageNum - 1) * pageSize;
+                    if (doSkip) {
+                        if (startNum > hits.length) {
+                            startNum = 0;
+                        }
 
-                    products = new Vector<Product>(pageSize);
+                        products = new Vector<Product>(pageSize);
 
-                    for (int i = startNum; i < Math.min(hits.length,
+                        for (int i = startNum; i < Math.min(hits.length,
                             (startNum + pageSize)); i++) {
-                        Document productDoc = searcher.doc(hits[i].doc);
+                            Document productDoc = searcher.doc(hits[i].doc);
 
-                        CompleteProduct prod = toCompleteProduct(productDoc,
+                            CompleteProduct prod = toCompleteProduct(productDoc,
                                 false, false);
-                        products.add(prod.getProduct());
+                            products.add(prod.getProduct());
+                        }
+                    } else {
+                        products = new Vector<Product>(hits.length);
+                        for (int i = 0; i < hits.length; i++) {
+                            Document productDoc = searcher.doc(hits[i].doc);
+
+                            CompleteProduct prod = toCompleteProduct(productDoc,
+                                false, false);
+                            products.add(prod.getProduct());
+                        }
                     }
                 } else {
-                    products = new Vector<Product>(hits.length);
-                    for (int i = 0; i < hits.length; i++) {
-                        Document productDoc = searcher.doc(hits[i].doc);
-
-                        CompleteProduct prod = toCompleteProduct(productDoc,
-                                false, false);
-                        products.add(prod.getProduct());
-                    }
-                }
-            } else {
-                LOG.log(Level.WARNING, "Query: [" + query
+                    LOG.log(Level.WARNING, "Query: [" + query
                         + "] for Product Type: [" + type.getProductTypeId()
                         + "] returned no results");
+                }
             }
 
         } catch (Exception e) {
@@ -1444,6 +1451,7 @@ public class LuceneCatalog implements Catalog {
         }
 
         return products;
+
     }
 
     private org.apache.lucene.search.Query getQuery(QueryCriteria queryCriteria) throws CatalogException {
