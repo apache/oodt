@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
+import java.util.Collections;
 //JDK imports
 import java.util.List;
 import java.util.Vector;
@@ -199,6 +200,19 @@ public class ProductType {
      */
     public String toString() {
         return this.name;
+    }
+    
+    public static ProductType blankProductType(){
+      ProductType type = new ProductType();
+      type.setDescription("blank");
+      type.setExtractors(Collections.EMPTY_LIST);
+      type.setHandlers(Collections.EMPTY_LIST);
+      type.setName("blank");
+      type.setProductRepositoryPath("");
+      type.setProductTypeId("");
+      type.setTypeMetadata(new Metadata());
+      type.setVersioner("");
+      return type;
     }
 
 
