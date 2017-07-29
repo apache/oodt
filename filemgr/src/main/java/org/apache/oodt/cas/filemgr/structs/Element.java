@@ -138,5 +138,15 @@ public class Element {
     public void setDescription(String description) {
         this.description = description;
     }  
+    
+    public static Element blankElement(){
+      Element e = new Element();
+      e.setDCElement("");
+      e.setDescription("blank");
+      e.setElementId("");
+      e.setElementName("blank");
+      return e;
+      
+    }
 
 }
