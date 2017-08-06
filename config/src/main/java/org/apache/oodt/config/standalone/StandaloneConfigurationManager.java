@@ -52,4 +52,16 @@ public class StandaloneConfigurationManager extends ConfigurationManager {
             logger.debug("Properties loaded from file : {}", file);
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearConfiguration() {
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getSavedFiles() {
+        return new ArrayList<>();
+    }
 }

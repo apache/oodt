@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -54,6 +55,8 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     /** Name of the OODT component, to which this class is providing configuration support */
     private Component component;
     private ZNodePaths zNodePaths;
+
+    private List<String> savedFiles = new ArrayList<>();
 
     public DistributedConfigurationManager(Component component) {
         super(component);
@@ -78,20 +81,17 @@ public class DistributedConfigurationManager extends ConfigurationManager {
 
         connectString = System.getProperty(Constants.Properties.ZK_CONNECT_STRING);
         logger.info("Using zookeeper connect string : {}", connectString);
-
         startZookeeper();
     }
 
     /**
-     * Creates a {@link CuratorFramework} instance and start it. This method will wait a maximum amount of
-     * {@link Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
+     * Creates a {@link CuratorFramework} instance and start it. This method will wait a maximum amount of {@link
+     * Properties#ZK_STARTUP_TIMEOUT} milli-seconds until the client connects to the zookeeper ensemble.
      */
     private void startZookeeper() {
         client = CuratorUtils.newCuratorFrameworkClient(connectString, logger);
-
         client.start();
         logger.info("Curator framework start operation invoked");
-
         int startupTimeOutMs = Integer.parseInt(System.getProperty(Properties.ZK_STARTUP_TIMEOUT, "30000"));
         try {
             logger.info("Waiting to connect to zookeeper, startupTimeout : {}", startupTimeOutMs);
@@ -141,10 +141,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
             logger.info("Properties loaded from ZNode at : {}", propertiesFileZNodePath);
 
             String localFilePath = zNodePaths.getLocalPropertiesFilePath(propertiesFileZNodePath);
-            localFilePath = FilePathUtils.fixForComponentHome(component, localFilePath);
-            logger.debug("Storing configuration in file: {}", localFilePath);
-            FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
-            logger.info("Properties file from ZNode at {} saved to {}", propertiesFileZNodePath, localFilePath);
+            saveFile(localFilePath, bytes);
         }
     }
 
@@ -168,14 +165,65 @@ public class DistributedConfigurationManager extends ConfigurationManager {
             byte[] bytes = client.getData().forPath(configFileZNodePath);
 
             String localFilePath = zNodePaths.getLocalConfigFilePath(configFileZNodePath);
-            localFilePath = FilePathUtils.fixForComponentHome(component, localFilePath);
-            FileUtils.writeByteArrayToFile(new File(localFilePath), bytes);
-            logger.info("Config file from ZNode at {} saved to {}", configFileZNodePath, localFilePath);
+            saveFile(localFilePath, bytes);
         }
+    }
+
+    private void saveFile(String path, byte[] data) throws IOException {
+        String localFilePath = FilePathUtils.fixForComponentHome(component, path);
+        File localFile = new File(localFilePath);
+        if (localFile.exists()) {
+            logger.warn("Deleting already existing file at {} before writing new content", localFilePath);
+            localFile.delete();
+        }
+
+        logger.debug("Storing configuration in file: {}", localFilePath);
+        FileUtils.writeByteArrayToFile(localFile, data);
+        logger.info("File from ZNode at {} saved to {}", path, localFilePath);
+        savedFiles.add(localFilePath);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearConfiguration() {
+        for (String path : savedFiles) {
+            logger.debug("Removing saved file {}", path);
+            File file = new File(path);
+            if (file.delete()) {
+                logger.debug("Deleted saved file {}", path);
+
+                int lastIndex = path.lastIndexOf(Constants.SEPARATOR);
+                String parentPath = path.substring(0, lastIndex == -1 ? 0 : lastIndex);
+                while (!parentPath.isEmpty()) {
+                    // Deleting parent if empty
+                    File parent = new File(parentPath);
+                    File[] files = parent.listFiles();
+                    if (files == null || files.length != 0) {
+                        break;
+                    }
+
+                    if (!parent.delete()) {
+                        break;
+                    }
+                    logger.debug("Deleted directory {} since it is empty", parentPath);
+                    lastIndex = parentPath.lastIndexOf(Constants.SEPARATOR);
+                    parentPath = path.substring(0, lastIndex == -1 ? 0 : lastIndex);
+                }
+            } else {
+                logger.warn("Unable to delete saved file {}", path);
+            }
+        }
+        savedFiles.clear();
     }
 
     public Component getComponent() {
         return component;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getSavedFiles() {
+        return new ArrayList<>(savedFiles);
     }
 
     public ZNodePaths getzNodePaths() {

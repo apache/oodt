@@ -17,6 +17,8 @@
 
 package org.apache.oodt.config;
 
+import java.util.List;
+
 /**
  * The abstract class to define functions of the configuration managers.
  *
@@ -32,7 +34,23 @@ public abstract class ConfigurationManager {
 
     public abstract void loadConfiguration() throws Exception;
 
+    /**
+     * Clears loaded configuration. Invocation of this method will remove the downloaded configuration files to be
+     * deleted in the distributed configuration management scenario. Any child class that is extending this class should
+     * implement this operation on their own.
+     */
+    public abstract void clearConfiguration();
+
     public Component getComponent() {
         return component;
     }
+
+    /**
+     * Returns a list of file paths which are the locations of the files stored locally corresponding to configuration.
+     * In distributed configuration management scenario, this stands for the files downloaded and stored in local file
+     * system.
+     *
+     * @return list of locally stored files
+     */
+    public abstract List<String> getSavedFiles();
 }

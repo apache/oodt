@@ -17,7 +17,6 @@
 
 package org.apache.oodt.config.distributed;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.distributed.cli.ConfigPublisher;
 import org.apache.oodt.config.distributed.utils.FilePathUtils;
@@ -33,11 +32,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import static org.apache.oodt.config.Constants.SEPARATOR;
 import static org.junit.Assert.fail;
@@ -114,6 +111,13 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 File file = new File(fileName);
                 Assert.assertTrue(file.exists());
             }
+
+            List<String> localFiles = configurationManager.getSavedFiles();
+            configurationManager.clearConfiguration();
+            for (String localFile : localFiles) {
+                File file = new File(localFile);
+                Assert.assertFalse(file.exists());
+            }
         }
     }
 
@@ -121,25 +125,6 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
     public void tearDownTest() throws Exception {
         for (DistributedConfigurationPublisher publisher : publishers) {
             publisher.destroy();
-
-            // deleting all locally created conf file directories
-            Set<Map.Entry<String, String>> files = new HashSet<>(publisher.getConfigFiles().entrySet());
-            files.addAll(publisher.getPropertiesFiles().entrySet());
-
-            for (Map.Entry<String, String> entry : files) {
-                String fileName = entry.getValue();
-                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(1) : fileName;
-
-                String prefixPath = System.getProperty(publisher.getComponent().getHome());
-                if (prefixPath == null) {
-                    prefixPath = System.getenv(publisher.getComponent().getHome());
-                }
-                String confDir = prefixPath != null && !prefixPath.trim().isEmpty() ?
-                        prefixPath.trim() + SEPARATOR + fileName.split(SEPARATOR)[0] : fileName.split(SEPARATOR)[0];
-
-                File dir = new File(confDir);
-                FileUtils.deleteDirectory(dir);
-            }
         }
 
         ConfigPublisher.main(new String[]{
