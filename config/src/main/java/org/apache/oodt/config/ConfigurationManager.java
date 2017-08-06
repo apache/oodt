@@ -27,9 +27,15 @@ import java.util.List;
 public abstract class ConfigurationManager {
 
     protected Component component;
+    protected String project;
 
     public ConfigurationManager(Component component) {
+        this(component, Constants.DEFAULT_PROJECT);
+    }
+
+    public ConfigurationManager(Component component, String project) {
         this.component = component;
+        this.project = project;
     }
 
     public abstract void loadConfiguration() throws Exception;
@@ -53,4 +59,8 @@ public abstract class ConfigurationManager {
      * @return list of locally stored files
      */
     public abstract List<String> getSavedFiles();
+
+    public String getProject() {
+        return project;
+    }
 }

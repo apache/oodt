@@ -23,8 +23,8 @@ import org.apache.oodt.config.Component;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.Constants.Properties;
+import org.apache.oodt.config.distributed.utils.ConfigUtils;
 import org.apache.oodt.config.distributed.utils.CuratorUtils;
-import org.apache.oodt.config.distributed.utils.FilePathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +38,11 @@ import java.util.concurrent.TimeUnit;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
+import static org.apache.oodt.config.distributed.utils.ConfigUtils.getOODTProjectName;
 
 /**
  * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to
- * connect to zookeeper
+ * connect to zookeeper.
  *
  * @author Imesha Sudasingha.
  */
@@ -52,16 +53,13 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     /** Connection string required to connect to zookeeper */
     private String connectString;
     private CuratorFramework client;
-    /** Name of the OODT component, to which this class is providing configuration support */
-    private Component component;
     private ZNodePaths zNodePaths;
 
     private List<String> savedFiles = new ArrayList<>();
 
     public DistributedConfigurationManager(Component component) {
-        super(component);
-        this.component = component;
-        this.zNodePaths = new ZNodePaths(this.component.getName());
+        super(component, getOODTProjectName());
+        this.zNodePaths = new ZNodePaths(this.project, this.component.getName());
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
@@ -170,7 +168,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     }
 
     private void saveFile(String path, byte[] data) throws IOException {
-        String localFilePath = FilePathUtils.fixForComponentHome(component, path);
+        String localFilePath = ConfigUtils.fixForComponentHome(component, path);
         File localFile = new File(localFilePath);
         if (localFile.exists()) {
             logger.warn("Deleting already existing file at {} before writing new content", localFilePath);

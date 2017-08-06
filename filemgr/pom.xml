@@ -237,6 +237,7 @@
           </systemProperties>
           <environmentVariables>
             <OODT_FILEMGR_HOME>${project.basedir}</OODT_FILEMGR_HOME>
+            <OODT_PROJECT>primary</OODT_PROJECT>
           </environmentVariables>
           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>

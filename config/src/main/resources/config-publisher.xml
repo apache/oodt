@@ -22,6 +22,10 @@
     <!-- File Manager example configuration publisher -->
     <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
         <constructor-arg value="FILE_MANAGER"/>
+
+        <!-- An optional project name, if you want to run several instances of the same component with different configuration -->
+        <!--<constructor-arg value="project-x"/>-->
+
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
                 <entry key="examples/filemgr/filemgr.properties" value="/etc/filemgr.properties"/>

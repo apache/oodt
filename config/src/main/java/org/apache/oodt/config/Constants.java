@@ -35,12 +35,23 @@ public class Constants {
     public static final String STANDALONE_NODE_NAME = "local";
 
     /** Default environment name to be used */
-    public static final String DEFAULT_ENVIRONMENT = "default";
+    public static final String DEFAULT_PROJECT = "default";
 
     /** The XML file name in which the configuration to be published to zookeeper is defined */
     public static final String DEFAULT_CONFIG_PUBLISHER_XML = "etc" + SEPARATOR + "config-publisher.xml";
 
+    public static class Env {
+        /** Environment variable name to specify OODT project name */
+        public static final String OODT_PROJECT = "OODT_PROJECT";
+    }
+
     public static class Properties {
+        /**
+         * Name of the OODT project. This property allows us to run same type OODT components to be run with different
+         * configuration using the same zookeeper ensemble.
+         */
+        public static final String OODT_PROJECT = "org.apache.oodt.config.project";
+
         /** The system property to be set in order to enable distributed configuration management */
         public static final String ENABLE_DISTRIBUTED_CONFIGURATION = "org.apache.oodt.config.distributed";
 
@@ -67,6 +78,9 @@ public class Constants {
 
         /** Namespace to be used when creating ZNodes in Zookeeper */
         public static final String NAMESPACE = "oodt";
+
+        /** Where configuration for separate projects are stored */
+        public static final String PROJECTS_PATH_NAME = "projects";
 
         /** Where OODT components related configuration are stored */
         public static final String COMPONENTS_PATH_NAME = "components";

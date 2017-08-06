@@ -21,6 +21,7 @@
 
     <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
         <constructor-arg value="FILE_MANAGER"/>
+        <constructor-arg value="project1"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
                 <entry key="target/resources/examples/filemgr/filemgr.properties" value="/etc/filemgr.properties"/>
@@ -49,6 +50,7 @@
 
     <bean id="resmgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
         <constructor-arg value="RESOURCE_MANAGER"/>
+        <constructor-arg value="project2"/>
         <property name="propertiesFiles">
             <map key-type="java.lang.String" value-type="java.lang.String">
                 <entry key="target/resources/examples/resmgr/resource.properties" value="/etc/resource.properties"/>

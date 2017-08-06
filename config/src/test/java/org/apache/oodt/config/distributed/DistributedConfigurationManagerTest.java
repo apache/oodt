@@ -19,7 +19,7 @@ package org.apache.oodt.config.distributed;
 
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.distributed.cli.ConfigPublisher;
-import org.apache.oodt.config.distributed.utils.FilePathUtils;
+import org.apache.oodt.config.distributed.utils.ConfigUtils;
 import org.apache.oodt.config.test.AbstractDistributedConfigurationTest;
 import org.junit.After;
 import org.junit.Assert;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.apache.oodt.config.Constants.SEPARATOR;
+import static org.apache.oodt.config.Constants.Properties.OODT_PROJECT;
 import static org.junit.Assert.fail;
 
 /**
@@ -77,6 +77,8 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
     @Test
     public void loadConfigurationTest() throws Exception {
         for (DistributedConfigurationPublisher publisher : publishers) {
+            System.setProperty(OODT_PROJECT, publisher.getProject());
+
             ConfigurationManager configurationManager = new DistributedConfigurationManager(publisher.getComponent());
             configurationManager.loadConfiguration();
 
@@ -87,7 +89,6 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 try (InputStream in = new FileInputStream(originalFile)) {
                     properties.load(in);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     fail(e.getMessage());
                 }
 
@@ -96,8 +97,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 }
 
                 String fileName = entry.getValue();
-                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(SEPARATOR.length()) : fileName;
-                fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), fileName);
+                fileName = ConfigUtils.fixForComponentHome(publisher.getComponent(), fileName);
                 File downloadedFile = new File(fileName);
                 Assert.assertNotNull(downloadedFile);
                 Assert.assertTrue(downloadedFile.exists());
@@ -106,8 +106,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
             // Checking for configuration files
             for (Map.Entry<String, String> entry : publisher.getConfigFiles().entrySet()) {
                 String fileName = entry.getValue();
-                fileName = fileName.startsWith(SEPARATOR) ? fileName.substring(SEPARATOR.length()) : fileName;
-                fileName = FilePathUtils.fixForComponentHome(publisher.getComponent(), fileName);
+                fileName = ConfigUtils.fixForComponentHome(publisher.getComponent(), fileName);
                 File file = new File(fileName);
                 Assert.assertTrue(file.exists());
             }
@@ -118,6 +117,8 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 File file = new File(localFile);
                 Assert.assertFalse(file.exists());
             }
+
+            System.clearProperty(OODT_PROJECT);
         }
     }
 

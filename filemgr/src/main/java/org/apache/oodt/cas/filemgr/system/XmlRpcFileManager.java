@@ -1224,6 +1224,7 @@ public class XmlRpcFileManager {
   }
 
   public boolean shutdown() {
+    configurationManager.clearConfiguration();
     if (this.webServer != null) {
       this.webServer.shutdown();
       this.webServer = null;

@@ -18,19 +18,30 @@
 package org.apache.oodt.config.distributed.utils;
 
 import org.apache.oodt.config.Component;
+import org.apache.oodt.config.Constants;
+import org.apache.oodt.config.Constants.Env;
 import org.apache.oodt.config.Constants.ZPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.oodt.config.Constants.Properties.OODT_PROJECT;
 import static org.apache.oodt.config.Constants.SEPARATOR;
 
-public class FilePathUtils {
+public class ConfigUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(FilePathUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigUtils.class);
 
-    private FilePathUtils() {
+    private ConfigUtils() {
     }
 
+    /**
+     * Fix a given path to start from given {@link Component}'s home directory. Home directory will be fetched either
+     * through a system property or through an environment variable.
+     *
+     * @param component  OODT {@link Component}
+     * @param suffixPath path to be fixed
+     * @return fixed path
+     */
     public static String fixForComponentHome(Component component, String suffixPath) {
         String prefix = System.getProperty(component.getHome());
         if (prefix == null) {
@@ -48,12 +59,17 @@ public class FilePathUtils {
         return path.toString();
     }
 
-    public static String unfixForComponentHome(Component component, String path) {
-        String prefix = System.getenv().get(component.getHome());
-        if (prefix != null && path.startsWith(prefix)) {
-            return path.substring(prefix.length() + SEPARATOR.length());
+    /**
+     * Get the name of the project name (optional) if specified. Else return a default value
+     *
+     * @return OODT project name
+     */
+    public static String getOODTProjectName() {
+        String project = System.getProperty(OODT_PROJECT);
+        if (project == null) {
+            project = System.getenv(Env.OODT_PROJECT);
         }
 
-        return path;
+        return project == null ? Constants.DEFAULT_PROJECT : project;
     }
 }

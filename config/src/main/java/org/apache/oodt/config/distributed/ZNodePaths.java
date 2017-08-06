@@ -17,8 +17,10 @@
 
 package org.apache.oodt.config.distributed;
 
+import static org.apache.oodt.config.Constants.DEFAULT_PROJECT;
 import static org.apache.oodt.config.Constants.ZPaths.COMPONENTS_PATH_NAME;
 import static org.apache.oodt.config.Constants.ZPaths.CONFIGURATION_PATH_NAME;
+import static org.apache.oodt.config.Constants.ZPaths.PROJECTS_PATH_NAME;
 import static org.apache.oodt.config.Constants.ZPaths.PROPERTIES_PATH_NAME;
 import static org.apache.oodt.config.Constants.ZPaths.SEPARATOR;
 
@@ -29,15 +31,15 @@ import static org.apache.oodt.config.Constants.ZPaths.SEPARATOR;
  */
 public class ZNodePaths {
 
-    /** ZNode for distinct components. /components/${component} */
+    /** ZNode for distinct components. /projects/${project}/components/${component} */
     private String componentZNodePath;
     private String componentZNodeRoot;
 
-    /** ZNode path for properties files. /components/${component}/properties */
+    /** ZNode path for properties files. /projects/${project}/components/${component}/properties */
     private String propertiesZNodePath;
     private String propertiesZNodeRoot;
 
-    /** ZNode path for other configuration files. /components/${component}/configuration */
+    /** ZNode path for other configuration files. /projects/${project}/components/${component}/configuration */
     private String configurationZNodePath;
     private String configurationZNodeRoot;
 
@@ -47,12 +49,20 @@ public class ZNodePaths {
      *
      * @param componentName Name of the OODT component
      */
-    public ZNodePaths(String componentName) {
+    public ZNodePaths(String project, String componentName) {
+        if (project == null) {
+            project = DEFAULT_PROJECT;
+        }
+
         if (componentName == null) {
             throw new IllegalArgumentException("Component name cannot be null");
         }
 
-        componentZNodePath = SEPARATOR + COMPONENTS_PATH_NAME + SEPARATOR + componentName;
+        /* ZNode for distinct projects. /projects/${project} */
+        String projectZNodePath = SEPARATOR + PROJECTS_PATH_NAME + SEPARATOR + project;
+        String projectZNodeRoot = projectZNodePath + SEPARATOR;
+
+        componentZNodePath = projectZNodeRoot + COMPONENTS_PATH_NAME + SEPARATOR + componentName;
         componentZNodeRoot = componentZNodePath + SEPARATOR;
 
         propertiesZNodePath = componentZNodeRoot + PROPERTIES_PATH_NAME;

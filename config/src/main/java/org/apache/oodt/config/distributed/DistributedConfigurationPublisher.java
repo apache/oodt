@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.apache.oodt.config.Constants.DEFAULT_PROJECT;
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
 
@@ -49,11 +50,18 @@ public class DistributedConfigurationPublisher {
     private String connectString;
     private CuratorFramework client;
     private ZNodePaths zNodePaths;
+
     private Component component;
+    private String project;
 
     public DistributedConfigurationPublisher(Component component) {
+        this(component, DEFAULT_PROJECT);
+    }
+
+    public DistributedConfigurationPublisher(Component component, String project) {
         this.component = component;
-        this.zNodePaths = new ZNodePaths(this.component.getName());
+        this.project = project;
+        this.zNodePaths = new ZNodePaths(this.project, this.component.getName());
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
@@ -161,7 +169,7 @@ public class DistributedConfigurationPublisher {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
             String filePath = entry.getKey();
             String relativeZNodePath = entry.getValue();
-            logger.info("Publishing configuration {} to {}", filePath, relativeZNodePath);
+            logger.debug("Publishing configuration {} to {}", filePath, relativeZNodePath);
 
             String content = getFileContent(filePath);
 
@@ -174,9 +182,9 @@ public class DistributedConfigurationPublisher {
                 } else {
                     Stat stat = client.setData().forPath(zNodePath, content.getBytes());
                     if (stat != null) {
-                        logger.info("Replaced old published configuration at {} with content of file : {}", relativeZNodePath, filePath);
+                        logger.info("Replaced old published configuration at {} with content of file : {}", zNodePath, filePath);
                     } else {
-                        logger.warn("Unable to replace published configuration at {} with file: {}", relativeZNodePath, filePath);
+                        logger.warn("Unable to replace published configuration at {} with file: {}", zNodePath, filePath);
                     }
                 }
             } else {
@@ -185,7 +193,7 @@ public class DistributedConfigurationPublisher {
                  * when no child node is present under them.
                  */
                 client.create().creatingParentContainersIfNeeded().forPath(zNodePath, content.getBytes());
-                logger.info("Published configuration file {} to {}", filePath, relativeZNodePath);
+                logger.info("Published configuration file {} to {}", filePath, zNodePath);
             }
         }
     }
@@ -195,7 +203,7 @@ public class DistributedConfigurationPublisher {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
             String filePath = entry.getKey();
             String relativeZNodePath = entry.getValue();
-            logger.info("Checking published configuration for {} - {}", filePath, relativeZNodePath);
+            logger.debug("Checking published configuration for {} - {}", filePath, relativeZNodePath);
 
             String originalContent = getFileContent(filePath);
 
@@ -214,6 +222,10 @@ public class DistributedConfigurationPublisher {
             }
 
             logger.info("{} - {} configuration checked and OK", filePath, relativeZNodePath);
+        }
+
+        if (!noError) {
+            logger.warn("There are errors in configuration publishing");
         }
 
         return noError;
@@ -253,5 +265,9 @@ public class DistributedConfigurationPublisher {
 
     public Component getComponent() {
         return component;
+    }
+
+    public String getProject() {
+        return project;
     }
 }
