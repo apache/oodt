@@ -43,6 +43,9 @@ public class Constants {
     public static class Env {
         /** Environment variable name to specify OODT project name */
         public static final String OODT_PROJECT = "OODT_PROJECT";
+        /** The environment variable to be set, if to enable distributed configuration management */
+        public static final String ENABLE_DISTRIBUTED_CONFIGURATION = "OODT_DISTRIBUTED_CONF";
+        public static final String CONNECT_STRING = "ZK_CONNECT_STRING";
     }
 
     public static class Properties {

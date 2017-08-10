@@ -163,6 +163,10 @@
           <groupId>org.apache.solr</groupId>
           <artifactId>solr-lucene-core</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.zookeeper</groupId>
+          <artifactId>zookeeper</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -236,7 +240,7 @@
             </property>
           </systemProperties>
           <environmentVariables>
-            <OODT_FILEMGR_HOME>${project.basedir}</OODT_FILEMGR_HOME>
+            <FILEMGR_HOME>${project.basedir}</FILEMGR_HOME>
             <OODT_PROJECT>primary</OODT_PROJECT>
           </environmentVariables>
           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>

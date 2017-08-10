@@ -39,7 +39,6 @@
     <root>
         <priority value="INFO"/>
         <appender-ref ref="console"/>
-        <appender-ref ref="file"/>
     </root>
 
     <logger name="org.apache.zookeeper">
