@@ -113,7 +113,7 @@ public class FileTransferStatus {
      * @return The percentage of the file that has been transferred so far.
      */
     public double computePctTransferred() {
-        return ((double) (bytesTransferred * 1.0) / (fileRef.getFileSize() * 1.0));
+        return (fileRef != null && fileRef.getFileSize() > 0) ? ((double) (bytesTransferred * 1.0) / (fileRef.getFileSize() * 1.0)) : 1.0;
     }
 
 }
