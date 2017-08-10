@@ -39,6 +39,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -66,8 +67,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       fmgrClient = new XmlRpcFileManagerClient(fileMgrUrl);
     } catch (ConnectionException e) {
-      LOG.log(Level.SEVERE, "Unable to connect to file manager: ["
-          + fileMgrUrl.toString() + "]");
+      LOG.log(Level.SEVERE,
+          "Unable to connect to file manager: [" + fileMgrUrl.toString() + "]");
       fmgrClient = null;
     }
 
@@ -83,6 +84,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public List safeGetTopNProducts(int n) {
+    if (!isConnected())
+      return Collections.EMPTY_LIST;
     try {
       return this.fmgrClient.getTopNProducts(n);
     } catch (Exception e) {
@@ -92,7 +95,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     }
   }
 
-  public Product getLatestProductByName(String prodName, String productTypeName) {
+  public Product getLatestProductByName(String prodName,
+      String productTypeName) {
     return getLatestProductByName(prodName,
         safeGetProductTypeByName(productTypeName));
   }
@@ -163,7 +167,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     if (productTypes != null && productTypes.size() > 0) {
       for (Object productType : productTypes) {
         ProductType type = (ProductType) productType;
-        if (excludeTypeList != null && excludeTypeList.contains(type.getName())) {
+        if (excludeTypeList != null
+            && excludeTypeList.contains(type.getName())) {
           continue;
         }
 
@@ -196,14 +201,18 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public List safeIssueQuery(Query query, ProductType type) {
+    if (!isConnected())
+      return Collections.EMPTY_LIST;
     List retProds = null;
 
     try {
       retProds = this.fmgrClient.query(query, type);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Exception issuing query: [" + query
-          + "] to file manager at: [" + this.fmgrClient.getFileManagerUrl()
-          + "]: Message: " + e.getMessage(), e);
+      LOG.log(Level.WARNING,
+          "Exception issuing query: [" + query + "] to file manager at: ["
+              + this.fmgrClient.getFileManagerUrl() + "]: Message: "
+              + e.getMessage(),
+          e);
     }
 
     return retProds;
@@ -211,6 +220,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public Element safeGetElementByName(String elemName) {
+    if (!isConnected())
+      return Element.blankElement();
     Element element = null;
 
     try {
@@ -225,6 +236,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public ProductType safeGetProductTypeByName(String productTypeName) {
+    if (!isConnected())
+      return ProductType.blankProductType();
     ProductType type = null;
 
     try {
@@ -238,6 +251,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public ProductType safeGetProductTypeById(String productTypeId) {
+    if (!isConnected())
+      return ProductType.blankProductType();
     ProductType type = null;
 
     try {
@@ -251,20 +266,24 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public List safeGetProductReferences(Product product) {
+    if (!isConnected())
+      return Collections.EMPTY_LIST;
     List refs = null;
 
     try {
       refs = fmgrClient.getProductReferences(product);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Exception obtaining product references"
-          + "for product: [" + product.getProductName() + "]: Message: "
-          + e.getMessage());
+      LOG.log(Level.WARNING,
+          "Exception obtaining product references" + "for product: ["
+              + product.getProductName() + "]: Message: " + e.getMessage());
     }
 
     return refs;
   }
 
   public Metadata safeGetMetadata(Product product) {
+    if (!isConnected())
+      return new Metadata();
     Metadata metadata = null;
 
     try {
@@ -279,6 +298,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public List safeGetProductTypes() {
+    if (!isConnected())
+      return Collections.EMPTY_LIST;
     List types = null;
 
     try {
@@ -293,6 +314,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public Product getLatestProduct(Query query, ProductType type) {
+    if (!isConnected())
+      return Product.getDefaultFlatProduct("", "");
     List products;
 
     try {
@@ -312,6 +335,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public Product safeGetProductByName(String prodName) {
+    if (!isConnected())
+      return Product.getDefaultFlatProduct("", "");
     Product p = null;
 
     try {
@@ -323,34 +348,39 @@ public class FileManagerUtils implements PCSConfigMetadata {
 
     return p;
   }
-  
 
   /**
    * Gets the number of products for the given type.
-   * @param type The given type.
+   * 
+   * @param type
+   *          The given type.
    * @return The number of products.
    */
-  public int safeGetNumProducts(ProductType type){
+  public int safeGetNumProducts(ProductType type) {
+    if (!isConnected())
+      return -1;
     int numProducts = -1;
-    try{
+    try {
       numProducts = this.fmgrClient.getNumProducts(type);
-    }
-    catch(Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
-      LOG.warning("Exception getting num products by type: ["+type.getName()+"]: "
-          + "Message: "+e.getLocalizedMessage());
+      LOG.warning("Exception getting num products by type: [" + type.getName()
+          + "]: " + "Message: " + e.getLocalizedMessage());
     }
-    
+
     return numProducts;
   }
 
-  
   /**
    * Get a first page of Products using the pagination API.
-   * @param type Gets the first page of products for this type.
+   * 
+   * @param type
+   *          Gets the first page of products for this type.
    * @return The first page of products for this type.
    */
   public ProductPage safeFirstPage(ProductType type) {
+    if (!isConnected())
+      return ProductPage.blankPage();
     ProductPage page = null;
     try {
       page = this.fmgrClient.getFirstPage(type);
@@ -361,13 +391,15 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public String getFilePath(Product prod) {
+    if (!isConnected())
+      return "N/A";
     if (prod.getProductReferences() == null) {
       prod.setProductReferences(safeGetProductReferences(prod));
     }
 
     if (prod.getProductReferences() == null
-        || (prod.getProductReferences() != null && prod.getProductReferences()
-            .size() == 0)) {
+        || (prod.getProductReferences() != null
+            && prod.getProductReferences().size() == 0)) {
       return "N/A";
     }
 
@@ -457,7 +489,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   public static String getDirProductFilePath(Product p, String prodName) {
     return FileManagerUtils.safeGetFileFromUri(
         FileManagerUtils.getRootReference(prodName, p.getProductReferences())
-            .getOrigReference()).getAbsolutePath();
+            .getOrigReference())
+        .getAbsolutePath();
   }
 
   public static Reference getRootReference(String productName, List refs) {
@@ -478,12 +511,21 @@ public class FileManagerUtils implements PCSConfigMetadata {
       return false;
     } else {
       String referenceURI = r.getOrigReference();
-      int lastFolderInPathStartIdx = referenceURI.substring(0,
-          referenceURI.length() - 1).lastIndexOf("/") + 1;
-      String lastFolderInPath = referenceURI.substring(
-          lastFolderInPathStartIdx, referenceURI.length() - 1);
+      int lastFolderInPathStartIdx = referenceURI
+          .substring(0, referenceURI.length() - 1).lastIndexOf("/") + 1;
+      String lastFolderInPath = referenceURI.substring(lastFolderInPathStartIdx,
+          referenceURI.length() - 1);
       return lastFolderInPath.startsWith(prodName);
     }
+  }
+
+  private boolean isConnected() {
+    if (this.fmgrClient == null) {
+      LOG.warning(
+          "Not connected to File Manager: Default Products, References, Metadata and other objects will be returned.");
+      return false;
+    } else
+      return true;
   }
 
 }

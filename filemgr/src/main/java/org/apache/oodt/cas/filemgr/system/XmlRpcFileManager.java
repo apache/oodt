@@ -629,7 +629,7 @@ public class XmlRpcFileManager {
   }
 
   public List<Map<String, Object>> getElementsByProductType(
-      Map<String, Object> productTypeHash)
+      Hashtable<String, Object> productTypeHash)
       throws ValidationLayerException {
     ProductType type = XmlRpcStructFactory
         .getProductTypeFromXmlRpc(productTypeHash);
