@@ -12,10 +12,20 @@ define(["jquery",
          */
         function url() {
             var query = "";
-            if (GLOBAL_USER != "" && typeof(GLOBAL_USER) !== "undefined") {   
+            if (GLOBAL_USER != "" && typeof(GLOBAL_USER) !== "undefined") {
                 query += ((query == "")?"?":"&")+ "user="+GLOBAL_USER;
             }
-            return Config.INGEST_REST_SERVICE + query;
+          //var extractor = this.collection.extractors.get("selected");
+          var extractor = $("#extractors").find(":selected").text();
+          if (extractor != "" && extractor != null && typeof(extractor) !== "undefined")
+            if(extractor==="celgene-s3extractor"){
+              query += "&fsType=s3"
+            }
+            else{
+              query += "&fsType=local"
+            }
+
+          return Config.INGEST_REST_SERVICE + query;
         }
         /**
          * Parse a model

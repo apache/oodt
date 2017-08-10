@@ -212,11 +212,8 @@ define(["jquery",
                     }
                 }
             });
-            this._updateSelection = getSelectionUpdater(this.selection,this);
-            //Register view update on directory change
-            this.directory.on("change:files",this.render,this);
-            this.directory.on('change', this.render, this);
 
+          this._updateSelection = getSelectionUpdater(this.selection,this);
             this.render();
         };
         /**
@@ -243,10 +240,15 @@ define(["jquery",
         /**
          * Render this view
          */
-        function render() {
+        function render(t) {
             //Turn off updates
             $("#"+this.name).off("changed.jstree");
-            var data = utils.deep(this.directory.get("files"),jsTreeAug);
+            if($("#treetype").find(":selected").text() === "S3") {
+                var data = utils.deep(this.s3directory.get("files"), jsTreeAug);
+            }
+            else {
+                var data = utils.deep(this.directory.get("files"), jsTreeAug);
+            }
             if(data.type=="DIRECTORY"){
                 opennodes = true;
             }
@@ -254,9 +256,28 @@ define(["jquery",
             $("#"+this.name).jstree(true).refresh();
         };
 
+
         function refresh_tree() {
-            Models.refreshTree();
+            s =  this;
+            if($("#treetype").find(":selected").text() === "S3"){
+                Models.refreshTree("S3", function(){s.render(s)});
+                $('#extractors option[value=celgene-s3extractor]').prop('selected',true).change();
+            }
+            else{
+                Models.refreshTree("NFS", function(){s.render(s)});
+                $('#extractors option[value=celgene-extractor]').prop('selected',true).change();
+
+            }
+
         };
+
+       function keyPressEventHandler(event){
+          if(event.keyCode == 13){
+            refresh_tree();
+          }
+        }
+
+
         /**
          * Tree view object
          */
@@ -267,9 +288,12 @@ define(["jquery",
             //Private functions
             gussy: gussy,
             refresh_tree: refresh_tree,
+            keyPressEventHandler: keyPressEventHandler,
 
             events: {
-                'click .refresh-tree' : 'refresh_tree'
+                'click .refresh-tree' : 'refresh_tree',
+                'change #treetype' : 'refresh_tree',
+                'keyup #s3name' : 'keyPressEventHandler'
             }
         });
     }

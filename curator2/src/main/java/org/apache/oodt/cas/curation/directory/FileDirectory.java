@@ -10,7 +10,7 @@ import org.apache.oodt.commons.validation.DirectoryValidator;
 
 /**
  * A file-system based directory for listing into the curator.
- * 
+ *
  * @author starchmd
  */
 public class FileDirectory implements Directory {
@@ -31,7 +31,7 @@ public class FileDirectory implements Directory {
     @Override
     public DirectoryListing list() throws IOException {
         Collection<File> listing = FileUtils.listFilesAndDirs(new File(directory),TrueFileFilter.INSTANCE,TrueFileFilter.INSTANCE);
-        return DirectoryListing.lisingFromFileObjects(listing,listing.iterator().next(), validator);
+        return FileDirectoryListing.listingFromFileObjects(listing,listing.iterator().next(), validator);
     }
 
     public void setValidator(DirectoryValidator validator) {

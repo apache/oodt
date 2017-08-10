@@ -17,10 +17,35 @@
 
 package org.apache.oodt.cas.product.jaxrs.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.cxf.helpers.IOUtils;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory;
+import org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer;
+import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
@@ -45,6 +70,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import org.apache.xmlrpc.XmlRpcException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Service class that handles HTTP requests and returns file manager entities
@@ -322,7 +353,137 @@ public class CasProductJaxrsService
     }
   }
 
+  @POST
+  @Path("upload")
+  @Produces({"application/xml", "application/json", "application/atom+xml",
+      "application/rdf+xml", "application/rss+xml"})
+  public String uploadFile(
+      @Multipart(value = "ingestFile", type = MediaType.APPLICATION_OCTET_STREAM)   InputStream ingestFile,
+      @Multipart(value = "metadataFile", type = MediaType.APPLICATION_OCTET_STREAM) InputStream metadataFile,
+      @QueryParam("productName") String productName, @QueryParam("productType") String pt)
+      throws CasProductException, XmlRpcException, FileManagerException, VersioningException, IOException, RepositoryManagerException {
 
+    byte[] blob = IOUtils.readBytesFromStream(ingestFile);
+
+    File tempFile = File.createTempFile(UUID.randomUUID().toString(), "met");
+    FileOutputStream fos = new FileOutputStream(tempFile);
+    fos.write(blob);
+
+
+    byte[] metadata = IOUtils.readBytesFromStream(metadataFile);
+
+    File tempFile2 = File.createTempFile(UUID.randomUUID().toString(), "met");
+    FileOutputStream fos2 = new FileOutputStream(tempFile2);
+    fos2.write(metadata);
+
+    XmlRpcFileManagerClient client = getContextClient();
+
+    Product product = new Product();
+
+    product.setProductName(productName);
+
+    ProductType productType = client.getProductTypeByName(pt);
+    product.setProductType(productType);
+
+
+    Metadata m = new Metadata();
+    HashMap<String,Object> result =
+        new ObjectMapper().readValue(tempFile2, HashMap.class);
+    m.addMetadata(result);
+
+    LocalDataTransferFactory dtf = new LocalDataTransferFactory();
+    client.setDataTransfer(dtf.createDataTransfer());
+
+    String productID = client.ingestProduct(product,m,true);
+    return productID;
+
+  }
+
+  @POST
+  @Path("upload")
+  @Produces({"application/xml", "application/json", "application/atom+xml",
+      "application/rdf+xml", "application/rss+xml"})
+  public String uploadFile(
+      @Multipart(value = "ingestFile", type = MediaType.APPLICATION_OCTET_STREAM)   InputStream ingestFile,
+      @Context UriInfo uriInfo, String content)
+      throws CasProductException, XmlRpcException, FileManagerException, VersioningException, IOException, ParserConfigurationException, SAXException, RepositoryManagerException {
+
+    byte[] blob = IOUtils.readBytesFromStream(ingestFile);
+
+    File tempFile = File.createTempFile(UUID.randomUUID().toString(), "met");
+    FileOutputStream fos = new FileOutputStream(tempFile);
+    fos.write(blob);
+
+    MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+
+    XmlRpcFileManagerClient client = getContextClient();
+
+    Product product = new Product();
+
+    product.setProductName(queryParams.get("productName").get(0));
+
+    ProductType productType = client.getProductTypeByName(queryParams.get("productType").get(0));
+    product.setProductType(productType);
+
+
+    Metadata m = new Metadata();
+
+    m.addMetadata(prepareParameters(queryParams));
+    String productID = client.ingestProduct(product,m,true);
+    return productID;
+
+
+  }
+
+  private Map<String,Object> prepareParameters(MultivaluedMap<String, String> queryParameters) {
+
+    Map<String,Object> parameters = new HashMap<String,Object>();
+
+    Iterator<String> it = queryParameters.keySet().iterator();
+
+
+    while(it.hasNext()){
+      String theKey = (String)it.next();
+      parameters.put(theKey,queryParameters.getFirst(theKey));
+    }
+
+    return parameters;
+
+  }
+
+  @GET
+  @Path("fileops/copy")
+  @Produces({"application/xml", "application/json", "application/atom+xml",
+      "application/rdf+xml", "application/rss+xml"})
+  public String copyFile(String productId, String newPath)
+      throws CasProductException, CatalogException, DataTransferException {
+    XmlRpcFileManagerClient client = getContextClient();
+
+    Product p = client.getProductById(productId);
+    client.duplicateProduct(p, newPath);
+    return null;
+  }
+
+  @GET
+  @Path("fileops/move")
+  @Produces({"application/xml", "application/json", "application/atom+xml",
+      "application/rdf+xml", "application/rss+xml"})
+  public String moveFile(String productId, String newPath)
+      throws CasProductException, CatalogException, DataTransferException {
+    XmlRpcFileManagerClient client = getContextClient();
+
+    Product p = client.getProductById(productId);
+    client.moveProduct(p, newPath);
+    return null;
+  }
+
+  @PUT
+  @Path("fileops/update")
+  @Produces({"application/xml", "application/json", "application/atom+xml",
+      "application/rdf+xml", "application/rss+xml"})
+  public String updateMetadata(){
+    return null;
+  }
 
   /**
    * Gets the file manager's working directory from the servlet context.

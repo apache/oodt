@@ -73,7 +73,7 @@ public class MetReaderExtractor extends CmdLineMetExtractor {
      * 
      * @see org.apache.oodt.cas.metadata.AbstractMetExtractor#extractMetadata(java.io.File)
      */
-    public Metadata extrMetadata(File file) throws MetExtractionException {
+    public Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
         // don't really need conf file, we're assuming that there is an existing
         // .met file
         // for the given product file

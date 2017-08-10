@@ -37,7 +37,13 @@ define(["jquery",
             var extractor = this.collection.extractors.get("selected");
             var query = "";
             if (extractor != "" && extractor != null && typeof(extractor) !== "undefined")
-                query += "?extractor="+extractor;
+                if(extractor==="celgene-s3extractor"){
+                  query += "?extractor="+extractor+"&fsType=s3";  
+                }
+                else{
+                  query += "?extractor="+extractor+"&fsType=local";
+                }
+                
             if (GLOBAL_USER != "" && typeof(GLOBAL_USER) !== "undefined") {   
                 query += ((query == "")?"?":"&")+"user="+GLOBAL_USER;
             }

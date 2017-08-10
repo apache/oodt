@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -12,6 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.apache.oodt.cas.curation.metadata.CuratorMetadata;
 import org.apache.oodt.cas.curation.metadata.MetadataBackend;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -52,8 +54,13 @@ public class MetadataRest {
      * Gets the metadata as JSON, refreshes using an extractor
      * @param file - file to get metadata from
      * @param extractor - if specified, this extractor will be run and replace existing metadata
+     * @param fsType - FileSystem type of the ingested file, ex - "localFS' or "s3"
+     *                 Default is localFS
      */
-    public Response getMetadata(@PathParam("file") String file,@QueryParam("user") String user,@QueryParam("extractor") String extractor) {
+    public Response getMetadata(@PathParam("file") String file,
+        @QueryParam("user") String user,
+        @QueryParam("extractor") String extractor,
+        @DefaultValue(CuratorMetadata.LOCAL_FS_KEY) @QueryParam("fsType") String fsType) {
         try {
             if (file.equals("dev/null"))
             {
@@ -61,7 +68,7 @@ public class MetadataRest {
             }
             this.setup();
             System.out.println("Getting metadata for file: "+file);
-            Metadata met = this.backend.getMetadata(file,(user==null)?"":user, extractor);
+            Metadata met = this.backend.getMetadata(file,(user==null)?"":user, extractor, fsType);
             return Response.ok().entity(gson.toJson(met)).build();
         } catch (Exception e) {
             return ExceptionResponseHandler.BuildExceptionResponse(e);
@@ -78,7 +85,10 @@ public class MetadataRest {
      * @param extractor - optional extractor to run
      * @param json - new json for file
      */
-    public Response putMetadata(@PathParam("file") String file,@QueryParam("user") String user,@QueryParam("extractor") String extractor,String json) {
+    public Response putMetadata(@PathParam("file") String file,
+        @QueryParam("user") String user,
+        @QueryParam("extractor") String extractor,String json,
+        @DefaultValue(CuratorMetadata.LOCAL_FS_KEY) @QueryParam("fsType") String fsType) {
         try {
             if (file.equals("dev/null"))
             {
@@ -86,7 +96,7 @@ public class MetadataRest {
             }
             Metadata input = gson.fromJson(json, Metadata.class);
             this.setup();
-            Metadata met = this.backend.putMetadata(file,(user==null)?"":user, extractor, input);
+            Metadata met = this.backend.putMetadata(file,(user==null)?"":user, extractor, input, fsType);
             return Response.ok().entity(gson.toJson(met)).build();
         } catch(Exception e) {
             return ExceptionResponseHandler.BuildExceptionResponse(e);

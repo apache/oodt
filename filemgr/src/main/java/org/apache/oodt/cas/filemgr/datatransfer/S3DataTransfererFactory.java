@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.filemgr.datatransfer;
 
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -38,18 +39,26 @@ public class S3DataTransfererFactory implements DataTransferFactory {
 			"org.apache.oodt.cas.filemgr.datatransfer.s3.secret.key";
   private static final String ENCRYPT_PROPERTY =
       "org.apache.oodt.cas.filemgr.datatransfer.s3.encrypt";
+	private static final String USE_INSTANCE_CREDENTIALS =
+			"org.apache.oodt.cas.filemgr.datatransfer.s3.instance.credentials";
 
 	@Override
   public S3DataTransferer createDataTransfer() {
 		String bucketName = System.getProperty(BUCKET_NAME_PROPERTY);
-		String region = System.getProperty(REGION_PROPERTY);		
-		String accessKey = System.getProperty(ACCESS_KEY_PROPERTY);
-    String secretKey = System.getProperty(SECRET_KEY_PROPERTY);
-    boolean encrypt = Boolean.getBoolean(ENCRYPT_PROPERTY);
+		String region = System.getProperty(REGION_PROPERTY);
+		boolean encrypt = Boolean.getBoolean(ENCRYPT_PROPERTY);
+		AmazonS3Client s3;
 
-		AmazonS3Client s3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
-    s3.setRegion(Region.getRegion(Regions.valueOf(region)));
+		if (Boolean.getBoolean(USE_INSTANCE_CREDENTIALS)) {
+			s3 = new AmazonS3Client(new InstanceProfileCredentialsProvider().getCredentials());
+		}
+		else {
+			String accessKey = System.getProperty(ACCESS_KEY_PROPERTY);
+			String secretKey = System.getProperty(SECRET_KEY_PROPERTY);
+			s3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
+		}
 
+		s3.setRegion(Region.getRegion(Regions.valueOf(region)));
     return new S3DataTransferer(s3, bucketName, encrypt);
   }
 }

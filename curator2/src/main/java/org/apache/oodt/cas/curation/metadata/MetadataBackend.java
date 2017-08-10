@@ -43,9 +43,12 @@ public class MetadataBackend {
      * @param file - file to get metadata from
      * @param user - user used to prevent cross-talk
      * @param extractor - if specified, this extractor will be run and replace existing metadata
+     * @param fsType - FileSystem type of the ingested file, ex - "localFS' or "s3"
+     *                 Default is localFS
      * @return newly constructed metadat object
      */
-    public Metadata getMetadata(String file, String user, String extractor) throws Exception {
+    public Metadata getMetadata(String file, String user, String extractor,
+        String fsType) throws Exception {
         LOG.info("Getting metadata for: "+file+" and extractor: "+extractor);
         Metadata met = null;
         try {
@@ -57,7 +60,7 @@ public class MetadataBackend {
         //If extractor is specified, then its metadata is considered "correct" and previous metadata is used only to fill filler
         if (extractors.containsKey(extractor)) {
             System.out.println("Merging");
-            met = extractMergeAndPresist(file,user,extractor,met);
+            met = extractMergeAndPresist(file,user,extractor,met, fsType);
         }
         return met;
     }
@@ -67,14 +70,17 @@ public class MetadataBackend {
      * @param user - user used to prevent cross-talk
      * @param extractor - optional extractor to run
      * @param metadata - new metadata for file
+     * @param fsType - FileSystem type of the ingested file, ex - "localFS' or "s3"
+     *                 Default is localFS
      * @return metadata after optional extraction
      */
-    public Metadata putMetadata(String file, String user, String extractor,Metadata metadata) throws Exception {
+    public Metadata putMetadata(String file, String user, String extractor,Metadata metadata,
+        String fsType) throws Exception {
         LOG.info("Putting metadata for: "+file+" and extractor: "+extractor);
         fineLogMetadata("Put metadata:",metadata);
         handler.set(file, user, metadata);
         if (extractors.containsKey(extractor)) {
-            metadata = extractMergeAndPresist(file,user,extractor,metadata);
+            metadata = extractMergeAndPresist(file,user,extractor,metadata, fsType);
         }
         return metadata;
     }
@@ -123,13 +129,16 @@ public class MetadataBackend {
      * @param user - user used to prevent cross-talk
      * @param extractor - extractor to run
      * @param met - metadata object
+     * @param fsType - FileSystem type of the ingested file, ex - "localFS' or "s3"
+     *                 Default is localFS
      * @return metadata object after merging
      * @throws Exception
      */
-    protected Metadata extractMergeAndPresist(String file,String user,String extractor, Metadata met) throws Exception {
+    protected Metadata extractMergeAndPresist(String file,String user,String extractor, Metadata met,
+        String fsType) throws Exception {
         LOG.info("Running "+extractor+" extractoe and presisting metadat for:"+file);
         System.out.println("Running Extractor");
-        Metadata extracted = this.runExtractor(file, extractor,met);
+        Metadata extracted = this.runExtractor(file, extractor,met, fsType);
         System.out.println("Replace Metadata");
         met.replaceMetadata(extracted);
         fineLogMetadata("Merged metadata:",met);
@@ -154,25 +163,31 @@ public class MetadataBackend {
      * @param file - file to extract metadata from
      * @param id - id of the extractor to use
      * @param metadata - metadata to attach to extraction, if possible
+     * @param fsType - FileSystem type of the ingested file, ex - "localFS' or "s3"
+     *                 Default is localFS
      * @return metadata extracted
      * @throws MetExtractionException - exception thrown when failure to extract metadata
      */
-    protected Metadata runExtractor(String file, String id, Metadata metadata) throws MetExtractionException {
-        System.out.println("Here1");
-        String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
-        File full = new File(parent,file);
-        //Get extractor
-        System.out.println("Here2");
-        ExtractorConfig config = extractors.get(id);
-        System.out.println("Here3");
-        MetExtractor metExtractor = GenericMetadataObjectFactory.getMetExtractorFromClassName(config.getClassName());
-        System.out.println("Here4");
-        metExtractor.setConfigFile(config.getConfigFiles().get(0));
-        System.out.println("Here5");
-        if (metExtractor instanceof MetadataProvidedMetExtractor) {
-            ((MetadataProvidedMetExtractor)metExtractor).attachMetadata(metadata);
-        }
-        System.out.println("Here6");
-        return metExtractor.extractMetadata(full.getAbsolutePath());
+    protected Metadata runExtractor(String file, String id, Metadata metadata,
+        String fsType) throws MetExtractionException {
+      System.out.println("Here1");
+      //Get extractor
+      System.out.println("Here2");
+      ExtractorConfig config = extractors.get(id);
+      System.out.println("Here3");
+      MetExtractor metExtractor = GenericMetadataObjectFactory.getMetExtractorFromClassName(config.getClassName());
+      System.out.println("Here4");
+      metExtractor.setConfigFile(config.getConfigFiles().get(0));
+      System.out.println("Here5");
+      if (metExtractor instanceof MetadataProvidedMetExtractor) {
+        ((MetadataProvidedMetExtractor)metExtractor).attachMetadata(metadata);
+      }
+      System.out.println("Here6");
+        String parent = null;
+      if (fsType.equals(CuratorMetadata.LOCAL_FS_KEY)) {
+        parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
+      }
+      File full = new File(parent,file);
+      return metExtractor.extractMetadata(full.getAbsolutePath());
     }
 }

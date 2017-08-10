@@ -225,7 +225,7 @@ public class ProdTypePatternMetExtractor extends CmdLineMetExtractor {
     }
 
     @Override
-    protected Metadata extrMetadata(File file) throws MetExtractionException {
+    protected Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
         Metadata met = new Metadata();
         ConfigReader mConfig = (ConfigReader) config;
 

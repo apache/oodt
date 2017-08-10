@@ -19,6 +19,12 @@ package org.apache.oodt.cas.filemgr.datatransfer;
 import static com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3URI;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CopyObjectRequest;
+import com.amazonaws.services.s3.model.CopyObjectResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,9 +53,11 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
  */
 public class S3DataTransferer implements DataTransfer {
 
-	private final AmazonS3 s3Client;
+	private AmazonS3 s3Client;
 	private final String bucketName;
 	private final boolean encrypt;
+	private static final String USE_INSTANCE_CREDENTIALS =
+			"org.apache.oodt.cas.filemgr.datatransfer.s3.instance.credentials";
 
 	public S3DataTransferer(AmazonS3 s3Client, String bucketName, boolean encrypt) {
 		this.s3Client = checkNotNull(s3Client);
@@ -62,6 +70,13 @@ public class S3DataTransferer implements DataTransfer {
 
 	@Override
 	public void transferProduct(Product product) throws DataTransferException, IOException {
+		boolean move = Boolean.getBoolean("org.apache.oodt.cas.filemgr.datatransferer.s3.move");
+		if (move) {
+			for (Reference ref: product.getProductReferences()) {
+				moveProduct(ref, product);
+			}
+			return;
+		}
 		for (Reference ref : product.getProductReferences()) {
       String origRef = stripProtocol(ref.getOrigReference(), false);
 		  String dataStoreRef = stripProtocol(ref.getDataStoreReference(), true);
@@ -80,6 +95,30 @@ public class S3DataTransferer implements DataTransfer {
 				    dataStoreRef), e);
 			}
 		}
+	}
+
+	private void moveProduct(Reference ref, Product p) throws IOException{
+		String origRef = ref.getOrigReference();
+		AmazonS3URI uri = new AmazonS3URI(origRef);
+		String key = uri.getKey();
+    String sourceBucketName = uri.getBucket();
+		String dataStoreRef = stripProtocol(ref.getDataStoreReference(), true);
+
+		CopyObjectRequest copyObjReq = new CopyObjectRequest(
+				sourceBucketName, key, bucketName, dataStoreRef);
+
+		if (encrypt) {
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setSSEAlgorithm(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION);
+			copyObjReq.setNewObjectMetadata(objectMetadata);
+		}
+
+		if (!checkTokenActive()) {
+			refreshToken();
+		}
+
+		CopyObjectResult response = s3Client.copyObject(copyObjReq);
+		System.out.println("Object copied with Etag " + response.getETag());
 	}
 
 	@Override
@@ -131,5 +170,20 @@ public class S3DataTransferer implements DataTransfer {
     } catch (URISyntaxException e) {
       throw new IOException(e);
     }
+	}
+
+	private void refreshToken() {
+		if (Boolean.getBoolean(USE_INSTANCE_CREDENTIALS)) {
+			s3Client = new AmazonS3Client(new InstanceProfileCredentialsProvider().getCredentials());
+		}
+	}
+
+	private Boolean checkTokenActive() {
+		try {
+			s3Client.listObjects(bucketName);
+			return true;
+		} catch (AmazonS3Exception AwsException) {
+			return false;
+		}
 	}
 }

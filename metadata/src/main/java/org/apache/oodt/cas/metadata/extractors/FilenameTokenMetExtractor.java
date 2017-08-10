@@ -62,7 +62,7 @@ public class FilenameTokenMetExtractor extends CmdLineMetExtractor implements
    * .File)
    */
   @Override
-  protected Metadata extrMetadata(File file) throws MetExtractionException {
+  protected Metadata extrMetadata(String absolutePath, File file) throws MetExtractionException {
     Metadata met = new Metadata();
     String filename = file.getName();
     if (((FilenameTokenConfig) this.config).hasTokenNameList()) {
