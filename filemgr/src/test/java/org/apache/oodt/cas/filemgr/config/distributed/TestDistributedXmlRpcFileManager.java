@@ -26,6 +26,7 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.config.distributed.cli.ConfigPublisher;
 import org.apache.oodt.config.test.AbstractDistributedConfigurationTest;
 import org.junit.After;
@@ -44,7 +45,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-// TODO: 8/10/17 Cleanup Dirs once done
+/**
+ * Tests the {@link XmlRpcFileManager} with distributed configuration management enabled. This test will first publish
+ * the required configuration to zookeeper through {@link ConfigPublisher} and will start the {@link XmlRpcFileManager}
+ * which will first download and store published files locally. Then the correct functionality of {@link
+ * XmlRpcFileManager} is tested by using those downloaded configuration files for configuration.
+ * <p>
+ * This class is adapted from {@link org.apache.oodt.cas.filemgr.system.TestXmlRpcFileManager} class
+ *
+ * @author Imesha Sudasingha
+ */
 public class TestDistributedXmlRpcFileManager extends AbstractDistributedConfigurationTest {
 
     private static final int FM_PORT = 9001;
@@ -194,8 +204,27 @@ public class TestDistributedXmlRpcFileManager extends AbstractDistributedConfigu
                 "-a", "clear"
         });
 
+        String luceneIdx = System.getProperty("org.apache.oodt.cas.filemgr.catalog.lucene.idxPath");
+        if (luceneIdx != null) {
+            luceneIdx = PathUtils.replaceEnvVariables(luceneIdx);
+            deleteAllFiles(luceneIdx);
+        }
+
         System.clearProperty("org.apache.oodt.cas.cli.action.spring.config");
         System.clearProperty("org.apache.oodt.cas.cli.option.spring.config");
         System.clearProperty(ENABLE_DISTRIBUTED_CONFIGURATION);
+    }
+
+    private void deleteAllFiles(String startDir) {
+        File startDirFile = new File(startDir);
+        File[] delFiles = startDirFile.listFiles();
+
+        if (delFiles != null && delFiles.length > 0) {
+            for (File delFile : delFiles) {
+                delFile.delete();
+            }
+        }
+
+        startDirFile.delete();
     }
 }
