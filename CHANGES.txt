@@ -1,7 +1,9 @@
 Apache OODT Change Log
 ======================
-Release 1.2 - Current Development
+Release 1.2 - 08/14/2017
 
+* OODT-955 Fix numhits error in Lucene Catalog
+* OODT-956 Add connection checks to components
 
 Release 1.1 - 07/18/2017
 
