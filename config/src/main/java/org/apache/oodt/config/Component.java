@@ -25,7 +25,8 @@ package org.apache.oodt.config;
  */
 public enum Component {
     FILE_MANAGER("filemgr", "FILEMGR_HOME"),
-    RESOURCE_MANAGER("resmgr", "RESMGR_HOME");
+    RESOURCE_MANAGER("resmgr", "RESMGR_HOME"),
+    WORKFLOW_MANAGER("wmgr", "WORKFLOW_HOME");
 
     /** Shorthand name of the component. Will be used when creating ZNodes in zookeeper */
     String name;

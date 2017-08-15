@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.filemgr.config.distributed;
+package org.apache.oodt.cas.filemgr.system.distributed;
 
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
@@ -65,8 +65,8 @@ public class TestDistributedXmlRpcFileManager extends AbstractDistributedConfigu
 
     @Before
     public void setUpTest() throws Exception {
-        System.setProperty("org.apache.oodt.cas.cli.action.spring.config", "src/test/resources/distributed/config/cmd-line-actions.xml");
-        System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "src/test/resources/distributed/config/cmd-line-options.xml");
+        System.setProperty("org.apache.oodt.cas.cli.action.spring.config", "../config/src/main/resources/cmd-line-actions.xml");
+        System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "../config/src/main/resources/cmd-line-options.xml");
         System.setProperty(ENABLE_DISTRIBUTED_CONFIGURATION, "true");
 
         ConfigPublisher.main(new String[]{

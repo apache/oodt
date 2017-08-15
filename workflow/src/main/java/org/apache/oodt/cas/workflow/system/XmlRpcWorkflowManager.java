@@ -30,6 +30,9 @@ import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
+import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigurationManager;
+import org.apache.oodt.config.ConfigurationManagerFactory;
 import org.apache.xmlrpc.WebServer;
 
 import com.google.common.base.Preconditions;
@@ -41,6 +44,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -73,12 +77,28 @@ public class XmlRpcWorkflowManager {
   private final WorkflowEngine engine;
   private WorkflowRepository repo;
 
+  private ConfigurationManager configurationManager;
+
   public XmlRpcWorkflowManager() {
     this(DEFAULT_WEB_SERVER_PORT);
   }
 
   public XmlRpcWorkflowManager(int port) {
     Preconditions.checkArgument(port > 0, "Must specify a port greater than 0");
+
+    List<String> propertiesFiles = new ArrayList<>();
+    String configFile = System.getProperty(PROPERTIES_FILE_PROPERTY);
+    if (configFile != null) {
+      propertiesFiles.add(configFile);
+    }
+
+    configurationManager= ConfigurationManagerFactory.getConfigurationManager(Component.WORKFLOW_MANAGER,propertiesFiles);
+    try {
+      configurationManager.loadConfiguration();
+    } catch (Exception e) {
+      LOG.log(Level.SEVERE, "Unable to load configuration", e);
+      throw new IllegalStateException("Unable to load configuration", e);
+    }
 
     engine = getWorkflowEngineFromProperty();
     engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
@@ -95,6 +115,8 @@ public class XmlRpcWorkflowManager {
   }
 
   public boolean shutdown() {
+    configurationManager.clearConfiguration();
+
     if (webServer != null) {
       webServer.shutdown();
       webServer = null;
@@ -645,7 +667,6 @@ public class XmlRpcWorkflowManager {
       System.exit(1);
     }
 
-    loadProperties();
     new XmlRpcWorkflowManager(portNum);
 
     for (; ; ) {
@@ -653,17 +674,6 @@ public class XmlRpcWorkflowManager {
         Thread.currentThread().join();
       } catch (InterruptedException ignore) {
       }
-    }
-  }
-
-  public static void loadProperties() throws IOException {
-    String configFile = System.getProperty(PROPERTIES_FILE_PROPERTY);
-    if (configFile != null) {
-      LOG.log(Level.INFO,
-          "Loading Workflow Manager Configuration Properties from: ["
-          + configFile + "]");
-      System.getProperties().load(new FileInputStream(new File(
-          configFile)));
     }
   }
 

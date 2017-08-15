@@ -54,12 +54,13 @@ public class ConfigurationManagerFactory {
      * @return ConfigurationManager instance to used by the corresponding component.
      */
     public static ConfigurationManager getConfigurationManager(Component component, List<String> propertiesFiles) {
-        boolean isDistributed = Boolean.getBoolean(ENABLE_DISTRIBUTED_CONFIGURATION);
-        if (!isDistributed) {
+        String enableDistributed = System.getProperty(ENABLE_DISTRIBUTED_CONFIGURATION);
+        boolean isDistributed;
+        if (enableDistributed == null) {
             String env = System.getenv(Env.ENABLE_DISTRIBUTED_CONFIGURATION);
-            if (env != null) {
-                isDistributed = Boolean.parseBoolean(env);
-            }
+            isDistributed = Boolean.parseBoolean(env);
+        } else {
+            isDistributed = Boolean.parseBoolean(enableDistributed);
         }
 
         if (isDistributed) {

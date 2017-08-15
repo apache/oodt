@@ -77,7 +77,6 @@ public class TestXmlRpcResourceManager extends TestCase {
       fail(e.getMessage());
     }
     assertEquals(8, setCapacity);
-
   }
 
   /*
@@ -116,7 +115,7 @@ public class TestXmlRpcResourceManager extends TestCase {
 
   }
 
-    private void generateTestConfiguration() throws IOException {
+  private void generateTestConfiguration() throws IOException {
     Properties config = new Properties();
 
     String propertiesFile = "." + File.separator + "src" + File.separator +
@@ -131,13 +130,13 @@ public class TestXmlRpcResourceManager extends TestCase {
       fail(e.getMessage());
     }
     for (File policyFile : new File("./src/test/resources/policy")
-        .listFiles(new FileFilter() {
+            .listFiles(new FileFilter() {
 
-          @Override
-          public boolean accept(File pathname) {
-            return pathname.isFile() && pathname.getName().endsWith(".xml");
-          }
-        })) {
+              @Override
+              public boolean accept(File pathname) {
+                return pathname.isFile() && pathname.getName().endsWith(".xml");
+              }
+            })) {
       try {
         FileUtils.copyFileToDirectory(policyFile, tmpPolicyDir);
       } catch (Exception e) {
@@ -146,9 +145,9 @@ public class TestXmlRpcResourceManager extends TestCase {
     }
 
     config.setProperty("org.apache.oodt.cas.resource.nodes.dirs", tmpPolicyDir
-        .toURI().toString());
+            .toURI().toString());
     config.setProperty("org.apache.oodt.cas.resource.nodetoqueues.dirs",
-        tmpPolicyDir.toURI().toString());
+            tmpPolicyDir.toURI().toString());
 
     System.getProperties().putAll(config);
     this.tmpPolicyDir = tmpPolicyDir;
