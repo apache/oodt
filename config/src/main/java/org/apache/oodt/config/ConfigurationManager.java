@@ -17,7 +17,9 @@
 
 package org.apache.oodt.config;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The abstract class to define functions of the configuration managers.
@@ -28,6 +30,7 @@ public abstract class ConfigurationManager {
 
     protected Component component;
     protected String project;
+    private Set<ConfigurationListener> configurationListeners = new HashSet<>(1);
 
     public ConfigurationManager(Component component) {
         this(component, Constants.DEFAULT_PROJECT);
@@ -38,6 +41,12 @@ public abstract class ConfigurationManager {
         this.project = project;
     }
 
+    /**
+     * Loads configuration required for {@link #component}. If distributed configuration management is enabled, this
+     * will download configuration from zookeeper. Else, this will load properties files specified.
+     *
+     * @throws Exception
+     */
     public abstract void loadConfiguration() throws Exception;
 
     /**
@@ -46,6 +55,20 @@ public abstract class ConfigurationManager {
      * implement this operation on their own.
      */
     public abstract void clearConfiguration();
+
+    public synchronized void addConfigurationListener(ConfigurationListener listener) {
+        configurationListeners.add(listener);
+    }
+
+    public synchronized void removeConfigurationListener(ConfigurationListener listener) {
+        configurationListeners.remove(listener);
+    }
+
+    protected synchronized void notifyConfigurationChange(ConfigEventType type) {
+        for (ConfigurationListener listener : configurationListeners) {
+            listener.configurationChanged(type);
+        }
+    }
 
     public Component getComponent() {
         return component;

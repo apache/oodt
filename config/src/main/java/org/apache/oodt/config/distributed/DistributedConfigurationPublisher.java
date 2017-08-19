@@ -20,6 +20,7 @@ package org.apache.oodt.config.distributed;
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigEventType;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.distributed.utils.CuratorUtils;
 import org.apache.zookeeper.data.Stat;
@@ -83,6 +84,14 @@ public class DistributedConfigurationPublisher {
         logger.info("Using zookeeper connect string : {}", connectString);
 
         startZookeeper();
+
+        try {
+            logger.debug("Creating ZNode paths");
+            zNodePaths.createZNodes(client);
+        } catch (Exception e) {
+            logger.error("Error occurred when creating initial ZNode paths", e);
+            throw new IllegalStateException("Unable to create ZNode paths", e);
+        }
     }
 
     /**
@@ -145,7 +154,8 @@ public class DistributedConfigurationPublisher {
      */
     public boolean verifyPublishedConfiguration() {
         try {
-            return verifyPublishedConfiguration(propertiesFiles, true) && verifyPublishedConfiguration(configFiles, false);
+            return verifyPublishedConfiguration(propertiesFiles, true) &&
+                    verifyPublishedConfiguration(configFiles, false);
         } catch (Exception e) {
             logger.error("Error occurred when checking published config", e);
             return false;
@@ -165,6 +175,17 @@ public class DistributedConfigurationPublisher {
         logger.info("Configuration cleared!");
     }
 
+    /**
+     * Notifies the watching {@link org.apache.oodt.config.ConfigurationManager}s about the configuration change
+     *
+     * @param type {@link ConfigEventType}
+     * @throws Exception
+     */
+    public void notifyConfigEvent(ConfigEventType type) throws Exception {
+        logger.info("Notifying event: '{}' to configuration managers of {}", type, component);
+        client.setData().forPath(zNodePaths.getNotificationsZNodePath(), type.toString().getBytes());
+    }
+
     private void publishConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
             String filePath = entry.getKey();
@@ -173,7 +194,8 @@ public class DistributedConfigurationPublisher {
 
             String content = getFileContent(filePath);
 
-            String zNodePath = isProperties ? zNodePaths.getPropertiesZNodePath(relativeZNodePath) : zNodePaths.getConfigurationZNodePath(relativeZNodePath);
+            String zNodePath = isProperties ? zNodePaths.getPropertiesZNodePath(relativeZNodePath) :
+                    zNodePaths.getConfigurationZNodePath(relativeZNodePath);
             if (client.checkExists().forPath(zNodePath) != null) {
                 byte[] bytes = client.getData().forPath(zNodePath);
                 String existingData = new String(bytes);

@@ -82,4 +82,35 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="notifyConfigChange" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+        <property name="shortOption" value="n"/>
+        <property name="longOption" value="notify"/>
+        <property name="description" value="Notify the configuration managers' about the configuration change done"/>
+        <property name="hasArgs" value="false"/>
+        <property name="requirementRules">
+            <list>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="publish" p:relation="OPTIONAL"/>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="clear" p:relation="OPTIONAL"/>
+                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                      p:actionName="verify" p:relation="OPTIONAL"/>
+            </list>
+        </property>
+        <property name="handler">
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+                <property name="applyToActions">
+                    <list>
+                        <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+                              p:actionName="publish" p:methodName="setNotify"/>
+                        <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+                              p:actionName="verify" p:methodName="setNotify"/>
+                        <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+                              p:actionName="clear" p:methodName="setNotify"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
 </beans>

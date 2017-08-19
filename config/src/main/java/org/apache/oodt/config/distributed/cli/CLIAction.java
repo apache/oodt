@@ -19,6 +19,7 @@ package org.apache.oodt.config.distributed.cli;
 
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.config.ConfigEventType;
 import org.apache.oodt.config.distributed.DistributedConfigurationPublisher;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -36,12 +37,9 @@ import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
  */
 public class CLIAction extends CmdLineAction {
 
-    public enum Action {
-        PUBLISH, VERIFY, CLEAR
-    }
-
     private String connectString;
     private String configFile = DEFAULT_CONFIG_PUBLISHER_XML;
+    private boolean notify = false;
 
     private Action action;
 
@@ -60,12 +58,18 @@ public class CLIAction extends CmdLineAction {
                 switch (action) {
                     case PUBLISH:
                         publish(publisher);
+                        if (notify) {
+                            publisher.notifyConfigEvent(ConfigEventType.PUBLISH);
+                        }
                         break;
                     case VERIFY:
                         verify(publisher);
                         break;
                     case CLEAR:
                         clear(publisher);
+                        if (notify) {
+                            publisher.notifyConfigEvent(ConfigEventType.CLEAR);
+                        }
                         break;
                 }
                 publisher.destroy();
@@ -122,5 +126,17 @@ public class CLIAction extends CmdLineAction {
 
     public void setConfigFile(String configFile) {
         this.configFile = configFile;
+    }
+
+    public boolean isNotify() {
+        return notify;
+    }
+
+    public void setNotify(boolean notify) {
+        this.notify = notify;
+    }
+
+    public enum Action {
+        PUBLISH, VERIFY, CLEAR
     }
 }
