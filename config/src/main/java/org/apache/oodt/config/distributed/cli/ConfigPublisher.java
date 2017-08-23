@@ -23,6 +23,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class with main method which gets invoked by the CLI.
+ * <p>
+ * Basic usage:
+ * <pre>
+ *     ./config-publisher -connectString localhost:2181 </> -a {publish|verify|clear}
+ * </pre>
+ * <p>
+ * Optionally, users can give <pre>-notify</pre> option to notify the listening OODT components on the configuration
+ * change.
  *
  * @author Imesha Sudasingha
  */

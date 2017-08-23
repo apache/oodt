@@ -47,6 +47,8 @@ import static org.apache.oodt.config.distributed.utils.ConfigUtils.getOODTProjec
 /**
  * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to
  * connect to zookeeper.
+ * <p>
+ * This class can download configuration from zookeeper and clear configuration locally downloaded.
  *
  * @author Imesha Sudasingha.
  */
@@ -63,6 +65,7 @@ public class DistributedConfigurationManager extends ConfigurationManager {
 
     /** {@link NodeCache} to watch for configuration change notifications */
     private NodeCache nodeCache;
+    /** This is the listener which is going to be notified on the configuration changes happening in zookeeper */
     private NodeCacheListener nodeCacheListener = new NodeCacheListener() {
         @Override
         public void nodeChanged() throws Exception {
@@ -150,6 +153,12 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         logger.info("NodeCache for watching configuration changes started successfully");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Since distributed configuration management treats properties files and configuration files in two different ways,
+     * they are loaded in different manners.
+     */
     @Override
     public synchronized void loadConfiguration() throws Exception {
         logger.debug("Loading properties for : {}", component);
@@ -225,7 +234,11 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         savedFiles.add(localFilePath);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method will additionally delete all the files downloaded earlier from zookeeper.
+     */
     @Override
     public synchronized void clearConfiguration() {
         for (String path : savedFiles) {

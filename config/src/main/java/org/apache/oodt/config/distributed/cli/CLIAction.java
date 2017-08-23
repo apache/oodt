@@ -33,6 +33,7 @@ import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 /**
  * {@link CmdLineAction} specifying the verify, publish and clear tasks of distributed configuration management.
  *
+ * @see ConfigPublisher
  * @author Imesha Sudasingha
  */
 public class CLIAction extends CmdLineAction {
@@ -83,6 +84,13 @@ public class CLIAction extends CmdLineAction {
         System.out.println("Exiting CLI ...");
     }
 
+    /**
+     * Publishes configuration files (which are stored locally at the moment) specified in {@link #configFile} to
+     * zookeeper.
+     *
+     * @param publisher {@link DistributedConfigurationPublisher} instance
+     * @throws Exception
+     */
     private void publish(DistributedConfigurationPublisher publisher) throws Exception {
         System.out.println();
         System.out.println(String.format("Publishing configuration for : %s", publisher.getComponent()));
@@ -91,6 +99,14 @@ public class CLIAction extends CmdLineAction {
         System.out.println();
     }
 
+    /**
+     * Verifies whether the content in the local files (which were published to zookeeper) are identical to the content
+     * that has actually been published. The file mapping is obtained from {@link #configFile}. Will print error
+     * messages accordingly if the verification fails.
+     *
+     * @param publisher {@link DistributedConfigurationPublisher} instance
+     * @throws Exception
+     */
     private void verify(DistributedConfigurationPublisher publisher) throws Exception {
         System.out.println();
         System.out.println(String.format("Verifying configuration for : %s", publisher.getComponent()));
@@ -103,6 +119,14 @@ public class CLIAction extends CmdLineAction {
         System.out.println();
     }
 
+    /**
+     * Clears all configuration published to zookeeper This will simply delete {@link
+     * org.apache.oodt.config.distributed.ZNodePaths#configurationZNodePath} and {@link
+     * org.apache.oodt.config.distributed.ZNodePaths#propertiesZNodePath} along with its children from zookeeper.
+     *
+     * @param publisher {@link DistributedConfigurationPublisher} instance
+     * @throws Exception
+     */
     private void clear(DistributedConfigurationPublisher publisher) throws Exception {
         System.out.println();
         System.out.println(String.format("Clearing configuration for : %s", publisher.getComponent()));

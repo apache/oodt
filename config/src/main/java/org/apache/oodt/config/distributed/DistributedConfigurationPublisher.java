@@ -186,6 +186,13 @@ public class DistributedConfigurationPublisher {
         client.setData().forPath(zNodePaths.getNotificationsZNodePath(), type.toString().getBytes());
     }
 
+    /**
+     * Publishes configuration from local files to zookeeper.
+     *
+     * @param fileMapping  source file to ZNode path mappings
+     * @param isProperties if true, files will be stored under {@link ZNodePaths#propertiesZNodePath}
+     * @throws Exception
+     */
     private void publishConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
             String filePath = entry.getKey();
@@ -220,6 +227,16 @@ public class DistributedConfigurationPublisher {
         }
     }
 
+    /**
+     * Verifies whether the content in local files given by keys of the <pre>fileMapping</pre> are identical to the
+     * configuration stored in zookeeper under ZNode paths given by <pre>${prefix}/{fileMapping.value}</pre>
+     *
+     * @param fileMapping  src file to znode path mappings
+     * @param isProperties if true, treated as properties files and will look under {@link
+     *                     ZNodePaths#propertiesZNodePath}
+     * @return true, if all the configuration verification was successful and no error was detected.
+     * @throws Exception
+     */
     private boolean verifyPublishedConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
         boolean noError = true;
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
