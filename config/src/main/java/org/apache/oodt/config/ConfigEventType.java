@@ -17,6 +17,11 @@
 
 package org.apache.oodt.config;
 
+/**
+ * An enum class to represent distributed configuration management related events.
+ *
+ * @author Imesha Sudasingha
+ */
 public enum ConfigEventType {
     PUBLISH("publish"),
     CLEAR("clear");

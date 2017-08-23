@@ -27,6 +27,11 @@ import org.slf4j.LoggerFactory;
 import static org.apache.oodt.config.Constants.Properties.OODT_PROJECT;
 import static org.apache.oodt.config.Constants.SEPARATOR;
 
+/**
+ * A utility class to be used for configuration related tasks.
+ *
+ * @author Imesha Sudasingha
+ */
 public class ConfigUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigUtils.class);
