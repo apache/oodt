@@ -249,10 +249,11 @@ the License.
         <version>8.7</version>
       </dependency>
       <dependency>
-<<<<<<< HEAD
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>1.12</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.curator</groupId>
         <artifactId>curator-framework</artifactId>
         <version>3.3.0</version>
