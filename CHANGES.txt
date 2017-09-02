@@ -1,7 +1,50 @@
 Apache OODT Change Log
 ======================
 
-Release 1.1 - Current Development
+Release 1.2 - 08/14/2017
+
+* OODT-955 Fix numhits error in Lucene Catalog
+* OODT-956 Add connection checks to components
+
+Release 1.1 - 07/18/2017
+
+*** NOTE: A change was introduced in this version that causes a forced upgrade to your
+Lucene Workflow Instance repository catalog. If you are using Lucene in the workflow manager,
+the best bet is to blow away your old workflow instance catalog, and then allow it to be 
+rebuilt automatically. You can detect if you are affected by this issue if you see a message
+akin to the below.
+Jul 19, 2017 10:45:02 AM org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepository addWorkflowInstanceToCatalog
+WARNING: Unable to index workflow instance: [d8dad567-6c90-11e7-9e4e-7574e3a12106]: Message: Format version is not supported 
+(resource BufferedChecksumIndexInput(MMapIndexInput(path="/project/oodt/dev/jedi/data/workflow/slothrop/segments"))): -1 (needs 
+to be between 1071082519 and 1071082519). This version of Lucene only supports indexes created with release 5.0 and later.
+java.lang.NullPointerException
+****
+
+* OODT-954 CAS-PGE FileManagerFileStager has NPE b/c it does not set Product Structure (mattmann)
+
+* OODT-526 Add base functionality in Curator for Task List persistence (mjoyce, mattmann)
+
+* OODT-525 Export IngestTaskList from Curator (mjoyce, mattmann)
+
+* OODT-304 Add a Getter method to get the file handler configuration (Michael Cayanan via mattmann)
+
+* OODT-877 Fix 2 failures in o.a.o.commons.util.XMLTest on Windows 2008 Server (lewismc, mattmann)
+
+* OODT-305 Make the Resource Manager manage different queues of jobs independently (resneck, mattmann)
+
+* OODT-753 Move FM and WM Python APIs into "agility" component (kelly, mattmann)
+
+* OODT-563 Task editing and Workflow execution (varun, mattmann)
+
+* OODT-212 Rollback capability for Workflows (sherylj via mattmann)
+
+* OODT-836, OODT-837 Remove Non-Essential Components (mattmann, mdstarch, magicaltrout)
+
+* OODT-213 Reading/Writing API for XML-based Workflow Task policy (mattmann)
+
+* OODT-775 XSD's for pushpull's mimetypes.xml (Lewis John McGibbney via mattmann)
+
+* OODT-847 New FilemgrMetExtractor to extract File System Attributes (Aditya Dhulipala, rverma via mattmann)
 
 * OODT-948 Fix dockerfile (magicaltrout/R B Krishna)
 

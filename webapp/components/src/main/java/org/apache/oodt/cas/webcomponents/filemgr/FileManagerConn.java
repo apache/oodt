@@ -29,6 +29,7 @@ import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -46,8 +47,8 @@ public class FileManagerConn {
 
   private FileManagerClient fm;
 
-  private static final Logger LOG = Logger.getLogger(FileManagerConn.class
-      .getName());
+  private static final Logger LOG = Logger
+      .getLogger(FileManagerConn.class.getName());
 
   public FileManagerConn(String fmUrlStr) {
     this.initFm(fmUrlStr);
@@ -55,13 +56,15 @@ public class FileManagerConn {
 
   public String getProdReceivedTime(Product p) {
     Metadata met = getMetadata(p);
-    String prodReceivedTime = met.getMetadata("CAS."
-        + CoreMetKeys.PRODUCT_RECEVIED_TIME);
-    return prodReceivedTime != null && !prodReceivedTime.equals("") ? prodReceivedTime
-        : "UNKNOWN";
+    String prodReceivedTime = met
+        .getMetadata("CAS." + CoreMetKeys.PRODUCT_RECEVIED_TIME);
+    return prodReceivedTime != null && !prodReceivedTime.equals("")
+        ? prodReceivedTime : "UNKNOWN";
   }
 
   public List<Reference> getProductReferences(Product p) {
+    if (!isConnected())
+      return Collections.EMPTY_LIST;
     List<Reference> refs = new Vector<Reference>();
     try {
       refs = fm.getProductReferences(p);
@@ -74,6 +77,8 @@ public class FileManagerConn {
   }
 
   public ProductType safeGetProductTypeByName(String name) {
+    if (!isConnected())
+      return ProductType.blankProductType();
     try {
       return fm.getProductTypeByName(name);
     } catch (Exception e) {
@@ -84,6 +89,8 @@ public class FileManagerConn {
   }
 
   public Product safeGetProductById(String id) {
+    if (!isConnected())
+      return Product.getDefaultFlatProduct("", "");
     try {
       return fm.getProductById(id);
     } catch (Exception e) {
@@ -94,6 +101,8 @@ public class FileManagerConn {
   }
 
   public Metadata getMetadata(Product p) {
+    if (!isConnected())
+      return new Metadata();
     Metadata met = null;
     try {
       met = fm.getMetadata(p);
@@ -107,6 +116,8 @@ public class FileManagerConn {
   }
 
   public List<Element> safeGetElementsForProductType(ProductType type) {
+    if (!isConnected())
+      return Collections.EMPTY_LIST;
     try {
       return fm.getElementsByProductType(type);
     } catch (Exception e) {
@@ -117,13 +128,15 @@ public class FileManagerConn {
   }
 
   public List<ProductType> safeGetProductTypes() {
+    if (!isConnected())
+      return Collections.EMPTY_LIST;
     List<ProductType> types = new Vector<ProductType>();
     try {
       types = this.fm.getProductTypes();
     } catch (RepositoryManagerException e) {
       LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Unable to obtain product types: Reason: ["
-          + e.getMessage() + "]");
+      LOG.log(Level.WARNING,
+          "Unable to obtain product types: Reason: [" + e.getMessage() + "]");
     }
     return types;
   }
@@ -136,10 +149,19 @@ public class FileManagerConn {
     try {
       this.fm = RpcCommunicationFactory.createClient(new URL(urlStr));
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to connect to the file manager at: ["
-          + urlStr + "]");
+      LOG.log(Level.WARNING,
+          "Unable to connect to the file manager at: [" + urlStr + "]");
       this.fm = null;
     }
+  }
+
+  private boolean isConnected() {
+    if (this.fm == null) {
+      LOG.warning(
+          "File Manager Connection is null: Default objects for Products, Product Types, References, etc., will be returned.");
+      return false;
+    } else
+      return true;
   }
 
 }

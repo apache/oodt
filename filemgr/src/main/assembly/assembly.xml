@@ -55,6 +55,7 @@ $Id$
       <includes>
         <include>filemgr.properties</include>
         <include>logging.properties</include>
+        <include>log4j.xml</include>
       </includes>
     </fileSet>
     <fileSet>

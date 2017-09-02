@@ -88,6 +88,7 @@ public class FileManagerFileStager extends FileStager {
    @VisibleForTesting
    static Product createProduct(URI path) {
       Product product = new Product();
+      product.setProductStructure(Product.STRUCTURE_FLAT); //TODO: only support flat prods for now
       Reference reference = new Reference();
       reference.setDataStoreReference(path.toString());
       product.setProductReferences(Lists.newArrayList(reference));

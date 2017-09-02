@@ -502,7 +502,10 @@ public class TestLuceneCatalog extends TestCase {
         ProductPage page = myCat.getNextPage(null, myCat.getFirstPage(type));
 
 
-        assertNull(page);
+        assertNotNull(page);
+        assertEquals(0, page.getPageNum());
+        assertEquals(0, page.getTotalPages());
+        assertEquals(0, page.getPageSize());
     }
 
     public void testGetNextPageNullCurrentPage(){
@@ -775,7 +778,10 @@ public class TestLuceneCatalog extends TestCase {
                                        .size());
         ProductPage page2 = myCat.getNextPage(type, myCat.getFirstPage(type));
         ProductPage page = myCat.getPrevPage(null, page2);
-        assertNull(page);
+        assertNotNull(page);
+        assertEquals(0, page.getPageNum());
+        assertEquals(0, page.getPageSize());
+        assertEquals(0, page.getTotalPages());
 
     }
 

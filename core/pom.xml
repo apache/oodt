@@ -25,7 +25,7 @@ the License.
   </parent>
   <groupId>org.apache.oodt</groupId>
   <artifactId>oodt-core</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>OODT Core</name>
   <properties>
@@ -249,9 +249,23 @@ the License.
         <version>8.7</version>
       </dependency>
       <dependency>
+<<<<<<< HEAD
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>1.12</version>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>curator-framework</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>curator-test</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.zookeeper</groupId>
+        <artifactId>zookeeper</artifactId>
+        <version>3.5.1-alpha</version>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
@@ -308,6 +322,18 @@ the License.
       </dependency>
 
       <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>6.1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
+        <version>6.1.0</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>cas-cli</artifactId>
         <version>${project.parent.version}</version>
@@ -335,11 +361,6 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-protocol-api</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
         <artifactId>cas-resource</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
@@ -361,6 +382,11 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
+        <artifactId>oodt-conf</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-product</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
@@ -371,17 +397,12 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
-        <artifactId>oodt-sso</artifactId>
+        <artifactId>curator-sso</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-webapp-components</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>oodt-xmlquery</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <dependency>
@@ -687,7 +708,7 @@ mm
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>3.0.0</version>
         <configuration>
           <threshold>Normal</threshold>
           <effort>Default</effort>

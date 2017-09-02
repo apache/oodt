@@ -42,7 +42,6 @@ import java.util.logging.Logger;
  * {@link Product}.
  * </p>.
  */
-@Deprecated
 public final class MetadataDumper {
 
     /* our log stream */

@@ -137,5 +137,13 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException If there is any error that occurs.
      */
     int getNumWorkflowInstancesByStatus(String status) throws InstanceRepositoryException;
+    
+    /**
+     * Clears the instance repository of all workflows. 
+     * @return False if there was any error (logged), and True otherwise.
+     * @throws InstanceRepositoryException If there was some IO or other error deleting
+     * workflow instances that was unrecoverable from.
+     */
+    public boolean clearWorkflowInstances() throws InstanceRepositoryException;
 
 }

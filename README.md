@@ -1,6 +1,4 @@
-=============================================================
- Welcome to Apache OODT  <http://oodt.apache.org/>
-=============================================================
+# Welcome to Apache OODT  <http://oodt.apache.org/>
 
 OODT is a grid middleware framework used on a number of successful projects at
 NASA's Jet Propulsion Laboratory/California Institute of Technology, and many
@@ -148,6 +146,6 @@ Issue Tracker
 =============
 
 If you encounter errors in OODT or want to suggest an improvement or a new
-feature, please visit the OODT issue tracker at
+feature, please visit the OODT issue tracker 
 https://issues.apache.org/jira/browse/OODT.  There you can also find the
 latest information on known issues and recent bug fixes and enhancements.

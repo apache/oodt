@@ -299,13 +299,17 @@ public class HealthResource extends PCSService {
     Map<String, Object> latestFilesOutput = new ConcurrentHashMap<String, Object>();
     latestFilesOutput.put("topN", PCSHealthMonitor.TOP_N_PRODUCTS);
     List<Object> latestFilesList = new Vector<Object>();
-    for (Product prod : (List<Product>) (List<?>) report
-        .getLatestProductsIngested()) {
-      try {
-        this.encodeLatestFile(latestFilesList, prod);
-      } catch (MalformedURLException e) {
-        LOG.log(Level.WARNING, "Unable to encode latest file: ["
-            + prod.getProductName() + "]: error: Message: " + e.getMessage());
+    if (report != null && 
+        report.getLatestProductsIngested() != null && 
+        report.getLatestProductsIngested().size() > 0){
+      for (Product prod : (List<Product>) (List<?>) report
+          .getLatestProductsIngested()) {
+        try {
+          this.encodeLatestFile(latestFilesList, prod);
+        } catch (MalformedURLException e) {
+          LOG.log(Level.WARNING, "Unable to encode latest file: ["
+              + prod.getProductName() + "]: error: Message: " + e.getMessage());
+        }
       }
     }
     latestFilesOutput.put("files", latestFilesList);

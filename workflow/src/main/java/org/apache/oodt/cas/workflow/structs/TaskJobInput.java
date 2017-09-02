@@ -30,8 +30,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Vector;
 
 //OODT imports
 
@@ -194,6 +196,41 @@ public class TaskJobInput implements JobInput {
       }
     }
 
+  }
+
+  @Override
+  public Map<String, Vector<String>> getMetadata() {
+    //combine the workflow metadata, and config
+    Map<String, Vector<String>> met = new ConcurrentHashMap<String, Vector<String>>();
+    
+    if(this.taskConfig != null && this.taskConfig.getProperties() != null && 
+        this.taskConfig.getProperties().keySet() != null && 
+        this.taskConfig.getProperties().keySet().size() > 0){
+      for(Object prop: this.taskConfig.getProperties().keySet()){
+        String propName = String.valueOf(prop);
+        Vector<String> vals = new Vector<String>();
+        String propVal = this.taskConfig.getProperty(propName);
+        if (propVal != null){
+          vals.add(propVal);
+          met.put(propName, vals);
+        }
+      }
+    }
+    
+    //NOTE: this implies that dynMetadata will have precedence over config metadata
+    //as returned by the Resmgr Job i/f
+    if(this.dynMetadata != null && this.dynMetadata.getAllKeys() != null && 
+        this.dynMetadata.getAllKeys().size() > 0){
+      for(String metName: this.dynMetadata.getAllKeys()){
+        Vector<String> vals = new Vector<String>();
+        vals.addAll(this.dynMetadata.getAllValues(metName));
+        if (vals.size() > 0){
+          met.put(metName, vals);
+        }
+      }
+    }
+    
+    return met;
   }
 
 }

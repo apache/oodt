@@ -20,8 +20,11 @@ package org.apache.oodt.cas.resource.structs;
 
 //JDK imports
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * @author mattmann
@@ -112,6 +115,20 @@ public class NameValueJobInput implements JobInput {
     if (props != null) {
       this.props = props;
     }
+  }
+
+  @Override
+  public Map<String, Vector<String>> getMetadata() {
+    Map<String, Vector<String>> met = new HashMap<String, Vector<String>>(); 
+    if (props != null && props.keySet() != null && props.keySet().size() > 0){
+       for (Object key: props.values()){
+         String keyName = (String)key;
+         Vector<String> vals = new Vector<String>();
+         vals.add(props.getProperty(keyName));
+         met.put(keyName, vals);
+       }
+     }
+    return met;
   }
 
 }

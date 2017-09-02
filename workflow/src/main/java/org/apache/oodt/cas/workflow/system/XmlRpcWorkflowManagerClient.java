@@ -367,6 +367,12 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
                 .execute("workflowmgr.handleEvent", argList);
 
     }
+    
+    public boolean clearWorkflowInstances() throws XmlRpcException, IOException{
+      Vector argList = new Vector();
+      
+      return (Boolean)client.execute("workflowmgr.clearWorkflowInstances", argList);
+    }
 
     public WorkflowTask getTaskById(String taskId) throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();

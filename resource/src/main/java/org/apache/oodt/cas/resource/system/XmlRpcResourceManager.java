@@ -32,13 +32,15 @@ import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.util.ResourceNodeComparator;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
+import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigurationManager;
+import org.apache.oodt.config.ConfigurationManagerFactory;
 import org.apache.xmlrpc.WebServer;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
@@ -69,16 +71,22 @@ public class XmlRpcResourceManager {
     /* our scheduler */
     private Scheduler scheduler = null;
 
+    /** Configuration Manager instance of this instance */
+    private ConfigurationManager configurationManager;
+
     public XmlRpcResourceManager(int port) throws IOException {
-        // load properties from workflow manager properties file, if specified
+        List<String> propertiesFiles = new ArrayList<>();
+        // set up the configuration, if there is any
         if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
-            String configFile = System
-                    .getProperty("org.apache.oodt.cas.resource.properties");
-            LOG.log(Level.INFO,
-                    "Loading Resource Manager Configuration Properties from: ["
-                            + configFile + "]");
-            System.getProperties().load(
-                    new FileInputStream(new File(configFile)));
+            propertiesFiles.add(System.getProperty("org.apache.oodt.cas.resource.properties"));
+        }
+
+        configurationManager = ConfigurationManagerFactory.getConfigurationManager(Component.RESOURCE_MANAGER, propertiesFiles);
+        try {
+            configurationManager.loadConfiguration();
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Unable to load configuration", e);
+            throw new IOException("Unable to load configuration", e);
         }
 
         String schedulerClassStr = System.getProperty(
@@ -323,15 +331,17 @@ public class XmlRpcResourceManager {
     public List<String> getQueuesWithNode(String nodeId) {
     	return new Vector<String>(this.scheduler.getQueueManager().getQueues(nodeId));
     }
-    
-    public boolean shutdown(){
-      if (this.webServer != null) {
-        this.webServer.shutdown();
-        this.webServer = null;
-        return true;
-    } else {
-          return false;
-      }
+
+    public boolean shutdown() {
+        configurationManager.clearConfiguration();
+
+        if (this.webServer != null) {
+            this.webServer.shutdown();
+            this.webServer = null;
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public String getNodeLoad(String nodeId) throws MonitorException{
