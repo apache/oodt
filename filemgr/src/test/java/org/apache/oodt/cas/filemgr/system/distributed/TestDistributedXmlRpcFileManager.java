@@ -22,8 +22,10 @@ import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.system.AvroFileManagerServer;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerServer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -61,13 +63,15 @@ public class TestDistributedXmlRpcFileManager extends AbstractDistributedConfigu
     private static final String CONF_PUBLISHER_XML = "distributed/config/config-publisher.xml";
     private static final String TRANSFER_SERVICE_FACTORY_CLASS = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
-    private XmlRpcFileManager fileManager;
+    private XmlRpcFileManagerServer fileManager;
 
     @Before
     public void setUpTest() throws Exception {
         System.setProperty("org.apache.oodt.cas.cli.action.spring.config", "../config/src/main/resources/cmd-line-actions.xml");
         System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "../config/src/main/resources/cmd-line-options.xml");
         System.setProperty(ENABLE_DISTRIBUTED_CONFIGURATION, "true");
+        System.setProperty("filemgr.client", "org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerClientFactory");
+        System.setProperty("filemgr.server", "org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerServerFactory");
 
         ConfigPublisher.main(new String[]{
                 "-connectString", zookeeper.getConnectString(),
@@ -76,8 +80,12 @@ public class TestDistributedXmlRpcFileManager extends AbstractDistributedConfigu
         });
 
         try {
-            fileManager = new XmlRpcFileManager(FM_PORT);
+            fileManager = new XmlRpcFileManagerServer(FM_PORT);
+            if(!fileManager.startUp()){
+              throw new Exception("File Manager startup failed.");
+            }
         } catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
 
@@ -188,6 +196,7 @@ public class TestDistributedXmlRpcFileManager extends AbstractDistributedConfigu
             prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(refUrl.getFile()), prodMet);
         } catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
     }

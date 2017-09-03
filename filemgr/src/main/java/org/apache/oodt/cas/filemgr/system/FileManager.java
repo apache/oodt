@@ -39,6 +39,9 @@ import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.commons.date.DateUtils;
+import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigurationManager;
+import org.apache.oodt.config.ConfigurationManagerFactory;
 
 //JDK imports
 import java.util.*;
@@ -74,8 +77,19 @@ public class FileManager {
 
     /* whether or not to expand a product instance into met */
     private boolean expandProductMet;
+    
+    /** Configuration Manager instance which will handle the configuration aspect in distributed/standalone manner */
+    private ConfigurationManager configurationManager;
 
     public FileManager() throws Exception {
+        List<String> propertiesFiles = new ArrayList<>();
+  
+        // set up the configuration, if there is any
+        if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
+          propertiesFiles.add(System.getProperty("org.apache.oodt.cas.filemgr.properties"));
+        }
+      
+        configurationManager = ConfigurationManagerFactory.getConfigurationManager(Component.FILE_MANAGER, propertiesFiles);
         LOG.log(Level.INFO, "File Manager started by "
                 + System.getProperty("user.name", "unknown"));
     }
@@ -1080,16 +1094,15 @@ public class FileManager {
     }
 
     public void loadConfiguration() throws FileNotFoundException, IOException {
-        // set up the configuration, if there is any
-        if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
-            String configFile = System
-                    .getProperty("org.apache.oodt.cas.filemgr.properties");
-            LOG.log(Level.INFO,
-                    "Loading File Manager Configuration Properties from: [" + configFile
-                            + "]");
-            System.getProperties().load(new FileInputStream(new File(configFile)));
+        
+        try{
+          this.configurationManager.loadConfiguration();
         }
-
+        catch(Exception e){
+          e.printStackTrace();
+          throw new IOException(e.getLocalizedMessage());
+        }
+        
         String metaFactory = null, dataFactory = null;
 
         metaFactory = System.getProperty("filemgr.catalog.factory",
