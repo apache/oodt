@@ -27,7 +27,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -39,8 +38,9 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.util.StringUtils;
 
@@ -73,31 +73,31 @@ public class SolrIndexer {
 	private final static String ACCESS_KEY = "access.key";
 	private final static String ACCESS_URL = "access.url";
 	private final static String PRODUCT_NAME = "CAS.ProductName";
-	private final HttpSolrClient server;
 	private IndexerConfig config = null;
+	private final SolrServer server;
 	private String fmUrl;
 	private String solrUrl;
 	private static Logger LOG = Logger.getLogger(SolrIndexer.class.getName());
 	private final static SimpleDateFormat solrFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	/**
 	 * Constructor reads in the configuration and initiates the connection to the
 	 * Solr instance.
-	 *
+	 * 
 	 * @param solrUrl
 	 *          URL for the Solr instance.
 	 * @param fmUrl
 	 *          URL for the File Manager instance.
 	 */
 	public SolrIndexer(String solrUrl, String fmUrl)
-			throws InstantiationException {
+	    throws InstantiationException {
 		InputStream input = null;
 		String filename;
 
 		try {
 			LOG.info("System property " + SOLR_INDEXER_CONFIG + " set to "
-					+ System.getProperty(SOLR_INDEXER_CONFIG));
+			    + System.getProperty(SOLR_INDEXER_CONFIG));
 			filename = System.getProperty(SOLR_INDEXER_CONFIG);
 			if (filename != null) {
 				LOG.info("Reading config from " + filename);
@@ -109,7 +109,7 @@ public class SolrIndexer {
 			config = new IndexerConfig(input);
 		} catch (IOException e) {
 			LOG
-					.severe("Could not read in configuration for indexer from classpath or file");
+			    .severe("Could not read in configuration for indexer from classpath or file");
 			throw new InstantiationException(e.getMessage());
 		} finally {
 			if (input != null) {
@@ -132,10 +132,14 @@ public class SolrIndexer {
 		}
 
 		LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
-		SystemDefaultHttpClient httpClient = new SystemDefaultHttpClient();
-		server = new HttpSolrClient.Builder(this.solrUrl).build();
 
-//		server = new SolrClient(this.solrUrl);
+
+		try {
+			server = new CommonsHttpSolrServer(this.solrUrl);
+		} catch (MalformedURLException e) {
+			LOG.severe("Could not connect to Solr server " + this.solrUrl);
+			throw new InstantiationException(e.getMessage());
+		}
 
 	}
 
@@ -162,7 +166,7 @@ public class SolrIndexer {
 
 	/**
 	 * This method transforms the product metadata into a Solr document.
-	 *
+	 * 
 	 * @param metadata
 	 *          The metadata object for the product to index.
 	 * @return Returns the SolrInputDocument containing product metadata.
@@ -170,8 +174,6 @@ public class SolrIndexer {
 	private SolrInputDocument getSolrDocument(Metadata metadata) {
 		SolrInputDocument doc = new SolrInputDocument();
 		// Only grab metadata which have a mapping in the indexer.properties
-		String official = "";
-
 		for (Object objKey : config.getMapProperties().keySet()) {
 			// The key in the metadata object
 			String key = (String) objKey;
@@ -182,21 +184,19 @@ public class SolrIndexer {
 				for (String value : values) {
 					// Add each metadata value into the
 					if (value != null && !config.getIgnoreValues().contains(value.trim())) {
-						official += " Key: " + key + " Value: " + value;
+						LOG.fine("Adding field: " + fieldName + " value: " + value);
 						doc.addField(fieldName, value);
 					}
 				}
 			}
 		}
-		//	LOG.info("KEYS WERE:" +official);
-
 		return doc;
 	}
 
 	/**
 	 * This method adds a single product extracted from a metadata file to the
 	 * Solr index.
-	 *
+	 * 
 	 * @param file
 	 *          The file containing product metadata.
 	 * @param delete
@@ -206,24 +206,24 @@ public class SolrIndexer {
 	 *           When an error occurs communicating with the Solr server instance.
 	 */
 	public void indexMetFile(File file, boolean delete)
-			throws
-			SolrServerException {
+	    throws
+		SolrServerException {
 		LOG.info("Attempting to index product from metadata file.");
 		try {
 			SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
 			metadata.loadMetadataFromXmlStream(new FileInputStream(file));
 			metadata.addMetadata("id", metadata.getMetadata("CAS."
-					+ CoreMetKeys.PRODUCT_ID));
+			    + CoreMetKeys.PRODUCT_ID));
 			metadata.addMetadata(config.getProperty(ACCESS_KEY), config
-					.getProperty(ACCESS_URL)
-					+ metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+			    .getProperty(ACCESS_URL)
+			    + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
 			if (delete) {
 				server
-						.deleteById(metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+				    .deleteById(metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
 			}
 			server.add(this.getSolrDocument(metadata));
 			LOG.info("Indexed product: "
-					+ metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+			    + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
 		} catch (InstantiationException e) {
 			LOG.severe("Could not instantiate metadata object: " + e.getMessage());
 		} catch (FileNotFoundException e) {
@@ -236,7 +236,7 @@ public class SolrIndexer {
 	/**
 	 * This method indexes all product types retrieved from the File Manager to
 	 * the Solr index.
-	 *
+	 * 
 	 * @param delete
 	 *          Flag indicating whether each product type retrieved from the File
 	 *          Manager should be deleted from the index.
@@ -247,7 +247,7 @@ public class SolrIndexer {
 		LOG.info("Indexing product types...");
 		try {
 			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-					this.fmUrl));
+			    this.fmUrl));
 			LOG.info("Retrieving list of product types.");
 			List<ProductType> types = fmClient.getProductTypes();
 			for (ProductType type : types) {
@@ -256,9 +256,9 @@ public class SolrIndexer {
 					metadata.addMetadata("id", type.getProductTypeId());
 					metadata.addMetadata("CAS.ProductTypeId", type.getProductTypeId());
 					metadata.addMetadata("CAS.ProductTypeDescription", type
-							.getDescription());
+					    .getDescription());
 					metadata.addMetadata("CAS.ProductTypeRepositoryPath", type
-							.getProductRepositoryPath());
+					    .getProductRepositoryPath());
 					metadata.addMetadata("CAS.ProductTypeVersioner", type.getVersioner());
 					metadata.addMetadata("CAS.ProductTypeName", type.getName());
 					metadata.addMetadata("ProductType", "ProductType");
@@ -268,7 +268,7 @@ public class SolrIndexer {
 							server.deleteById(type.getProductTypeId());
 						} catch (Exception e) {
 							LOG.severe("Could not delete product type " + type.getName()
-									+ " from index: " + e.getMessage());
+							    + " from index: " + e.getMessage());
 						}
 					}
 					try {
@@ -277,7 +277,7 @@ public class SolrIndexer {
 						LOG.info("Indexed product type: " + type.getName());
 					} catch (Exception e) {
 						LOG.severe("Could not index " + type.getName() + ": "
-								+ e.getMessage());
+						    + e.getMessage());
 					}
 				} else {
 					LOG.info("Ignoring product type: " + type.getName());
@@ -289,13 +289,13 @@ public class SolrIndexer {
 			LOG.severe("Could not connect to File Manager: " + e.getMessage());
 		} catch (RepositoryManagerException e) {
 			LOG.severe("Could not retrieve product types from File Manager: "
-					+ e.getMessage());
+			    + e.getMessage());
 		}
 		LOG.info("Finished indexing product types.");
 	}
-
+	
 	/**
-	 * Suppresses exception that occurred with older file managers.
+	 * Suppresses exception that occurred with older file managers. 
 	 */
 	private ProductPage safeFirstPage(XmlRpcFileManagerClient fmClient, ProductType type) {
 		ProductPage page = null;
@@ -311,7 +311,7 @@ public class SolrIndexer {
 	 * This method indexes all products retrieved from the File Manager to the
 	 * Solr index. Metadata from the product's associated ProductType is also
 	 * included.
-	 *
+	 * 
 	 * @param delete
 	 *          Flag indicating whether each product retrieved from the File
 	 *          Manager should be deleted from the index.
@@ -322,29 +322,28 @@ public class SolrIndexer {
 		LOG.info("Indexing products...");
 		try {
 			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-					this.fmUrl));
+			    this.fmUrl));
 			LOG.info("Retrieving list of product types.");
 			List<ProductType> types = fmClient.getProductTypes();
 			for (ProductType type : types) {
 				if (!config.getIgnoreTypes().contains(type.getName().trim())) {
-					ProductPage page = safeFirstPage(fmClient, type);
 					LOG.info("Paging through products for product type: "
-							+ type.getName()+" Total pages are "+page.getTotalPages());
+					    + type.getName());
+					ProductPage page = safeFirstPage(fmClient, type); 
 					while (page != null) {
-						for (Product product : page.getPageProducts()) {
+					    for (Product product : page.getPageProducts()) {
 							try {
-								String p = product.getProductId();
-								Metadata m = fmClient.getMetadata(product);
-								this.indexProduct(p, m, type.getTypeMetadata());
+								this.indexProduct(product.getProductId(), fmClient
+								    .getMetadata(product), type.getTypeMetadata());
 							} catch (Exception e) {
 								LOG.severe("Could not index " + product.getProductId() + ": "
-										+ e.getLocalizedMessage());
+								    + e.getMessage());
 							}
 						}
-						if (page.getPageNum() >= page.getTotalPages() || page.isLastPage()) {
-							break;
-						}
-						page = fmClient.getNextPage(type, page);
+					    if (page.isLastPage()) {
+					        break;
+					    }
+					    page = fmClient.getNextPage(type, page);
 					}
 				}
 			}
@@ -355,10 +354,10 @@ public class SolrIndexer {
 			LOG.severe("Could not connect to File Manager: " + e.getMessage());
 		} catch (CatalogException e) {
 			LOG.severe("Could not retrieve products from File Manager: "
-					+ e.getMessage());
+			    + e.getMessage());
 		} catch (RepositoryManagerException e) {
 			LOG.severe("Could not retrieve product types from File Manager: "
-					+ e.getMessage());
+			    + e.getMessage());
 		}
 	}
 
@@ -366,50 +365,39 @@ public class SolrIndexer {
 	 * This method adds a single product retrieved from the File Manager by its
 	 * product identifier to the Solr index. Metadata from the ProductType is also
 	 * included.
-	 *
+	 * 
 	 * @param productId
 	 *          The identifier of the product (CAS.ProductId).
 	 * @throws SolrServerException
 	 *           When an error occurs communicating with the Solr server instance.
 	 */
 	public void indexProduct(String productId)
-			throws SolrServerException {
+	    throws SolrServerException {
 		LOG.info("Attempting to index product: " + productId);
 		try {
 			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-					this.fmUrl));
+			    this.fmUrl));
 			Product product = fmClient.getProductById(productId);
 			Metadata productMetadata = fmClient.getMetadata(product);
-			List<String> keys = productMetadata.getAllKeys();
-			String logger = "";
-			for(String k :keys){
-				logger+=" key: "+keys;
-				List<String> values = productMetadata.getAllValues(k);
-
-				for(String v : values){
-					logger+=" value: "+v + ", ";
-				}
-			}
-			LOG.info("Metadata: "+ logger);
 			indexProduct(product.getProductId(), productMetadata, product
-					.getProductType().getTypeMetadata());
+			    .getProductType().getTypeMetadata());
 		} catch (MalformedURLException e) {
 			LOG.severe("File Manager URL is malformed: " + e.getMessage());
 		} catch (ConnectionException e) {
 			LOG.severe("Could not connect to File Manager: " + e.getMessage());
 		} catch (CatalogException e) {
 			LOG.severe("Could not retrieve product from File Manager: "
-					+ e.getMessage());
+			    + e.getMessage());
 		} catch (java.text.ParseException e) {
 			LOG.severe("Could not format date: " + e.getMessage());
 		}
 	}
-
+	
 	/**
 	 * This method adds a single product retrieved from the File Manager by its
 	 * product name to the Solr index. Metadata from the ProductType is also
 	 * included.
-	 *
+	 * 
 	 * @param productName
 	 *          The identifier of the product (CAS.ProductId).
 	 * @param delete
@@ -419,7 +407,7 @@ public class SolrIndexer {
 	 *           When an error occurs communicating with the Solr server instance.
 	 */
 	public void indexProductByName(String productName, boolean delete) throws SolrServerException {
-
+		
 		LOG.info("Attempting to index product: " + productName);
 		try {
 
@@ -439,27 +427,27 @@ public class SolrIndexer {
 			}
 
 			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-					this.fmUrl));
+			    this.fmUrl));
 			Product product = fmClient.getProductByName(productName);
 			Metadata productMetadata = fmClient.getMetadata(product);
 			// NOTE: delete (by id) is now false
 			indexProduct(product.getProductId(), productMetadata, product.getProductType().getTypeMetadata());
-
+			
 		} catch (MalformedURLException e) {
 			LOG.severe("File Manager URL is malformed: " + e.getMessage());
 		} catch (ConnectionException e) {
 			LOG.severe("Could not connect to File Manager: " + e.getMessage());
 		} catch (CatalogException e) {
 			LOG.severe("Could not retrieve product from File Manager: "
-					+ e.getMessage());
+			    + e.getMessage());
 		} catch (java.text.ParseException e) {
 			LOG.severe("Could not format date: " + e.getMessage());
 		}
 	}
 
 	private void indexProduct(String productId, Metadata productMetadata,
-							  Metadata typeMetadata) throws SolrServerException,
-			java.text.ParseException {
+	    Metadata typeMetadata) throws SolrServerException,
+	    java.text.ParseException {
 		Metadata metadata = new Metadata();
 		metadata.addMetadata("id", productId);
 		// Add in product type metadata
@@ -485,7 +473,7 @@ public class SolrIndexer {
 				server.add(this.getSolrDocument(metadata));
 				LOG.info("Indexed product: " + productId);
 			} catch (IOException e) {
-				LOG.severe("Could not index product: " + productId+ "Exception:"+e.getLocalizedMessage());
+				LOG.severe("Could not index product: " + productId);
 			}
 		} else {
 			LOG.info("Could not find metadata for product: " + productId);
@@ -494,7 +482,7 @@ public class SolrIndexer {
 
 	/**
 	 * This method deletes a single product identified by a productID from the Solr index
-	 *
+	 * 
 	 * @param productId
 	 * @throws IOException
 	 * @throws SolrServerException
@@ -506,7 +494,7 @@ public class SolrIndexer {
 
 	/**
 	 * This method deletes a product(s) from the Solr index identified by a given name
-	 *
+	 * 
 	 * @param productName
 	 * @throws IOException
 	 * @throws SolrServerException
@@ -530,16 +518,16 @@ public class SolrIndexer {
 	private void deleteProductFromIndex(String productId) throws IOException, SolrServerException {
 		server.deleteById(productId);
 	}
-
+	
 	/**
 	 * Quick helper method to do substitution on the keys specified in the config
-	 *
+	 * 
 	 * @param metadata
 	 *          to substitute on
 	 * @throws java.text.ParseException
 	 */
 	private void performSubstitution(Metadata metadata)
-			throws java.text.ParseException {
+	    throws java.text.ParseException {
 		// Do metadata replacement
 		for (String key : config.getReplacementKeys()) {
 			List<String> values = metadata.getAllMetadata(key);
@@ -559,12 +547,10 @@ public class SolrIndexer {
 				List<String> values = metadata.getAllMetadata(keyString);
 				if (values != null) {
 					List<String> newValues = new ArrayList<String>();
-
-				/*	SimpleDateFormat format = new SimpleDateFormat(config
-					    .getFormatProperties().getProperty(keyString).trim());*/
+					SimpleDateFormat format = new SimpleDateFormat(config
+					    .getFormatProperties().getProperty(keyString).trim());
 					for (String value : values) {
-						String d = value.trim();
-						newValues.add(d);
+						newValues.add(formatDate(format, value));
 					}
 					metadata.removeMetadata(keyString);
 					metadata.addMetadata(keyString, newValues);
@@ -574,17 +560,17 @@ public class SolrIndexer {
 	}
 
 	private String formatDate(SimpleDateFormat format, String value)
-			throws java.text.ParseException {
+	    throws java.text.ParseException {
 		// Ignore formating if its an ignore value
 		if (config.getIgnoreValues().contains(value.trim())) {
-			return value;
+		  return value;
 		}
 		return solrFormat.format(format.parse(value));
 	}
 
 	/**
 	 * This method builds the command-line options.
-	 *
+	 * 
 	 * @return Returns the supported Options.
 	 */
 	@SuppressWarnings("static-access")
@@ -593,31 +579,31 @@ public class SolrIndexer {
 
 		options.addOption(new Option("h", "help", false, "Print this message"));
 		options.addOption(new Option("o", "optimize", false,
-				"Optimize the Solr index"));
+		    "Optimize the Solr index"));
 		options.addOption(new Option("d", "delete", false,
-				"Delete item before indexing"));
+		    "Delete item before indexing"));
 		options.addOption(OptionBuilder.withArgName("Solr URL").hasArg()
-				.withDescription("URL to the Solr instance").withLongOpt("solrUrl")
-				.create("su"));
+		    .withDescription("URL to the Solr instance").withLongOpt("solrUrl")
+		    .create("su"));
 		options.addOption(OptionBuilder.withArgName("Filemgr URL").hasArg()
-				.withDescription("URL to the File Manager").withLongOpt("fmUrl")
-				.create("fmu"));
+		    .withDescription("URL to the File Manager").withLongOpt("fmUrl")
+		    .create("fmu"));
 
 		OptionGroup group = new OptionGroup();
 		Option all = new Option("a", "all", false,
-				"Index all products from the File Manager");
+		    "Index all products from the File Manager");
 		Option product = OptionBuilder.withArgName("productId").hasArg()
-				.withDescription("Index the product from the File Manager")
-				.withLongOpt("product").create("p");
+		    .withDescription("Index the product from the File Manager")
+		    .withLongOpt("product").create("p");
 		Option met = OptionBuilder.withArgName("file").hasArg().withDescription(
-				"Index the product from a metadata file").withLongOpt("metFile")
-				.create("mf");
+		    "Index the product from a metadata file").withLongOpt("metFile")
+		    .create("mf");
 		Option read = new Option("r", "read", false,
-				"Index all products based on a list of product identifiers passed in");
+		    "Index all products based on a list of product identifiers passed in");
 		Option types = new Option("t", "types", false,
-				"Index all product types from the File Manager");
+		    "Index all product types from the File Manager");
 		Option deleteAll = new Option("da", "deleteAll", false,
-				"Delete all products/types from the Solr index");
+		    "Delete all products/types from the Solr index");
 
 		group.addOption(all);
 		group.addOption(product);
@@ -632,7 +618,7 @@ public class SolrIndexer {
 
 	/**
 	 * The main method. Execution without argument displays help message.
-	 *
+	 * 
 	 * @param args
 	 *          Command-line arguments.
 	 */
@@ -651,8 +637,8 @@ public class SolrIndexer {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("java " + SolrIndexer.class.getName(), options);
 		} else if (line.hasOption("all") || line.hasOption("product")
-				|| line.hasOption("metFile") || line.hasOption("read")
-				|| line.hasOption("types") || line.hasOption("deleteAll")) {
+		    || line.hasOption("metFile") || line.hasOption("read")
+		    || line.hasOption("types") || line.hasOption("deleteAll")) {
 			SolrIndexer indexer;
 			String solrUrl = null;
 			String fmUrl = null;
@@ -670,7 +656,7 @@ public class SolrIndexer {
 					indexer.indexProduct(line.getOptionValue("product"));
 				} else if (line.hasOption("metFile")) {
 					indexer.indexMetFile(new File(line.getOptionValue("metFile")), line
-							.hasOption("delete"));
+					    .hasOption("delete"));
 				} else if (line.hasOption("read")) {
 					for (String productId : readProductIdsFromStdin()) {
 						indexer.indexProduct(productId);
@@ -689,14 +675,14 @@ public class SolrIndexer {
 			} catch (Exception e) {
 				LOG.severe("An error occurred indexing: " + e.getMessage());
 				LOG
-						.severe("If the above message is related to accessing the Solr instance, see the Application Server's log for additional information.");
+				    .severe("If the above message is related to accessing the Solr instance, see the Application Server's log for additional information.");
 			}
 		}
 	}
 
 	/**
 	 * This method reads product identifiers from the standard input.
-	 *
+	 * 
 	 * @return Returns a List of product identifiers.
 	 */
 	private static List<String> readProductIdsFromStdin() {
@@ -712,12 +698,12 @@ public class SolrIndexer {
 			}
 		} catch (IOException e) {
 			LOG.severe("Error reading product id: line: [" + line + "]: Message: "
-					+ e.getMessage());
+			    + e.getMessage());
 		} finally {
-			try {
-				br.close();
-			} catch (Exception ignore) {
-			}
+		  try {
+              br.close();
+          } catch (Exception ignore) {
+          }
 		}
 		return productIds;
 	}
@@ -749,32 +735,32 @@ public class SolrIndexer {
 				String key = (String) objKey;
 				if (key.startsWith(PREFIX_CONFIG)) {
 					properties.put(key.substring(PREFIX_CONFIG.length()), props
-							.getProperty(key));
+					    .getProperty(key));
 				} else if (key.startsWith(PREFIX_MET)) {
 					mapProperties.put(key.substring(PREFIX_MET.length()), props
-							.getProperty(key));
+					    .getProperty(key));
 				} else if (key.startsWith(PREFIX_FORMAT)) {
 					formatProperties.put(key.substring(PREFIX_FORMAT.length()), props
-							.getProperty(key));
+					    .getProperty(key));
 				}
 			}
 
 			if (properties.getProperty(IGNORE_TYPES) != null) {
 				String[] values = properties.getProperty(IGNORE_TYPES).trim()
-						.split(",");
-				Collections.addAll(ignoreTypes, values);
+				    .split(",");
+			  Collections.addAll(ignoreTypes, values);
 			}
 
 			if (properties.getProperty(IGNORE_VALUES) != null) {
 				String[] values = properties.getProperty(IGNORE_VALUES).trim().split(
-						",");
-				Collections.addAll(ignoreValues, values);
+				    ",");
+			  Collections.addAll(ignoreValues, values);
 			}
 
 			if (properties.getProperty(REPLACEMENT_KEYS) != null) {
 				String[] values = properties.getProperty(REPLACEMENT_KEYS).trim()
-						.split(",");
-				Collections.addAll(replacementKeys, values);
+				    .split(",");
+			  Collections.addAll(replacementKeys, values);
 			}
 		}
 

@@ -902,7 +902,8 @@ public class LuceneCatalog implements Catalog {
      */
     public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
         if(type==null){
-            return null;
+            LOG.warning("getNextPage: Provided type was null: Returning blank page.");
+            return ProductPage.blankPage();
         }
         if (currentPage == null) {
             return getFirstPage(type);
@@ -926,11 +927,11 @@ public class LuceneCatalog implements Catalog {
                   "CatalogException getting next page for product type: ["
                           + type.getProductTypeId()
                           + "] from catalog: Message: " + e.getMessage());
-            return null;
+            return ProductPage.blankPage();
         }
         // There are no products and thus no next page
         if (products == null || (products.size() == 0)) {
-        	  return null;
+        	  return ProductPage.blankPage();
         }
         nextPage.setPageProducts(products);
 
@@ -945,7 +946,8 @@ public class LuceneCatalog implements Catalog {
      */
     public ProductPage getPrevPage(ProductType type, ProductPage currentPage) {
         if(type==null){
-            return null;
+            LOG.warning("getPrevPage: Provided type was null: Returning blank page.");
+            return ProductPage.blankPage();
         }
 
         if (currentPage == null) {
