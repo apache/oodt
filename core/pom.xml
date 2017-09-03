@@ -118,6 +118,11 @@ the License.
         <version>1.4</version>
       </dependency>
       <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.0</version>
+      </dependency>
+      <dependency>
        <groupId>org.apache.httpcomponents</groupId>
        <artifactId>httpclient</artifactId>
        <exclusions>
@@ -126,7 +131,7 @@ the License.
          <groupId>commons-logging</groupId>
        </exclusion>
       </exclusions>
-        <version>4.5.2</version>
+        <version>4.4</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
