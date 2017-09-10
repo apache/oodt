@@ -17,6 +17,7 @@
 
 package org.apache.oodt.config.distributed;
 
+import org.apache.oodt.config.Component;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.distributed.cli.ConfigPublisher;
 import org.apache.oodt.config.distributed.utils.ConfigUtils;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -50,6 +52,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
     private static final String CONFIG_PUBLISHER_XML = "config-publisher.xml";
 
     private List<DistributedConfigurationPublisher> publishers;
+    private Map<Component, ConfigurationManager> configurationManagers;
 
     @Before
     public void setUpTest() throws Exception {
@@ -65,21 +68,24 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_PUBLISHER_XML);
         Map distributedConfigurationPublishers = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
-        publishers = new ArrayList<>(distributedConfigurationPublishers.values().size());
+        publishers = new ArrayList<>();
+        configurationManagers = new HashMap<>();
         for (Object bean : distributedConfigurationPublishers.values()) {
             DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;
 
+            System.setProperty(OODT_PROJECT, publisher.getProject());
             System.setProperty(publisher.getComponent().getHome(), ".");
             publishers.add(publisher);
+            configurationManagers.put(publisher.getComponent(), new DistributedConfigurationManager(publisher.getComponent()));
+            System.clearProperty(OODT_PROJECT);
         }
     }
 
     @Test
     public void loadConfigurationTest() throws Exception {
         for (DistributedConfigurationPublisher publisher : publishers) {
-            System.setProperty(OODT_PROJECT, publisher.getProject());
 
-            ConfigurationManager configurationManager = new DistributedConfigurationManager(publisher.getComponent());
+            ConfigurationManager configurationManager = configurationManagers.get(publisher.getComponent());
             configurationManager.loadConfiguration();
 
             // Checking for configuration files
@@ -117,8 +123,63 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
                 File file = new File(localFile);
                 Assert.assertFalse(file.exists());
             }
+        }
+    }
 
-            System.clearProperty(OODT_PROJECT);
+    @Test
+    public void notifyConfigurationChangeTest() throws Exception {
+        // First publish config. Then check if config has downloaded locally.
+        ConfigPublisher.main(new String[]{
+                "-connectString", zookeeper.getConnectString(),
+                "-config", CONFIG_PUBLISHER_XML,
+                "-notify",
+                "-a", "publish"
+        });
+        Thread.sleep(5000);
+        checkFileExistence(true);
+
+        // Now clear config. Then check if config has deleted locally.
+        ConfigPublisher.main(new String[]{
+                "-connectString", zookeeper.getConnectString(),
+                "-config", CONFIG_PUBLISHER_XML,
+                "-notify",
+                "-a", "clear"
+        });
+        Thread.sleep(5000);
+        checkFileExistence(false);
+
+        // First publish config. Then check if config has downloaded locally.
+        ConfigPublisher.main(new String[]{
+                "-connectString", zookeeper.getConnectString(),
+                "-config", CONFIG_PUBLISHER_XML,
+                "-notify",
+                "-a", "publish"
+        });
+        Thread.sleep(5000);
+        checkFileExistence(true);
+    }
+
+    private void checkFileExistence(boolean exists) {
+        for (DistributedConfigurationPublisher publisher : publishers) {
+            for (String fileName : publisher.getPropertiesFiles().values()) {
+                fileName = ConfigUtils.fixForComponentHome(publisher.getComponent(), fileName);
+                File file = new File(fileName);
+                if (exists) {
+                    Assert.assertTrue(file.exists());
+                } else {
+                    Assert.assertFalse(file.exists());
+                }
+            }
+
+            for (String fileName : publisher.getConfigFiles().values()) {
+                fileName = ConfigUtils.fixForComponentHome(publisher.getComponent(), fileName);
+                File file = new File(fileName);
+                if (exists) {
+                    Assert.assertTrue(file.exists());
+                } else {
+                    Assert.assertFalse(file.exists());
+                }
+            }
         }
     }
 

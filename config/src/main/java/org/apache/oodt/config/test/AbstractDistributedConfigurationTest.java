@@ -25,6 +25,13 @@ import org.junit.BeforeClass;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 
+/**
+ * An abstract class to be used for distributed configuration management related tests. Any test related to any OODT
+ * component can extend this class and connect to the {@link #zookeeper} instance started by this class for further
+ * steps.
+ *
+ * @author Imesha Sudasingha
+ */
 public abstract class AbstractDistributedConfigurationTest {
 
     protected static TestingServer zookeeper;

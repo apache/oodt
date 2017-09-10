@@ -93,5 +93,8 @@ public class Constants {
 
         /** Where other configuration files will be stored */
         public static final String CONFIGURATION_PATH_NAME = "configuration";
+
+        /** Path to be watched for configuration changes */
+        public static final String NOTIFICATIONS_PATH = "notifications";
     }
 }
