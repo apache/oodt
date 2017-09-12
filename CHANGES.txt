@@ -1,5 +1,11 @@
 Apache OODT Change Log
 ======================
+Release 1.3 - In Progress
+
+* OODT-957 Add CVE reporting plugin to maven build chain
+
+
+
 Release 1.2 - 08/14/2017
 
 * OODT-955 Fix numhits error in Lucene Catalog
