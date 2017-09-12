@@ -88,11 +88,12 @@ public class TestAsynchronousLocalEngineRunner {
     try {
       runner.execute(taskProcessor1);
       runner.execute(taskProcessor2);
-      assumeTrue(ranFast());
     } catch (Exception e) {
       LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
+    
+    assumeTrue(ranFast());
   }
 
   private boolean ranFast() {

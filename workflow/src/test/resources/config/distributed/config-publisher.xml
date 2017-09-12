@@ -1,0 +1,56 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="workflowmgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
+        <constructor-arg value="WORKFLOW_MANAGER"/>
+        <constructor-arg value="primary"/>
+
+        <property name="propertiesFiles">
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="src/test/resources/config/distributed/workflow.properties" value="target/workflow/etc/resource.properties"/>
+                <entry key="src/test/resources/test.logging.properties" value="target/workflow/etc/logging.properties"/>
+            </map>
+        </property>
+        <property name="configFiles">
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="src/main/resources/examples/workflow-lifecycle.xml" value="target/workflow/policy/workflow-lifecycle.xml"/>
+                <entry key="src/main/resources/examples/workflow-instance-met.xml" value="target/workflow/policy/workflow-instance-met.xml"/>
+                <entry key="src/main/resources/examples/timeout.workflow.xml" value="target/workflow/policy/timeout.workflow.xml"/>
+                <entry key="src/main/resources/examples/testWorkflow.workflow.xml" value="target/workflow/policy/testWorkflow.workflow.xml"/>
+                <entry key="src/main/resources/examples/testStatusUpdate.workflow.xml" value="target/workflow/policy/testStatusUpdate.workflow.xml"/>
+                <entry key="src/main/resources/examples/testMetError.workflow.xml" value="target/workflow/policy/testMetError.workflow.xml"/>
+                <entry key="src/main/resources/examples/testMetadataUpdate.workflow.xml" value="target/workflow/policy/testMetadataUpdate.workflow.xml"/>
+                <entry key="src/main/resources/examples/tasks.xml" value="target/workflow/policy/tasks.xml"/>
+                <entry key="src/main/resources/examples/optional.workflow.xml" value="target/workflow/policy/optional.workflow.xml"/>
+                <entry key="src/main/resources/examples/mailWorkflow.workflow.xml" value="target/workflow/policy/mailWorkflow.workflow.xml"/>
+                <entry key="src/main/resources/examples/longWorkflow.workflow.xml" value="target/workflow/policy/longWorkflow.workflow.xml"/>
+                <entry key="src/main/resources/examples/externalScript.workflow.xml" value="target/workflow/policy/externalScript.workflow.xml"/>
+                <entry key="src/main/resources/examples/events.xml" value="target/workflow/policy/events.xml"/>
+                <entry key="src/main/resources/examples/conditions.xml" value="target/workflow/policy/conditions.xml"/>
+                <entry key="src/main/resources/examples/condition.workflow.xml" value="target/workflow/policy/condition.workflow.xml"/>
+
+                <entry key="src/main/resources/examples/wengine/GranuleMaps.xml" value="target/workflow/policy/wengine/condition.workflow.xml"/>
+                <entry key="src/main/resources/examples/wengine/hello-goodbye.xml" value="target/workflow/policy/wengine/hello-goodbye.xml"/>
+                <entry key="src/main/resources/examples/wengine/wengine-lifecycle.xml" value="target/workflow/policy/wengine/wengine-lifecycle.xml"/>
+            </map>
+        </property>
+    </bean>
+</beans>

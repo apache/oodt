@@ -33,6 +33,7 @@ the License.
     <module>core</module>
     <module>commons</module>
     <module>cli</module>
+    <module>config</module>
     <module>pcs/input</module>
     <module>metadata</module>
     <module>filemgr</module>

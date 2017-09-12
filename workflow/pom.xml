@@ -138,6 +138,10 @@ the License.
       <artifactId>oodt-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-conf</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.safehaus.jug</groupId>
       <artifactId>jug</artifactId>
       <classifier>asl</classifier>
@@ -161,6 +165,10 @@ the License.
               <value>${basedir}/src/test/resources/test.logging.properties</value>
             </property>
           </systemProperties>
+          <environmentVariables>
+            <WORKFLOW_HOME>${project.basedir}</WORKFLOW_HOME>
+            <OODT_PROJECT>primary</OODT_PROJECT>
+          </environmentVariables>
           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <includes>
