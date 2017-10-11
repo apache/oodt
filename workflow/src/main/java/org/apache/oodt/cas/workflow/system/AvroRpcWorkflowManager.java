@@ -97,8 +97,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
         if(engine == null){
             throw new NullPointerException("null engine");
         }
-        engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
-                + getHostname() + ":" + this.webServerPort));
+        engine.setWorkflowManagerUrl(safeGetUrlFromString("http://" + getHostname() + ":" + this.webServerPort));
         repo = getWorkflowRepositoryFromProperty();
 
         LOG.log(Level.INFO, "Starting Netty Server");

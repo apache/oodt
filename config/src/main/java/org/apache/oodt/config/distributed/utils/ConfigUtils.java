@@ -75,6 +75,7 @@ public class ConfigUtils {
             project = System.getenv(Env.OODT_PROJECT);
         }
 
+        logger.debug("Project name {}", project);
         return project == null ? Constants.DEFAULT_PROJECT : project;
     }
 }
