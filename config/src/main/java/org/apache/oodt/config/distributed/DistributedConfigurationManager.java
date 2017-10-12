@@ -44,6 +44,7 @@ import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
 import static org.apache.oodt.config.Constants.Properties.ZK_STARTUP_TIMEOUT;
 import static org.apache.oodt.config.distributed.utils.ConfigUtils.getOODTProjectName;
 
+
 /**
  * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to
  * connect to zookeeper.
@@ -93,7 +94,10 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     };
 
     public DistributedConfigurationManager(Component component) {
-        super(component, getOODTProjectName());
+        super(component, ConfigUtils.getOODTProjectName());
+
+        logger.info("Found project name {} for component {}", this.project, this.component);
+
         this.zNodePaths = new ZNodePaths(this.project, this.component.getName());
 
         if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(ZK_CONNECT_STRING) == null) {

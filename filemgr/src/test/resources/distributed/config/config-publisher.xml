@@ -21,7 +21,6 @@
 
     <bean id="filemgr-config-publisher" class="org.apache.oodt.config.distributed.DistributedConfigurationPublisher">
         <constructor-arg value="FILE_MANAGER"/>
-
         <constructor-arg value="primary"/>
 
         <property name="propertiesFiles">
