@@ -444,12 +444,12 @@ the License.
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
-        <version>1.13</version>
+        <version>1.16</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-parsers</artifactId>
-        <version>1.13</version>
+        <version>1.16</version>
       </dependency>
       <dependency>
         <groupId>org.apache.velocity</groupId>
@@ -1028,6 +1028,27 @@ mm
               </execution>
             </executions>
           </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>cve-check</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         </plugins>
       </build>
     </profile>
