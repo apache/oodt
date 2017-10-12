@@ -54,6 +54,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigEventType;
+import org.apache.oodt.config.ConfigurationListener;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.ConfigurationManagerFactory;
 import org.apache.xmlrpc.WebServer;
@@ -112,6 +114,18 @@ public class XmlRpcFileManager {
 
   /** Configuration Manager instance which will handle the configuration aspect in distributed/standalone manner */
   private ConfigurationManager configurationManager;
+  private ConfigurationListener configurationListener = new ConfigurationListener() {
+    @Override
+    public void configurationChanged(ConfigEventType type) {
+      switch (type) {
+        case PUBLISH:
+          refreshConfigAndPolicy();
+          break;
+        case CLEAR:
+          // TODO: 8/19/17 What should we do if the config has been cleared?
+      }
+    }
+  };
 
   /**
    * <p> Creates a new XmlRpcFileManager with the given metadata store factory, and the given data store factory, on the
@@ -135,8 +149,9 @@ public class XmlRpcFileManager {
     }
 
     configurationManager = ConfigurationManagerFactory.getConfigurationManager(Component.FILE_MANAGER, propertiesFiles);
-
+    configurationManager.addConfigurationListener(configurationListener);
     this.loadConfiguration();
+
     LOG.log(Level.INFO, "File Manager started by " + System.getProperty("user.name", "unknown"));
   }
 
@@ -1224,6 +1239,7 @@ public class XmlRpcFileManager {
   }
 
   public boolean shutdown() {
+    configurationManager.removeConfigurationListener(configurationListener);
     configurationManager.clearConfiguration();
     if (this.webServer != null) {
       this.webServer.shutdown();

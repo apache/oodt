@@ -15,31 +15,36 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.config.distributed.cli;
-
-import org.apache.oodt.cas.cli.CmdLineUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.apache.oodt.config;
 
 /**
- * Class with main method which gets invoked by the CLI.
- * <p>
- * Basic usage:
- * <pre>
- *     ./config-publisher -connectString localhost:2181 </> -a {publish|verify|clear}
- * </pre>
- * <p>
- * Optionally, users can give <pre>-notify</pre> option to notify the listening OODT components on the configuration
- * change.
+ * An enum class to represent distributed configuration management related events.
  *
  * @author Imesha Sudasingha
  */
-public class ConfigPublisher {
+public enum ConfigEventType {
+    PUBLISH("publish"),
+    CLEAR("clear");
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigPublisher.class);
+    private String name;
 
-    public static void main(String[] args) throws Exception {
-        CmdLineUtility cmdLineUtility = new CmdLineUtility();
-        cmdLineUtility.run(args);
+    ConfigEventType(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    public static ConfigEventType parse(String string) {
+        switch (string) {
+            case "publish":
+                return PUBLISH;
+            case "clear":
+                return CLEAR;
+            default:
+                return null;
+        }
     }
 }

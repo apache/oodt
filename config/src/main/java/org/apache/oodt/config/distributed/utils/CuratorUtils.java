@@ -38,6 +38,11 @@ import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
 import static org.apache.oodt.config.Constants.ZPaths.NAMESPACE;
 import static org.apache.oodt.config.Constants.ZPaths.SEPARATOR;
 
+/**
+ * A set of utility methods to be used to do complex operations on zookeeper using {@link CuratorFramework}
+ *
+ * @author Imesha Sudasingha
+ */
 public class CuratorUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(CuratorUtils.class);
@@ -88,8 +93,8 @@ public class CuratorUtils {
     }
 
     /**
-     * Builds a {@link CuratorFramework} instance with given connect string. Will use the {@link CuratorUtils#logger} for
-     * logging.
+     * Builds a {@link CuratorFramework} instance with given connect string. Will use the {@link CuratorUtils#logger}
+     * for logging.
      *
      * @param connectString zookeeper connect string
      * @return CuratorFramework instance created
@@ -112,11 +117,11 @@ public class CuratorUtils {
         int maxRetryCount = Integer.parseInt(System.getProperty(Constants.Properties.ZK_CONNECTION_TIMEOUT, "3"));
 
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
-                                                          .namespace(NAMESPACE)
-                                                          .connectString(connectString)
-                                                          .retryPolicy(new ExponentialBackoffRetry(retryInitialWaitMs, maxRetryCount))
-                                                          .connectionTimeoutMs(connectionTimeoutMs)
-                                                          .sessionTimeoutMs(sessionTimeoutMs);
+                .namespace(NAMESPACE)
+                .connectString(connectString)
+                .retryPolicy(new ExponentialBackoffRetry(retryInitialWaitMs, maxRetryCount))
+                .connectionTimeoutMs(connectionTimeoutMs)
+                .sessionTimeoutMs(sessionTimeoutMs);
 
         /*
          * If authorization information is available, those will be added to the client. NOTE: These auth info are

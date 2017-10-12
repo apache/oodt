@@ -19,7 +19,10 @@ package org.apache.oodt.config.distributed;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.NodeCache;
+import org.apache.curator.framework.recipes.cache.NodeCacheListener;
 import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigEventType;
 import org.apache.oodt.config.ConfigurationManager;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.Constants.Properties;
@@ -38,11 +41,13 @@ import java.util.concurrent.TimeUnit;
 
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
-import static org.apache.oodt.config.distributed.utils.ConfigUtils.getOODTProjectName;
+import static org.apache.oodt.config.Constants.Properties.ZK_STARTUP_TIMEOUT;
 
 /**
  * Distributed configuration manager implementation. This class make use of a {@link CuratorFramework} instance to
  * connect to zookeeper.
+ * <p>
+ * This class can download configuration from zookeeper and clear configuration locally downloaded.
  *
  * @author Imesha Sudasingha.
  */
@@ -57,12 +62,45 @@ public class DistributedConfigurationManager extends ConfigurationManager {
 
     private List<String> savedFiles = new ArrayList<>();
 
+    /** {@link NodeCache} to watch for configuration change notifications */
+    private NodeCache nodeCache;
+    /** This is the listener which is going to be notified on the configuration changes happening in zookeeper */
+    private NodeCacheListener nodeCacheListener = new NodeCacheListener() {
+        @Override
+        public void nodeChanged() throws Exception {
+            byte[] data = client.getData().forPath(zNodePaths.getNotificationsZNodePath());
+            if (data == null) {
+                return;
+            }
+
+            String event = new String(data);
+            ConfigEventType type = ConfigEventType.parse(event);
+            if (type != null) {
+                logger.info("Configuration changed event of type: '{}' received", type);
+                switch (type) {
+                    case PUBLISH:
+                        loadConfiguration();
+                        break;
+                    case CLEAR:
+                        clearConfiguration();
+                        break;
+                }
+
+                notifyConfigurationChange(type);
+            }
+        }
+    };
+
     public DistributedConfigurationManager(Component component) {
-        super(component, getOODTProjectName());
+        super(component, ConfigUtils.getOODTProjectName());
+
+        logger.info("Found project name {} for component {}", this.project, this.component);
+
         this.zNodePaths = new ZNodePaths(this.project, this.component.getName());
 
-        if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
-            throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " + ZK_CONNECT_STRING + " to be set");
+        if (System.getProperty(ZK_PROPERTIES_FILE) == null && System.getProperty(ZK_CONNECT_STRING) == null) {
+            throw new IllegalArgumentException("Zookeeper requires system properties " + ZK_PROPERTIES_FILE + " or " +
+                    ZK_CONNECT_STRING + " to be set");
         }
 
         if (System.getProperty(ZK_PROPERTIES_FILE) != null) {
@@ -73,11 +111,11 @@ public class DistributedConfigurationManager extends ConfigurationManager {
             }
         }
 
-        if (System.getProperty(Constants.Properties.ZK_CONNECT_STRING) == null) {
+        if (System.getProperty(ZK_CONNECT_STRING) == null) {
             throw new IllegalArgumentException("Zookeeper requires a proper connect string to connect to zookeeper ensemble");
         }
 
-        connectString = System.getProperty(Constants.Properties.ZK_CONNECT_STRING);
+        connectString = System.getProperty(ZK_CONNECT_STRING);
         logger.info("Using zookeeper connect string : {}", connectString);
         startZookeeper();
     }
@@ -90,7 +128,8 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         client = CuratorUtils.newCuratorFrameworkClient(connectString, logger);
         client.start();
         logger.info("Curator framework start operation invoked");
-        int startupTimeOutMs = Integer.parseInt(System.getProperty(Properties.ZK_STARTUP_TIMEOUT, "30000"));
+
+        int startupTimeOutMs = Integer.parseInt(System.getProperty(ZK_STARTUP_TIMEOUT, "30000"));
         try {
             logger.info("Waiting to connect to zookeeper, startupTimeout : {}", startupTimeOutMs);
             client.blockUntilConnected(startupTimeOutMs, TimeUnit.MILLISECONDS);
@@ -103,10 +142,27 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         }
 
         logger.info("CuratorFramework client started successfully");
+
+        nodeCache = new NodeCache(client, zNodePaths.getNotificationsZNodePath());
+        nodeCache.getListenable().addListener(nodeCacheListener);
+        try {
+            logger.debug("Starting NodeCache to watch for configuration changes");
+            nodeCache.start(true);
+        } catch (Exception e) {
+            logger.error("Error occurred when start listening for configuration changes", e);
+            throw new IllegalStateException("Unable to start listening for configuration changes", e);
+        }
+        logger.info("NodeCache for watching configuration changes started successfully");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Since distributed configuration management treats properties files and configuration files in two different ways,
+     * they are loaded in different manners.
+     */
     @Override
-    public void loadConfiguration() throws Exception {
+    public synchronized void loadConfiguration() throws Exception {
         logger.debug("Loading properties for : {}", component);
         loadProperties();
         logger.info("Properties loaded for : {}", component);
@@ -170,9 +226,8 @@ public class DistributedConfigurationManager extends ConfigurationManager {
     private void saveFile(String path, byte[] data) throws IOException {
         String localFilePath = ConfigUtils.fixForComponentHome(component, path);
         File localFile = new File(localFilePath);
-        if (localFile.exists()) {
-            logger.warn("Deleting already existing file at {} before writing new content", localFilePath);
-            localFile.delete();
+        if (localFile.exists() && localFile.delete()) {
+            logger.warn("Deleted already existing file at {} before writing new content", localFilePath);
         }
 
         logger.debug("Storing configuration in file: {}", localFilePath);
@@ -181,9 +236,13 @@ public class DistributedConfigurationManager extends ConfigurationManager {
         savedFiles.add(localFilePath);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method will additionally delete all the files downloaded earlier from zookeeper.
+     */
     @Override
-    public void clearConfiguration() {
+    public synchronized void clearConfiguration() {
         for (String path : savedFiles) {
             logger.debug("Removing saved file {}", path);
             File file = new File(path);

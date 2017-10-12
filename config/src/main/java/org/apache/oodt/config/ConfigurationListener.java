@@ -15,31 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.config.distributed.cli;
-
-import org.apache.oodt.cas.cli.CmdLineUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.apache.oodt.config;
 
 /**
- * Class with main method which gets invoked by the CLI.
- * <p>
- * Basic usage:
- * <pre>
- *     ./config-publisher -connectString localhost:2181 </> -a {publish|verify|clear}
- * </pre>
- * <p>
- * Optionally, users can give <pre>-notify</pre> option to notify the listening OODT components on the configuration
- * change.
+ * The interface which should be implemented in order to listen for configuration changes.
  *
  * @author Imesha Sudasingha
  */
-public class ConfigPublisher {
+public interface ConfigurationListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigPublisher.class);
-
-    public static void main(String[] args) throws Exception {
-        CmdLineUtility cmdLineUtility = new CmdLineUtility();
-        cmdLineUtility.run(args);
-    }
+    /**
+     * This method is invoked when there has been any change in configuration of the interested component
+     */
+    void configurationChanged(ConfigEventType type);
 }

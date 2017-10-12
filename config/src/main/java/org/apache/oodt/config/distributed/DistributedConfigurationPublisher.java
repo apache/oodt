@@ -20,6 +20,7 @@ package org.apache.oodt.config.distributed;
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigEventType;
 import org.apache.oodt.config.Constants;
 import org.apache.oodt.config.distributed.utils.CuratorUtils;
 import org.apache.zookeeper.data.Stat;
@@ -83,6 +84,14 @@ public class DistributedConfigurationPublisher {
         logger.info("Using zookeeper connect string : {}", connectString);
 
         startZookeeper();
+
+        try {
+            logger.debug("Creating ZNode paths");
+            zNodePaths.createZNodes(client);
+        } catch (Exception e) {
+            logger.error("Error occurred when creating initial ZNode paths", e);
+            throw new IllegalStateException("Unable to create ZNode paths", e);
+        }
     }
 
     /**
@@ -145,7 +154,8 @@ public class DistributedConfigurationPublisher {
      */
     public boolean verifyPublishedConfiguration() {
         try {
-            return verifyPublishedConfiguration(propertiesFiles, true) && verifyPublishedConfiguration(configFiles, false);
+            return verifyPublishedConfiguration(propertiesFiles, true) &&
+                    verifyPublishedConfiguration(configFiles, false);
         } catch (Exception e) {
             logger.error("Error occurred when checking published config", e);
             return false;
@@ -165,6 +175,24 @@ public class DistributedConfigurationPublisher {
         logger.info("Configuration cleared!");
     }
 
+    /**
+     * Notifies the watching {@link org.apache.oodt.config.ConfigurationManager}s about the configuration change
+     *
+     * @param type {@link ConfigEventType}
+     * @throws Exception
+     */
+    public void notifyConfigEvent(ConfigEventType type) throws Exception {
+        logger.info("Notifying event: '{}' to configuration managers of {}", type, component);
+        client.setData().forPath(zNodePaths.getNotificationsZNodePath(), type.toString().getBytes());
+    }
+
+    /**
+     * Publishes configuration from local files to zookeeper.
+     *
+     * @param fileMapping  source file to ZNode path mappings
+     * @param isProperties if true, files will be stored under {@link ZNodePaths#propertiesZNodePath}
+     * @throws Exception
+     */
     private void publishConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {
             String filePath = entry.getKey();
@@ -173,7 +201,8 @@ public class DistributedConfigurationPublisher {
 
             String content = getFileContent(filePath);
 
-            String zNodePath = isProperties ? zNodePaths.getPropertiesZNodePath(relativeZNodePath) : zNodePaths.getConfigurationZNodePath(relativeZNodePath);
+            String zNodePath = isProperties ? zNodePaths.getPropertiesZNodePath(relativeZNodePath) :
+                    zNodePaths.getConfigurationZNodePath(relativeZNodePath);
             if (client.checkExists().forPath(zNodePath) != null) {
                 byte[] bytes = client.getData().forPath(zNodePath);
                 String existingData = new String(bytes);
@@ -198,6 +227,16 @@ public class DistributedConfigurationPublisher {
         }
     }
 
+    /**
+     * Verifies whether the content in local files given by keys of the <pre>fileMapping</pre> are identical to the
+     * configuration stored in zookeeper under ZNode paths given by <pre>${prefix}/{fileMapping.value}</pre>
+     *
+     * @param fileMapping  src file to znode path mappings
+     * @param isProperties if true, treated as properties files and will look under {@link
+     *                     ZNodePaths#propertiesZNodePath}
+     * @return true, if all the configuration verification was successful and no error was detected.
+     * @throws Exception
+     */
     private boolean verifyPublishedConfiguration(Map<String, String> fileMapping, boolean isProperties) throws Exception {
         boolean noError = true;
         for (Map.Entry<String, String> entry : fileMapping.entrySet()) {

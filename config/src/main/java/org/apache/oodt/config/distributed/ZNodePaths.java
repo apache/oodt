@@ -17,9 +17,14 @@
 
 package org.apache.oodt.config.distributed;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.oodt.config.distributed.utils.CuratorUtils;
+import org.apache.zookeeper.CreateMode;
+
 import static org.apache.oodt.config.Constants.DEFAULT_PROJECT;
 import static org.apache.oodt.config.Constants.ZPaths.COMPONENTS_PATH_NAME;
 import static org.apache.oodt.config.Constants.ZPaths.CONFIGURATION_PATH_NAME;
+import static org.apache.oodt.config.Constants.ZPaths.NOTIFICATIONS_PATH;
 import static org.apache.oodt.config.Constants.ZPaths.PROJECTS_PATH_NAME;
 import static org.apache.oodt.config.Constants.ZPaths.PROPERTIES_PATH_NAME;
 import static org.apache.oodt.config.Constants.ZPaths.SEPARATOR;
@@ -42,6 +47,9 @@ public class ZNodePaths {
     /** ZNode path for other configuration files. /projects/${project}/components/${component}/configuration */
     private String configurationZNodePath;
     private String configurationZNodeRoot;
+
+    /** ZNode to be watched for configuration changes. /projects/${project}/components/${component}/notifications */
+    private String notificationsZNodePath;
 
     /**
      * Creates the ZNode path structure accordingly to the <pre>componentName</pre> and <pre>propertiesFileNames</pre>
@@ -70,6 +78,21 @@ public class ZNodePaths {
 
         configurationZNodePath = componentZNodeRoot + CONFIGURATION_PATH_NAME;
         configurationZNodeRoot = configurationZNodePath + SEPARATOR;
+
+        notificationsZNodePath = componentZNodeRoot + NOTIFICATIONS_PATH;
+    }
+
+    /**
+     * Creates the initial ZNode structure in zookeeper. Supposed to be called by the {@link
+     * DistributedConfigurationPublisher}.
+     *
+     * @param client {@link CuratorFramework} instance
+     * @throws Exception
+     */
+    public void createZNodes(CuratorFramework client) throws Exception {
+        CuratorUtils.createZNodeIfNotExists(client, propertiesZNodePath, CreateMode.PERSISTENT, new byte[1]);
+        CuratorUtils.createZNodeIfNotExists(client, configurationZNodePath, CreateMode.PERSISTENT, new byte[1]);
+        CuratorUtils.createZNodeIfNotExists(client, notificationsZNodePath, CreateMode.PERSISTENT, new byte[1]);
     }
 
     public String getComponentZNodePath() {
@@ -98,5 +121,9 @@ public class ZNodePaths {
 
     public String getLocalPropertiesFilePath(String zNodePath) {
         return zNodePath.substring(propertiesZNodeRoot.length());
+    }
+
+    public String getNotificationsZNodePath() {
+        return notificationsZNodePath;
     }
 }
