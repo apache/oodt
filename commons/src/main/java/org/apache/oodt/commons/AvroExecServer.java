@@ -122,15 +122,15 @@ public class AvroExecServer {
 
         // I should create avro interface to this server
 
-        Responder responder = new GenericResponder() {
+        /*Responder responder = new GenericResponder() {
             @Override
             public Object respond(Protocol.Message message, Object o) throws Exception {
 
                 return null;
             }
-        }
-        server =new HttpServer();
-        server.
+        }*/
+       /* server =new HttpServer();
+        server.*/
 
 //        xmlrpcServer = new XmlRpcServer();
 //        xmlrpcServer.addHandler("server", this);
@@ -191,10 +191,7 @@ public class AvroExecServer {
             } catch (IllegalAccessException ex) {
                 System.err.println("Initializer \"" + iname + "\" isn't public; aborting");
                 throw new EDAException(ex);
-            } catch (EDAException ex) {
-                System.err.println("Initializer \"" + iname + "\" failed: " + ex.getMessage());
-                throw new EDAException(ex);
-            }
+            } 
         }
     }
 
@@ -276,8 +273,6 @@ public class AvroExecServer {
         } catch (SAXException ex) {
             System.err.println("Error " + ex.getClass().getName() + " while attempting to parse the configuration"
                     + " file: " + ex.getMessage());
-        } catch (javax.naming.NamingException ex) {
-            System.err.println("Naming/directory error: " + ex.getClass().getName() + ": " + ex.getMessage());
         } catch (java.lang.reflect.InvocationTargetException ex) {
             Throwable target = ex.getTargetException();
             System.err.println("Constructor for \"" + className + "\" threw " + target.getClass().getName() + ": "
