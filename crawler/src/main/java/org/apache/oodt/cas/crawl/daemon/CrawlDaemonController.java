@@ -34,11 +34,12 @@ import java.util.Vector;
 /**
  * @author mattmann
  * @version $Revision$
- * 
+ * @deprecated soon be replaced by avro-rpc
  * <p>
  * A Controller class for the Crawl Daemons
  * </p>.
  */
+@Deprecated
 public class CrawlDaemonController {
 
     /* our xml rpc client */

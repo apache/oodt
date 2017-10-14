@@ -23,7 +23,7 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 
 import java.net.URL;
-
+@Deprecated
 public class XmlRpcFileManagerClientFactory implements FileManagerClientFactory {
 
     private URL url;

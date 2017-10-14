@@ -31,13 +31,14 @@ import java.util.logging.Logger;
 /**
  * @author mattmann
  * @version $Revision$
- * 
+ * @deprecated soon be replaced by avro-rpc
  * <p>
  * A daemon utility class for {@link ProductCrawler}s that allows a regular
  * ProductCrawler to be run as a daemon, and statistics about crawling to be
  * kept. The daemon is an XML-RPC accessible web service.
  * </p>.
  */
+@Deprecated
 public class CrawlDaemon {
 
     public static final double DOUBLE = 1000.0;

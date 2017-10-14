@@ -69,9 +69,11 @@ import java.util.logging.Logger;
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  * @version $Revision$
+ * @deprecated replaced by avro-rpc
  *          <p/>
  *          <p> The XML RPC based file manager client. </p>
  */
+@Deprecated
 public class XmlRpcFileManagerClient implements FileManagerClient {
 
   /* our xml rpc client */

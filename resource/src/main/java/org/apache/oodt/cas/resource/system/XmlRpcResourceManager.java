@@ -53,12 +53,13 @@ import java.util.logging.Logger;
 /**
  * @author woollard
  * @version $Revision$
- * 
+ * @deprecated soon be replaced by avro-rpc
  * <p>
  * An XML RPC-based Resource manager.
  * </p>
  * 
  */
+@Deprecated
 public class XmlRpcResourceManager {
 
     /* our log stream */

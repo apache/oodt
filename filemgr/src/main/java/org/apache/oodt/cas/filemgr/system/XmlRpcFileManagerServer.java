@@ -42,6 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+/**
+ * @deprecated replaced by avro-rpc
+ */
+@Deprecated
 public class XmlRpcFileManagerServer implements FileManagerServer {
 
     /* the port to run the XML RPC web server on, default is 1999 */
