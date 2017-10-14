@@ -177,10 +177,7 @@
       </build>
     </profile>
   </profiles>
-<<<<<<< HEAD
-=======
   <dependencies>
-
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
