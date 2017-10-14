@@ -481,7 +481,7 @@ public class ExecServer {
 
 	/** Status DTD formal public identifier. */
 	public static final String STATUS_FPI = "-//JPL//DTD EDA Server Status 1.0";
-	
+
 	/** Status DTD system identifier. */
 	public static final String STATUS_URL = "http://oodt.jpl.nasa.gov/edm-commons/xml/serverStatus.dtd";
 
