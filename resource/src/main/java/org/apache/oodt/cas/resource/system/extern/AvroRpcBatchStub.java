@@ -36,9 +36,12 @@ import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.WebServer;
 
 import java.net.InetSocketAddress;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,6 +72,21 @@ public class AvroRpcBatchStub implements AvroIntrBatchmgr {
 
         LOG.log(Level.INFO, "AvroRpc Batch Stub started by "
                 + System.getProperty("user.name", "unknown"));
+    }
+    
+    @Override
+    public List getJobsOnNode(String nodeId) {
+      Vector<String> jobIds = new Vector();
+      
+      if(this.jobThreadMap.size() > 0){
+            for (Object o : this.jobThreadMap.keySet()) {
+                String jobId = (String) o;
+                jobIds.addElement(jobId);
+            }
+      }
+      
+      Collections.sort(jobIds); // sort the list to return as a courtesy to the user
+      return jobIds;
     }
 
     @Override

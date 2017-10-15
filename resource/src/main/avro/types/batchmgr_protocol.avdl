@@ -23,5 +23,7 @@ import schema "AvroResourceNode.avsc";
 //    public boolean executeJob(Hashtable jobHash, byte[] jobInput);
 
     boolean killJob(AvroJob jobHash);
+    
+    array<string> getJobsOnNode(string nodeId);
 
 }

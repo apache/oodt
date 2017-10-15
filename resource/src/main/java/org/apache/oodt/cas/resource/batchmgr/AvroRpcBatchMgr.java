@@ -27,8 +27,11 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -176,5 +179,23 @@ public class AvroRpcBatchMgr implements Batchmgr {
                             + spec.getJob().getId() + "]: Message: "
                             + e.getMessage());
         }
+    }
+
+    @Override
+    public List getJobsOnNode(String nodeId) {
+      Vector<String> jobIds = new Vector();
+      
+      if(this.nodeToJobMap.size() > 0){
+            for (Object o : this.nodeToJobMap.keySet()) {
+                String jobId = (String) o;
+                if (nodeId.equals(this.nodeToJobMap.get(jobId))) {
+                    jobIds.add(jobId);
+                }
+            }
+      }
+      
+      Collections.sort(jobIds); // sort the list to return as a courtesy to the user
+      
+      return jobIds;
     }
 }

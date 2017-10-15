@@ -60,6 +60,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
             this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getPort()));
             this.proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
         } catch (IOException e) {
+            e.printStackTrace();
             LOG.log(Level.SEVERE, "Failed connection with the server.", e);
         }
 

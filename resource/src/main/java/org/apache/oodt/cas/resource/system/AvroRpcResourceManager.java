@@ -216,7 +216,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public List<String> getQueues() throws AvroRemoteException {
         try {
             return this.scheduler.getQueueManager().getQueues();
-        } catch (QueueManagerException e) {
+        } catch (Exception e) {
             throw new AvroRemoteException(e);
         }
     }
@@ -225,7 +225,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public boolean addQueue(String queueName) throws AvroRemoteException {
         try {
             this.scheduler.getQueueManager().addQueue(queueName);
-        } catch (QueueManagerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
@@ -236,7 +236,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public boolean removeQueue(String queueName) throws AvroRemoteException {
         try {
             this.scheduler.getQueueManager().removeQueue(queueName);
-        } catch (QueueManagerException e) {
+        } catch (Exception e) {
             throw new AvroRemoteException(e);
         }
         return true;
@@ -302,7 +302,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public List<String> getQueuesWithNode(String nodeId) throws AvroRemoteException {
         try {
             return this.scheduler.getQueueManager().getQueues(nodeId);
-        } catch (QueueManagerException e) {
+        } catch (Exception e) {
             throw new AvroRemoteException(e);
         }
     }
