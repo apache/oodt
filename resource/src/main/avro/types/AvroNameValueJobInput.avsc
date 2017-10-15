@@ -1,0 +1,10 @@
+{
+  "type":"record",
+  "name":"AvroNameValueJobInput",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.resource.structs.avrotypes",
+  "imports":[],
+  "fields":[
+    {"name":"props","type":[{"type":"map","values":"string"},"null"]}
+  ]
+}

@@ -1,0 +1,29 @@
+@namespace("org.apache.oodt.cas.resource.structs.avrotypes")
+
+protocol AvroIntrBatchmgr {
+import schema "AvroJob.avsc";
+import schema "AvroNameValueJobInput.avsc";
+import schema "AvroJobInput.avsc";
+import schema "AvroResourceNode.avsc";
+
+    boolean isAlive();
+
+    boolean executeJob(AvroJob avroJob, AvroJobInput jobInput);
+
+//    public boolean executeJob(Hashtable jobHash, Date jobInput);
+//
+//    public boolean executeJob(Hashtable jobHash, double jobInput);
+//
+//    public boolean executeJob(Hashtable jobHash, int jobInput);
+//
+//    public boolean executeJob(Hashtable jobHash, boolean jobInput);
+//
+//    public boolean executeJob(Hashtable jobHash, Vector jobInput);
+//
+//    public boolean executeJob(Hashtable jobHash, byte[] jobInput);
+
+    boolean killJob(AvroJob jobHash);
+    
+    array<string> getJobsOnNode(string nodeId);
+
+}

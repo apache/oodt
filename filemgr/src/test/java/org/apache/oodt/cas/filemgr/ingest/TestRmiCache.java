@@ -160,6 +160,8 @@ public class TestRmiCache extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        // http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/faq.html#domain
+        System.setProperty("java.rmi.server.hostname", "127.0.0.1"); // fix annoying RMI test issue
         startXmlRpcFileManager();
         doIngest();
         try {

@@ -18,7 +18,21 @@
 package org.apache.oodt.pcs.tools;
 
 //JDK imports
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
 
+//APACHE imports
+import org.apache.avro.ipc.NettyTransceiver;
+import org.apache.avro.ipc.specific.SpecificRequestor;
+import org.apache.oodt.cas.resource.system.extern.AvroRpcBatchStub;
 import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -602,12 +616,14 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private boolean getBatchStubUp(ResourceNode node) {
-    XmlRpcClient client = new XmlRpcClient(node.getIpAddr());
-    Vector argList = new Vector();
 
+    NettyTransceiver client;
+    AvroRpcBatchStub proxy;
     try {
-      return (Boolean) client.execute("batchstub.isAlive", argList);
-    } catch (Exception e) {
+      client = new NettyTransceiver(new InetSocketAddress(node.getIpAddr().getPort()));
+      proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
+      return proxy.isAlive();
+    } catch (IOException e) {
       return false;
     }
   }
