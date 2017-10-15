@@ -1,0 +1,11 @@
+{
+  "type":"record",
+  "name":"AvroJobInput",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.resource.structs.avrotypes",
+  "imports":["AvroNameValueJobInput.avsc"],
+  "fields":[
+    {"name":"className","type":"string"},
+    {"name":"imple","type":["AvroNameValueJobInput","null"]}
+  ]
+}

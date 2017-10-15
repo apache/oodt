@@ -20,7 +20,6 @@ package org.apache.oodt.cas.resource.structs;
 
 //JDK imports
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -129,6 +128,10 @@ public class NameValueJobInput implements JobInput {
        }
      }
     return met;
+  }
+  
+  public Properties getProps(){
+    return this.props;
   }
 
 }

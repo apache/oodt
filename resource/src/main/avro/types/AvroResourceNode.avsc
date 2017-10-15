@@ -1,0 +1,11 @@
+{
+  "type":"record",
+  "name":"AvroResourceNode",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.resource.structs.avrotypes",
+  "fields":[
+    {"name":"nodeId","type":"string"},
+    {"name":"ipAddr","type":"string"},
+    {"name":"capacity","type":"int","default":0}
+  ]
+}

@@ -55,7 +55,7 @@ import java.util.logging.Logger;
  * 
  */
 @Deprecated
-public class XmlRpcResourceManagerClient {
+public class XmlRpcResourceManagerClient implements ResourceManagerClient {
 
     public static final int VAL = 20;
     public static final int INT = 60;
@@ -122,6 +122,7 @@ public class XmlRpcResourceManagerClient {
        cmdLineUtility.run(args);
     }
 
+    @Override
     public boolean isJobComplete(String jobId) throws JobRepositoryException {
         Vector argList = new Vector();
         argList.add(jobId);
@@ -140,6 +141,7 @@ public class XmlRpcResourceManagerClient {
         return complete;
     }
 
+    @Override
     public Job getJobInfo(String jobId) throws JobRepositoryException {
         Vector argList = new Vector();
         argList.add(jobId);
@@ -158,6 +160,7 @@ public class XmlRpcResourceManagerClient {
         return XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
     }
 
+    @Override
     public boolean isAlive() {
         Vector argList = new Vector();
 
@@ -176,6 +179,7 @@ public class XmlRpcResourceManagerClient {
      * @return Number of Jobs in JobQueue
      * @throws JobRepositoryException On Any Exception
      */
+    @Override
     public int getJobQueueSize() throws JobRepositoryException {
         try {
             Vector argList = new Vector();
@@ -190,6 +194,7 @@ public class XmlRpcResourceManagerClient {
      * @return Max number of Jobs
      * @throws JobRepositoryException On Any Exception
      */
+    @Override
     public int getJobQueueCapacity() throws JobRepositoryException {
         try {
             Vector argList = new Vector();
@@ -199,6 +204,7 @@ public class XmlRpcResourceManagerClient {
         }
     }
     
+    @Override
     public boolean killJob(String jobId) {
         Vector argList = new Vector();
         argList.add(jobId);
@@ -212,6 +218,7 @@ public class XmlRpcResourceManagerClient {
         }
     }
 
+    @Override
     public String getExecutionNode(String jobId) {
         Vector argList = new Vector();
         argList.add(jobId);
@@ -225,6 +232,7 @@ public class XmlRpcResourceManagerClient {
         }
     }
 
+    @Override
     public String submitJob(Job exec, JobInput in) throws JobExecutionException {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory.getXmlRpcJob(exec));
@@ -246,6 +254,7 @@ public class XmlRpcResourceManagerClient {
 
     }
 
+    @Override
     public boolean submitJob(Job exec, JobInput in, URL hostUrl)
             throws JobExecutionException {
         Vector argList = new Vector();
@@ -268,6 +277,7 @@ public class XmlRpcResourceManagerClient {
 
     }
 
+    @Override
     public List getNodes() throws MonitorException {
         Vector argList = new Vector();
 
@@ -286,6 +296,7 @@ public class XmlRpcResourceManagerClient {
 
     }
 
+    @Override
     public ResourceNode getNodeById(String nodeId) throws MonitorException {
         Vector argList = new Vector();
         argList.add(nodeId);
@@ -308,6 +319,7 @@ public class XmlRpcResourceManagerClient {
     /**
      * @return the resMgrUrl
      */
+    @Override
     public URL getResMgrUrl() {
         return resMgrUrl;
     }
@@ -316,6 +328,7 @@ public class XmlRpcResourceManagerClient {
      * @param resMgrUrl
      *            the resMgrUrl to set
      */
+    @Override
     public void setResMgrUrl(URL resMgrUrl) {
         this.resMgrUrl = resMgrUrl;
     }
@@ -325,6 +338,7 @@ public class XmlRpcResourceManagerClient {
      * @param queueName The name of the queue to be created
      * @throws QueueManagerException on any error
      */
+    @Override
     public void addQueue(String queueName) throws QueueManagerException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -340,6 +354,7 @@ public class XmlRpcResourceManagerClient {
      * @param queueName The name of the queue to be removed
      * @throws QueueManagerException on any error
      */
+    @Override
     public void removeQueue(String queueName) throws QueueManagerException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -355,6 +370,7 @@ public class XmlRpcResourceManagerClient {
      * @param node The node to be added
      * @throws MonitorException on any error
      */
+    @Override
     public void addNode(ResourceNode node) throws MonitorException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -370,6 +386,7 @@ public class XmlRpcResourceManagerClient {
      * @param nodeId The id of the node to be removed
      * @throws MonitorException on any error
      */
+    @Override
     public void removeNode(String nodeId) throws MonitorException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -380,6 +397,7 @@ public class XmlRpcResourceManagerClient {
         }
     }
     
+    @Override
     public void setNodeCapacity(String nodeId, int capacity) throws MonitorException{
     	try{
     		Vector<Object> argList = new Vector<Object>();
@@ -397,6 +415,7 @@ public class XmlRpcResourceManagerClient {
      * @param queueName The name of the queue to add the given node
      * @throws QueueManagerException on any error
      */
+    @Override
     public void addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -414,6 +433,7 @@ public class XmlRpcResourceManagerClient {
      * @param queueName The name of the queue from which to remove the given node
      * @throws QueueManagerException on any error
      */
+    @Override
     public void removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -430,6 +450,7 @@ public class XmlRpcResourceManagerClient {
      * @return A list of currently supported queue names
      * @throws QueueManagerException on any error
      */
+    @Override
     public List<String> getQueues() throws QueueManagerException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -445,6 +466,7 @@ public class XmlRpcResourceManagerClient {
      * @return List of node ids in the given queueName
      * @throws QueueManagerException on any error
      */
+    @Override
     public List<String> getNodesInQueue(String queueName) throws QueueManagerException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -461,6 +483,7 @@ public class XmlRpcResourceManagerClient {
      * @return List of queues which contain the give node
      * @throws QueueManagerException on any error
      */
+    @Override
     public List<String> getQueuesWithNode(String nodeId) throws QueueManagerException {
         try {
             Vector<Object> argList = new Vector<Object>();
@@ -477,6 +500,7 @@ public class XmlRpcResourceManagerClient {
      * @return A String showing a fraction of the loads node over its capacity
      * @throws MonitorException on any error
      */
+    @Override
     public String getNodeLoad(String nodeId) throws MonitorException{
     	try{
 	    	Vector<Object> argList = new Vector<Object>();
