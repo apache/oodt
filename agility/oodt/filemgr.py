@@ -27,7 +27,7 @@ and role-based authorization.
 import sys, os, os.path
 import getopt, sha, pickle
 
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from org.apache.oodt.cas.filemgr.system.auth import SecureWebServer, Dispatcher, Result
 from org.apache.oodt.cas.filemgr.datatransfer import TransferStatusTracker
 from org.apache.oodt.cas.filemgr.structs import Product
@@ -396,7 +396,7 @@ class FileMgrDispatcher(Dispatcher):
 	def removeGroup(self, params):
 		groupID = params[0]
 		del self.userDB.groups[groupID]
-		for user in self.userDB.users.itervalues():
+		for user in self.userDB.users.values():
 			indexes = []
 			index = 0
 			for group in user.groups:
@@ -451,8 +451,8 @@ class FileMgrDispatcher(Dispatcher):
 def _usage():
 	'''Show a usage message to the stderr and quit.
 	'''
-	print >>sys.stderr, 'Usage: %s [-c <configFile>]' % sys.argv[0]
-	print >>sys.stderr, '   or: %s [--config=<configFile>]' % sys.argv[0]
+	print('Usage: %s [-c <configFile>]' % sys.argv[0], file=sys.stderr)
+	print('   or: %s [--config=<configFile>]' % sys.argv[0], file=sys.stderr)
 	sys.exit(2)
 	
 
@@ -481,7 +481,7 @@ def _getConfig(configFile):
 	'''
 	configParser = ConfigParser()
 	configParser.add_section('factories')
-	for key, val in _defaultFactories.iteritems():
+	for key, val in _defaultFactories.items():
 		configParser.set('factories', key, val)
 
 	configParser.add_section('index')

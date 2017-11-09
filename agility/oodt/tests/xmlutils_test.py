@@ -20,13 +20,15 @@
 
 __docformat__ = 'restructuredtext'
 
-import unittest, xml.dom, oodt.xmlutils
-from oodt.xmlutils import DocumentableField
+import unittest, xml.dom
+import oodt.xmlutils as xmlutils
+from ..xmlutils import Documentable, DocumentableField
 
-class XMLTest(unittest.TestCase):
+class TestXML(unittest.TestCase):
     '''Unit test the XML utilities.
     '''
-    def testText(self):
+
+    def test_text(self):
         '''Test getting text from nodes.
         '''
         domImpl = xml.dom.getDOMImplementation()
@@ -40,33 +42,33 @@ class XMLTest(unittest.TestCase):
         empty = doc.createElement('empty')
         root.appendChild(empty)
 
-        self.assertEquals('cruel', oodt.xmlutils.text(child))
-        self.assertEquals(0, len(oodt.xmlutils.text(empty)))
-        self.assertEquals('Hellocruelworld', oodt.xmlutils.text(root))
+        self.assertEqual('cruel', xmlutils.text(child))
+        self.assertEqual(0, len(xmlutils.text(empty)))
+        self.assertEqual('Hellocruelworld', xmlutils.text(root))
     
-    def testAdds(self):
+    def test_adds(self):
         '''Test adding things to nodes.
         '''
         domImpl = xml.dom.getDOMImplementation()
         doc = domImpl.createDocument(None, None, None) # ns URI, qual name, doctype
         root = doc.createElement('root')
 
-        oodt.xmlutils.add(root, 'first')
-        self.assertEquals(0, len(oodt.xmlutils.text(root)))
-        oodt.xmlutils.add(root, 'second', 'with text')
-        self.assertEquals('with text', oodt.xmlutils.text(root))
+        xmlutils.add(root, 'first')
+        self.assertEqual(0, len(xmlutils.text(root)))
+        xmlutils.add(root, 'second', 'with text')
+        self.assertEqual('with text', xmlutils.text(root))
         
-        oodt.xmlutils.add(root, 'number', [str(i) for i in range(1, 4)])
-        self.assertEquals('with text123', oodt.xmlutils.text(root))
+        xmlutils.add(root, 'number', [str(i) for i in range(1, 4)])
+        self.assertEqual('with text123', xmlutils.text(root))
     
 
-class DocumentableTest(unittest.TestCase):
+class TestDocumentable(unittest.TestCase):
     '''Unit test the `Documentable` and `DocumentableField` classes.
     '''
-    def testIt(self):
+    def test_it(self):
         '''Test the `Documentable` and `DocumentableField` classes.
         '''
-        class X(oodt.xmlutils.Documentable):
+        class X(Documentable):
             def __init__(self, mission='UNK', target='UNK', measurements=[], node=None):
                 self.mission, self.target, self.measurements = mission, target, measurements
                 if node is not None:
@@ -79,31 +81,16 @@ class DocumentableTest(unittest.TestCase):
             def getDocumentElementName(self):
                 return 'X'
             def getDocumentableFields(self):
-                return (DocumentableField('mission', u'MISSION', DocumentableField.SINGLE_VALUE_KIND),
-                DocumentableField('target', u'TARGET', DocumentableField.SINGLE_VALUE_KIND),
-                DocumentableField('measurements', u'MZR', DocumentableField.MULTI_VALUED_KIND))
+                return (DocumentableField('mission', 'MISSION', DocumentableField.SINGLE_VALUE_KIND),
+                DocumentableField('target', 'TARGET', DocumentableField.SINGLE_VALUE_KIND),
+                DocumentableField('measurements', 'MZR', DocumentableField.MULTI_VALUED_KIND))
             def __eq__(self, other):
                 return (self.mission == other.mission and self.target == other.target
-                    and cmp(self.measurements, other.measurements) == 0)
+                    and ((self.measurements > other.measurements) - (self.measurements < other.measurements) == 0))
             def __str__(self):
                 return '%s,%s:%s' % (self.mission, self.target, self.measurements)
         a = X('Explorer', 'Moon', [1, 2, 3])
         doc = xml.dom.getDOMImplementation().createDocument(None, None, None)
         node = a.toXML(doc)
         b = X(node=node)
-        self.assertEquals(a, b)
-    
-
-def test_suite():
-    '''Create the suite of tests.
-    '''
-    import doctest
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(XMLTest))
-    suite.addTest(unittest.makeSuite(DocumentableTest))
-    suite.addTest(doctest.DocTestSuite(oodt.xmlutils))
-    return suite
-    
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+        self.assertEqual(a, b)

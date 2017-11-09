@@ -39,9 +39,10 @@ Objects of these classes are unified into a single `Profile` object.
 
 __docformat__ = 'restructuredtext'
 
-import xmlutils
+import oodt.xmlutils as xmlutils
 import xml.dom
-from xmlutils import DocumentableField
+from .xmlutils import DocumentableField
+from functools import reduce
 
 class ProfileAttributes(xmlutils.Documentable):
     '''Attributes of a profile.  These are attributes not related to the
@@ -91,15 +92,15 @@ class ProfileAttributes(xmlutils.Documentable):
     def getDocumentableFields(self):
         '''Get the attributes that are put into XML.
         '''
-        return (DocumentableField('id', u'profId', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('version', u'profVersion', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('type', u'profType', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('statusID', u'profStatusId', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('securityType', u'profSecurityType', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('parentID', u'profParentId', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('childIDs', u'profChildId', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('regAuthority', u'profRegAuthority', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('revNotes', u'profRevisionNote', DocumentableField.MULTI_VALUED_KIND))
+        return (DocumentableField('id', 'profId', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('version', 'profVersion', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('type', 'profType', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('statusID', 'profStatusId', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('securityType', 'profSecurityType', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('parentID', 'profParentId', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('childIDs', 'profChildId', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('regAuthority', 'profRegAuthority', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('revNotes', 'profRevisionNote', DocumentableField.MULTI_VALUED_KIND))
 
     def __repr__(self):
         return ('ProfileAttributes(id=%s,version=%s,type=%s,statusID=%s,securityType=%s,parentID=%s,childIDs=%s,' \
@@ -182,25 +183,25 @@ class ResourceAttributes(xmlutils.Documentable):
     def getDocumentableFields(self):
         '''Get the attributes that go into XML.
         '''
-        return (DocumentableField('identifier', u'Identifier', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('title', u'Title', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('formats', u'Format', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('description', u'Description', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('creators', u'Creator', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('subjects', u'Subject', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('publishers', u'Publisher', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('contributors', u'Contributor', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('dates', u'Date', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('types', u'Type', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('sources', u'Source', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('languages', u'Language', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('relations', u'Relation', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('coverages', u'Coverage', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('rights', u'Rights', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('contexts', u'resContext', DocumentableField.MULTI_VALUED_KIND),
-            DocumentableField('aggregation', u'resAggregation', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('resClass', u'resClass', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('locations', u'resLocation', DocumentableField.MULTI_VALUED_KIND))
+        return (DocumentableField('identifier', 'Identifier', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('title', 'Title', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('formats', 'Format', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('description', 'Description', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('creators', 'Creator', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('subjects', 'Subject', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('publishers', 'Publisher', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('contributors', 'Contributor', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('dates', 'Date', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('types', 'Type', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('sources', 'Source', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('languages', 'Language', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('relations', 'Relation', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('coverages', 'Coverage', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('rights', 'Rights', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('contexts', 'resContext', DocumentableField.MULTI_VALUED_KIND),
+            DocumentableField('aggregation', 'resAggregation', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('resClass', 'resClass', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('locations', 'resLocation', DocumentableField.MULTI_VALUED_KIND))
     
 
 class Profile(object):
@@ -225,25 +226,25 @@ class Profile(object):
         '''
         if node.nodeName != 'profile':
             raise ValueError('Expected profile element but got "%s"' % node.nodeName)
-        for child in filter(lambda node: node.nodeType == xml.dom.Node.ELEMENT_NODE, node.childNodes):
+        for child in [node for node in node.childNodes if node.nodeType == xml.dom.Node.ELEMENT_NODE]:
             name = child.nodeName
-            if name == u'profAttributes':
+            if name == 'profAttributes':
                 self.profAttr = ProfileAttributes()
                 self.profAttr.parse(child)
-            elif name == u'resAttributes':
+            elif name == 'resAttributes':
                 self.resAttr = ResourceAttributes()
                 self.resAttr.parse(child)
-            elif name == u'profElement':
+            elif name == 'profElement':
                 elem = _parseProfileElement(child)
                 self.profElements[elem.name] = elem
                 
     def toXML(self, owner):
         '''Convert this object into XML owned by the given `owner` document.
         '''
-        root = owner.createElement(u'profile')
+        root = owner.createElement('profile')
         root.appendChild(self.profAttr.toXML(owner))
         root.appendChild(self.resAttr.toXML(owner))
-        for elem in self.profElements.itervalues():
+        for elem in self.profElements.values():
             root.appendChild(elem.toXML(owner))
         return root
     
@@ -336,25 +337,25 @@ class ProfileElement(object):
         '''Convert this object into XML owned by the given `owner` document.
         '''
         root = owner.createElement('profElement')
-        xmlutils.add(root, u'elemId', self.name)
-        xmlutils.add(root, u'elemName', self.name)
-        xmlutils.add(root, u'elemDesc', self.description)
-        xmlutils.add(root, u'elemType', self.type)
-        xmlutils.add(root, u'elemUnit', self.units)
+        xmlutils.add(root, 'elemId', self.name)
+        xmlutils.add(root, 'elemName', self.name)
+        xmlutils.add(root, 'elemDesc', self.description)
+        xmlutils.add(root, 'elemType', self.type)
+        xmlutils.add(root, 'elemUnit', self.units)
         if self.isEnumerated():
             flag = 'T'
         else:
             flag = 'F'
-        xmlutils.add(root, u'elemEnumFlag', flag)
+        xmlutils.add(root, 'elemEnumFlag', flag)
         for value in self.getValues():
             elem = owner.createElement('elemValue')
             root.appendChild(elem)
             elem.appendChild(owner.createCDATASection(value))
         if not self.isEnumerated():
-            xmlutils.add(root, u'elemMinValue', str(self.getMinValue()))
-            xmlutils.add(root, u'elemMaxValue', str(self.getMaxValue()))
-        xmlutils.add(root, u'elemSynonym', self.synonyms)
-        xmlutils.add(root, u'elemComment', self.comment)
+            xmlutils.add(root, 'elemMinValue', str(self.getMinValue()))
+            xmlutils.add(root, 'elemMaxValue', str(self.getMaxValue()))
+        xmlutils.add(root, 'elemSynonym', self.synonyms)
+        xmlutils.add(root, 'elemComment', self.comment)
         return root
     
 
@@ -441,16 +442,16 @@ class RangedProfileElement(ProfileElement):
 def _parseProfileElement(node):
     '''Construct an appropriate profile element from the given DOM node.
     '''
-    if node.nodeName != u'profElement':
+    if node.nodeName != 'profElement':
         raise ValueError('Expected profElement element but got "%s"' % node.nodeName)
-    settings = dict(elemId=u'UNKNOWN', elemDesc=u'UNKNOWN', elemType=u'UNKNOWN', elemUnit=u'UNKNOWN', elemEnumFlag=u'F',
-        elemComment=u'UNKNOWN')
+    settings = dict(elemId='UNKNOWN', elemDesc='UNKNOWN', elemType='UNKNOWN', elemUnit='UNKNOWN', elemEnumFlag='F',
+        elemComment='UNKNOWN')
     values, syns = [], []
-    for child in filter(lambda node: node.nodeType == xml.dom.Node.ELEMENT_NODE, node.childNodes):
+    for child in [node for node in node.childNodes if node.nodeType == xml.dom.Node.ELEMENT_NODE]:
         text = xmlutils.text(child)
-        if child.nodeName == u'elemValue':
+        if child.nodeName == 'elemValue':
             values.append(text)
-        elif child.nodeName == u'elemSynonym':
+        elif child.nodeName == 'elemSynonym':
             syns.append(text)
         else:
             settings[str(child.nodeName)] = text

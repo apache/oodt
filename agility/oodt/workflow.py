@@ -16,13 +16,13 @@
 #	under the License.
 
 
-import xmlrpclib
-from metadata import MetaData
+import xmlrpc.client
+from .metadata import MetaData
 
 
 class OODTWorkFlowWrapper(object):
 	def __init__(self, host):
-		self._server = xmlrpclib.Server(host)
+		self._server = xmlrpc.client.Server(host)
 
 	#String	    executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
 	def executeDynamicWorkflow(self, taskIds, metadata):
@@ -126,7 +126,7 @@ def main():
     met = MetaData()
     met.addMetaData("hello", "world")
     # print available events
-    print 'available events:', events
+    print(('available events:', events))
 
     # oodt.startEvent(events[0], met.toXmlRpc())
 

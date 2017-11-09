@@ -33,10 +33,10 @@ _author       = 'Sean Kelly'
 _authorEmail  = 'kelly@apache.org'
 _license      = 'Apache 2.0'
 _namespaces   = []
-_testSuite    = 'oodt.tests.test_suite'
+_testSuite    = 'oodt.tests'
 _zipSafe      = True
 _keywords     = 'data grid discovery query optimization object middleware archive catalog index'
-_requirements = []
+_requirements = ['testfixtures']
 _entryPoints  = {
     'console_scripts': ['webgrid = oodt.webgrid:_main'],
 }
