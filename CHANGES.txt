@@ -1,9 +1,14 @@
 Apache OODT Change Log
 ======================
+Release 1.2.1 - 11/10/2017
+
+* OODT-967 Solr version for 1.2.1 breaks SolrDumper in File Manager (mattmann)
+
 Release 1.2 - 08/14/2017
 
-* OODT-955 Fix numhits error in Lucene Catalog
-* OODT-956 Add connection checks to components
+* OODT-955 Fix numhits error in Lucene Catalog (magicaltrout) 
+
+* OODT-956 Add connection checks to components (magicaltrout) 
 
 Release 1.1 - 07/18/2017
 
