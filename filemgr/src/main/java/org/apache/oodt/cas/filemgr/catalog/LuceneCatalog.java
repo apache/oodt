@@ -150,7 +150,7 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void addMetadata(Metadata m, Product product)
             throws CatalogException {
-        CompleteProduct p
+        CompleteProduct p;
         if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
              p = CATALOG_CACHE.get(product.getProductId());
         }
