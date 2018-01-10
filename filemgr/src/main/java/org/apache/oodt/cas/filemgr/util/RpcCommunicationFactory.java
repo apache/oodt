@@ -124,6 +124,8 @@ public class RpcCommunicationFactory {
      * @throws IOException
      */
     public static FileManagerServer createServer(int port) throws IOException {
+        setPror();
+
         String serverFactory = System.getProperty("filemgr.server",
                 "org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerServerFactory");
 

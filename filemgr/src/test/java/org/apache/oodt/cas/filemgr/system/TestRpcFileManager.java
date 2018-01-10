@@ -44,6 +44,7 @@ import junit.framework.TestCase;
  * @since OODT-72
  * 
  */
+@Deprecated
 public class TestRpcFileManager extends TestCase {
 
   private static final int FM_PORT = 50002;

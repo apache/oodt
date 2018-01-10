@@ -45,9 +45,9 @@ $Id$
     <fileSet>
       <directory>${basedir}/src/main/resources</directory>
       <outputDirectory>logs</outputDirectory>
-      <includes>
-        <include>REMOVE.log</include>
-      </includes>
+      <excludes>
+        <exclude>*/**</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources</directory>
