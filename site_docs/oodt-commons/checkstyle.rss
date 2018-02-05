@@ -6,7 +6,7 @@
     <link>http://oodt.apache.org/oodt-commons/</link>
     <description>Common Utilities - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 102,
              Errors: 11581,
@@ -519,20 +519,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/oodt-commons//checkstyle.html#org.apache.oodt.commons.io.Log.java">org/apache/oodt/commons/io/Log.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  271
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/oodt-commons//checkstyle.html#org.apache.oodt.commons.activity.Storage.java">org/apache/oodt/commons/activity/Storage.java</a>
                 </td>
                 <td>
@@ -543,6 +529,20 @@
                 </td>
                 <td>
                   8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/oodt-commons//checkstyle.html#org.apache.oodt.commons.io.Log.java">org/apache/oodt/commons/io/Log.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  271
                 </td>
               </tr>
                           <tr>
@@ -645,20 +645,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/oodt-commons//checkstyle.html#org.apache.oodt.commons.io.NullInputStream.java">org/apache/oodt/commons/io/NullInputStream.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/oodt-commons//checkstyle.html#org.apache.oodt.commons.activity.WriterStorage.java">org/apache/oodt/commons/activity/WriterStorage.java</a>
                 </td>
                 <td>
@@ -669,6 +655,20 @@
                 </td>
                 <td>
                   28
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/oodt-commons//checkstyle.html#org.apache.oodt.commons.io.NullInputStream.java">org/apache/oodt/commons/io/NullInputStream.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
                 </td>
               </tr>
                           <tr>

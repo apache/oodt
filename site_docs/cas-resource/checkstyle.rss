@@ -6,10 +6,10 @@
     <link>http://oodt.apache.org/cas-resource/</link>
     <description>Catalog and Archive Resource Management Component - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
-      <title>File: 136,
-             Errors: 4596,
+      <title>File: 139,
+             Errors: 4927,
              Warnings: 0,
              Infos: 0
       </title>
@@ -155,20 +155,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.metadata.JobMetadata.java">org/apache/oodt/cas/resource/metadata/JobMetadata.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobqueue.JobStack.java">org/apache/oodt/cas/resource/jobqueue/JobStack.java</a>
                 </td>
                 <td>
@@ -179,6 +165,20 @@
                 </td>
                 <td>
                   65
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.metadata.JobMetadata.java">org/apache/oodt/cas/resource/metadata/JobMetadata.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
                 </td>
               </tr>
                           <tr>
@@ -472,7 +472,7 @@
                   0
                 </td>
                 <td>
-                  56
+                  67
                 </td>
               </tr>
                           <tr>
@@ -561,20 +561,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.ganglia.GangliaAdapter.java">org/apache/oodt/cas/resource/monitor/ganglia/GangliaAdapter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  112
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.cli.action.ResourceCliAction.java">org/apache/oodt/cas/resource/cli/action/ResourceCliAction.java</a>
                 </td>
                 <td>
@@ -585,6 +571,20 @@
                 </td>
                 <td>
                   9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.ganglia.GangliaAdapter.java">org/apache/oodt/cas/resource/monitor/ganglia/GangliaAdapter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  112
                 </td>
               </tr>
                           <tr>
@@ -701,20 +701,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.MonitorFactory.java">org/apache/oodt/cas/resource/monitor/MonitorFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobqueue.JobQueue.java">org/apache/oodt/cas/resource/jobqueue/JobQueue.java</a>
                 </td>
                 <td>
@@ -729,7 +715,35 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.utils.package.html">org/apache/oodt/cas/resource/monitor/utils/package.html</a>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.MonitorFactory.java">org/apache/oodt/cas/resource/monitor/MonitorFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobqueue.FifoMappedJobQueueFactory.java">org/apache/oodt/cas/resource/jobqueue/FifoMappedJobQueueFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  65
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.util.package.html">org/apache/oodt/cas/resource/util/package.html</a>
                 </td>
                 <td>
                   0
@@ -743,7 +757,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.util.package.html">org/apache/oodt/cas/resource/util/package.html</a>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.utils.package.html">org/apache/oodt/cas/resource/monitor/utils/package.html</a>
                 </td>
                 <td>
                   0
@@ -1037,7 +1051,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.AssignmentMonitor.java">org/apache/oodt/cas/resource/monitor/AssignmentMonitor.java</a>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobqueue.FifoMappedJobQueue.java">org/apache/oodt/cas/resource/jobqueue/FifoMappedJobQueue.java</a>
                 </td>
                 <td>
                   0
@@ -1046,7 +1060,7 @@
                   0
                 </td>
                 <td>
-                  70
+                  175
                 </td>
               </tr>
                           <tr>
@@ -1061,6 +1075,20 @@
                 </td>
                 <td>
                   13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.AssignmentMonitor.java">org/apache/oodt/cas/resource/monitor/AssignmentMonitor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  70
                 </td>
               </tr>
                           <tr>
@@ -1102,7 +1130,7 @@
                   0
                 </td>
                 <td>
-                  3
+                  14
                 </td>
               </tr>
                           <tr>
@@ -1298,7 +1326,7 @@
                   0
                 </td>
                 <td>
-                  27
+                  64
                 </td>
               </tr>
                           <tr>
@@ -1341,6 +1369,20 @@
                 </td>
                 <td>
                   75
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobqueue.MappedJobQueue.java">org/apache/oodt/cas/resource/jobqueue/MappedJobQueue.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  32
                 </td>
               </tr>
                           <tr>
@@ -1695,20 +1737,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitorFactory.java">org/apache/oodt/cas/resource/monitor/ganglia/GangliaResourceMonitorFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  34
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobqueue.JobQueueFactory.java">org/apache/oodt/cas/resource/jobqueue/JobQueueFactory.java</a>
                 </td>
                 <td>
@@ -1719,6 +1747,20 @@
                 </td>
                 <td>
                   2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitorFactory.java">org/apache/oodt/cas/resource/monitor/ganglia/GangliaResourceMonitorFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  34
                 </td>
               </tr>
                           <tr>
@@ -1807,20 +1849,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobrepo.MemoryJobRepositoryFactory.java">org/apache/oodt/cas/resource/jobrepo/MemoryJobRepositoryFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.examples.HelloWorldJob.java">org/apache/oodt/cas/resource/examples/HelloWorldJob.java</a>
                 </td>
                 <td>
@@ -1831,6 +1859,20 @@
                 </td>
                 <td>
                   7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-resource//checkstyle.html#org.apache.oodt.cas.resource.jobrepo.MemoryJobRepositoryFactory.java">org/apache/oodt/cas/resource/jobrepo/MemoryJobRepositoryFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
                 </td>
               </tr>
                           <tr>

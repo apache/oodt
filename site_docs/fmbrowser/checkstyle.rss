@@ -6,7 +6,7 @@
     <link>http://oodt.apache.org/fmbrowser/</link>
     <description>CAS File Manager Browser Web App - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 8,
              Errors: 56,
@@ -57,7 +57,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/fmbrowser//checkstyle.html#org.apache.oodt.cas.filemgr.webapp.browser.TypeBrowserPage.java">org/apache/oodt/cas/filemgr/webapp/browser/TypeBrowserPage.java</a>
+                  <a href="http://oodt.apache.org/fmbrowser//checkstyle.html#org.apache.oodt.cas.filemgr.webapp.browser.ProductMetBrowserPage.java">org/apache/oodt/cas/filemgr/webapp/browser/ProductMetBrowserPage.java</a>
                 </td>
                 <td>
                   0
@@ -71,7 +71,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/fmbrowser//checkstyle.html#org.apache.oodt.cas.filemgr.webapp.browser.ProductMetBrowserPage.java">org/apache/oodt/cas/filemgr/webapp/browser/ProductMetBrowserPage.java</a>
+                  <a href="http://oodt.apache.org/fmbrowser//checkstyle.html#org.apache.oodt.cas.filemgr.webapp.browser.TypeBrowserPage.java">org/apache/oodt/cas/filemgr/webapp/browser/TypeBrowserPage.java</a>
                 </td>
                 <td>
                   0

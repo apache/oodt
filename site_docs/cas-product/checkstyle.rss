@@ -6,10 +6,10 @@
     <link>http://oodt.apache.org/cas-product/</link>
     <description>CAS Product Server Web Application - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
-      <title>File: 76,
-             Errors: 2060,
+      <title>File: 132,
+             Errors: 6128,
              Warnings: 0,
              Infos: 0
       </title>
@@ -27,34 +27,6 @@
             </tr>
           </thead>
           <tbody>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.DatasetZipWriter.java">org/apache/oodt/cas/product/jaxrs/writers/DatasetZipWriter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  48
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.data.DataUtils.java">org/apache/oodt/cas/product/data/DataUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  29
-                </td>
-              </tr>
                           <tr>
                 <td>
                   <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.configurations.RssTag.java">org/apache/oodt/cas/product/jaxrs/configurations/RssTag.java</a>
@@ -81,6 +53,34 @@
                 </td>
                 <td>
                   0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys.java">org/apache/oodt/product/handlers/ofsn/metadata/OFSNXMLMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.activity.package.html">org/apache/oodt/xmlquery/activity/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
               </tr>
                           <tr>
@@ -113,7 +113,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.services.package.html">org/apache/oodt/cas/product/jaxrs/services/package.html</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.package.html">org/apache/oodt/cas/product/package.html</a>
                 </td>
                 <td>
                   0
@@ -127,7 +127,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.package.html">org/apache/oodt/cas/product/package.html</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.services.package.html">org/apache/oodt/cas/product/jaxrs/services/package.html</a>
                 </td>
                 <td>
                   0
@@ -155,7 +155,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSConfigMetKeys.java">org/apache/oodt/cas/product/rss/RSSConfigMetKeys.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.SingleZipFileListHandler.java">org/apache/oodt/product/handlers/ofsn/SingleZipFileListHandler.java</a>
                 </td>
                 <td>
                   0
@@ -164,12 +164,12 @@
                   0
                 </td>
                 <td>
-                  6
+                  14
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFConfigMetKeys.java">org/apache/oodt/cas/product/rdf/RDFConfigMetKeys.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.ByteArrayCodec.java">org/apache/oodt/xmlquery/ByteArrayCodec.java</a>
                 </td>
                 <td>
                   0
@@ -178,21 +178,7 @@
                   0
                 </td>
                 <td>
-                  3
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.package-info.java">org/apache/oodt/cas/product/jaxrs/resources/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
+                  35
                 </td>
               </tr>
                           <tr>
@@ -253,7 +239,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSConfigReader.java">org/apache/oodt/cas/product/rss/RSSConfigReader.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.Statistic.java">org/apache/oodt/xmlquery/Statistic.java</a>
                 </td>
                 <td>
                   0
@@ -262,7 +248,7 @@
                   0
                 </td>
                 <td>
-                  16
+                  143
                 </td>
               </tr>
                           <tr>
@@ -277,20 +263,6 @@
                 </td>
                 <td>
                   49
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.filters.BackwardsCompatibleInterceptor.java">org/apache/oodt/cas/product/jaxrs/filters/BackwardsCompatibleInterceptor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  43
                 </td>
               </tr>
                           <tr>
@@ -323,20 +295,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.DatasetRssWriter.java">org/apache/oodt/cas/product/jaxrs/writers/DatasetRssWriter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  61
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException.java">org/apache/oodt/cas/product/jaxrs/exceptions/InternalServerErrorException.java</a>
                 </td>
                 <td>
@@ -347,20 +305,6 @@
                 </td>
                 <td>
                   4
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSConfigReaderMetKeys.java">org/apache/oodt/cas/product/rss/RSSConfigReaderMetKeys.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  18
                 </td>
               </tr>
                           <tr>
@@ -379,7 +323,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFDatasetServlet.java">org/apache/oodt/cas/product/rdf/RDFDatasetServlet.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.QueryException.java">org/apache/oodt/xmlquery/QueryException.java</a>
                 </td>
                 <td>
                   0
@@ -388,7 +332,7 @@
                   0
                 </td>
                 <td>
-                  76
+                  13
                 </td>
               </tr>
                           <tr>
@@ -407,7 +351,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.ReferenceFileWriter.java">org/apache/oodt/cas/product/jaxrs/writers/ReferenceFileWriter.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.FileListNonRecursiveHandler.java">org/apache/oodt/product/handlers/ofsn/FileListNonRecursiveHandler.java</a>
                 </td>
                 <td>
                   0
@@ -416,7 +360,7 @@
                   0
                 </td>
                 <td>
-                  57
+                  7
                 </td>
               </tr>
                           <tr>
@@ -435,6 +379,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.Retriever.java">org/apache/oodt/product/Retriever.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  19
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException.java">org/apache/oodt/cas/product/jaxrs/exceptions/BadRequestException.java</a>
                 </td>
                 <td>
@@ -445,6 +403,20 @@
                 </td>
                 <td>
                   4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.AbstractCrawlLister.java">org/apache/oodt/product/handlers/ofsn/AbstractCrawlLister.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  38
                 </td>
               </tr>
                           <tr>
@@ -463,7 +435,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.services.package-info.java">org/apache/oodt/cas/product/jaxrs/services/package-info.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.CompressedObjectCodec.java">org/apache/oodt/xmlquery/CompressedObjectCodec.java</a>
                 </td>
                 <td>
                   0
@@ -472,12 +444,12 @@
                   0
                 </td>
                 <td>
-                  0
+                  83
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFProductServlet.java">org/apache/oodt/cas/product/rdf/RDFProductServlet.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.QueryElement.java">org/apache/oodt/xmlquery/QueryElement.java</a>
                 </td>
                 <td>
                   0
@@ -486,7 +458,21 @@
                   0
                 </td>
                 <td>
-                  75
+                  134
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.CompressedStringCodec.java">org/apache/oodt/xmlquery/CompressedStringCodec.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  61
                 </td>
               </tr>
                           <tr>
@@ -519,7 +505,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.configurations.RssNamespace.java">org/apache/oodt/cas/product/jaxrs/configurations/RssNamespace.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.activity.ResultsReceived.java">org/apache/oodt/xmlquery/activity/ResultsReceived.java</a>
                 </td>
                 <td>
                   0
@@ -528,12 +514,12 @@
                   0
                 </td>
                 <td>
-                  13
+                  3
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.configurations.RssConfiguration.java">org/apache/oodt/cas/product/jaxrs/configurations/RssConfiguration.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.Codec.java">org/apache/oodt/xmlquery/Codec.java</a>
                 </td>
                 <td>
                   0
@@ -542,35 +528,7 @@
                   0
                 </td>
                 <td>
-                  93
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.DatasetResource.java">org/apache/oodt/cas/product/jaxrs/resources/DatasetResource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  43
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSNamespace.java">org/apache/oodt/cas/product/rss/RSSNamespace.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  17
+                  54
                 </td>
               </tr>
                           <tr>
@@ -589,7 +547,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.MetadataResource.java">org/apache/oodt/cas/product/jaxrs/resources/MetadataResource.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.CodecFactory.java">org/apache/oodt/xmlquery/CodecFactory.java</a>
                 </td>
                 <td>
                   0
@@ -598,7 +556,49 @@
                   0
                 </td>
                 <td>
-                  45
+                  36
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.MD5GetHandler.java">org/apache/oodt/product/handlers/ofsn/MD5GetHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.RawSizeListHandler.java">org/apache/oodt/product/handlers/ofsn/RawSizeListHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.OFSNListHandler.java">org/apache/oodt/product/handlers/ofsn/OFSNListHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
                 </td>
               </tr>
                           <tr>
@@ -631,6 +631,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.OFSNHandlerConfig.java">org/apache/oodt/product/handlers/ofsn/OFSNHandlerConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  34
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSProductServlet.java">org/apache/oodt/cas/product/rss/RSSProductServlet.java</a>
                 </td>
                 <td>
@@ -640,26 +654,12 @@
                   0
                 </td>
                 <td>
-                  57
+                  64
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFConfig.java">org/apache/oodt/cas/product/rdf/RDFConfig.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  111
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.CASProductHandlerMetKeys.java">org/apache/oodt/cas/product/CASProductHandlerMetKeys.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.FileListRecursiveHandler.java">org/apache/oodt/product/handlers/ofsn/FileListRecursiveHandler.java</a>
                 </td>
                 <td>
                   0
@@ -673,7 +673,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.ProductTypeFilter.java">org/apache/oodt/cas/product/rdf/ProductTypeFilter.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.StringCodec.java">org/apache/oodt/xmlquery/StringCodec.java</a>
                 </td>
                 <td>
                   0
@@ -682,7 +682,7 @@
                   0
                 </td>
                 <td>
-                  15
+                  28
                 </td>
               </tr>
                           <tr>
@@ -701,7 +701,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.exceptions.package-info.java">org/apache/oodt/cas/product/jaxrs/exceptions/package-info.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.package.html">org/apache/oodt/xmlquery/package.html</a>
                 </td>
                 <td>
                   0
@@ -711,34 +711,6 @@
                 </td>
                 <td>
                   0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.exceptions.package.html">org/apache/oodt/cas/product/exceptions/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.data.DataDeliveryServlet.java">org/apache/oodt/cas/product/data/DataDeliveryServlet.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  29
                 </td>
               </tr>
                           <tr>
@@ -757,7 +729,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.CASProductHandler.java">org/apache/oodt/cas/product/CASProductHandler.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.metadata.package.html">org/apache/oodt/product/handlers/ofsn/metadata/package.html</a>
                 </td>
                 <td>
                   0
@@ -766,12 +738,12 @@
                   0
                 </td>
                 <td>
-                  29
+                  1
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.ProductZipper.java">org/apache/oodt/cas/product/jaxrs/writers/ProductZipper.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.OFSNFileHandlerConfigurationReader.java">org/apache/oodt/product/handlers/ofsn/OFSNFileHandlerConfigurationReader.java</a>
                 </td>
                 <td>
                   0
@@ -780,21 +752,7 @@
                   0
                 </td>
                 <td>
-                  22
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.TransfersRssWriter.java">org/apache/oodt/cas/product/jaxrs/writers/TransfersRssWriter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  56
+                  13
                 </td>
               </tr>
                           <tr>
@@ -813,20 +771,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.filters.package-info.java">org/apache/oodt/cas/product/jaxrs/filters/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException.java">org/apache/oodt/cas/product/jaxrs/exceptions/NotFoundException.java</a>
                 </td>
                 <td>
@@ -841,7 +785,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.ReferenceZipWriter.java">org/apache/oodt/cas/product/jaxrs/writers/ReferenceZipWriter.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.LargeResult.java">org/apache/oodt/xmlquery/LargeResult.java</a>
                 </td>
                 <td>
                   0
@@ -850,12 +794,12 @@
                   0
                 </td>
                 <td>
-                  58
+                  148
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.servlets.package-info.java">org/apache/oodt/cas/product/jaxrs/servlets/package-info.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.activity.QueryConstructed.java">org/apache/oodt/xmlquery/activity/QueryConstructed.java</a>
                 </td>
                 <td>
                   0
@@ -864,49 +808,7 @@
                   0
                 </td>
                 <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.data.DatasetDeliveryServlet.java">org/apache/oodt/cas/product/data/DatasetDeliveryServlet.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  34
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.services.CasProductJaxrsService.java">org/apache/oodt/cas/product/jaxrs/services/CasProductJaxrsService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  79
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.servlets.package.html">org/apache/oodt/cas/product/jaxrs/servlets/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
+                  3
                 </td>
               </tr>
                           <tr>
@@ -953,7 +855,357 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.RdfWriter.java">org/apache/oodt/cas/product/jaxrs/writers/RdfWriter.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.TransferResource.java">org/apache/oodt/cas/product/jaxrs/resources/TransferResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  41
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.util.OFSNObjectFactory.java">org/apache/oodt/product/handlers/ofsn/util/OFSNObjectFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  23
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.configurations.package.html">org/apache/oodt/cas/product/jaxrs/configurations/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.ObjectCodec.java">org/apache/oodt/xmlquery/ObjectCodec.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  81
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.URLGetHandler.java">org/apache/oodt/product/handlers/ofsn/URLGetHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  425
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFConfigReader.java">org/apache/oodt/cas/product/rdf/RDFConfigReader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.DatasetZipWriter.java">org/apache/oodt/cas/product/jaxrs/writers/DatasetZipWriter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  48
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.data.DataUtils.java">org/apache/oodt/cas/product/data/DataUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  29
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.metadata.XMLQueryMetKeys.java">org/apache/oodt/product/handlers/ofsn/metadata/XMLQueryMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.OFSNGetHandler.java">org/apache/oodt/product/handlers/ofsn/OFSNGetHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSConfigMetKeys.java">org/apache/oodt/cas/product/rss/RSSConfigMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFConfigMetKeys.java">org/apache/oodt/cas/product/rdf/RDFConfigMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.UnsupportedMimeTypeCodec.java">org/apache/oodt/xmlquery/UnsupportedMimeTypeCodec.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  28
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.package-info.java">org/apache/oodt/cas/product/jaxrs/resources/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.DirListRecursiveHandler.java">org/apache/oodt/product/handlers/ofsn/DirListRecursiveHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSConfigReader.java">org/apache/oodt/cas/product/rss/RSSConfigReader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.SingleFileListHandler.java">org/apache/oodt/product/handlers/ofsn/SingleFileListHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.filters.BackwardsCompatibleInterceptor.java">org/apache/oodt/cas/product/jaxrs/filters/BackwardsCompatibleInterceptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  43
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLConfigMetKeys.java">org/apache/oodt/product/handlers/ofsn/metadata/OFSNXMLConfigMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.ProductException.java">org/apache/oodt/product/ProductException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  37
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.DatasetRssWriter.java">org/apache/oodt/cas/product/jaxrs/writers/DatasetRssWriter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  61
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSConfigReaderMetKeys.java">org/apache/oodt/cas/product/rss/RSSConfigReaderMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFDatasetServlet.java">org/apache/oodt/cas/product/rdf/RDFDatasetServlet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  76
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.util.package.html">org/apache/oodt/product/handlers/ofsn/util/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.OFSNFileHandlerConfiguration.java">org/apache/oodt/product/handlers/ofsn/OFSNFileHandlerConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  52
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.StdOFSNGetHandler.java">org/apache/oodt/product/handlers/ofsn/StdOFSNGetHandler.java</a>
                 </td>
                 <td>
                   0
@@ -967,7 +1219,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.TransferResource.java">org/apache/oodt/cas/product/jaxrs/resources/TransferResource.java</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.ReferenceFileWriter.java">org/apache/oodt/cas/product/jaxrs/writers/ReferenceFileWriter.java</a>
                 </td>
                 <td>
                   0
@@ -976,7 +1228,539 @@
                   0
                 </td>
                 <td>
-                  41
+                  57
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.services.package-info.java">org/apache/oodt/cas/product/jaxrs/services/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.Results.java">org/apache/oodt/xmlquery/Results.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  23
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.QueryHeader.java">org/apache/oodt/xmlquery/QueryHeader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  304
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFProductServlet.java">org/apache/oodt/cas/product/rdf/RDFProductServlet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  75
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.ChunkedProductInputStream.java">org/apache/oodt/xmlquery/ChunkedProductInputStream.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  216
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.Header.java">org/apache/oodt/xmlquery/Header.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  197
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.configurations.RssConfiguration.java">org/apache/oodt/cas/product/jaxrs/configurations/RssConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  93
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.configurations.RssNamespace.java">org/apache/oodt/cas/product/jaxrs/configurations/RssNamespace.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.metadata.OODTMetKeys.java">org/apache/oodt/product/handlers/ofsn/metadata/OODTMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.DatasetResource.java">org/apache/oodt/cas/product/jaxrs/resources/DatasetResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  43
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rss.RSSNamespace.java">org/apache/oodt/cas/product/rss/RSSNamespace.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  17
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.resources.MetadataResource.java">org/apache/oodt/cas/product/jaxrs/resources/MetadataResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  45
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.XMLQuery.java">org/apache/oodt/xmlquery/XMLQuery.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  866
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFConfig.java">org/apache/oodt/cas/product/rdf/RDFConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  111
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.CASProductHandlerMetKeys.java">org/apache/oodt/cas/product/CASProductHandlerMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.ProductTypeFilter.java">org/apache/oodt/cas/product/rdf/ProductTypeFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.QueryResult.java">org/apache/oodt/xmlquery/QueryResult.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  123
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.exceptions.package-info.java">org/apache/oodt/cas/product/jaxrs/exceptions/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.exceptions.package.html">org/apache/oodt/cas/product/exceptions/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys.java">org/apache/oodt/product/handlers/ofsn/metadata/OFSNMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.data.DataDeliveryServlet.java">org/apache/oodt/cas/product/data/DataDeliveryServlet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  46
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.CASProductHandler.java">org/apache/oodt/cas/product/CASProductHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  29
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.ProductZipper.java">org/apache/oodt/cas/product/jaxrs/writers/ProductZipper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  22
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.TransfersRssWriter.java">org/apache/oodt/cas/product/jaxrs/writers/TransfersRssWriter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  56
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.LargeProductQueryHandler.java">org/apache/oodt/product/LargeProductQueryHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  36
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.xmlquery.Result.java">org/apache/oodt/xmlquery/Result.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  498
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.filters.package-info.java">org/apache/oodt/cas/product/jaxrs/filters/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.ReferenceZipWriter.java">org/apache/oodt/cas/product/jaxrs/writers/ReferenceZipWriter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  58
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.OFSNFileHandler.java">org/apache/oodt/product/handlers/ofsn/OFSNFileHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  52
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.servlets.package-info.java">org/apache/oodt/cas/product/jaxrs/servlets/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.DirListNonRecursiveHandler.java">org/apache/oodt/product/handlers/ofsn/DirListNonRecursiveHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.package.html">org/apache/oodt/product/handlers/ofsn/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.data.DatasetDeliveryServlet.java">org/apache/oodt/cas/product/data/DatasetDeliveryServlet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  34
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.services.CasProductJaxrsService.java">org/apache/oodt/cas/product/jaxrs/services/CasProductJaxrsService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  79
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.servlets.package.html">org/apache/oodt/cas/product/jaxrs/servlets/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.QueryHandler.java">org/apache/oodt/product/QueryHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.handlers.ofsn.util.OFSNUtils.java">org/apache/oodt/product/handlers/ofsn/util/OFSNUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  36
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.writers.RdfWriter.java">org/apache/oodt/cas/product/jaxrs/writers/RdfWriter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  22
                 </td>
               </tr>
                           <tr>
@@ -1037,7 +1821,21 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.jaxrs.configurations.package.html">org/apache/oodt/cas/product/jaxrs/configurations/package.html</a>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.HttpRedirectException.java">org/apache/oodt/product/HttpRedirectException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.product.package.html">org/apache/oodt/product/package.html</a>
                 </td>
                 <td>
                   0
@@ -1075,20 +1873,6 @@
                 </td>
                 <td>
                   23
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-product//checkstyle.html#org.apache.oodt.cas.product.rdf.RDFConfigReader.java">org/apache/oodt/cas/product/rdf/RDFConfigReader.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  21
                 </td>
               </tr>
                       </tbody>

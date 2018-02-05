@@ -11,3 +11,9 @@ org.apache.oodt.cas.product.jaxrs.servlets
 org.apache.oodt.cas.product.jaxrs.writers
 org.apache.oodt.cas.product.rdf
 org.apache.oodt.cas.product.rss
+org.apache.oodt.product
+org.apache.oodt.product.handlers.ofsn
+org.apache.oodt.product.handlers.ofsn.metadata
+org.apache.oodt.product.handlers.ofsn.util
+org.apache.oodt.xmlquery
+org.apache.oodt.xmlquery.activity

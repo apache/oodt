@@ -6,7 +6,7 @@
     <link>http://oodt.apache.org/oodt-webapp-components/</link>
     <description>OODT Wicket Web Components - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
       <title>File: 41,
              Errors: 1501,
@@ -253,7 +253,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/oodt-webapp-components//checkstyle.html#org.apache.oodt.cas.webcomponents.filemgr.browser.pagination.package.html">org/apache/oodt/cas/webcomponents/filemgr/browser/pagination/package.html</a>
+                  <a href="http://oodt.apache.org/oodt-webapp-components//checkstyle.html#org.apache.oodt.cas.webcomponents.filemgr.browser.metadata.package.html">org/apache/oodt/cas/webcomponents/filemgr/browser/metadata/package.html</a>
                 </td>
                 <td>
                   0
@@ -267,7 +267,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/oodt-webapp-components//checkstyle.html#org.apache.oodt.cas.webcomponents.filemgr.browser.metadata.package.html">org/apache/oodt/cas/webcomponents/filemgr/browser/metadata/package.html</a>
+                  <a href="http://oodt.apache.org/oodt-webapp-components//checkstyle.html#org.apache.oodt.cas.webcomponents.filemgr.browser.pagination.package.html">org/apache/oodt/cas/webcomponents/filemgr/browser/pagination/package.html</a>
                 </td>
                 <td>
                   0

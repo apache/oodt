@@ -1,0 +1,4 @@
+org.apache.oodt.cas.wmservices.client
+org.apache.oodt.cas.wmservices.repository
+org.apache.oodt.cas.wmservices.resources
+org.apache.oodt.cas.wmservices.servlets

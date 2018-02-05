@@ -6,10 +6,10 @@
     <link>http://oodt.apache.org/cas-filemgr/</link>
     <description>Catalog and Archive File Management Component - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;1999 - 2016 Apache OODT</copyright>
+    <copyright>&#169;1999 - 2017 Apache OODT</copyright>
     <item>
-      <title>File: 192,
-             Errors: 13704,
+      <title>File: 194,
+             Errors: 13731,
              Warnings: 0,
              Infos: 0
       </title>
@@ -29,7 +29,7 @@
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetCurrentTransfersCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetCurrentTransfersCliAction.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.RemoteDataTransferer.java">org/apache/oodt/cas/filemgr/datatransfer/RemoteDataTransferer.java</a>
                 </td>
                 <td>
                   0
@@ -38,7 +38,7 @@
                   0
                 </td>
                 <td>
-                  7
+                  45
                 </td>
               </tr>
                           <tr>
@@ -57,34 +57,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.RemoteDataTransferer.java">org/apache/oodt/cas/filemgr/datatransfer/RemoteDataTransferer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  45
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/DataSourceCatalogFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  89
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.QueryResult.java">org/apache/oodt/cas/filemgr/structs/query/QueryResult.java</a>
                 </td>
                 <td>
@@ -95,20 +67,6 @@
                 </td>
                 <td>
                   63
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.RmiCache.java">org/apache/oodt/cas/filemgr/ingest/RmiCache.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  62
                 </td>
               </tr>
                           <tr>
@@ -127,7 +85,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetPrevPageCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetPrevPageCliAction.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.RmiCache.java">org/apache/oodt/cas/filemgr/ingest/RmiCache.java</a>
                 </td>
                 <td>
                   0
@@ -136,96 +94,12 @@
                   0
                 </td>
                 <td>
-                  15
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.FileManagerCliAction.java">org/apache/oodt/cas/filemgr/cli/action/FileManagerCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.ScienceDataCatalog.java">org/apache/oodt/cas/filemgr/catalog/ScienceDataCatalog.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  262
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.package.html">org/apache/oodt/cas/filemgr/datatransfer/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.java">org/apache/oodt/cas/filemgr/metadata/CoreMetKeys.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  16
+                  62
                 </td>
               </tr>
                           <tr>
                 <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.package.html">org/apache/oodt/cas/filemgr/util/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.QueryResponse.java">org/apache/oodt/cas/filemgr/catalog/solr/QueryResponse.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  105
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.package.html">org/apache/oodt/cas/filemgr/catalog/solr/package.html</a>
                 </td>
                 <td>
                   0
@@ -281,62 +155,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.Cache.java">org/apache/oodt/cas/filemgr/ingest/Cache.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  22
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.ExtractorSpec.java">org/apache/oodt/cas/filemgr/structs/ExtractorSpec.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  18
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.DefaultProductSerializer.java">org/apache/oodt/cas/filemgr/catalog/solr/DefaultProductSerializer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  959
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.package.html">org/apache/oodt/cas/filemgr/catalog/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker.java">org/apache/oodt/cas/filemgr/datatransfer/TransferStatusTracker.java</a>
                 </td>
                 <td>
@@ -347,20 +165,6 @@
                 </td>
                 <td>
                   80
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.MappedDataSourceCatalog.java">org/apache/oodt/cas/filemgr/catalog/MappedDataSourceCatalog.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  74
                 </td>
               </tr>
                           <tr>
@@ -407,20 +211,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.package.html">org/apache/oodt/cas/filemgr/structs/query/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.repository.package.html">org/apache/oodt/cas/filemgr/repository/package.html</a>
                 </td>
                 <td>
@@ -431,34 +221,6 @@
                 </td>
                 <td>
                   1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.AbstractCacheServerFactory.java">org/apache/oodt/cas/filemgr/ingest/AbstractCacheServerFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  25
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.ProductDumper.java">org/apache/oodt/cas/filemgr/tools/ProductDumper.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  27
                 </td>
               </tr>
                           <tr>
@@ -477,7 +239,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayer.java">org/apache/oodt/cas/filemgr/validation/DataSourceValidationLayer.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.ProductDumper.java">org/apache/oodt/cas/filemgr/tools/ProductDumper.java</a>
                 </td>
                 <td>
                   0
@@ -486,21 +248,7 @@
                   0
                 </td>
                 <td>
-                  127
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.ExpImpCatalog.java">org/apache/oodt/cas/filemgr/tools/ExpImpCatalog.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  62
+                  27
                 </td>
               </tr>
                           <tr>
@@ -515,6 +263,20 @@
                 </td>
                 <td>
                   100
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.ExpImpCatalog.java">org/apache/oodt/cas/filemgr/tools/ExpImpCatalog.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  62
                 </td>
               </tr>
                           <tr>
@@ -561,7 +323,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.AbstractDeleteProductCliAction.java">org/apache/oodt/cas/filemgr/cli/action/AbstractDeleteProductCliAction.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException.java">org/apache/oodt/cas/filemgr/structs/exceptions/RepositoryManagerException.java</a>
                 </td>
                 <td>
                   0
@@ -570,7 +332,7 @@
                   0
                 </td>
                 <td>
-                  9
+                  15
                 </td>
               </tr>
                           <tr>
@@ -589,7 +351,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException.java">org/apache/oodt/cas/filemgr/structs/exceptions/RepositoryManagerException.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.extractors.examples.FileAttributesExtractor.java">org/apache/oodt/cas/filemgr/metadata/extractors/examples/FileAttributesExtractor.java</a>
                 </td>
                 <td>
                   0
@@ -598,21 +360,7 @@
                   0
                 </td>
                 <td>
-                  15
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor.java">org/apache/oodt/cas/filemgr/structs/query/filter/FilterAlgor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  23
+                  33
                 </td>
               </tr>
                           <tr>
@@ -631,34 +379,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.XMLValidationLayerFactory.java">org/apache/oodt/cas/filemgr/validation/XMLValidationLayerFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  65
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.ConfigurableMetadataBasedFileVersioner.java">org/apache/oodt/cas/filemgr/versioning/ConfigurableMetadataBasedFileVersioner.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  20
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.SolrClient.java">org/apache/oodt/cas/filemgr/catalog/solr/SolrClient.java</a>
                 </td>
                 <td>
@@ -669,20 +389,6 @@
                 </td>
                 <td>
                   571
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.LocalCacheFactory.java">org/apache/oodt/cas/filemgr/ingest/LocalCacheFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
                 </td>
               </tr>
                           <tr>
@@ -729,34 +435,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.DateTimeVersioner.java">org/apache/oodt/cas/filemgr/versioning/DateTimeVersioner.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  30
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.UUIDProductIdGenerator.java">org/apache/oodt/cas/filemgr/catalog/solr/UUIDProductIdGenerator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.Product.java">org/apache/oodt/cas/filemgr/structs/Product.java</a>
                 </td>
                 <td>
@@ -767,6 +445,20 @@
                 </td>
                 <td>
                   104
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.DateTimeVersioner.java">org/apache/oodt/cas/filemgr/versioning/DateTimeVersioner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  30
                 </td>
               </tr>
                           <tr>
@@ -813,20 +505,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.Pagination.java">org/apache/oodt/cas/filemgr/util/Pagination.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.package.html">org/apache/oodt/cas/filemgr/tools/package.html</a>
                 </td>
                 <td>
@@ -869,34 +547,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory.java">org/apache/oodt/cas/filemgr/datatransfer/InPlaceDataTransferFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.conv.AsciiSortableVersionConverter.java">org/apache/oodt/cas/filemgr/structs/query/conv/AsciiSortableVersionConverter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory.java">org/apache/oodt/cas/filemgr/datatransfer/RemoteDataTransferFactory.java</a>
                 </td>
                 <td>
@@ -920,21 +570,7 @@
                   0
                 </td>
                 <td>
-                  21
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.SqlParser.java">org/apache/oodt/cas/filemgr/util/SqlParser.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  228
+                  1
                 </td>
               </tr>
                           <tr>
@@ -953,20 +589,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.Element.java">org/apache/oodt/cas/filemgr/structs/Element.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  42
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException.java">org/apache/oodt/cas/filemgr/structs/exceptions/ConnectionException.java</a>
                 </td>
                 <td>
@@ -977,20 +599,6 @@
                 </td>
                 <td>
                   6
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.exceptions.package.html">org/apache/oodt/cas/filemgr/exceptions/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
               </tr>
                           <tr>
@@ -1024,20 +632,6 @@
                           <tr>
                 <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.extractors.examples.package.html">org/apache/oodt/cas/filemgr/metadata/extractors/examples/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.system.package.html">org/apache/oodt/cas/filemgr/system/package.html</a>
                 </td>
                 <td>
                   0
@@ -1121,62 +715,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.SingleFileBasicVersioner.java">org/apache/oodt/cas/filemgr/versioning/SingleFileBasicVersioner.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.DataTransfer.java">org/apache/oodt/cas/filemgr/datatransfer/DataTransfer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  40
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.OptimizeLuceneCatalog.java">org/apache/oodt/cas/filemgr/tools/OptimizeLuceneCatalog.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  25
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.SqlQueryCliAction.java">org/apache/oodt/cas/filemgr/cli/action/SqlQueryCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  10
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.S3DataTransfererFactory.java">org/apache/oodt/cas/filemgr/datatransfer/S3DataTransfererFactory.java</a>
                 </td>
                 <td>
@@ -1187,48 +725,6 @@
                 </td>
                 <td>
                   26
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.DeleteProduct.java">org/apache/oodt/cas/filemgr/tools/DeleteProduct.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  22
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.extractors.examples.TikaAutoDetectExtractor.java">org/apache/oodt/cas/filemgr/metadata/extractors/examples/TikaAutoDetectExtractor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  21
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.Parameters.java">org/apache/oodt/cas/filemgr/catalog/solr/Parameters.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  134
                 </td>
               </tr>
                           <tr>
@@ -1247,20 +743,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.ValidationLayerFactory.java">org/apache/oodt/cas/filemgr/validation/ValidationLayerFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.ScienceDataCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/ScienceDataCatalogFactory.java</a>
                 </td>
                 <td>
@@ -1275,7 +757,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.package.html">org/apache/oodt/cas/filemgr/structs/package.html</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.ValidationLayerFactory.java">org/apache/oodt/cas/filemgr/validation/ValidationLayerFactory.java</a>
                 </td>
                 <td>
                   0
@@ -1284,7 +766,7 @@
                   0
                 </td>
                 <td>
-                  1
+                  3
                 </td>
               </tr>
                           <tr>
@@ -1317,20 +799,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetNextPageCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetNextPageCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  14
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.ProductMetKeys.java">org/apache/oodt/cas/filemgr/metadata/ProductMetKeys.java</a>
                 </td>
                 <td>
@@ -1341,20 +809,6 @@
                 </td>
                 <td>
                   15
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.DirectoryProductVersioner.java">org/apache/oodt/cas/filemgr/versioning/DirectoryProductVersioner.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
                 </td>
               </tr>
                           <tr>
@@ -1387,48 +841,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.type.TypeHandler.java">org/apache/oodt/cas/filemgr/structs/type/TypeHandler.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  71
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.AbstractQueryCliAction.java">org/apache/oodt/cas/filemgr/cli/action/AbstractQueryCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  50
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory.java">org/apache/oodt/cas/filemgr/datatransfer/DataTransferFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.extractors.examples.DateTimeExpandMetExtractor.java">org/apache/oodt/cas/filemgr/metadata/extractors/examples/DateTimeExpandMetExtractor.java</a>
                 </td>
                 <td>
@@ -1439,34 +851,6 @@
                 </td>
                 <td>
                   46
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.HasProductCliAction.java">org/apache/oodt/cas/filemgr/cli/action/HasProductCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.Ingester.java">org/apache/oodt/cas/filemgr/ingest/Ingester.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  14
                 </td>
               </tr>
                           <tr>
@@ -1513,20 +897,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.XMLValidationLayer.java">org/apache/oodt/cas/filemgr/validation/XMLValidationLayer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  194
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.system.auth.package.html">org/apache/oodt/cas/filemgr/system/auth/package.html</a>
                 </td>
                 <td>
@@ -1537,62 +907,6 @@
                 </td>
                 <td>
                   1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.RemoteableCache.java">org/apache/oodt/cas/filemgr/ingest/RemoteableCache.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  32
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.CatalogSearch.java">org/apache/oodt/cas/filemgr/tools/CatalogSearch.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  64
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.ProductTypeMetVersioner.java">org/apache/oodt/cas/filemgr/versioning/ProductTypeMetVersioner.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.system.auth.SecureWebServer.java">org/apache/oodt/cas/filemgr/system/auth/SecureWebServer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  18
                 </td>
               </tr>
                           <tr>
@@ -1621,48 +935,6 @@
                 </td>
                 <td>
                   29
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.Catalog.java">org/apache/oodt/cas/filemgr/catalog/Catalog.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  48
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.QueryCriteria.java">org/apache/oodt/cas/filemgr/structs/QueryCriteria.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.exceptions.FileManagerException.java">org/apache/oodt/cas/filemgr/exceptions/FileManagerException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
                 </td>
               </tr>
                           <tr>
@@ -1705,20 +977,6 @@
                 </td>
                 <td>
                   1048
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog.java">org/apache/oodt/cas/filemgr/catalog/DataSourceCatalog.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  628
                 </td>
               </tr>
                           <tr>
@@ -1779,20 +1037,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.VersioningUtils.java">org/apache/oodt/cas/filemgr/versioning/VersioningUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  110
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager.java">org/apache/oodt/cas/filemgr/repository/XMLRepositoryManager.java</a>
                 </td>
                 <td>
@@ -1821,20 +1065,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.DbStructFactory.java">org/apache/oodt/cas/filemgr/util/DbStructFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  39
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.SolrCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/solr/SolrCatalogFactory.java</a>
                 </td>
                 <td>
@@ -1850,20 +1080,6 @@
                           <tr>
                 <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.CacheException.java">org/apache/oodt/cas/filemgr/structs/exceptions/CacheException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetLastPageCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetLastPageCliAction.java</a>
                 </td>
                 <td>
                   0
@@ -1905,7 +1121,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.FreeTextQueryCriteria.java">org/apache/oodt/cas/filemgr/structs/FreeTextQueryCriteria.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer.java">org/apache/oodt/cas/filemgr/datatransfer/LocalDataTransferer.java</a>
                 </td>
                 <td>
                   0
@@ -1914,7 +1130,7 @@
                   0
                 </td>
                 <td>
-                  60
+                  80
                 </td>
               </tr>
                           <tr>
@@ -1933,7 +1149,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer.java">org/apache/oodt/cas/filemgr/datatransfer/LocalDataTransferer.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/LuceneCatalogFactory.java</a>
                 </td>
                 <td>
                   0
@@ -1942,12 +1158,12 @@
                   0
                 </td>
                 <td>
-                  80
+                  149
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.QueryTool.java">org/apache/oodt/cas/filemgr/tools/QueryTool.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.ProductPage.java">org/apache/oodt/cas/filemgr/structs/ProductPage.java</a>
                 </td>
                 <td>
                   0
@@ -1956,7 +1172,1211 @@
                   0
                 </td>
                 <td>
-                  64
+                  59
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.LocalCache.java">org/apache/oodt/cas/filemgr/ingest/LocalCache.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  161
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.QueryResultComparator.java">org/apache/oodt/cas/filemgr/structs/query/QueryResultComparator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetNumProductsCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetNumProductsCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.MappedDataSourceCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/MappedDataSourceCatalogFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.CacheFactory.java">org/apache/oodt/cas/filemgr/ingest/CacheFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.StdIngester.java">org/apache/oodt/cas/filemgr/ingest/StdIngester.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  82
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException.java">org/apache/oodt/cas/filemgr/structs/exceptions/QueryFormulationException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.ProductIdGenerator.java">org/apache/oodt/cas/filemgr/catalog/solr/ProductIdGenerator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.SolrCatalog.java">org/apache/oodt/cas/filemgr/catalog/solr/SolrCatalog.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  992
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.ComplexQuery.java">org/apache/oodt/cas/filemgr/structs/query/ComplexQuery.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  71
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.filter.TimeEvent.java">org/apache/oodt/cas/filemgr/structs/query/filter/TimeEvent.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  56
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.BasicVersioner.java">org/apache/oodt/cas/filemgr/versioning/BasicVersioner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.ProductTypeDocTool.java">org/apache/oodt/cas/filemgr/tools/ProductTypeDocTool.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  17
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.MetadataDumper.java">org/apache/oodt/cas/filemgr/tools/MetadataDumper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  26
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.DeleteProductByNameCliAction.java">org/apache/oodt/cas/filemgr/cli/action/DeleteProductByNameCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.repository.RepositoryManagerFactory.java">org/apache/oodt/cas/filemgr/repository/RepositoryManagerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.IngestProductCliAction.java">org/apache/oodt/cas/filemgr/cli/action/IngestProductCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  60
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory.java">org/apache/oodt/cas/filemgr/datatransfer/LocalDataTransferFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.AddProductTypeCliAction.java">org/apache/oodt/cas/filemgr/cli/action/AddProductTypeCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  32
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.package.html">org/apache/oodt/cas/filemgr/validation/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.MetadataBasedProductMover.java">org/apache/oodt/cas/filemgr/tools/MetadataBasedProductMover.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  40
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.RangeQueryTester.java">org/apache/oodt/cas/filemgr/tools/RangeQueryTester.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  41
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory.java">org/apache/oodt/cas/filemgr/util/XmlRpcStructFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1041
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetProductByIdCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetProductByIdCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory.java">org/apache/oodt/cas/filemgr/validation/DataSourceValidationLayerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException.java">org/apache/oodt/cas/filemgr/structs/exceptions/ValidationLayerException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  40
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferer.java">org/apache/oodt/cas/filemgr/datatransfer/InPlaceDataTransferer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetCurrentTransfersCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetCurrentTransfersCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/DataSourceCatalogFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  89
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetPrevPageCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetPrevPageCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.ScienceDataCatalog.java">org/apache/oodt/cas/filemgr/catalog/ScienceDataCatalog.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  262
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.FileManagerCliAction.java">org/apache/oodt/cas/filemgr/cli/action/FileManagerCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.package.html">org/apache/oodt/cas/filemgr/datatransfer/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.java">org/apache/oodt/cas/filemgr/metadata/CoreMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.QueryResponse.java">org/apache/oodt/cas/filemgr/catalog/solr/QueryResponse.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  105
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.package.html">org/apache/oodt/cas/filemgr/catalog/solr/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.Cache.java">org/apache/oodt/cas/filemgr/ingest/Cache.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  22
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.ExtractorSpec.java">org/apache/oodt/cas/filemgr/structs/ExtractorSpec.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.DefaultProductSerializer.java">org/apache/oodt/cas/filemgr/catalog/solr/DefaultProductSerializer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  959
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.package.html">org/apache/oodt/cas/filemgr/catalog/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.MappedDataSourceCatalog.java">org/apache/oodt/cas/filemgr/catalog/MappedDataSourceCatalog.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  74
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.package.html">org/apache/oodt/cas/filemgr/structs/query/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.AbstractCacheServerFactory.java">org/apache/oodt/cas/filemgr/ingest/AbstractCacheServerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayer.java">org/apache/oodt/cas/filemgr/validation/DataSourceValidationLayer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  127
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.AbstractDeleteProductCliAction.java">org/apache/oodt/cas/filemgr/cli/action/AbstractDeleteProductCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.FileAttributesMetKeys.java">org/apache/oodt/cas/filemgr/metadata/FileAttributesMetKeys.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor.java">org/apache/oodt/cas/filemgr/structs/query/filter/FilterAlgor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  23
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.XMLValidationLayerFactory.java">org/apache/oodt/cas/filemgr/validation/XMLValidationLayerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  65
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.ConfigurableMetadataBasedFileVersioner.java">org/apache/oodt/cas/filemgr/versioning/ConfigurableMetadataBasedFileVersioner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  20
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.LocalCacheFactory.java">org/apache/oodt/cas/filemgr/ingest/LocalCacheFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.UUIDProductIdGenerator.java">org/apache/oodt/cas/filemgr/catalog/solr/UUIDProductIdGenerator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.Pagination.java">org/apache/oodt/cas/filemgr/util/Pagination.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory.java">org/apache/oodt/cas/filemgr/datatransfer/InPlaceDataTransferFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.conv.AsciiSortableVersionConverter.java">org/apache/oodt/cas/filemgr/structs/query/conv/AsciiSortableVersionConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.SqlParser.java">org/apache/oodt/cas/filemgr/util/SqlParser.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  228
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.Element.java">org/apache/oodt/cas/filemgr/structs/Element.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  42
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.exceptions.package.html">org/apache/oodt/cas/filemgr/exceptions/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.system.package.html">org/apache/oodt/cas/filemgr/system/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.DataTransfer.java">org/apache/oodt/cas/filemgr/datatransfer/DataTransfer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  40
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.SingleFileBasicVersioner.java">org/apache/oodt/cas/filemgr/versioning/SingleFileBasicVersioner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.OptimizeLuceneCatalog.java">org/apache/oodt/cas/filemgr/tools/OptimizeLuceneCatalog.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.SqlQueryCliAction.java">org/apache/oodt/cas/filemgr/cli/action/SqlQueryCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.DeleteProduct.java">org/apache/oodt/cas/filemgr/tools/DeleteProduct.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  20
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.Parameters.java">org/apache/oodt/cas/filemgr/catalog/solr/Parameters.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  134
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.metadata.extractors.examples.TikaAutoDetectExtractor.java">org/apache/oodt/cas/filemgr/metadata/extractors/examples/TikaAutoDetectExtractor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.package.html">org/apache/oodt/cas/filemgr/structs/package.html</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetNextPageCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetNextPageCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.DirectoryProductVersioner.java">org/apache/oodt/cas/filemgr/versioning/DirectoryProductVersioner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.type.TypeHandler.java">org/apache/oodt/cas/filemgr/structs/type/TypeHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  71
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.AbstractQueryCliAction.java">org/apache/oodt/cas/filemgr/cli/action/AbstractQueryCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  50
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory.java">org/apache/oodt/cas/filemgr/datatransfer/DataTransferFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.HasProductCliAction.java">org/apache/oodt/cas/filemgr/cli/action/HasProductCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.Ingester.java">org/apache/oodt/cas/filemgr/ingest/Ingester.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.XMLValidationLayer.java">org/apache/oodt/cas/filemgr/validation/XMLValidationLayer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  194
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.RemoteableCache.java">org/apache/oodt/cas/filemgr/ingest/RemoteableCache.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  32
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.CatalogSearch.java">org/apache/oodt/cas/filemgr/tools/CatalogSearch.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  63
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.system.auth.SecureWebServer.java">org/apache/oodt/cas/filemgr/system/auth/SecureWebServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.ProductTypeMetVersioner.java">org/apache/oodt/cas/filemgr/versioning/ProductTypeMetVersioner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.Catalog.java">org/apache/oodt/cas/filemgr/catalog/Catalog.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  48
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.QueryCriteria.java">org/apache/oodt/cas/filemgr/structs/QueryCriteria.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.exceptions.FileManagerException.java">org/apache/oodt/cas/filemgr/exceptions/FileManagerException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog.java">org/apache/oodt/cas/filemgr/catalog/DataSourceCatalog.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  628
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.VersioningUtils.java">org/apache/oodt/cas/filemgr/versioning/VersioningUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  110
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.DbStructFactory.java">org/apache/oodt/cas/filemgr/util/DbStructFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  39
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetLastPageCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetLastPageCliAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.FreeTextQueryCriteria.java">org/apache/oodt/cas/filemgr/structs/FreeTextQueryCriteria.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  60
                 </td>
               </tr>
                           <tr>
@@ -1971,6 +2391,20 @@
                 </td>
                 <td>
                   6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.QueryTool.java">org/apache/oodt/cas/filemgr/tools/QueryTool.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  68
                 </td>
               </tr>
                           <tr>
@@ -2045,34 +2479,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/LuceneCatalogFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  149
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.ProductPage.java">org/apache/oodt/cas/filemgr/structs/ProductPage.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  59
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.IngestException.java">org/apache/oodt/cas/filemgr/structs/exceptions/IngestException.java</a>
                 </td>
                 <td>
@@ -2101,48 +2507,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.LocalCache.java">org/apache/oodt/cas/filemgr/ingest/LocalCache.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  161
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.QueryResultComparator.java">org/apache/oodt/cas/filemgr/structs/query/QueryResultComparator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  16
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetNumProductsCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetNumProductsCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.ProductType.java">org/apache/oodt/cas/filemgr/structs/ProductType.java</a>
                 </td>
                 <td>
@@ -2153,20 +2517,6 @@
                 </td>
                 <td>
                   79
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.MappedDataSourceCatalogFactory.java">org/apache/oodt/cas/filemgr/catalog/MappedDataSourceCatalogFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  14
                 </td>
               </tr>
                           <tr>
@@ -2185,119 +2535,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.StdIngester.java">org/apache/oodt/cas/filemgr/ingest/StdIngester.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  82
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.ingest.CacheFactory.java">org/apache/oodt/cas/filemgr/ingest/CacheFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException.java">org/apache/oodt/cas/filemgr/structs/exceptions/QueryFormulationException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.ProductIdGenerator.java">org/apache/oodt/cas/filemgr/catalog/solr/ProductIdGenerator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.catalog.solr.SolrCatalog.java">org/apache/oodt/cas/filemgr/catalog/solr/SolrCatalog.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  992
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.ComplexQuery.java">org/apache/oodt/cas/filemgr/structs/query/ComplexQuery.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  71
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.versioning.BasicVersioner.java">org/apache/oodt/cas/filemgr/versioning/BasicVersioner.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  25
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.filter.TimeEvent.java">org/apache/oodt/cas/filemgr/structs/query/filter/TimeEvent.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  56
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.filter.package.html">org/apache/oodt/cas/filemgr/structs/query/filter/package.html</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.conv.package.html">org/apache/oodt/cas/filemgr/structs/query/conv/package.html</a>
                 </td>
                 <td>
                   0
@@ -2311,7 +2549,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.conv.package.html">org/apache/oodt/cas/filemgr/structs/query/conv/package.html</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.filter.package.html">org/apache/oodt/cas/filemgr/structs/query/filter/package.html</a>
                 </td>
                 <td>
                   0
@@ -2353,20 +2591,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.ProductTypeDocTool.java">org/apache/oodt/cas/filemgr/tools/ProductTypeDocTool.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  17
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.type.examples.MajorMinorVersionTypeHandler.java">org/apache/oodt/cas/filemgr/structs/type/examples/MajorMinorVersionTypeHandler.java</a>
                 </td>
                 <td>
@@ -2377,20 +2601,6 @@
                 </td>
                 <td>
                   12
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.MetadataDumper.java">org/apache/oodt/cas/filemgr/tools/MetadataDumper.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  26
                 </td>
               </tr>
                           <tr>
@@ -2409,34 +2619,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.DeleteProductByNameCliAction.java">org/apache/oodt/cas/filemgr/cli/action/DeleteProductByNameCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.repository.RepositoryManagerFactory.java">org/apache/oodt/cas/filemgr/repository/RepositoryManagerFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.system.XmlRpcFileManager.java">org/apache/oodt/cas/filemgr/system/XmlRpcFileManager.java</a>
                 </td>
                 <td>
@@ -2447,20 +2629,6 @@
                 </td>
                 <td>
                   978
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.IngestProductCliAction.java">org/apache/oodt/cas/filemgr/cli/action/IngestProductCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  60
                 </td>
               </tr>
                           <tr>
@@ -2479,48 +2647,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory.java">org/apache/oodt/cas/filemgr/datatransfer/LocalDataTransferFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.AddProductTypeCliAction.java">org/apache/oodt/cas/filemgr/cli/action/AddProductTypeCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  32
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.package.html">org/apache/oodt/cas/filemgr/validation/package.html</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter.java">org/apache/oodt/cas/filemgr/structs/query/conv/VersionConverter.java</a>
                 </td>
                 <td>
@@ -2531,34 +2657,6 @@
                 </td>
                 <td>
                   3
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.MetadataBasedProductMover.java">org/apache/oodt/cas/filemgr/tools/MetadataBasedProductMover.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  40
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.tools.RangeQueryTester.java">org/apache/oodt/cas/filemgr/tools/RangeQueryTester.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  41
                 </td>
               </tr>
                           <tr>
@@ -2577,20 +2675,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory.java">org/apache/oodt/cas/filemgr/util/XmlRpcStructFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1041
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetProductPercentTransferredCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetProductPercentTransferredCliAction.java</a>
                 </td>
                 <td>
@@ -2605,7 +2689,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetProductByIdCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetProductByIdCliAction.java</a>
+                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetProductByNameCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetProductByNameCliAction.java</a>
                 </td>
                 <td>
                   0
@@ -2614,49 +2698,7 @@
                   0
                 </td>
                 <td>
-                  8
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory.java">org/apache/oodt/cas/filemgr/validation/DataSourceValidationLayerFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  15
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException.java">org/apache/oodt/cas/filemgr/structs/exceptions/ValidationLayerException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  40
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferer.java">org/apache/oodt/cas/filemgr/datatransfer/InPlaceDataTransferer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  21
+                  9
                 </td>
               </tr>
                           <tr>
@@ -2671,20 +2713,6 @@
                 </td>
                 <td>
                   4
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://oodt.apache.org/cas-filemgr//checkstyle.html#org.apache.oodt.cas.filemgr.cli.action.GetProductByNameCliAction.java">org/apache/oodt/cas/filemgr/cli/action/GetProductByNameCliAction.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
                 </td>
               </tr>
                           <tr>
