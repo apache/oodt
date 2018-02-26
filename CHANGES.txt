@@ -4,6 +4,8 @@ Apache OODT Change Log
 =======
 Release 1.9 - In Progress
 
+* OODT-951 Wrong null checker (JC via mattmann)
+
 * OODT-972 Add filemgr.server and filemgr.client configuration keys to Radix filemgr.properties (lewismc via mattmann)
 
 * OODT-964, OODT-963 Fix issues merging Distributed ZK Config module into Avro-RPC branch (imesha,mattmann)

@@ -70,7 +70,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
       PrioritySorter prioritizer, WorkflowLifecycleManager lifecycle,
       EngineRunner runner, WorkflowRepository modelRepo, long querierWaitSeconds) {
     this.repo = repo;
-    this.prioritizer = prioritizer != null ? new HighestFIFOPrioritySorter(1,
+    this.prioritizer = prioritizer == null ? new HighestFIFOPrioritySorter(1,
         50, 1) : prioritizer;
     this.lifecycle = lifecycle;
     this.modelRepo = modelRepo;
