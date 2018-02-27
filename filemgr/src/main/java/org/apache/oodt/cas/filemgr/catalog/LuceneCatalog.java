@@ -150,26 +150,26 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void addMetadata(Metadata m, Product product)
             throws CatalogException {
+        CompleteProduct p;
         if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
-            CompleteProduct p = CATALOG_CACHE.get(product.getProductId());
-
-                p.setMetadata(m);
-                if (hasMetadataAndRefs(p)) {
-                    LOG.log(Level.FINE,
-                        "metadata and references present for product: ["
-                        + product.getProductId() + "]");
-                    addCompleteProductToIndex(p);
-                    // now remove its entry from the cache
-                    CATALOG_CACHE.remove(product.getProductId());
-            }
+             p = CATALOG_CACHE.get(product.getProductId());
         }
         else{
                 // move product from index to cache
                 // it will be moved back after metadata is added
-                getCompleteProductById(product.getProductId(), true, true);
+                p = getCompleteProductById(product.getProductId(), true, true);
                 LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
                 removeProduct(product);
+        }
 
+        p.setMetadata(m);
+        if (hasMetadataAndRefs(p)) {
+            LOG.log(Level.FINE,
+                "metadata and references present for product: ["
+                    + product.getProductId() + "]");
+            addCompleteProductToIndex(p);
+            // now remove its entry from the cache
+            CATALOG_CACHE.remove(product.getProductId());
         }
     }
 

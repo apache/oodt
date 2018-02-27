@@ -15,6 +15,7 @@ Release 1.9 - In Progress
 * OODT-958 Update commons-collections
 
 * OODT-959 Update tika to 1.16
+* OODT-968 Add metadata removes product
 
 =======
 Release 1.2.2 - 02/05/2018
