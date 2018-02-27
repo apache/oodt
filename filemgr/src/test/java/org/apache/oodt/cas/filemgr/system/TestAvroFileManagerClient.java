@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,10 +15,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.system;
-
-//OODT imports
 
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
@@ -43,18 +40,7 @@ import java.util.Vector;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-//JDK imports
-//Junit imports
-
-/**
- * @author mattmann
- * @version $Revision$
- * <p>
- * <p>
- * Test suite for the {@link XmlRpcFileManagerClient}
- * </p>.
- */
-public class TestXmlRpcFileManagerClient extends AbstractFileManagerServerTest {
+public class TestAvroFileManagerClient extends AbstractFileManagerServerTest {
 
     /**
      * @since OODT-161
@@ -69,7 +55,7 @@ public class TestXmlRpcFileManagerClient extends AbstractFileManagerServerTest {
         linkedListElemList.add(CoreMetKeys.FILENAME);
 
         try {
-            FileManagerClient fmc = new XmlRpcFileManagerClient(new URL("http://localhost:" + FM_PORT));
+            FileManagerClient fmc = new AvroFileManagerClient(new URL("http://localhost:" + FM_PORT));
 
             Metadata reducedMet;
             List pTypes = fmc.getProductTypes();
@@ -117,12 +103,17 @@ public class TestXmlRpcFileManagerClient extends AbstractFileManagerServerTest {
         String productId = ingester.ingest(
                 new URL("http://localhost:" + FM_PORT),
                 new File(refUrl.getFile()), prodMet);
-        FileManagerClient fmc = new XmlRpcFileManagerClient(new URL("http://localhost:" + FM_PORT));
+        FileManagerClient fmc = new AvroFileManagerClient(new URL("http://localhost:" + FM_PORT));
         Metadata m = fmc.getMetadata(fmc.getProductById(productId));
         assertEquals(m.getMetadata("Filename"), "test.txt");
         deleteAllFiles("/tmp/test-type");
     }
 
+    /**
+     * todo This is an incomplete test. No verification done after the file is deleted
+     *
+     * @throws Exception
+     */
     public void testRemoveFile() throws Exception {
         Path tmpFilePath = Paths.get("/tmp", "test-delete.txt");
         URL ingestUrl = this.getClass().getResource("/ingest");
@@ -140,7 +131,7 @@ public class TestXmlRpcFileManagerClient extends AbstractFileManagerServerTest {
             String productId = ingester.ingest(
                     new URL("http://localhost:" + FM_PORT),
                     new File(refUrl.getFile()), prodMet);
-            FileManagerClient fmc = new XmlRpcFileManagerClient(new URL("http://localhost:" + FM_PORT));
+            FileManagerClient fmc = new AvroFileManagerClient(new URL("http://localhost:" + FM_PORT));
             Metadata m = fmc.getMetadata(fmc.getProductById(productId));
             assertEquals(m.getMetadata("Filename"), "test-delete.txt");
             String loc = m.getMetadata("FileLocation");
@@ -168,7 +159,7 @@ public class TestXmlRpcFileManagerClient extends AbstractFileManagerServerTest {
         String productId = ingester.ingest(
                 new URL("http://localhost:" + FM_PORT),
                 new File(refUrl.getFile()), prodMet);
-        FileManagerClient fmc = new XmlRpcFileManagerClient(new URL("http://localhost:" + FM_PORT));
+        FileManagerClient fmc = new AvroFileManagerClient(new URL("http://localhost:" + FM_PORT));
 
         Metadata m = fmc.getMetadata(fmc.getProductById(productId));
         assertEquals(m.getAllMetadata("TestElement").size(), 4);
@@ -206,20 +197,20 @@ public class TestXmlRpcFileManagerClient extends AbstractFileManagerServerTest {
         complexQuery.setSortByMetKey(CoreMetKeys.FILENAME);
         complexQuery.setToStringResultFormat("$" + CoreMetKeys.FILENAME);
         complexQuery.addCriterion(SqlParser.parseSqlWhereClause("Filename != 'test.txt'"));
-        FileManagerClient fmc = new XmlRpcFileManagerClient(new URL("http://localhost:" + FM_PORT));
+        FileManagerClient fmc = new AvroFileManagerClient(new URL("http://localhost:" + FM_PORT));
         List<QueryResult> queryResults = fmc.complexQuery(complexQuery);
         assertEquals("[test-file-1.txt, test-file-2.txt]", queryResults.toString());
     }
 
     @Override
     protected void setProperties() {
-        System.setProperty("filemgr.server", "org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerServerFactory");
-        System.setProperty("filemgr.client", "org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerClientFactory");
+        System.setProperty("filemgr.server", "org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerServerFactory");
+        System.setProperty("filemgr.client", "org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerClientFactory");
     }
 
     @Override
     protected FileManagerServer newFileManagerServer(int port) throws Exception {
-        return new XmlRpcFileManagerServer(port);
+        return new AvroFileManagerServer(port);
     }
 
     @Override

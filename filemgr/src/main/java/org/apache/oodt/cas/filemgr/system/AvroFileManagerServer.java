@@ -70,7 +70,7 @@ public class AvroFileManagerServer implements AvroFileManager, FileManagerServer
     private Server server;
 
     /* file manager tools */
-    FileManager fileManager;
+    private FileManager fileManager;
 
     public AvroFileManagerServer(int port){
         this.port = port;

@@ -54,13 +54,10 @@
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
-      <version>1.8.1</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.avro/avro-ipc -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-ipc</artifactId>
-      <version>1.8.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -291,7 +288,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!--forkMode>pertest</forkMode-->
           <forkMode>pertest</forkMode>
           <!-- so we can DEBUG -->
           <argLine>-enableassertions</argLine>

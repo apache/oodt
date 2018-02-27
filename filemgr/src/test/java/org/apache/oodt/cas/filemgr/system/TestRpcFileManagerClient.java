@@ -51,6 +51,7 @@ import junit.framework.TestCase;
  * Test suite for the {@link XmlRpcFileManagerClient}
  * </p>.
  */
+@Deprecated
 public class TestRpcFileManagerClient extends TestCase {
 
     private static int FM_PORT = 50001;
