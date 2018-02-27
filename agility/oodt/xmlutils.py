@@ -23,6 +23,7 @@ __docformat__ = 'restructuredtext'
 
 import string
 import xml.dom
+from functools import reduce
     
 def text(node):
     '''Return the text under the given node.  Text and CDATA nodes simply return
@@ -45,7 +46,7 @@ def text(node):
     '''
     strings = []
     _text0(node, strings)
-    return string.join(strings, '') # no separator
+    return "".join(strings) # no separator
     
 
 def _text0(node, strings):
@@ -78,7 +79,7 @@ def add(node, elementName, value=None):
     '<root><empty/><full>of text</full><item>1</item><item>2</item><item>3</item></root>'
     '''
     owner = node.ownerDocument
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         elem = owner.createElement(elementName)
         node.appendChild(elem)
         elem.appendChild(owner.createTextNode(value))
@@ -171,8 +172,8 @@ class Documentable(object):
         '''
         if node.nodeName != self.getDocumentElementName():
             raise ValueError('Expected %s element but got %s' % (self.getDocumentElementName(), node.nodeName))
-        fieldMap = dict(zip([i.elemName for i in self.getDocumentableFields()], self.getDocumentableFields()))
-        for child in filter(lambda n: n.nodeType == xml.dom.Node.ELEMENT_NODE, node.childNodes):
+        fieldMap = dict(list(zip([i.elemName for i in self.getDocumentableFields()], self.getDocumentableFields())))
+        for child in [n for n in node.childNodes if n.nodeType == xml.dom.Node.ELEMENT_NODE]:
             name = child.nodeName
             if name in fieldMap:
                 field = fieldMap[name]

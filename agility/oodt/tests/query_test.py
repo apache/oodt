@@ -23,26 +23,27 @@ This module tests various query classes and the query expression parser.
 __docformat__ = 'restructuredtext'
 
 import unittest, xml.dom, oodt.xmlutils
-from oodt.query import QueryElement, QueryHeader, QueryResult, Query, _parseQuery, ExpressionParseError
+from ..query import QueryElement, QueryHeader, QueryResult, Query, _parseQuery, ExpressionParseError
+from testfixtures import compare
 
-class QueryElementTest(unittest.TestCase):
+class TestQueryElement(unittest.TestCase):
     '''Test the `QueryElement` class.
     '''
-    def testDefaults(self):
+    def test_defaults(self):
         '''Test to see if defaults are reasonable.
         '''
         qe = QueryElement()
         self.assertEqual('UNKNOWN', qe.role)
         self.assertEqual('UNKNOWN', qe.value)
 
-    def testArgs(self):
+    def test_args(self):
         '''Test to see if initializer arguments are used.
         '''
         qe = QueryElement(role='role', value='value')
         self.assertEqual('role', qe.role)
         self.assertEqual('value', qe.value)
     
-    def testComparisons(self):
+    def test_comparisons(self):
         '''Test comparison operators.
         '''
         a = QueryElement('a', '1')
@@ -57,20 +58,20 @@ class QueryElementTest(unittest.TestCase):
         self.assertNotEqual(a, d)
         self.assertNotEqual(d, a)
         self.assertNotEqual(c, d)
-        self.assert_(a <= a)
-        self.assert_(a <= c)
-        self.assert_(a < c)
-        self.assert_(a <= d)
-        self.assert_(a < d)
+        self.assertTrue(a <= a)
+        self.assertTrue(a <= c)
+        self.assertTrue(a < c)
+        self.assertTrue(a <= d)
+        self.assertTrue(a < d)
     
-    def testBadArgs(self):
+    def test_bad_args(self):
         '''Test reactions to bad arugments.
         '''
         domImpl = xml.dom.getDOMImplementation()
         doc = domImpl.createDocument(None, None, None) # namespace URI, qualified Name, doctype
         self.assertRaises(ValueError, QueryElement, node=doc.createElement('notAQueryElement'))
     
-    def testXML(self):
+    def test_xml(self):
         '''Test XML serialization.
         '''
         domImpl = xml.dom.getDOMImplementation()
@@ -80,9 +81,9 @@ class QueryElementTest(unittest.TestCase):
         self.assertEqual('queryElement', root.nodeName)
         for child in root.childNodes:
             if 'tokenRole' == child.nodeName:
-                self.assertEquals('a', oodt.xmlutils.text(child))
+                self.assertEqual('a', oodt.xmlutils.text(child))
             elif 'tokenValue' == child.nodeName:
-                self.assertEquals('1', oodt.xmlutils.text(child))
+                self.assertEqual('1', oodt.xmlutils.text(child))
             else:
                 self.fail('Unknown node "' + child.nodeName + '" in XML result')
 
@@ -112,10 +113,10 @@ _QUERY_HEADER_ATTRS = {
     'queryDataDictId': 'dataDict'
 }
 
-class QueryHeaderTest(unittest.TestCase):
+class TestQueryHeader(unittest.TestCase):
     '''Unit test for the `QueryHeader` class.
     '''
-    def testDefaults(self):
+    def test_defaults(self):
         '''Test if defaults are reasonable.
         '''
         qh = QueryHeader()
@@ -128,7 +129,7 @@ class QueryHeaderTest(unittest.TestCase):
         self.assertEqual('2005-10-01 SCK v0.0.0 Under Development', qh.rev)
         self.assertEqual('UNKNOWN', qh.dataDict)
 
-    def testArgs(self):
+    def test_args(self):
         '''Test if initializer arguments are used.
         '''
         qh = QueryHeader('id', 'title', 'desc', 'type', 'status', 'security', 'rev', 'dataDict')
@@ -141,14 +142,14 @@ class QueryHeaderTest(unittest.TestCase):
         self.assertEqual(qh.rev, 'rev')
         self.assertEqual(qh.dataDict, 'dataDict')
 
-    def testBadArgs(self):
+    def test_bad_args(self):
         '''Test reaction to bad arguments.
         '''
         domImpl = xml.dom.getDOMImplementation()
         doc = domImpl.createDocument(None, None, None) # namespace URI, qualified Name, doctype
         self.assertRaises(ValueError, QueryHeader, node=doc.createElement('notAQueryHeader'))
 
-    def testXML(self):
+    def test_xml(self):
         '''Test XML serialization.
         '''
         domImpl = xml.dom.getDOMImplementation()
@@ -159,7 +160,7 @@ class QueryHeaderTest(unittest.TestCase):
         for child in root.childNodes:
             self.check(child.nodeName, oodt.xmlutils.text(child))
         q2 = QueryHeader(node=root)
-        self.assertEqual(q1, q2)
+        compare(q1, q2)
 
     def check(self, name, value):
         '''Check if the given tag name is valid.
@@ -170,25 +171,25 @@ class QueryHeaderTest(unittest.TestCase):
             fail('Unknown element ' + name + ' in query header')
     
 
-class QueryResultTest(unittest.TestCase):
+class TestQueryResult(unittest.TestCase):
     '''Unit test for the `QueryResults` class.
     '''
-    def testDefaults(self):
+    def test_defaults(self):
         '''Test if defaults are reasonable.
         '''
         qr = QueryResult()
-        self.assertEquals(0, len(qr.results))
-        self.assertEquals(0, len(qr))
+        self.assertEqual(0, len(qr.results))
+        self.assertEqual(0, len(qr))
         self.assertRaises(IndexError, qr.__getitem__, 0)
 
-    def testBadArgs(self):
+    def test_bad_args(self):
         '''Test reaction to bad arguments.
         '''
         domImpl = xml.dom.getDOMImplementation()
         doc = domImpl.createDocument(None, None, None) # namespace URI, qualified Name, doctype
         self.assertRaises(ValueError, QueryResult, node=doc.createElement('notAQueryResult'))
 
-    def testXML(self):
+    def test_xml(self):
         '''Test XML serialization.
         '''
         domImpl = xml.dom.getDOMImplementation()
@@ -197,13 +198,13 @@ class QueryResultTest(unittest.TestCase):
         root = q1.toXML(doc)
         self.assertEqual('queryResultSet', root.nodeName)
         q2 = QueryResult(node=root)
-        self.assertEqual(q1, q2)
+        compare(q1, q2)
     
 
-class QueryTest(unittest.TestCase):
+class TestQuery(unittest.TestCase):
     '''Unit test for the `Query` class.
     '''
-    def testDefaults(self):
+    def test_defaults(self):
         '''Test if defaults are reasonable.
         '''
         q = Query()
@@ -214,7 +215,7 @@ class QueryTest(unittest.TestCase):
         self.assertEqual(1, q.maxResults)
         self.assertEqual(0, len(q.mimeAccept))
 
-    def testParser(self):
+    def test_parser(self):
         '''Test the query expresion parser.
         '''
         # Empty
@@ -297,23 +298,23 @@ class QueryTest(unittest.TestCase):
         self.assertEqual(([QueryElement('elemName', 'start_time'), QueryElement('LITERAL', '2006-02-06T13:12:13'),
             QueryElement('RELOP', 'EQ')], []), _parseQuery('''start_time = 2006-02-06T13:12:13'''))
     
-    def testCmp(self):
+    def test_cmp(self):
         '''Test comparison operators.
         '''
         a = Query('lat > 3 and lon < -92.6')
         b = Query('lat > 3 and lon < -92.6')
         c = Query('lat < 3 and lon > -92.6')
-        self.assert_(a == a)
-        self.assert_(a == b)
-        self.assert_(a < c)
-        self.assert_(c > a)
-        self.assert_(a <= b)
-        self.assert_(a >= b)
-        self.assert_(a <= c)
-        self.assert_(c >= a)
-        self.assert_(c != a)
+        self.assertTrue(a == a)
+        self.assertTrue(a == b)
+        self.assertTrue(a < c)
+        self.assertTrue(c > a)
+        self.assertTrue(a <= b)
+        self.assertTrue(a >= b)
+        self.assertTrue(a <= c)
+        self.assertTrue(c >= a)
+        self.assertTrue(c != a)
 
-    def testXML(self):
+    def test_xml(self):
         '''Test XML serialization.
         '''
         domImpl = xml.dom.getDOMImplementation()
@@ -323,19 +324,3 @@ class QueryTest(unittest.TestCase):
         self.assertEqual('query', root.nodeName)
         q2 = Query(node=root)
         self.assertEqual(q1, q2)
-    
-
-def test_suite():
-    '''Create the suite of tests.
-    '''
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(QueryElementTest))
-    suite.addTest(unittest.makeSuite(QueryHeaderTest))
-    suite.addTest(unittest.makeSuite(QueryResultTest))
-    suite.addTest(unittest.makeSuite(QueryTest))
-    return suite
-    
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-    

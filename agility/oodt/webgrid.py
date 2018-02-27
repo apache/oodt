@@ -22,8 +22,8 @@ __docformat__ = 'restructuredtext'
 
 from oodt.query import Query
 from xml.dom.minidom import parseString, getDOMImplementation
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-import cgi, os, shutil, stat
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import cgi, os, shutil, stat, tempfile
 
 _validKinds = ('profile', 'product')
 _doc = getDOMImplementation().createDocument(None, None, None) # qname, nsuri, doctype
@@ -48,7 +48,7 @@ class WebGridRequestHandler(BaseHTTPRequestHandler):
                 self.__execute(self.path, params)
             else:
                 raise ValueError('Unknown encoding "%s"' % kind)
-        except Exception, e:
+        except Exception as e:
             self.send_error(500, str(e))
     
     def do_GET(self):
@@ -62,7 +62,7 @@ class WebGridRequestHandler(BaseHTTPRequestHandler):
             else:
                 params, path = {}, self.path
             self.__execute(path, params)
-        except Exception, e:
+        except Exception as e:
             self.send_error(500, str(e))
     
     def __execute(self, path, params):
@@ -82,7 +82,7 @@ class WebGridRequestHandler(BaseHTTPRequestHandler):
     def echo(self, params):
         '''Debugging method that echoes back the request parameters.
         '''
-        u = unicode(params)
+        u = str(params)
         self.send_response(200)
         self.send_header('Content-type', 'text/plain;charset=utf-8')
         self.send_header('Content-length', str(len(u)))
@@ -105,7 +105,7 @@ class WebGridRequestHandler(BaseHTTPRequestHandler):
         globs = dict(globals())
         del globs['__name__']
         # TODO: use rexec or otherwise limit the code than can be uploaded.
-        exec params['code'][0] in globs, globs
+        exec(params['code'][0] in globs, globs)
         handlers[params['id'][0]] = globs['handler']
         self.sendEmptyResponse()
     
@@ -121,8 +121,8 @@ class WebGridRequestHandler(BaseHTTPRequestHandler):
         '''
         handlers = {}
         for kind in _validKinds:
-            handlers[kind] = self.server.getHandlers(kind).keys()
-        handlers = unicode(handlers)
+            handlers[kind] = list(self.server.getHandlers(kind).keys())
+        handlers = str(handlers)
         self.send_response(200)
         self.send_header('Content-type', 'text/plain;charset=utf-8')
         self.send_header('Content-length', str(len(handlers)))
@@ -165,18 +165,18 @@ class WebGridRequestHandler(BaseHTTPRequestHandler):
         '''Handle a profile query.
         '''
         query = self.__createQuery(params)
-        tmp = os.tmpfile()
-        tmp.writelines((u'<?xml version="1.0" encoding="UTF-8"?>\n',
-            u'<!DOCTYPE profiles PUBLIC "-//JPL//DTD Profile 1.1//EN"\n',
-            u'  "http://oodt.jpl.nasa.gov/grid-profile/dtd/prof.dtd">\n',
-            u'<profiles>\n'))
-        for handler in self.server.getHandlers('profile').itervalues():
+        tmp = tempfile.TemporaryFile()
+        tmp.write(('<?xml version="1.0" encoding="UTF-8"?>\n',
+            '<!DOCTYPE profiles PUBLIC "-//JPL//DTD Profile 1.1//EN"\n',
+            '  "http://oodt.jpl.nasa.gov/grid-profile/dtd/prof.dtd">\n',
+            '<profiles>\n'))
+        for handler in self.server.getHandlers('profile').values():
             for profile in handler.query(query):
                 node = profile.toXML(_doc)
                 tmp.write(node.toxml())
-        tmp.write(u'</profiles>')
+        tmp.write('</profiles>')
         tmp.flush()
-        tmp.seek(0L)
+        tmp.seek(0)
         self.send_response(200)
         self.send_header('Content-type', 'text/xml;charset=utf-8')
         size = os.fstat(tmp.fileno())[stat.ST_SIZE]

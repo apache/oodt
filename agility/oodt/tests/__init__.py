@@ -17,22 +17,4 @@
 
 '''Agile OODT Tests.
 '''
-
-__docformat__ = 'restructuredtext'
-
-import unittest
-import profileTest, queryTest, xmlutilsTest
-
-def test_suite():
-    '''Create the suite of tests.
-    '''
-    suite = unittest.TestSuite()
-    suite.addTest(profileTest.test_suite())
-    suite.addTest(queryTest.test_suite())
-    suite.addTest(xmlutilsTest.test_suite())
-    return suite
-    
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
     

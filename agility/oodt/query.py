@@ -34,8 +34,10 @@ pass around to profile servers, product servers, and so forth.
 
 __docformat__ = 'restructuredtext'
 
-import oodterrors, shlex, xmlutils, xml.dom
-from xmlutils import DocumentableField
+import shlex, xml.dom
+import oodt.oodterrors as oodterrors
+import oodt.xmlutils as xmlutils
+from .xmlutils import DocumentableField
 
 class _QueryExpressionScanner(shlex.shlex):
     '''Extend the shlex scanner but for the DIS-style query expressions we expect.
@@ -101,8 +103,8 @@ class QueryElement(xmlutils.Documentable):
     def getDocumentableFields(self):
         '''Get the attributes that go into XML.
         '''
-        return (DocumentableField('role', u'tokenRole', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('value', u'tokenValue', DocumentableField.SINGLE_VALUE_KIND))
+        return (DocumentableField('role', 'tokenRole', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('value', 'tokenValue', DocumentableField.SINGLE_VALUE_KIND))
     
     def __repr__(self):
         return 'QueryElement(role="%s",value="%s")' % (self.role, self.value)
@@ -129,14 +131,14 @@ class QueryHeader(xmlutils.Documentable):
     def getDocumentableFields(self):
         '''Get the attributes that go into XML.
         '''
-        return (DocumentableField('id', u'queryId', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('title', u'queryTitle', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('desc', u'queryDesc', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('type', u'queryType', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('status', u'queryStatusId', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('security', u'querySecurityType', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('rev', u'queryRevisionNote', DocumentableField.SINGLE_VALUE_KIND),
-            DocumentableField('dataDict', u'queryDataDictId', DocumentableField.SINGLE_VALUE_KIND))
+        return (DocumentableField('id', 'queryId', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('title', 'queryTitle', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('desc', 'queryDesc', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('type', 'queryType', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('status', 'queryStatusId', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('security', 'querySecurityType', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('rev', 'queryRevisionNote', DocumentableField.SINGLE_VALUE_KIND),
+            DocumentableField('dataDict', 'queryDataDictId', DocumentableField.SINGLE_VALUE_KIND))
     
     def __repr__(self):
         return 'QueryHeader(id="%s",title="%s",desc="%s",type="%s",status="%s",security="%s",rev="%s",dataDict="%s")' % (
@@ -270,22 +272,22 @@ class Query(object):
         '''
         query = owner.createElement('query')
         query.appendChild(self.header.toXML(owner))
-        xmlutils.add(query, u'queryResultModeId', self.resultModeID)
-        xmlutils.add(query, u'queryPropogationType', self.propType)
-        xmlutils.add(query, u'queryPropogationLevels', self.propLevels)
+        xmlutils.add(query, 'queryResultModeId', self.resultModeID)
+        xmlutils.add(query, 'queryPropogationType', self.propType)
+        xmlutils.add(query, 'queryPropogationLevels', self.propLevels)
         for mimeType in self.mimeAccept:
-            xmlutils.add(query, u'queryMimeAccept', mimeType)
-        xmlutils.add(query, u'queryMaxResults', str(self.maxResults))
-        xmlutils.add(query, u'queryKWQString', self.keywordQuery)
-        selects = owner.createElement(u'querySelectSet')
+            xmlutils.add(query, 'queryMimeAccept', mimeType)
+        xmlutils.add(query, 'queryMaxResults', str(self.maxResults))
+        xmlutils.add(query, 'queryKWQString', self.keywordQuery)
+        selects = owner.createElement('querySelectSet')
         query.appendChild(selects)
         for select in self.selects:
             selects.appendChild(select.toXML(owner))
-        fromElement = owner.createElement(u'queryFromSet')
+        fromElement = owner.createElement('queryFromSet')
         query.appendChild(fromElement)
         for i in self.froms:
             fromElement.appendChild(i.toXML(owner))
-        wheres = owner.createElement(u'queryWhereSet')
+        wheres = owner.createElement('queryWhereSet')
         query.appendChild(wheres)
         for where in self.wheres:
             wheres.appendChild(where.toXML(owner))
@@ -300,27 +302,27 @@ class Query(object):
         self.mimeAccept, self.results = [], []
         for child in node.childNodes:
             if child.nodeType == xml.dom.Node.ELEMENT_NODE:
-                if child.nodeName == u'queryAttributes':
+                if child.nodeName == 'queryAttributes':
                     self.header = QueryHeader(node=child)
-                elif child.nodeName == u'resultModeID':
+                elif child.nodeName == 'resultModeID':
                     self.resultModeID = xmlutils.text(child)
-                elif child.nodeName == u'queryPropogationType':
+                elif child.nodeName == 'queryPropogationType':
                     self.propType = xmlutils.text(child)
-                elif child.nodeName == u'queryPropogationLevels':
+                elif child.nodeName == 'queryPropogationLevels':
                     self.propLevels = xmlutils.text(child)
-                elif child.nodeName == u'queryMimeAccept':
+                elif child.nodeName == 'queryMimeAccept':
                     self.mimeAccept.append(xmlutils.text(child))
-                elif child.nodeName == u'queryMaxResults':
+                elif child.nodeName == 'queryMaxResults':
                     self.maxResults = int(xmlutils.text(child))
-                elif child.nodeName == u'queryKWQString':
+                elif child.nodeName == 'queryKWQString':
                     self.keywordQuery = xmlutils.text(child)
-                elif child.nodeName == u'querySelectSet':
+                elif child.nodeName == 'querySelectSet':
                     self.selects = _parseQueryElements(child)
-                elif child.nodeName == u'queryFromSet':
+                elif child.nodeName == 'queryFromSet':
                     self.froms = _parseQueryElements(child)
-                elif child.nodeName == u'queryWhereSet':
+                elif child.nodeName == 'queryWhereSet':
                     self.wheres = _parseQueryElements(child)
-                elif child.nodeName == u'queryResultSet':
+                elif child.nodeName == 'queryResultSet':
                     self.resultSet = QueryResult(node=child)
     
     def __cmp__(self, other):
