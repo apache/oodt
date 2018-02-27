@@ -4,6 +4,10 @@ Apache OODT Change Log
 =======
 Release 1.9 - In Progress
 
+* OODT-969 Tests for Avro File Manager client and server (imesha via mattmann)
+
+* OODT-970 Netty Transceiver throws an NPE (imesha via mattmann)
+
 * OODT-951 Wrong null checker (JC via mattmann)
 
 * OODT-972 Add filemgr.server and filemgr.client configuration keys to Radix filemgr.properties (lewismc via mattmann)
