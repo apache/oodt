@@ -17,15 +17,11 @@
 
 package org.apache.oodt.cas.resource.system;
 
-import org.apache.oodt.cas.resource.structs.exceptions.*;
-
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-
 public interface ResourceManager {
 
-        boolean shutdown();
+    void startUp() throws Exception;
 
+    boolean isAlive();
+
+    boolean shutdown();
 }

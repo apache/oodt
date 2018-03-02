@@ -26,11 +26,12 @@ import org.apache.oodt.cas.resource.structs.AvroTypeFactory;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.avrotypes.ResourceManager;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
+import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
-import org.apache.oodt.cas.resource.structs.avrotypes.ResourceManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -155,9 +156,29 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     }
 
     @Override
+    public String getNodeReport() throws MonitorException {
+        try {
+            return proxy.getNodeReport();
+        } catch (AvroRemoteException e) {
+            LOG.log(Level.SEVERE, "Server error!");
+        }
+        return null;
+    }
+
+    @Override
+    public String getExecReport() throws JobRepositoryException {
+        try {
+            return proxy.getExecReport();
+        } catch (AvroRemoteException e) {
+            LOG.log(Level.SEVERE, "Server error!");
+        }
+        return null;
+    }
+
+    @Override
     public String submitJob(Job exec, JobInput in) throws JobExecutionException {
         try {
-            return proxy.handleJob(AvroTypeFactory.getAvroJob(exec),AvroTypeFactory.getAvroJobInput(in));
+            return proxy.handleJob(AvroTypeFactory.getAvroJob(exec), AvroTypeFactory.getAvroJobInput(in));
         } catch (AvroRemoteException e) {
             LOG.log(Level.SEVERE,
                     "Server error!");
@@ -243,7 +264,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     @Override
     public void setNodeCapacity(String nodeId, int capacity) throws MonitorException {
         try {
-            proxy.setNodeCapacity(nodeId,capacity);
+            proxy.setNodeCapacity(nodeId, capacity);
         } catch (AvroRemoteException e) {
             throw new MonitorException(e);
         }
@@ -252,7 +273,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     @Override
     public void addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
         try {
-            proxy.addNodeToQueue(nodeId,queueName);
+            proxy.addNodeToQueue(nodeId, queueName);
         } catch (AvroRemoteException e) {
             throw new QueueManagerException(e);
         }
@@ -261,7 +282,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     @Override
     public void removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
         try {
-            proxy.removeNodeFromQueue(nodeId,queueName);
+            proxy.removeNodeFromQueue(nodeId, queueName);
         } catch (AvroRemoteException e) {
             throw new QueueManagerException(e);
         }
@@ -300,6 +321,15 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
             return proxy.getNodeLoad(nodeId);
         } catch (AvroRemoteException e) {
             throw new MonitorException(e);
+        }
+    }
+
+    @Override
+    public List getQueuedJobs() throws JobQueueException {
+        try {
+            return proxy.getQueuedJobs();
+        } catch (AvroRemoteException e) {
+            throw new JobQueueException(e);
         }
     }
 }

@@ -57,25 +57,24 @@ import java.util.logging.Logger;
  * <p>
  * An XML RPC-based Resource manager.
  * </p>
- * 
+ *
  */
 @Deprecated
-public class XmlRpcResourceManager {
+public class XmlRpcResourceManager implements ResourceManager{
 
-    /* our log stream */
-    private Logger LOG = Logger
-            .getLogger(XmlRpcResourceManager.class.getName());
+    /** our log stream */
+    private Logger LOG = Logger.getLogger(XmlRpcResourceManager.class.getName());
 
-    /* our xml rpc web server */
-    private WebServer webServer = null;
-
-    /* our scheduler */
-    private Scheduler scheduler = null;
-
+    private int port;
+    /** our xml rpc web server */
+    private WebServer webServer;
+    /** our scheduler */
+    private Scheduler scheduler;
     /** Configuration Manager instance of this instance */
     private ConfigurationManager configurationManager;
 
     public XmlRpcResourceManager(int port) throws IOException {
+        this.port = port;
         List<String> propertiesFiles = new ArrayList<>();
         // set up the configuration, if there is any
         if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
@@ -83,6 +82,10 @@ public class XmlRpcResourceManager {
         }
 
         configurationManager = ConfigurationManagerFactory.getConfigurationManager(Component.RESOURCE_MANAGER, propertiesFiles);
+    }
+
+    @Override
+    public void startUp() throws Exception{
         try {
             configurationManager.loadConfiguration();
         } catch (Exception e) {
@@ -100,8 +103,6 @@ public class XmlRpcResourceManager {
         // start up the scheduler
         new Thread(scheduler).start();
 
-
-
         // start up the web server
         webServer = new WebServer(port);
         webServer.addHandler("resourcemgr", this);
@@ -109,13 +110,12 @@ public class XmlRpcResourceManager {
 
         LOG.log(Level.INFO, "Resource Manager started by "
                 + System.getProperty("user.name", "unknown"));
-
     }
 
     public boolean isAlive() {
         return true;
     }
-    
+
     /**
      * Gets the number of Jobs in JobQueue
      * @return Number of Jobs in JobQueue
@@ -128,7 +128,7 @@ public class XmlRpcResourceManager {
     		throw new JobRepositoryException("Failed to get size of JobQueue : " + e.getMessage(), e);
     	}
     }
-    
+
     /**
      * Gets the max number of Jobs allowed in JobQueue
      * @return Max number of Jobs
@@ -283,12 +283,12 @@ public class XmlRpcResourceManager {
     public List<String> getQueues() {
     	return new Vector<String>(this.scheduler.getQueueManager().getQueues());
     }
-    
+
     public boolean addQueue(String queueName) {
     	this.scheduler.getQueueManager().addQueue(queueName);
     	return true;
     }
-    
+
     public boolean removeQueue(String queueName) {
     	this.scheduler.getQueueManager().removeQueue(queueName);
     	return true;
@@ -301,7 +301,7 @@ public class XmlRpcResourceManager {
     	this.scheduler.getMonitor().addNode(XmlRpcStructFactory.getResourceNodeFromXmlRpc(hashNode));
     	return true;
     }
-    
+
     public boolean removeNode(String nodeId) throws MonitorException {
     	try{
 	    	for(String queueName: this.getQueuesWithNode(nodeId)){
@@ -311,31 +311,31 @@ public class XmlRpcResourceManager {
     	}catch(Exception e){
     		throw new MonitorException(e.getMessage(), e);
     	}
-    	
+
     	return true;
     }
-    
+
     public boolean addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
     	this.scheduler.getQueueManager().addNodeToQueue(nodeId, queueName);
     	return true;
     }
-    
+
     public boolean removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
     	this.scheduler.getQueueManager().removeNodeFromQueue(nodeId, queueName);
     	return true;
     }
-    
+
     public List<String> getNodesInQueue(String queueName) throws QueueManagerException {
     	return new Vector<String>(this.scheduler.getQueueManager().getNodes(queueName));
     }
-    
+
     public List<String> getQueuesWithNode(String nodeId) {
     	return new Vector<String>(this.scheduler.getQueueManager().getQueues(nodeId));
     }
 
+    @Override
     public boolean shutdown() {
         configurationManager.clearConfiguration();
-
         if (this.webServer != null) {
             this.webServer.shutdown();
             this.webServer = null;
@@ -344,37 +344,37 @@ public class XmlRpcResourceManager {
             return false;
         }
     }
-    
+
     public String getNodeLoad(String nodeId) throws MonitorException{
     	ResourceNode node = this.scheduler.getMonitor().getNodeById(nodeId);
     	int capacity = node.getCapacity();
     	int load = (this.scheduler.getMonitor().getLoad(node)) * -1 + capacity;
     	return load + "/" + capacity;
     }
-    
+
     public List getQueuedJobs() {
     	Vector jobs = new Vector();
     	List jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
-    	
+
     	if(jobSpecs != null && jobSpecs.size() > 0){
             for (Object jobSpec : jobSpecs) {
                 Job job = ((JobSpec) jobSpec).getJob();
                 jobs.add(job);
             }
     	}
-    	
+
     	return XmlRpcStructFactory.getXmlRpcJobList(jobs);
     }
-    
+
     public String getNodeReport() throws MonitorException{
     	StringBuilder report = new StringBuilder();
-    	
+
     	try{
-    		
+
     		// get a sorted list of nodes
     		List nodes = scheduler.getMonitor().getNodes();
     		Collections.sort(nodes, new ResourceNodeComparator());
-    		
+
     		// formulate the report string
             for (Object node1 : nodes) {
                 ResourceNode node = (ResourceNode) node1;
@@ -390,19 +390,19 @@ public class XmlRpcResourceManager {
                 }
                 report.append("\n");
             }
-    	
+
     	}catch(Exception e){
     		throw new MonitorException(e.getMessage(), e);
     	}
-    	
+
     	return report.toString();
     }
-    
+
     public String getExecutionReport() throws JobRepositoryException{
     	StringBuilder report = new StringBuilder();
-    	
+
     	try{
-    	
+
 	    	// get a sorted list of all nodes, since the report should be
 	    	// alphabetically sorted by node
 	    	List resNodes = scheduler.getMonitor().getNodes();
@@ -415,7 +415,7 @@ public class XmlRpcResourceManager {
                 nodeIds.add(((ResourceNode) resNode).getNodeId());
             }
 	    	Collections.sort(nodeIds);
-	    	
+
 	    	// generate the report string
 	    	for(String nodeId: nodeIds){
 	    		List execJobIds = this.scheduler.getBatchmgr().getJobsOnNode(nodeId);
@@ -431,14 +431,14 @@ public class XmlRpcResourceManager {
                     }
 	    		}
 	    	}
-    	
+
     	}catch(Exception e){
     		throw new JobRepositoryException(e.getMessage(), e);
     	}
-    	
+
     	return report.toString();
     }
-    
+
     public static void main(String[] args) throws IOException {
         int portNum = -1;
         String usage = "XmlRpcResourceManager --portNum <port number for xml rpc service>\n";
@@ -463,7 +463,7 @@ public class XmlRpcResourceManager {
             }
         }
     }
-    
+
     public boolean setNodeCapacity(String nodeId, int capacity){
     	try{
     		this.scheduler.getMonitor().getNodeById(nodeId).setCapacity(capacity);

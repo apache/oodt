@@ -20,6 +20,12 @@ import schema "AvroResourceNode.avsc";
 
     string getExecutionNode(string jobId);
 
+    string getExecReport();
+
+    string getNodeReport();
+
+    array<AvroJob> getQueuedJobs();
+
     string handleJob(AvroJob exec, AvroJobInput into);
 
     boolean handleJobWithUrl(AvroJob exec, AvroJobInput in, string hostUrl);

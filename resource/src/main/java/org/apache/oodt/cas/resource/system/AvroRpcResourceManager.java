@@ -22,72 +22,91 @@ import org.apache.avro.ipc.NettyServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
-import org.apache.oodt.cas.resource.structs.*;
-import org.apache.oodt.cas.resource.structs.avrotypes.*;
-import org.apache.oodt.cas.resource.structs.exceptions.*;
+import org.apache.oodt.cas.resource.structs.AvroTypeFactory;
+import org.apache.oodt.cas.resource.structs.Job;
+import org.apache.oodt.cas.resource.structs.JobInput;
+import org.apache.oodt.cas.resource.structs.JobSpec;
+import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.avrotypes.AvroJob;
+import org.apache.oodt.cas.resource.structs.avrotypes.AvroJobInput;
+import org.apache.oodt.cas.resource.structs.avrotypes.AvroResourceNode;
+import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
+import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
+import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
+import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
-import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
-import org.apache.xmlrpc.WebServer;
+import org.apache.oodt.cas.resource.util.ResourceNodeComparator;
+import org.apache.oodt.config.Component;
+import org.apache.oodt.config.ConfigurationManager;
+import org.apache.oodt.config.ConfigurationManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.structs.avrotypes.ResourceManager, ResourceManager{
+public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.structs.avrotypes.ResourceManager, ResourceManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(AvroRpcResourceManager.class);
 
     private int port = 2000;
-
-    private Logger LOG = Logger
-            .getLogger(XmlRpcResourceManager.class.getName());
-
     private Server server;
+    /** our scheduler */
+    private Scheduler scheduler;
+    /** Configuration Manager instance of this instance */
+    private ConfigurationManager configurationManager;
+    private ExecutorService executorService;
 
-    /* our scheduler */
-    private Scheduler scheduler = null;
-
-    public AvroRpcResourceManager(int port)  throws Exception{
-        // load properties from workflow manager properties file, if specified
-        if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
-            String configFile = System
-                    .getProperty("org.apache.oodt.cas.resource.properties");
-            LOG.log(Level.INFO,
-                    "Loading Resource Manager Configuration Properties from: ["
-                            + configFile + "]");
-            System.getProperties().load(
-                    new FileInputStream(new File(configFile)));
-        }
-
-        String schedulerClassStr = System.getProperty(
-                "resource.scheduler.factory",
-                "org.apache.oodt.cas.resource.scheduler.LRUSchedulerFactory");
-
-        scheduler = GenericResourceManagerObjectFactory
-                .getSchedulerServiceFromFactory(schedulerClassStr);
-
-        // start up the scheduler
-        new Thread(scheduler).start();
-
+    public AvroRpcResourceManager(int port) {
         this.port = port;
 
-        // start up the web server
-        server = new NettyServer(new SpecificResponder(org.apache.oodt.cas.resource.structs.avrotypes.ResourceManager.class,this),
-                new InetSocketAddress(this.port));
-        server.start();
+        List<String> propertiesFiles = new ArrayList<>();
+        // set up the configuration, if there is any
+        if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
+            propertiesFiles.add(System.getProperty("org.apache.oodt.cas.resource.properties"));
+        }
 
-        LOG.log(Level.INFO, "Resource Manager started by "
-                + System.getProperty("user.name", "unknown"));
-
+        configurationManager = ConfigurationManagerFactory
+                .getConfigurationManager(Component.RESOURCE_MANAGER, propertiesFiles);
     }
 
     @Override
-    public boolean isAlive() throws AvroRemoteException {
+    public void startUp() throws Exception {
+        try {
+            configurationManager.loadConfiguration();
+        } catch (Exception e) {
+            logger.error("Unable to load configuration", e);
+            throw new IOException("Unable to load configuration", e);
+        }
+
+        String schedulerClassStr = System.getProperty("resource.scheduler.factory",
+                "org.apache.oodt.cas.resource.scheduler.LRUSchedulerFactory");
+        scheduler = GenericResourceManagerObjectFactory.getSchedulerServiceFromFactory(schedulerClassStr);
+
+        // start up the scheduler
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(scheduler);
+
+        // start up the web server
+        server = new NettyServer(new SpecificResponder(org.apache.oodt.cas.resource.structs.avrotypes.ResourceManager.class, this),
+                new InetSocketAddress(this.port));
+        server.start();
+
+        logger.info("Resource Manager started by {}", System.getProperty("user.name", "unknown"));
+    }
+
+    @Override
+    public boolean isAlive() {
         return true;
     }
 
@@ -95,7 +114,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public int getJobQueueSize() throws AvroRemoteException {
         try {
             return this.scheduler.getJobQueue().getSize();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new AvroRemoteException(new JobRepositoryException("Failed to get size of JobQueue : " + e.getMessage(), e));
         }
     }
@@ -105,7 +124,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public int getJobQueueCapacity() throws AvroRemoteException {
         try {
             return this.scheduler.getJobQueue().getCapacity();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new AvroRemoteException(new JobRepositoryException("Failed to get capacity of JobQueue : " + e.getMessage(), e));
         }
     }
@@ -117,10 +136,11 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
                     jobId);
             return scheduler.getJobQueue().getJobRepository().jobFinished(spec);
 
-        } catch(JobRepositoryException e ){
+        } catch (JobRepositoryException e) {
             throw new AvroRemoteException(e);
         }
     }
+
     @Override
     public AvroJob getJobInfo(String jobId) throws AvroRemoteException {
         JobSpec spec = null;
@@ -129,15 +149,12 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
             spec = scheduler.getJobQueue().getJobRepository()
                     .getJobById(jobId);
         } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING,
-                    "Exception communicating with job repository for job: ["
-                            + jobId + "]: Message: " + e.getMessage());
+            logger.warn("Exception communicating with job repository for job: [{}]: Message: {}", jobId, e.getMessage());
             throw new AvroRemoteException(new JobRepositoryException("Unable to get job: [" + jobId
                     + "] from repository!"));
         }
 
         return AvroTypeFactory.getAvroJob(spec.getJob());
-
     }
 
     @Override
@@ -152,7 +169,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     @Override
     public boolean handleJobWithUrl(AvroJob exec, AvroJobInput in, String hostUrl) throws AvroRemoteException {
         try {
-            return genericHandleJob(exec,in,hostUrl);
+            return genericHandleJob(exec, in, hostUrl);
         } catch (JobExecutionException e) {
             throw new AvroRemoteException(e);
         }
@@ -186,9 +203,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public boolean killJob(String jobId) throws AvroRemoteException {
         String resNodeId = scheduler.getBatchmgr().getExecutionNode(jobId);
         if (resNodeId == null) {
-            LOG.log(Level.WARNING, "Attempt to kill job: [" + jobId
-                    + "]: cannot find execution node"
-                    + " (has the job already finished?)");
+            logger.warn("Attempt to kill job: [{}]: cannot find execution node (has the job already finished?)", jobId);
             return false;
         }
         ResourceNode node = null;
@@ -205,11 +220,98 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     public String getExecutionNode(String jobId) throws AvroRemoteException {
         String execNode = scheduler.getBatchmgr().getExecutionNode(jobId);
         if (execNode == null) {
-            LOG.log(Level.WARNING, "Job: [" + jobId
-                    + "] not currently executing on any known node");
+            logger.warn("Job: [{}] not currently executing on any known node", jobId);
             return "";
         } else
             return execNode;
+    }
+
+    @Override
+    public String getNodeReport() {
+        StringBuilder report = new StringBuilder();
+
+        try {
+
+            // get a sorted list of nodes
+            List nodes = scheduler.getMonitor().getNodes();
+            Collections.sort(nodes, new ResourceNodeComparator());
+
+            // formulate the report string
+            for (Object node1 : nodes) {
+                ResourceNode node = (ResourceNode) node1;
+                String nodeId = node.getNodeId();
+                report.append(nodeId);
+                report.append(" (").append(getNodeLoad(nodeId)).append("/").append(node.getCapacity()).append(")");
+                List<String> nodeQueues = getQueuesWithNode(nodeId);
+                if (nodeQueues != null && nodeQueues.size() > 0) {
+                    report.append(" -- ").append(nodeQueues.get(0));
+                    for (int j = 1; j < nodeQueues.size(); j++) {
+                        report.append(", ").append(nodeQueues.get(j));
+                    }
+                }
+                report.append("\n");
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
+        return report.toString();
+    }
+
+    public List<AvroJob> getQueuedJobs() {
+        List<AvroJob> jobs = new ArrayList<>();
+        List jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
+
+        if (jobSpecs != null && jobSpecs.size() > 0) {
+            for (Object jobSpec : jobSpecs) {
+                Job job = ((JobSpec) jobSpec).getJob();
+                jobs.add(AvroTypeFactory.getAvroJob(job));
+            }
+        }
+
+        return jobs;
+    }
+
+    @Override
+    public String getExecReport() {
+        StringBuilder report = new StringBuilder();
+
+        try {
+
+            // get a sorted list of all nodes, since the report should be
+            // alphabetically sorted by node
+            List resNodes = scheduler.getMonitor().getNodes();
+            if (resNodes.size() == 0) {
+                throw new MonitorException(
+                        "No jobs can be executing, as there are no nodes in the Monitor");
+            }
+            Vector<String> nodeIds = new Vector<String>();
+            for (Object resNode : resNodes) {
+                nodeIds.add(((ResourceNode) resNode).getNodeId());
+            }
+            Collections.sort(nodeIds);
+
+            // generate the report string
+            for (String nodeId : nodeIds) {
+                List execJobIds = this.scheduler.getBatchmgr().getJobsOnNode(nodeId);
+                if (execJobIds != null && execJobIds.size() > 0) {
+                    for (Object execJobId : execJobIds) {
+                        String jobId = (String) execJobId;
+                        Job job = scheduler.getJobQueue().getJobRepository()
+                                .getJobById(jobId).getJob();
+                        report.append("job id=").append(jobId);
+                        report.append(", load=").append(job.getLoadValue());
+                        report.append(", node=").append(nodeId);
+                        report.append(", queue=").append(job.getQueueName()).append("\n");
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+
+        return report.toString();
     }
 
     @Override
@@ -255,12 +357,12 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
 
     @Override
     public boolean removeNode(String nodeId) throws AvroRemoteException {
-        try{
-            for(String queueName: this.getQueuesWithNode(nodeId)){
+        try {
+            for (String queueName : this.getQueuesWithNode(nodeId)) {
                 this.removeNodeFromQueue(nodeId, queueName);
             }
             this.scheduler.getMonitor().removeNodeById(nodeId);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new AvroRemoteException(new MonitorException(e.getMessage(), e));
         }
 
@@ -307,13 +409,18 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
         }
     }
 
-    public boolean shutdown(){
+    @Override
+    public boolean shutdown() {
+        configurationManager.clearConfiguration();
+        executorService.shutdownNow();
+
         if (this.server != null) {
             this.server.close();
             this.server = null;
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override
@@ -346,7 +453,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
 
         AvroRpcResourceManager manager = new AvroRpcResourceManager(portNum);
 
-        for (;;)
+        for (; ; )
             try {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {
@@ -356,15 +463,13 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
 
     @Override
     public boolean setNodeCapacity(String nodeId, int capacity) throws AvroRemoteException {
-        try{
+        try {
             this.scheduler.getMonitor().getNodeById(nodeId).setCapacity(capacity);
-        }catch (MonitorException e){
-            LOG.log(Level.WARNING, "Exception setting capacity on node "
-                    + nodeId + ": " + e.getMessage());
+        } catch (MonitorException e) {
+            logger.warn("Exception setting capacity on node {}: ", nodeId, e.getMessage());
             return false;
         }
         return true;
-
     }
 
 
@@ -381,15 +486,14 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
         try {
             jobId = scheduler.getJobQueue().addJob(spec);
         } catch (JobQueueException e) {
-            LOG.log(Level.WARNING, "JobQueue exception adding job: Message: "
-                    + e.getMessage());
+            logger.warn("JobQueue exception adding job: Message: {}", e.getMessage());
             throw new SchedulerException(e.getMessage());
         }
         return jobId;
     }
 
     private boolean genericHandleJob(AvroJob avroJob, AvroJobInput avroJobInput,
-                                     String urlStr) throws JobExecutionException {
+            String urlStr) throws JobExecutionException {
         Job exec = AvroTypeFactory.getJob(avroJob);
         JobInput in = AvroTypeFactory.getJobInput(avroJobInput);
 
@@ -415,8 +519,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
         try {
             url = new URL(urlStr);
         } catch (MalformedURLException e) {
-            LOG.log(Level.WARNING, "Error converting string: [" + urlStr
-                    + "] to URL object: Message: " + e.getMessage());
+            logger.warn("Error converting string: [{}] to URL object: Message: {}", urlStr, e.getMessage());
         }
 
         return url;

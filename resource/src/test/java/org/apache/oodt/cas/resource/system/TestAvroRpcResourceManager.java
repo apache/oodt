@@ -17,10 +17,12 @@
 
 package org.apache.oodt.cas.resource.system;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.resource.structs.NameValueJobInput;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -29,7 +31,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
-public class TestAvroRpcResourceManager extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
+public class TestAvroRpcResourceManager {
 
     private File tmpPolicyDir;
 
@@ -37,21 +43,27 @@ public class TestAvroRpcResourceManager extends TestCase {
 
     private static final int RM_PORT = 50001;
 
-    public void testFake() {
-      
+    @Before
+    public void setUp() throws Exception {
+        try {
+            System.out.println(NameValueJobInput.class.getCanonicalName());
+            generateTestConfiguration();
+            rm = new AvroRpcResourceManager(RM_PORT);
+            rm.startUp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
+
     /**
      * @since OODT-182
      */
-    //Disabled until API impl can be finished  
-    public void XtestDynSetNodeCapacity() {
+    @Test
+    public void testDynSetNodeCapacity() {
         AvroRpcResourceManagerClient rmc = null;
         try {
-            rmc = new AvroRpcResourceManagerClient(new URL("http://localhost:"
-                    + RM_PORT));
+            rmc = new AvroRpcResourceManagerClient(new URL("http://localhost:" + RM_PORT));
         } catch (Exception e) {
-            System.out.println("radu1");
             e.printStackTrace();
             fail(e.getMessage());
         }
@@ -60,7 +72,6 @@ public class TestAvroRpcResourceManager extends TestCase {
         try {
             rmc.setNodeCapacity("localhost", 8);
         } catch (MonitorException e) {
-            System.out.println("radu2");
             e.printStackTrace();
             fail(e.getMessage());
         }
@@ -68,9 +79,7 @@ public class TestAvroRpcResourceManager extends TestCase {
         int setCapacity = -1;
         try {
             setCapacity = rmc.getNodeById("localhost").getCapacity();
-
         } catch (Exception e) {
-            System.out.println("radu3");
             e.printStackTrace();
             fail(e.getMessage());
         }
@@ -78,31 +87,11 @@ public class TestAvroRpcResourceManager extends TestCase {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        try {
-            System.out.println(NameValueJobInput.class.getCanonicalName());
-            generateTestConfiguration();
-            this.rm = new AvroRpcResourceManager(RM_PORT);
+    @After
+    public void tearDown() {
+        if (this.rm != null) {
+            this.rm.shutdown();
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @Override
-    protected void tearDown() throws Exception {
-        if (this.rm != null) this.rm.shutdown();
         deleteAllFiles(this.tmpPolicyDir.getAbsolutePath());
     }
 
@@ -117,7 +106,6 @@ public class TestAvroRpcResourceManager extends TestCase {
         }
 
         startDirFile.delete();
-
     }
 
     private void generateTestConfiguration() throws IOException {

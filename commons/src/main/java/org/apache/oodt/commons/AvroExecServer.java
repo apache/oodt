@@ -17,16 +17,9 @@
 
 package org.apache.oodt.commons;
 
-import org.apache.avro.Protocol;
-import org.apache.avro.ipc.HttpServer;
-import org.apache.avro.ipc.Responder;
-import org.apache.avro.ipc.Server;
-import org.apache.avro.ipc.generic.GenericResponder;
-import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.commons.io.Base64EncodingOutputStream;
 import org.apache.oodt.commons.util.LogInit;
 import org.apache.oodt.commons.util.XML;
-import org.apache.xmlrpc.XmlRpcServer;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -68,10 +61,6 @@ public class AvroExecServer {
 
     /** The &lt;log&gt; element within the status document. */
     private Element logElement;
-
-    /** The XML-RPC interface to this server. */
-    private HttpServer server;
-
 
     /** Status DTD Document Type Definition formal public identifier. */
     public static final String STATUS_FPI = "-//JPL//DTD EDA Server Status 1.0";

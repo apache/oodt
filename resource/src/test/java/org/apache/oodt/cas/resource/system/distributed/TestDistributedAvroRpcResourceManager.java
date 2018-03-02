@@ -17,8 +17,9 @@
 
 package org.apache.oodt.cas.resource.system.distributed;
 
-import org.apache.oodt.cas.resource.system.TestXmlRpcResourceManager;
-import org.apache.oodt.cas.resource.system.XmlRpcResourceManager;
+import org.apache.oodt.cas.resource.system.AvroRpcResourceManager;
+import org.apache.oodt.cas.resource.system.ResourceManager;
+import org.apache.oodt.cas.resource.system.TestAvroRpcResourceManager;
 import org.apache.oodt.config.distributed.cli.ConfigPublisher;
 import org.apache.oodt.config.test.AbstractDistributedConfigurationTest;
 import org.junit.After;
@@ -33,12 +34,12 @@ import static org.junit.Assert.fail;
  *
  * @author Imesha Sudasingha
  */
-public class TestDistributedXmlRpcResourceManager extends AbstractDistributedConfigurationTest {
+public class TestDistributedAvroRpcResourceManager extends AbstractDistributedConfigurationTest {
 
     private static final int RM_PORT = 50001;
     private static final String CONF_PUBLISHER_XML = "config/distributed/config-publisher.xml";
 
-    private XmlRpcResourceManager resourceManager;
+    private ResourceManager resourceManager;
 
     @Before
     public void setUpTest() throws Exception {
@@ -53,7 +54,7 @@ public class TestDistributedXmlRpcResourceManager extends AbstractDistributedCon
         });
 
         try {
-            resourceManager = new XmlRpcResourceManager(RM_PORT);
+            resourceManager = new AvroRpcResourceManager(RM_PORT);
             resourceManager.startUp();
         } catch (Exception e) {
             fail(e.getMessage());
@@ -62,7 +63,7 @@ public class TestDistributedXmlRpcResourceManager extends AbstractDistributedCon
 
     @Test
     public void testDynSetNodeCapacity() {
-        new TestXmlRpcResourceManager().testDynSetNodeCapacity();
+        new TestAvroRpcResourceManager().testDynSetNodeCapacity();
     }
 
     @After

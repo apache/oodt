@@ -21,6 +21,7 @@ import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
+import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.util.List;
 
 public interface ResourceManagerClient {
+
     boolean isJobComplete(String jobId) throws JobRepositoryException;
 
     Job getJobInfo(String jobId) throws JobRepositoryException;
@@ -43,10 +45,13 @@ public interface ResourceManagerClient {
 
     String getExecutionNode(String jobId);
 
+    String getNodeReport() throws MonitorException;
+
+    String getExecReport() throws JobRepositoryException;
+
     String submitJob(Job exec, JobInput in) throws JobExecutionException;
 
-    boolean submitJob(Job exec, JobInput in, URL hostUrl)
-            throws JobExecutionException;
+    boolean submitJob(Job exec, JobInput in, URL hostUrl) throws JobExecutionException;
 
     List getNodes() throws MonitorException;
 
@@ -77,4 +82,6 @@ public interface ResourceManagerClient {
     List<String> getQueuesWithNode(String nodeId) throws QueueManagerException;
 
     String getNodeLoad(String nodeId) throws MonitorException;
+
+    List getQueuedJobs() throws JobQueueException;
 }

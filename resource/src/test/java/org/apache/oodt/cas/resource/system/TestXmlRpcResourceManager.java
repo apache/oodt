@@ -87,11 +87,10 @@ public class TestXmlRpcResourceManager extends TestCase {
    */
   @Override
   protected void setUp() throws Exception {
-
     System.out.println(NameValueJobInput.class.getCanonicalName());
-
     generateTestConfiguration();
     this.rm = new XmlRpcResourceManager(RM_PORT);
+    rm.startUp();
   }
 
   /*

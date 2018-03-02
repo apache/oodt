@@ -51,7 +51,8 @@ case "$1" in
         $JAVA_HOME/bin/java -Djava.ext.dirs=${CAS_RESMGR_HOME}/lib \
         -Djava.util.logging.config.file=${CAS_RESMGR_HOME}/etc/logging.properties \
         -Dorg.apache.oodt.cas.resource.properties=${CAS_RESMGR_PROPS} \
-        org.apache.oodt.cas.resource.system.XmlRpcResourceManager --portNum $SERVER_PORT &       
+        -Dresmgr.manager=org.apache.oodt.cas.resource.system.AvroRpcResourceManager \
+        org.apache.oodt.cas.resource.system.ResourceManagerMain --portNum $SERVER_PORT &
         echo $! >${RUN_HOME}/cas.resmgr.pid 
         echo "OK"
         sleep 5

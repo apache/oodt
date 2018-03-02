@@ -52,7 +52,7 @@ import java.util.logging.Logger;
  * <p>
  * The XML RPC based resource manager client.
  * </p>
- * 
+ *
  */
 @Deprecated
 public class XmlRpcResourceManagerClient implements ResourceManagerClient {
@@ -76,7 +76,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
      * Constructs a new XmlRpcResourceManagerClient with the given
      * <code>url</code>.
      * </p>
-     * 
+     *
      * @param url
      *            The url pointer to the xml rpc resource manager service.
      */
@@ -188,7 +188,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new JobRepositoryException("Failed to get JobQueue from server : " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Gets the max number of Jobs allowed in JobQueue
      * @return Max number of Jobs
@@ -203,7 +203,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new JobRepositoryException("Failed to get JobQueue capacity from server : " + e.getMessage(), e);
         }
     }
-    
+
     @Override
     public boolean killJob(String jobId) {
         Vector argList = new Vector();
@@ -348,7 +348,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new QueueManagerException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Removes the queue with the given name
      * @param queueName The name of the queue to be removed
@@ -364,7 +364,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new QueueManagerException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Adds a node
      * @param node The node to be added
@@ -380,7 +380,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new MonitorException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Removes the node with the given id
      * @param nodeId The id of the node to be removed
@@ -396,7 +396,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new MonitorException(e.getMessage(), e);
         }
     }
-    
+
     @Override
     public void setNodeCapacity(String nodeId, int capacity) throws MonitorException{
     	try{
@@ -408,7 +408,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
     		throw new MonitorException(e.getMessage(), e);
     	}
     }
-    
+
     /**
      * Addes the node with given id to the queue with the given name
      * @param nodeId The id of the node to be added to the given queueName
@@ -426,7 +426,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new QueueManagerException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Remove the node with the given id from the queue with the given name
      * @param nodeId The id of the node to be remove from the given queueName
@@ -444,7 +444,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new QueueManagerException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Gets a list of currently supported queue names
      * @return A list of currently supported queue names
@@ -459,7 +459,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new QueueManagerException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Gets a list of ids of the nodes in the given queue
      * @param queueName The name of the queue to get node ids from
@@ -476,7 +476,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new QueueManagerException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Gets a list of queues which contain the node with the given nodeId
      * @param nodeId The id of the node to get queues it belongs to
@@ -493,7 +493,7 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
             throw new QueueManagerException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Report on the load of the requested node
      * @param nodeId The id of the node to be polled
@@ -511,42 +511,44 @@ public class XmlRpcResourceManagerClient implements ResourceManagerClient {
     	}
     }
 
+    @Override
    public List getQueuedJobs() throws JobQueueException{
         Vector queuedJobs;
-           
+
         try{
 	   queuedJobs = (Vector)client.execute("resourcemgr.getQueuedJobs", new Vector<Object>());
            }catch(Exception e){
 	      throw new JobQueueException(e.getMessage(), e);
            }
-	    
-           return XmlRpcStructFactory.getJobListFromXmlRpc(queuedJobs);
-  }  
 
+           return XmlRpcStructFactory.getJobListFromXmlRpc(queuedJobs);
+  }
+
+    @Override
     public String getNodeReport() throws MonitorException{
 	String report;
-	
+
 	try{
 	    report = (String)client.execute("resourcemgr.getNodeReport", new Vector<Object>());
 	}catch(Exception e){
 	    throw new MonitorException(e.getMessage(), e);
         }
-	
+
        return report;
    }
 
 
     public String getExecReport() throws JobRepositoryException{
 	String report;
-	
+
 	try{
 	    report = (String)client.execute("resourcemgr.getExecutionReport", new Vector<Object>());
 	}catch(Exception e){
 	    throw new JobRepositoryException(e.getMessage(), e);
 	}
-	
+
 	return report;
-  }   
+  }
 
   public static String getReadableJobStatus(String status) {
     if (status.equals(JobStatus.SUCCESS)) {
