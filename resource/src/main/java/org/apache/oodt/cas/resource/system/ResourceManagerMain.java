@@ -17,10 +17,9 @@
 
 package org.apache.oodt.cas.resource.system;
 
+import org.apache.oodt.cas.resource.system.rpc.ResourceManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
 
 public class ResourceManagerMain {
 
@@ -41,13 +40,7 @@ public class ResourceManagerMain {
             System.exit(1);
         }
 
-        String resourceManagerClass = System.getProperty("resmgr.manager",
-                "org.apache.oodt.cas.resource.system.AvroRpcResourceManager");
-
-        logger.info("Starting resource manager {} at port: {}", resourceManagerClass, portNum);
-
-        Constructor<?> constructor = Class.forName(resourceManagerClass).getConstructor(Integer.TYPE);
-        final ResourceManager manager = (ResourceManager) constructor.newInstance(portNum);
+        final ResourceManager manager = ResourceManagerFactory.getResourceManager(portNum);
         manager.startUp();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -57,10 +50,11 @@ public class ResourceManagerMain {
             }
         });
 
-        for (; ; )
+        for (; ; ) {
             try {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {
             }
+        }
     }
 }

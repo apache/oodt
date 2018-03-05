@@ -16,16 +16,17 @@
  */
 package org.apache.oodt.cas.resource.cli.action;
 
+
+//Apache imports
+import org.apache.commons.lang.Validate;
+import org.apache.oodt.cas.cli.action.CmdLineAction;
+import org.apache.oodt.cas.resource.system.ResourceManagerClient;
+import org.apache.oodt.cas.resource.system.rpc.ResourceManagerFactory;
+
 //JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
 
-//Apache imports
-import org.apache.commons.lang.Validate;
-
-//OODT imports
-import org.apache.oodt.cas.cli.action.CmdLineAction;
-import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 
 /**
  * Base {@link CmdLineAction} for Workflow Manager.
@@ -34,24 +35,27 @@ import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
  */
 public abstract class ResourceCliAction extends CmdLineAction {
 
-   private XmlRpcResourceManagerClient client;
+    private ResourceManagerClient client;
 
-   public String getUrl() {
-      return System.getProperty("org.apache.oodt.cas.resource.url");
-   }
+    public String getUrl() {
+        return System.getProperty("org.apache.oodt.cas.resource.url");
+    }
 
-   protected XmlRpcResourceManagerClient getClient()
-         throws MalformedURLException {
-      Validate.notNull(getUrl());
+    protected ResourceManagerClient getClient() throws MalformedURLException {
+        Validate.notNull(getUrl());
 
-      if (client != null) {
-         return client;
-      } else {
-         return new XmlRpcResourceManagerClient(new URL(getUrl()));
-      }
-   }
+        if (client != null) {
+            return client;
+        } else {
+            try {
+                return ResourceManagerFactory.getResourceManagerClient(new URL(getUrl()));
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to create client", e);
+            }
+        }
+    }
 
-   public void setClient(XmlRpcResourceManagerClient client) {
-      this.client = client;
-   }
+    public void setClient(ResourceManagerClient client) {
+        this.client = client;
+    }
 }
