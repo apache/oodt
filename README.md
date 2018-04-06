@@ -1,36 +1,85 @@
 # Welcome to Apache OODT  <http://oodt.apache.org/>
 
-OODT is a grid middleware framework used on a number of successful projects at
-NASA's Jet Propulsion Laboratory/California Institute of Technology, and many
-other research institutions and universities, specifically those part of the:
+Apache Object Oriented Data Technology (OODT) is the smart way to integrate and archive your processes, your data, and its metadata. OODT allows you to:
 
-* National Cancer Institute's (NCI's) Early Detection Research Network (EDRN)
-  project - over 40+ institutions all performing research into discovering
+- Generate Data
+- Process Data
+- Manage Your Data
+- Distribute Your Data
+- Analyze Your Data
+Allowing for the integration of data, computation, visualization and other components.
+
+OODT also allows for remote execution of jobs on scalable computational infrastructures so that computational and data-
+intensive processing can be integrated into OODT’s data processing pipelines using cloud computing and high-performance 
+computing environments.
+
+![Overview of OODT Main Components](http://oodt.apache.org/img/oodt-diag.png "OODT Component Overview")
+
+
+## Why OODT?
+Traditional processing pipelines are commonly made up of custom UNIX shell scripts and fragile custom written glue code.
+Apache OODT uses structured XML-based capturing of the processing pipeline that can be understood and modified by 
+non-programmers to create, edit, manage and provision workflow and task execution.
+
+It is being used on a number of successful projects at NASA's Jet Propulsion Laboratory/California 
+Institute of Technology, and many other research institutions and universities, 
+specifically those part of the:
+
+- **National Cancer Institute's (NCI's) Early Detection Research Network (EDRN)
+  project** - over 40+ institutions all performing research into discovering
   biomarkers which are early indicators of disease.
-* NASA's Planetary Data System (PDS) - NASA's planetary data archive, a
+- **NASA's Planetary Data System (PDS)** - NASA's planetary data archive, a
   repository and registry for all planetary data collected over the past 30+
   years.
-* Various Earth Science data processing missions, including
-  Seawinds/QuickSCAT, the Orbiting Carbon Observatory, the NPP Sounder PEATE
-  project, and the Soil Moisture Active Passive (SMAP) mission.
+- Various Earth Science data processing missions, including
+  **Seawinds/QuickSCAT**, the **Orbiting Carbon Observatory**, the **NPP Sounder PEATE
+  project**, and the **Soil Moisture Active Passive (SMAP) mission**.
+- [**Apache DRAT**](https://github.com/apache/drat) - A distributed release audit tool written on top of OODT's 
+capabilities.
 
 OODT is a Top Level project of the Apache Software Foundation
 <http://www.apache.org/>.
 
-Getting Started
-===============
+***
+
+# Getting Started
+
+## Useful Resources
+- [*OODT Wiki*](https://cwiki.apache.org/confluence/display/OODT/Home)
+- [*Apache OODT platform: Use metadata as a first class citizen* by Tom Barber](https://jaxenter.com/tom-barber-nasa-interview-apache-oodt-127821.html)
+- [RADiX Powered By OODT](https://cwiki.apache.org/confluence/display/OODT/RADiX+Powered+By+OODT)
+- [*A Look into the Apache OODT Ecosystem* by Chris Mattmann](https://www.slideshare.net/chrismattmann/a-look-into-the-apache-oodt-ecosystem)
+
+## Build from scratch
 
 OODT is primarily written in Java, with some components available in Python.
-It requires Java 5 and uses the Maven 2 <http://maven.apache.org/> build
+It requires Java 8 and uses the Maven 3 <http://maven.apache.org/> build
 system.  To build the Java components of OODT, use the following command in
 this directory:
 
     mvn clean install
 
-For the Python components, see the "agility" subdirectory.
+For the Python components, see the **agility** subdirectory.
 
-Contributing
-============
+## RADiX Powered By OODT
+
+OODT isn’t an out of the box solution, but we do try to make it as easy as possible. For that, OODT provides the RADIX build system which will compile a fully operational OODT platform ready for development and deployment. Building the RADIX distribution is as simple as running the following commands:
+
+```bash
+export JAVA_HOME=/usr/lib/jvm… (adjust for your own JAVA_HOME)
+curl -s "https://git-wip-us.apache.org/repos/asf?p=oodt.git;a=blob_plain;f=mvn/archetypes/radix/src/main/resources/bin/radix;hb=HEAD" | bash
+ 
+mv oodt oodt-src; cd oodt-src; mvn install
+mkdir ../oodt; tar -xvf distribution/target/oodt-distribution-0.1-bin.tar.gz -C ../oodt
+cd ../oodt; ./bin/oodt start
+./resmgr/bin/batch_stub 2001
+```
+Navigate to http://localhost:8080/opsui, you should see the default OPSUI system which provides system oversight and interrogation
+
+***
+
+# Contributing
+
 To contribute a patch, follow these instructions (note that installing
 [Hub](http://hub.github.com) is not strictly required, but is recommended).
 
@@ -49,10 +98,39 @@ To contribute a patch, follow these instructions (note that installing
 10. git push -u <your git username> OODT-xxx
 11. git pull-request
 ```
+## Issue Tracker
 
+If you encounter errors in OODT or want to suggest an improvement or a new
+feature, please visit the OODT issue tracker 
+https://issues.apache.org/jira/browse/OODT.  There you can also find the
+latest information on known issues and recent bug fixes and enhancements.
 
-License (see also LICENSE.txt)
-==============================
+## Documentation
+
+You can find an enormous amount of useful documentation/resources related to OODT in 
+[**OODT Confluence Wiki**](https://cwiki.apache.org/confluence/display/OODT/Home).
+
+You can build a local copy of the OODT documentation including JavaDocs using
+the following Maven 2 command in the OODT source directory:
+
+    mvn site
+
+You can then open the OODT Documentation in a web browser:
+
+    ./target/site/index.html
+
+Note: all OODT source files are encoded with UTF-8.  You must set your
+MAVEN_OPTS environment variable to include "-Dfile.encoding=UTF-8" in order to
+properly generate the web site and other artifacts from source.
+
+Note: generating the documentation requires enormous amounts of memory.  More
+than likely you'll need to add to the MAVEN_OPTS environment variable in order
+to set the Java heap maximum size with "-Xmx512m" or larger before attempting
+to run "mvn site".
+
+***
+
+# License (see also LICENSE.txt)
 
 Collective work: Copyright 2010-2012 The Apache Software Foundation.
 
@@ -75,8 +153,9 @@ Apache OODT includes a number of subcomponents with separate copyright
 notices and license terms. Your use of these subcomponents is subject to
 the terms and conditions of the licenses listed in the LICENSE.txt file.
 
-Export control
-==============
+***
+
+# Export control
 
 This distribution includes cryptographic software.  The country in which you
 currently reside may have restrictions on the import, possession, use, and/or
@@ -102,29 +181,9 @@ The following provides more details on the included cryptographic software:
     encrypted PDF files.  See http://www.bouncycastle.org/ for more details on
     Bouncy Castle.
 
-Documentation
-=============
+***
 
-You can build a local copy of the OODT documentation including JavaDocs using
-the following Maven 2 command in the OODT source directory:
-
-    mvn site
-
-You can then open the OODT Documentation in a web browser:
-
-    ./target/site/index.html
-
-Note: all OODT source files are encoded with UTF-8.  You must set your
-MAVEN_OPTS environment variable to include "-Dfile.encoding=UTF-8" in order to
-properly generate the web site and other artifacts from source.
-
-Note: generating the documentation requires enormous amounts of memory.  More
-than likely you'll need to add to the MAVEN_OPTS environment variable in order
-to set the Java heap maximum size with "-Xmx512m" or larger before attempting
-to run "mvn site".
-
-Mailing Lists
-=============
+# Mailing Lists
 
 Discussion about OODT takes place on the following mailing lists:
 
@@ -141,11 +200,3 @@ You can subscribe the mailing lists by sending a message to
 dev-subscribe@oodt...).  To unsubscribe, send a message to
 <LIST>-unsubscribe@oodt.apache.org.  For more instructions, send a
 message to <LIST>-help@oodt.apache.org.
-
-Issue Tracker
-=============
-
-If you encounter errors in OODT or want to suggest an improvement or a new
-feature, please visit the OODT issue tracker 
-https://issues.apache.org/jira/browse/OODT.  There you can also find the
-latest information on known issues and recent bug fixes and enhancements.
