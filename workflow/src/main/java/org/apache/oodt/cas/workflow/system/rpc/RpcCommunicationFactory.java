@@ -19,6 +19,8 @@ package org.apache.oodt.cas.workflow.system.rpc;
 
 import org.apache.oodt.cas.workflow.system.WorkflowManager;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,13 +29,15 @@ import java.util.Properties;
 
 /**
  * @author radu
- *
+ * <p>
  * Create instaces server/client for {@link WorkflowManager} and {@link WorkflowManagerClient}
  */
 
 public class RpcCommunicationFactory {
 
-    private static String getRpcServerClassName(){
+    private static final Logger logger = LoggerFactory.getLogger(RpcCommunicationFactory.class);
+
+    private static String getRpcServerClassName() {
         InputStream prpFileStream = RpcCommunicationFactory.class.getResourceAsStream("/workflow.properties");
         Properties properties = new Properties();
         try {
@@ -45,49 +49,39 @@ public class RpcCommunicationFactory {
                 "org.apache.oodt.cas.workflow.system.rpc.XmlRpcWorkflowManagerFactory");
     }
 
-    private static String getRpcClientClassName(){
+    private static String getRpcClientClassName() {
         InputStream prpFileStream = RpcCommunicationFactory.class.getResourceAsStream("/workflow.properties");
         Properties properties = new Properties();
         try {
             properties.load(prpFileStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to load properties", e);
         }
         return properties.getProperty("workflow.client.factory",
                 "org.apache.oodt.cas.workflow.system.rpc.XmlRpcWorkflowManagerFactory");
     }
 
-    public static WorkflowManager createServer(int port){
+    public static WorkflowManager createServer(int port) {
         try {
             WorkflowManagerFactory workflowManagerFactory =
                     (WorkflowManagerFactory) Class.forName(getRpcServerClassName()).newInstance();
             workflowManagerFactory.setPort(port);
             return workflowManagerFactory.createServer();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error creating server", e);
+            throw new IllegalStateException("Unable to create server", e);
         }
-        return null;
     }
 
-    public static WorkflowManagerClient createClient(URL url){
+    public static WorkflowManagerClient createClient(URL url) {
         try {
             WorkflowManagerFactory workflowManagerFactory =
                     (WorkflowManagerFactory) Class.forName(getRpcClientClassName()).newInstance();
             workflowManagerFactory.setUrl(url);
             return workflowManagerFactory.createClient();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Unable to create client", e);
+            throw new IllegalStateException("Unable to create client", e);
         }
-        return null;
     }
-
-
 }

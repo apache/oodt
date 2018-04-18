@@ -43,6 +43,7 @@ public class ResourceManagerMain {
         final ResourceManager manager = ResourceManagerFactory.getResourceManager(portNum);
         manager.startUp();
 
+        logger.info("Resource manager started at port: {}", portNum);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -53,7 +54,10 @@ public class ResourceManagerMain {
         for (; ; ) {
             try {
                 Thread.currentThread().join();
-            } catch (InterruptedException ignore) {
+            } catch (InterruptedException e) {
+                logger.error("Main thread interrupted. Exiting: {}", e.getMessage());
+                manager.shutdown();
+                break;
             }
         }
     }

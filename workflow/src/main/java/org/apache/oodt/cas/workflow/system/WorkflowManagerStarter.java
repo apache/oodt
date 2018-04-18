@@ -58,14 +58,20 @@ public class WorkflowManagerStarter {
         }
 
         loadProperties();
-        WorkflowManager manager = RpcCommunicationFactory.createServer(portNum);
+        final WorkflowManager manager = RpcCommunicationFactory.createServer(portNum);
 
-        for (;;)
-            try {
-                Thread.currentThread().join();
-            } catch (InterruptedException ignore) {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                manager.shutdown();
             }
+        });
+
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            LOG.log(Level.SEVERE, String.format("Interrupted while executing: %s", e.getMessage()));
+            manager.shutdown();
+        }
     }
-
-
 }

@@ -22,6 +22,8 @@ import org.apache.oodt.cas.resource.system.ResourceManagerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 
@@ -29,7 +31,22 @@ public class ResourceManagerFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceManagerFactory.class);
 
+    private static void loadProperties() {
+        // set up the configuration, if there is any
+        if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
+            String configFile = System.getProperty("org.apache.oodt.cas.resource.properties");
+
+            logger.info("Loading File Manager Configuration Properties from: [{}]", configFile);
+            try {
+                System.getProperties().load(new FileInputStream(new File(configFile)));
+            } catch (Exception e) {
+                logger.error("Error loading configuration properties from: [{}]", configFile);
+            }
+        }
+    }
+
     public static ResourceManager getResourceManager(int port) throws Exception {
+        loadProperties();
         String resourceManagerClass = System.getProperty("resmgr.manager",
                 "org.apache.oodt.cas.resource.system.AvroRpcResourceManager");
 
@@ -48,6 +65,7 @@ public class ResourceManagerFactory {
     }
 
     public static ResourceManagerClient getResourceManagerClient(URL url) throws Exception {
+        loadProperties();
         String resMgrClientClass = System.getProperty("resmgr.manager.client",
                 "org.apache.oodt.cas.resource.system.AvroRpcResourceManagerClient");
 
