@@ -88,7 +88,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         //setup the and start the client
         try {
             this.fileManagerUrl = url;
-            InetSocketAddress inetSocketAddress = new InetSocketAddress(url.getHost(),this.fileManagerUrl.getPort());
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(url.getHost(), this.fileManagerUrl.getPort());
             this.client = new NettyTransceiver(inetSocketAddress, 40000L);
             proxy = (AvroFileManager) SpecificRequestor.getClient(AvroFileManager.class, client);
         } catch (IOException e) {
@@ -124,8 +124,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         try {
             if (proxy != null) {
                 success = proxy.isAlive();
-            }
-            else return false;
+            } else return false;
         } catch (AvroRemoteException e) {
             LOG.log(Level.WARNING, "AvroRemoteException when connecting to filemgr: ["
                     + this.fileManagerUrl + "]");
@@ -155,7 +154,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             success = proxy.removeProductTransferStatus(AvroTypeFactory.getAvroProduct(product));
         } catch (AvroRemoteException e) {
             throw new DataTransferException(e.getMessage());
-        } 
+        }
         return success;
     }
 
@@ -584,7 +583,7 @@ public class AvroFileManagerClient implements FileManagerClient {
 
     @Override
     public String ingestProduct(Product product, Metadata metadata,
-                                boolean clientTransfer) throws Exception {
+            boolean clientTransfer) throws Exception {
         try {
             // ingest product
             String productId = this.proxy.ingestProduct(
@@ -594,7 +593,7 @@ public class AvroFileManagerClient implements FileManagerClient {
 
             if (clientTransfer) {
                 LOG.log(Level.FINEST, "File Manager Client: clientTransfer enabled: transfering product ["
-                                + product.getProductName() + "]");
+                        + product.getProductName() + "]");
 
                 // we need to transfer the product ourselves
                 // make sure we have the product ID
@@ -736,4 +735,10 @@ public class AvroFileManagerClient implements FileManagerClient {
         this.dataTransfer = dataTransfer;
     }
 
+    @Override
+    public void close() throws IOException {
+        if (client != null) {
+            client.close();
+        }
+    }
 }

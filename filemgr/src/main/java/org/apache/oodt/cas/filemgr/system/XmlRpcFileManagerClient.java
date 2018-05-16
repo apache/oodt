@@ -1404,4 +1404,9 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
     this.dataTransfer.setFileManagerUrl(this.fileManagerUrl);
   }
 
+  @Override
+  public void close() throws IOException {
+
+  }
+
 }

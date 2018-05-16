@@ -18,13 +18,14 @@ package org.apache.oodt.cas.crawl;
 
 //JDK imports
 import java.io.IOException;
+import java.util.Set;
 
 //OODT imports
 import org.apache.oodt.cas.cli.CmdLineUtility;
 
 /**
  * A command line interface to the new Spring enabled crawler.
- * 
+ *
  * @author bfoster (Brian Foster)
  * @version $Revision$
  * @since OODT-190
@@ -34,5 +35,6 @@ public class CrawlerLauncher {
    public static void main(String[] args) throws IOException {
       CmdLineUtility cmdLineUtility = new CmdLineUtility();
       cmdLineUtility.run(args);
+      System.out.println("Exiting crawler launcher");
    }
 }

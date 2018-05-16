@@ -17,8 +17,6 @@
 package org.apache.oodt.cas.crawl;
 
 import com.google.common.annotations.VisibleForTesting;
-
-//OODT imports
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.action.CrawlerActionRepo;
 import org.apache.oodt.cas.crawl.config.ProductCrawlerBean;
@@ -29,6 +27,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +35,8 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//OODT imports
 
 
 /**
@@ -71,11 +72,15 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
    protected Ingester ingester;
 
    public void crawl() {
+      LOG.info("Crawl operation invoked");
       crawl(new File(getProductPath()));
    }
 
    public void crawl(File dirRoot) {
-      // Reset ingest status.
+      LOG.info(String.format("Start crawling dir: %s", dirRoot));
+
+      // Reset ingest status.a
+
       ingestStatus.clear();
 
       // Load actions.
@@ -114,6 +119,8 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
             }
          }
       }
+
+      LOG.info(String.format("Finished crawling dir: %s", dirRoot));
    }
 
    public IngestStatus handleFile(File product) {
@@ -362,5 +369,11 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
          }
       }
       return allSucceeded;
+   }
+
+   public void shutdown() throws IOException {
+      if (ingester != null) {
+         ingester.close();
+      }
    }
 }

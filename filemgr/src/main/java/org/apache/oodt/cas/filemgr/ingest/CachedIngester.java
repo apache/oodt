@@ -25,6 +25,7 @@ import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
  * 
  * <p>
  * An extension of the {@link StdIngester} that uses a {@link Cache} to keep
- * track of {@link Product} ingestion status. If the existing {@link Cache} used
+ * track of {@link org.apache.oodt.cas.filemgr.structs.Product} ingestion status. If the existing {@link Cache} used
  * is already sync'ed to the requested File Manager (specified by the
  * <code>fmUrl</code> parameter in {@link #hasProduct(URL, File)} or
  * {@link #hasProduct(URL, String)}), then the {@link Cache} will simply return
@@ -58,7 +59,7 @@ public class CachedIngester extends StdIngester {
     /**
      * @param transferService
      *            The underlying data transfer service to use to ingest
-     *            {@link Product}s.
+     *            {@link org.apache.oodt.cas.filemgr.structs.Product}s.
      * @param cacheServiceFactory
      *            The {@link CacheFactory} to use to construct this
      *            {@link Ingester}'s {@link Cache}.
@@ -94,7 +95,7 @@ public class CachedIngester extends StdIngester {
      * 
      * @param transferService
      *            The underlying data transfer service to use to ingest
-     *            {@link Product}s.
+     *            {@link org.apache.oodt.cas.filemgr.structs.Product}s.
      * @param cache
      *            The {@link Cache} that this {@link Ingester} will use.
      * @throws InstantiationException
@@ -166,5 +167,11 @@ public class CachedIngester extends StdIngester {
                     "Unable to sync cache for CachedIngester: Message: "
                             + e.getMessage());
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        cache.clear();
+        super.close();
     }
 }

@@ -24,6 +24,7 @@ import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
+import java.io.Closeable;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.List;
  * An interface for ingesting {@link Product}s
  * </p>.
  */
-public interface Ingester {
+public interface Ingester extends Closeable {
 
     /**
      * Ingests a {@link Product} to the file manager service object identified

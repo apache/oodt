@@ -128,6 +128,7 @@ public class CmdLineIngester extends StdIngester {
             System.out.println("Result: " + productID);
         }
 
+        ingester.close();
     }
 
     private static List<String> readProdFilesFromStdin() {

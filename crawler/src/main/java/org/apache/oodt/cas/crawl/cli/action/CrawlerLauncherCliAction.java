@@ -27,7 +27,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * A {@link CmdLineAction} which is responsible for launching crawlers.
- * 
+ *
  * @author bfoster (Brian Foster)
  */
 public class CrawlerLauncherCliAction extends CmdLineAction {
@@ -54,9 +54,12 @@ public class CrawlerLauncherCliAction extends CmdLineAction {
          if (pc.getDaemonPort() != -1 && pc.getDaemonWait() != -1) {
             new CrawlDaemon(pc.getDaemonWait(), pc, pc.getDaemonPort())
                   .startCrawling();
+            printer.println("Finished crawler daemon");
          } else {
             pc.crawl();
+            printer.println("Finished crawling");
          }
+         pc.shutdown();
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to launch crawler : "
                + e.getMessage(), e);

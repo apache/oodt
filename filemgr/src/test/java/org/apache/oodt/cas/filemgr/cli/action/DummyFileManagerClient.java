@@ -285,4 +285,9 @@ public class DummyFileManagerClient implements FileManagerClient {
     public void setDataTransfer(DataTransfer dataTransfer) {
 
     }
+
+    @Override
+    public void close() throws IOException {
+
+    }
 }

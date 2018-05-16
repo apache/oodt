@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -26,15 +27,15 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
-//JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -42,26 +43,28 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JDK imports
+
 /**
  * @author mattmann
  * @author bfoster
  * @version $Revision$
- * 
+ *
  * <p>
  * An implementation of the {@link Ingster} interface that uses the following
  * pieces of {@link Metadata} information to determine how to ingest a
  * {@link Product}:
- * 
+ *
  * <ul>
  * <li>Filename - The name of the Product file to ingest.</li>
  * <li>ProductType - The type of the Product to ingest.</li>
  * <li>FileLocation - A full path pointer to directory containing the Product
  * file to ingest.</li>
  * </ul>
- * 
+ *
  * The {@link Ingester} supports overriding certain {@link Product} properties,
  * including:
- * 
+ *
  * <ul>
  * <li>Specification of <code>ProductStructure</code> parameter that will
  * tell the {@link Ingester} whether or not the {@link Product} is a directory
@@ -90,7 +93,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
      *      java.io.File, org.apache.oodt.cas.metadata.MetExtractor,
      *      java.io.File)
@@ -111,7 +114,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apache.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
 	 * java.util.List, org.apache.oodt.cas.metadata.MetExtractor, java.io.File)
 	 */
@@ -143,7 +146,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
      *      java.io.File, org.apache.oodt.cas.metadata.Metadata)
      */
@@ -224,7 +227,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.oodt.cas.filemgr.ingest.Ingester#hasProduct(java.net.URL,
      *      java.io.File)
      */
@@ -293,7 +296,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.oodt.cas.filemgr.ingest.Ingester#hasProduct(java.net.URL,
      *      java.lang.String)
      */
@@ -309,4 +312,10 @@ public class StdIngester implements Ingester, CoreMetKeys {
         }
     }
 
+    @Override
+    public void close() throws IOException {
+        if (fmClient != null) {
+            fmClient.close();
+        }
+    }
 }
