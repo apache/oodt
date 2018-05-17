@@ -32,10 +32,11 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
@@ -55,7 +56,7 @@ public final class QueryTool {
 
     private static String freeTextBlock = "__FREE__";
 
-    private XmlRpcFileManagerClient client = null;
+    private FileManagerClient client = null;
 
     private enum QueryType { LUCENE, SQL }
 
@@ -64,7 +65,7 @@ public final class QueryTool {
 
     public QueryTool(URL fmUrl) throws InstantiationException {
         try {
-            client = new XmlRpcFileManagerClient(fmUrl);
+            client = RpcCommunicationFactory.createClient(fmUrl);
         } catch (ConnectionException e) {
             throw new InstantiationException(e.getMessage());
         }
@@ -151,8 +152,8 @@ public final class QueryTool {
 }    
     
     public static void main(String[] args)
-        throws MalformedURLException, InstantiationException, CatalogException, QueryFormulationException,
-        ConnectionException {
+            throws IOException, InstantiationException, CatalogException, QueryFormulationException,
+            ConnectionException {
         String usage = "Usage: QueryTool [options] \n"
             + "options: \n"
             + "--url <fm url> \n"
@@ -241,17 +242,19 @@ public final class QueryTool {
         return prodTypes;
     }
     
-    private static String performSqlQuery(String query, String sortBy, String outputFormat, String delimiter, String filemgrUrl) 
-            throws MalformedURLException, CatalogException, ConnectionException, QueryFormulationException {
+    private static String performSqlQuery(String query, String sortBy, String outputFormat, String delimiter, String filemgrUrl)
+            throws IOException, CatalogException, ConnectionException, QueryFormulationException {
         ComplexQuery complexQuery = SqlParser.parseSqlQuery(query);
         complexQuery.setSortByMetKey(sortBy);
         complexQuery.setToStringResultFormat(outputFormat);
-        List<QueryResult> results = new XmlRpcFileManagerClient(new URL(filemgrUrl)).complexQuery(complexQuery);
-        StringBuilder returnString = new StringBuilder("");
-        for (QueryResult qr : results) {
-            returnString.append(qr.toString()).append(delimiter);
+        try(FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL(filemgrUrl))){
+            List<QueryResult> results = fmClient.complexQuery(complexQuery);
+            StringBuilder returnString = new StringBuilder("");
+            for (QueryResult qr : results) {
+                returnString.append(qr.toString()).append(delimiter);
+            }
+            return returnString.substring(0, returnString.length() - delimiter.length());
         }
-        return returnString.substring(0, returnString.length() - delimiter.length());
     }
     
     private static void exit(String msg) {

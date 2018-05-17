@@ -24,7 +24,6 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -59,18 +58,30 @@ public class DataDeliveryServlet extends HttpServlet implements
 
   public static final int INT = 512;
 
+  /** Client i/f to filemgr server. */
+  private FileManagerClient client;
+
+  /** our log stream */
+  private static final Logger LOG = Logger.getLogger(DataDeliveryServlet.class
+          .getName());
+
+  /** our working dir path. */
+  private String workingDirPath;
+
+  /** serial version UID. */
+  private static final long serialVersionUID = -955613407495060869L;
+
   /** {@inheritDoc} */
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
       String fileMgrURL;
       try {
-        fileMgrURL = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
-            "filemgr.url") );
+        fileMgrURL = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter("filemgr.url") );
       } catch (Exception e) {
         throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
       }
-      client = new XmlRpcFileManagerClient(new URL(fileMgrURL));
+      client = RpcCommunicationFactory.createClient(new URL(fileMgrURL));
     } catch (MalformedURLException ex) {
       throw new ServletException(ex);
     } catch (ConnectionException ex) {
@@ -265,18 +276,4 @@ public class DataDeliveryServlet extends HttpServlet implements
     in.close();
     out.close();
   }
-
-  /** Client i/f to filemgr server. */
-  private FileManagerClient client;
-
-  /** our log stream */
-  private static final Logger LOG = Logger.getLogger(DataDeliveryServlet.class
-      .getName());
-
-  /** our working dir path. */
-  private String workingDirPath;
-
-  /** serial version UID. */
-  private static final long serialVersionUID = -955613407495060869L;
-
 }

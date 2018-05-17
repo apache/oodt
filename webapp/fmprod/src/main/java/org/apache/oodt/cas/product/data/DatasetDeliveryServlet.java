@@ -24,7 +24,6 @@ import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -247,7 +246,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       } catch (Exception e) {
         throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
       }
-      client = new XmlRpcFileManagerClient(new URL(fileMgrURL));
+      client = RpcCommunicationFactory.createClient(new URL(fileMgrURL));
     } catch (MalformedURLException ex) {
       throw new ServletException(ex);
     } catch (ConnectionException ex) {

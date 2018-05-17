@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,10 +20,11 @@ package org.apache.oodt.cas.filemgr.metadata;
 
 /**
  * 
- * Met key field names used to augment {@link Product} {@link Metadata} in
- * {@link org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient#getMetadata(org.apache.oodt.cas.filemgr.structs.Product)}
+ * Met key field names used to augment {@link org.apache.oodt.cas.filemgr.structs.Product}
+ * {@link org.apache.oodt.cas.metadata.Metadata} in
+ * {@link org.apache.oodt.cas.filemgr.system.FileManagerClient#getMetadata(org.apache.oodt.cas.filemgr.structs.Product)}
  * and in
- * {@link org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient#getReducedMetadata(org.apache.oodt.cas.filemgr.structs.Product, java.util.List)}
+ * {@link org.apache.oodt.cas.filemgr.system.FileManagerClient#getReducedMetadata(org.apache.oodt.cas.filemgr.structs.Product, java.util.List)}
  * .
  * 
  * @see http://issues.apache.org/jira/browse/OODT-72

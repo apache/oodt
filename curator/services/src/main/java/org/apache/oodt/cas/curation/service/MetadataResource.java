@@ -20,6 +20,9 @@ package org.apache.oodt.cas.curation.service;
 
 //JDK imports
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
@@ -33,7 +36,7 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.validation.XMLValidationLayer;
 import org.apache.oodt.cas.metadata.MetExtractor;
@@ -41,13 +44,16 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.springframework.util.StringUtils;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,47 +65,28 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 @Path("metadata")
 /**
- * 
+ *
  * A web-service endpoint for dealing with CAS {@link Metadata} object.
- * 
+ *
  * @author pramirez
  * @version $Id$
  */
 public class MetadataResource extends CurationService {
-  
+
   @Context
   UriInfo uriInfo;
-  
-  @Context 
+
+  @Context
   private ServletContext context;
 
   private static final long serialVersionUID = 1930946924218765724L;
@@ -109,20 +96,20 @@ public class MetadataResource extends CurationService {
   public static final String CATALOG = "catalog";
 
   public static final String PRODUCT_TYPE = "productType";
-  
+
   public static final String UPDATE = "update";
-  
+
   public static final String DELETE = "delete";
   private static Logger LOG = Logger.getLogger(MetadataResource.class.getName());
   // single instance of CAS catalog shared among all requests
   private Catalog catalog = null;
-    
+
   public MetadataResource(){
-    
+
   }
 
   public MetadataResource(@Context ServletContext context) {
-  	
+
   }
 
   @GET
@@ -135,19 +122,19 @@ public class MetadataResource extends CurationService {
       @Context HttpServletRequest req, @Context HttpServletResponse res) {
 
       Metadata metadata;
-      
+
       try {
         metadata = this.getStagingMetadata(id, configId, overwrite);
       } catch (Exception e) {
         return "<div class=\"error\">" + e.getMessage() + "</div>";
       }
-      
+
       if (FORMAT_HTML.equals(format)) {
         return this.getMetadataAsHTML(metadata);
       }
       return this.getMetadataAsJSON(metadata).toString();
   }
-  
+
   @GET
   @Path("extractor/config")
   @Produces("text/plain")
@@ -179,14 +166,14 @@ public class MetadataResource extends CurationService {
     }
     return html.toString();
   }
-  
+
   protected String getExtractorConfigIdsAsJSON(String[] configIds) {
     // TODO: Support JSON
     return "Not Implemented...";
   }
 
   /**
-   * 
+   *
    * @param id
    *          Relative path from staging root to product. The met extension will
    *          be added to this id to look up and see if a met file exists with
@@ -229,7 +216,7 @@ public class MetadataResource extends CurationService {
   }
 
   /**
-   * 
+   *
    * @param id
    *          Relative path from staging root to the product
    * @param config
@@ -246,7 +233,7 @@ public class MetadataResource extends CurationService {
         .getStagingAreaPath()
         + "/" + id);
   }
-  
+
   @GET
   @Path(CATALOG)
   @Produces("text/plain")
@@ -259,9 +246,8 @@ public class MetadataResource extends CurationService {
       Metadata metadata;
       String productId = id.substring(id.lastIndexOf("/") + 1);
 
-      try {
-        prod = CurationService.config.getFileManagerClient().getProductById(
-          productId);
+      try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()) {
+        prod = fmClient.getProductById(productId);
         metadata = this.getCatalogMetadata(prod);
       } catch (Exception e) {
         return "<div class=\"error\">" + e.getMessage() + "</div>";
@@ -279,15 +265,14 @@ public class MetadataResource extends CurationService {
   @Produces("text/plain")
   public String setCatalogMetadata(MultivaluedMap<String, String> formParams,
       @FormParam("id") String id) {
-  	
+
     Product prod;
     Metadata metadata = this.getMetadataFromMap(formParams);
-    
+
     String productId = id.substring(id.lastIndexOf("/") + 1);
 
-    try {
-      prod = CurationService.config.getFileManagerClient().getProductById(
-          productId);
+    try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()) {
+      prod = fmClient.getProductById(productId);
       this.updateCatalogMetadata(prod, metadata);
     } catch (Exception e) {
       LOG.log(Level.SEVERE, e.getMessage());
@@ -296,7 +281,7 @@ public class MetadataResource extends CurationService {
 
     return this.getMetadataAsHTML(metadata);
   }
-  
+
   @GET
   @Path(PRODUCT_TYPE)
   @Produces("text/plain")
@@ -321,7 +306,7 @@ public class MetadataResource extends CurationService {
     }
     return this.getMetadataAsJSON(metadata).toString();
   }
-  
+
 
   @POST
   @Path(PRODUCT_TYPE)
@@ -361,7 +346,7 @@ public class MetadataResource extends CurationService {
 
       return "Staging met info";
   }
-  
+
 
   private JSONObject getMetadataAsJSON(Metadata metadata) {
     return JSONObject.fromObject(metadata.getMap());
@@ -379,10 +364,10 @@ public class MetadataResource extends CurationService {
 
     return metadata;
   }
-  
+
   private Metadata getMetadataFromMap(MultivaluedMap<String, String> formParams) {
     Metadata metadata = new Metadata();
-    
+
     for (Map.Entry<String, List<String>> entry : formParams.entrySet()) {
       if (entry.getKey().startsWith("metadata.")) {
         String newKey = entry.getKey().substring(entry.getKey().indexOf('.') + 1);
@@ -391,10 +376,10 @@ public class MetadataResource extends CurationService {
         }
       }
     }
-    
+
     return metadata;
   }
-  
+
   protected String getMetadataAsHTML(Metadata metadata) {
     if (metadata == null) {
       return "<table></table>";
@@ -423,12 +408,12 @@ public class MetadataResource extends CurationService {
 
     return html.toString();
   }
-  
+
 
   /**
    * Reads a {@link Metadata} object from a String representation of a .met
    * {@link File}.
-   * 
+   *
    * @param file
    *          The full path to the .met {@link File}.
    * @return The read-in CAS {@link Metadata} object.
@@ -454,7 +439,7 @@ public class MetadataResource extends CurationService {
 
   /**
    * Retrieves the cataloged {@link Metadata} associated with a {@link Product}.
-   * 
+   *
    * @param product
    *          The {@link Product} to obtain cataloged {@link Metadata} for.
    * @return The cataloged {@link Metadata} for {@link Product}.
@@ -463,14 +448,18 @@ public class MetadataResource extends CurationService {
    *           {@link Catalog}.
    */
   public Metadata getCatalogMetadata(Product product) throws CatalogException {
-    return CurationService.config.getFileManagerClient().getMetadata(
-        CurationService.config.getFileManagerClient().getProductById(
-            product.getProductId()));
+    try(    FileManagerClient fmClient = CurationService.config.getFileManagerClient()){
+      return fmClient.getMetadata(fmClient.getProductById(product.getProductId()));
+    } catch (IOException e){
+      LOG.severe("Error occurred when fetching catalog metadata for product: " +
+              product.getProductName() + " :" + e.getMessage());
+      return null;
+    }
   }
 
   /**
    * Writes a CAS {@link Metadata} {@link File} using the given identifier.
-   * 
+   *
    * @param id
    *          The identifier of the .met file to write.
    * @param metadata
@@ -488,12 +477,12 @@ public class MetadataResource extends CurationService {
     serMet.writeMetadataToXmlStream(new FileOutputStream(new File(config
         .getMetAreaPath(), id + config.getMetExtension())));
   }
-  
+
   /**
-   * Method to update the catalog metadata for a given product. 
-   * All current metadata fields will be preserved, 
+   * Method to update the catalog metadata for a given product.
+   * All current metadata fields will be preserved,
    * except those specified in the HTTP POST request as 'metadata.<field_name>=<field_value>'.
-   * 
+   *
    * @param id
    * 	identifier of CAS product - either 'id' or 'name' must be specified
    * @param name
@@ -507,23 +496,17 @@ public class MetadataResource extends CurationService {
   @Path(UPDATE)
   @Consumes("application/x-www-form-urlencoded")
   @Produces("text/plain")
-  public String updateMetadata(MultivaluedMap<String, String> formParams, 
-		  @FormParam("id") String id, 
-		  @FormParam("name") String name, 
+  public String updateMetadata(MultivaluedMap<String, String> formParams,
+		  @FormParam("id") String id,
+		  @FormParam("name") String name,
 		  @DefaultValue("true") @FormParam("replace") boolean replace,
 		  @DefaultValue("false") @FormParam("remove") boolean remove) {
-  		      
+
   	// new metadata from HTTP POST request
     Metadata newMetadata = this.getMetadataFromMap(formParams);
-    
-    // client for interacting with remote File Manager
-    XmlRpcFileManagerClient fmClient = CurationService.config.getFileManagerClient();
- 
     // empty metadata
     Metadata metadata;
-    
-    try {
-    
+    try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()) {
       // retrieve product from catalog
       Product product;
       if (StringUtils.hasText(id)) {
@@ -534,7 +517,7 @@ public class MetadataResource extends CurationService {
       } else {
     	  throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
       }
-            
+
       // retrieve existing metadata
       metadata = fmClient.getMetadata(product);
 
@@ -543,44 +526,41 @@ public class MetadataResource extends CurationService {
       metadata.removeMetadata("reference_data_store");
       metadata.removeMetadata("reference_fileSize");
       metadata.removeMetadata("reference_mimeType");
-      
+
       // merge new and existing metadata
       metadata.addMetadata(newMetadata);
-      
+
       // replace metadata values for keys specified in HTTP request (not others)
       if (replace) {
     	  for (String key : newMetadata.getAllKeys()) {
     		  metadata.replaceMetadata(key, newMetadata.getAllMetadata(key));
     	  }
       }
-      
+
       // remove metadata tags
       if (remove) {
 	      for (String key : newMetadata.getAllKeys()) {
 	      	metadata.removeMetadata(key);
 	      }
       }
-      
+
       // insert old and new metadata
       fmClient.updateMetadata(product, metadata);
-      
+
       // return product id to downstream processors
       return "id="+product.getProductId();
-          
+
     } catch (Exception e) {
-    	
       LOG.log(Level.SEVERE, e.getMessage());
       // return error message
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
-
     }
-
   }
 
   /**
    * Updates the cataloged {@link Metadata} for a {@link Product} in the CAS
    * File Manager.
-   * 
+   *
    * @param product
    *          The {@link Product} to update {@link Metadata} for.
    * @throws CatalogException
@@ -598,7 +578,7 @@ public class MetadataResource extends CurationService {
       is.close();
     }
     Catalog catalog = this.getCatalog();
-    
+
     Metadata oldMetadata = catalog.getMetadata(product);
     List<Reference> references = catalog.getProductReferences(product);
     Product newProduct = new Product(product.getProductName(), product
@@ -617,7 +597,7 @@ public class MetadataResource extends CurationService {
 
   /**
    * Method to delete a specific product from the catalog
-   * 
+   *
    * @param id
    * 	identifier of CAS product - either 'id' or 'name' must be specified
    * @param name
@@ -629,20 +609,20 @@ public class MetadataResource extends CurationService {
   @Consumes("application/x-www-form-urlencoded")
   @Produces("text/plain")
   public String deleteCatalogMetadata(
-		  @FormParam("id") String id, 
+		  @FormParam("id") String id,
 		  @FormParam("name") String name) {
 
-	  try {
+	  try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()) {
 		  // retrieve product from catalog
 		  Product product;
-		  if (StringUtils.hasText(id)) {
-			  id = id.substring(id.lastIndexOf("/") + 1);
-			  product = CurationService.config.getFileManagerClient().getProductById(id);
-		  } else if (StringUtils.hasText(name)) {
-			  product = CurationService.config.getFileManagerClient().getProductByName(name);
-		  } else {
-			  throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
-		  }
+          if (StringUtils.hasText(id)) {
+              id = id.substring(id.lastIndexOf("/") + 1);
+              product = fmClient.getProductById(id);
+          } else if (StringUtils.hasText(name)) {
+              product = fmClient.getProductByName(name);
+          } else {
+              throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
+          }
 
 		  // remove product from catalog
 		  this.deleteCatalogProduct(product);
@@ -651,17 +631,16 @@ public class MetadataResource extends CurationService {
 		  return "id="+product.getProductId();
 
 	  } catch (Exception e) {
-
 		  LOG.log(Level.SEVERE, e.getMessage());
 		  // return error message
 		  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
 
 	  }
-  }  
+  }
 
   /**
    * Deletes a given product from the catalog
-   * 
+   *
    * @param product
    *          The {@link Product} to delete
    * @throws FileNotFoundException
@@ -669,10 +648,14 @@ public class MetadataResource extends CurationService {
    * @throws CatalogException
    *           If any error occurs during this delete operation.
    */
-  public void deleteCatalogProduct(Product product) 
-  throws CatalogException {
-	  CurationService.config.getFileManagerClient().removeProduct(product);
-  }  
+  public void deleteCatalogProduct(Product product) throws CatalogException {
+	try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()){
+	  fmClient.removeProduct(product);
+    } catch (IOException e) {
+      LOG.severe(String.format("Couldn't detele product - %s : %s", product.getProductName(), e.getMessage()));
+      throw new CatalogException("Unable to delete product", e);
+    }
+  }
 
   private Metadata getProductTypeMetadataForPolicy(String policy,
       String productTypeName) throws MalformedURLException,
@@ -685,34 +668,38 @@ public class MetadataResource extends CurationService {
     XMLRepositoryManager repMgr = new XMLRepositoryManager(Arrays
         .asList(policies));
     ProductType productType = repMgr.getProductTypeByName(productTypeName);
-    
+
     return productType.getTypeMetadata();
   }
-  
-  private Metadata writeProductTypeMetadata(String policy,
-      String productTypeName, Metadata metadata)
-      throws MalformedURLException, InstantiationException, RepositoryManagerException, UnsupportedEncodingException,
-      CurationException {
-    String rootPolicyPath = this.cleanse(CurationService.config
-        .getPolicyUploadPath());
-    String policyPath = new File(rootPolicyPath + policy).toURL()
-        .toExternalForm();
-    String[] policies = { policyPath };
-    XMLRepositoryManager repMgr = new XMLRepositoryManager(Arrays
-        .asList(policies));
 
-    ProductType productType = repMgr.getProductTypeByName(productTypeName);
-    productType.setTypeMetadata(metadata);
-    
-    CurationXmlStructFactory.writeProductTypeXmlDocument(repMgr
-        .getProductTypes(), rootPolicyPath + policy + "/product-types.xml");
+    private Metadata writeProductTypeMetadata(String policy,
+            String productTypeName, Metadata metadata)
+            throws MalformedURLException, InstantiationException, RepositoryManagerException, UnsupportedEncodingException,
+            CurationException {
+        String rootPolicyPath = this.cleanse(CurationService.config
+                .getPolicyUploadPath());
+        String policyPath = new File(rootPolicyPath + policy).toURL()
+                .toExternalForm();
+        String[] policies = {policyPath};
+        XMLRepositoryManager repMgr = new XMLRepositoryManager(Arrays
+                .asList(policies));
 
-    // refresh the config on the fm end
-    CurationService.config.getFileManagerClient().refreshConfigAndPolicy();
-    
-    return productType.getTypeMetadata();
-  }
-  
+        ProductType productType = repMgr.getProductTypeByName(productTypeName);
+        productType.setTypeMetadata(metadata);
+
+        CurationXmlStructFactory.writeProductTypeXmlDocument(repMgr
+                .getProductTypes(), rootPolicyPath + policy + "/product-types.xml");
+
+        // refresh the config on the fm end
+        try (FileManagerClient fmClient = CurationService.config.getFileManagerClient()) {
+            fmClient.refreshConfigAndPolicy();
+        } catch (IOException e) {
+            LOG.severe(String.format("Unable to refresh config and policy: %s", e.getMessage()));
+        }
+
+        return productType.getTypeMetadata();
+    }
+
   private String cleanse(String origPath) {
     String retStr = origPath;
     if (!retStr.endsWith("/")) {
@@ -720,10 +707,10 @@ public class MetadataResource extends CurationService {
     }
     return retStr;
   }
-  
+
   // Method to instantiate the CAS catalog, if not done already.
   private synchronized Catalog getCatalog() {
-  	
+
   	if (catalog==null) {
   		String catalogFactoryClass = this.context.getInitParameter(CATALOG_FACTORY_CLASS);
   		// preserve backward compatibility
@@ -732,15 +719,15 @@ public class MetadataResource extends CurationService {
         }
   		catalog = GenericFileManagerObjectFactory.getCatalogServiceFromFactory(catalogFactoryClass);
   	}
-  	
+
   	return catalog;
   }
-  
+
   @DELETE
   @Path(PRODUCT_TYPE+"/remove")
   @Produces("text/plain")
   public boolean removeProductType(
-		  @FormParam("policy") String policy, 
+		  @FormParam("policy") String policy,
 		  @FormParam("id") String id) {
     XMLRepositoryManager xmlRepo = getRepo(policy);
     try {
@@ -752,7 +739,7 @@ public class MetadataResource extends CurationService {
       return false;
     }
   }
-  
+
   @GET
   @Path(PRODUCT_TYPE+"/parentmap")
   @Produces("text/plain")
@@ -761,13 +748,13 @@ public class MetadataResource extends CurationService {
     XMLValidationLayer vLayer = getValidationLayer(policy);
     return JSONSerializer.toJSON(vLayer.getSubToSuperMap()).toString();
   }
-	 
+
   @POST
   @Path(PRODUCT_TYPE+"/parent/add")
   @Produces("text/plain")
   public boolean addParentForProductType(
-      @FormParam("policy") String policy, 
-      @FormParam("id") String id, 
+      @FormParam("policy") String policy,
+      @FormParam("id") String id,
       @FormParam("parentId") String parentId) {
     XMLValidationLayer vLayer = getValidationLayer(policy);
     XMLRepositoryManager xmlRepo = getRepo(policy);
@@ -780,13 +767,13 @@ public class MetadataResource extends CurationService {
     }
     return false;
   }
-  
+
   @DELETE
   @Path(PRODUCT_TYPE+"/parent/remove")
   @Produces("text/plain")
   public boolean removeParentForProductType(
-      @FormParam("policy") String policy, 
-      @FormParam("id") String id) 
+      @FormParam("policy") String policy,
+      @FormParam("id") String id)
           throws ValidationLayerException {
     XMLValidationLayer vLayer = getValidationLayer(policy);
     XMLRepositoryManager xmlRepo = getRepo(policy);
@@ -799,13 +786,13 @@ public class MetadataResource extends CurationService {
     }
     return false;
   }
-  
+
   @POST
   @Path(PRODUCT_TYPE+"/elements/add")
   @Produces("text/plain")
   public boolean addElementsForProductType(
-		  @FormParam("policy") String policy, 
-		  @FormParam("id") String id,  
+		  @FormParam("policy") String policy,
+		  @FormParam("id") String id,
 		  @FormParam("elementIds") String elementIds) {
     XMLValidationLayer vLayer = getValidationLayer(policy);
     XMLRepositoryManager xmlRepo = getRepo(policy);
@@ -825,13 +812,13 @@ public class MetadataResource extends CurationService {
     }
     return false;
   }
-  
+
   @GET
   @Path(PRODUCT_TYPE+"/elements")
   @Produces("text/plain")
   public String getElementsForProductType(
-		  @FormParam("policy") String policy, 
-		  @FormParam("id") String id, 
+		  @FormParam("policy") String policy,
+		  @FormParam("id") String id,
 		  @FormParam("direct") boolean direct) {
     XMLValidationLayer vLayer = getValidationLayer(policy);
     XMLRepositoryManager xmlRepo = getRepo(policy);
@@ -847,12 +834,12 @@ public class MetadataResource extends CurationService {
     }
     return null;
   }
-  
+
   @DELETE
   @Path(PRODUCT_TYPE+"/elements/remove/all")
   @Produces("text/plain")
   public boolean removeAllElementsForProductType(
-		  @FormParam("policy") String policy, 
+		  @FormParam("policy") String policy,
 		  @FormParam("id") String id) {
     XMLValidationLayer vLayer = getValidationLayer(policy);
     XMLRepositoryManager xmlRepo = getRepo(policy);
@@ -874,8 +861,8 @@ public class MetadataResource extends CurationService {
   @Path(PRODUCT_TYPE+"/elements/remove")
   @Produces("text/plain")
   public boolean removeElementsForProductType(
-		  @FormParam("policy") String policy, 
-		  @FormParam("id") String id, 
+		  @FormParam("policy") String policy,
+		  @FormParam("id") String id,
 		  @FormParam("elementIds") String elementIds) {
     XMLValidationLayer vLayer = getValidationLayer(policy);
     XMLRepositoryManager xmlRepo = getRepo(policy);
@@ -896,12 +883,12 @@ public class MetadataResource extends CurationService {
     }
     return false;
   }
-  
+
   @GET
   @Path(PRODUCT_TYPE+"/typeswithelement/{elementId}")
   @Produces("text/plain")
   public String getProductTypeIdsHavingElement(
-		  @FormParam("policy") String policy, 
+		  @FormParam("policy") String policy,
 		  @PathParam("elementId") String elementId) {
 	  XMLValidationLayer vLayer = getValidationLayer(policy);
 	  XMLRepositoryManager xmlRepo = getRepo(policy);
@@ -919,19 +906,19 @@ public class MetadataResource extends CurationService {
       }
       return JSONSerializer.toJSON(typeids).toString();
   }
-  
-  
+
+
   /*
    * Private helper functions
    */
-  private void removeUnusedElements(List<Element> elements, 
-		  XMLRepositoryManager xmlRepo, XMLValidationLayer vLayer) 
+  private void removeUnusedElements(List<Element> elements,
+		  XMLRepositoryManager xmlRepo, XMLValidationLayer vLayer)
 				  throws ValidationLayerException, RepositoryManagerException {
       // Remove Elements that aren't used in any product type
       List<ProductType> ptypelist = xmlRepo.getProductTypes();
       ConcurrentHashMap<String, Boolean> usedElementIds = new ConcurrentHashMap<String, Boolean>();
       for(ProductType ptype: ptypelist) {
-          List<Element> ptypeElements = 
+          List<Element> ptypeElements =
               vLayer.getElements(ptype);
           for(Element el: ptypeElements) {
               usedElementIds.put(el.getElementId(), true);
@@ -942,7 +929,7 @@ public class MetadataResource extends CurationService {
             vLayer.removeElement(el);
           }
       }
-  }  
+  }
 
 	private XMLRepositoryManager getRepo(String policy) {
 		XMLRepositoryManager xmlRepo = null;

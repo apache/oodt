@@ -20,6 +20,7 @@ package org.apache.oodt.cas.product.rss;
 
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
@@ -27,24 +28,13 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.util.DateConvert;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-//JDK imports
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -58,6 +48,18 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * A Servlet that supports the <a
@@ -317,7 +319,7 @@ public class RSSProductServlet extends HttpServlet {
 
   private void getFileManager(String fileManagerUrl) {
     try {
-      fm = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
+      fm = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
     } catch (MalformedURLException e) {
       LOG.log(Level.SEVERE,
           "Unable to initialize file manager url in RSS Servlet: [url="
@@ -329,4 +331,10 @@ public class RSSProductServlet extends HttpServlet {
     }
   }
 
+  @Override
+  public void finalize() throws IOException {
+    if (fm != null) {
+      fm.close();
+    }
+  }
 }

@@ -18,13 +18,14 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Reference;
+
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
-//JDK imports
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +33,12 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * @author woollard
@@ -53,21 +56,18 @@ public class DeleteProduct {
   private static final Logger LOG = Logger
       .getLogger(DeleteProduct.class.getName());
 
-  /* our File Manager client */
-  private XmlRpcFileManagerClient client = null;
-
+  private FileManagerClient client;
   /* whether or not we should commit our deletions */
   private boolean commit = true;
 
   public DeleteProduct(String fileManagerUrl, boolean commit) {
-    try {
-      client = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, "Unable to create file manager client: Message: "
-          + e.getMessage() + ": errors to follow");
-    }
-
     this.commit = commit;
+
+    try {
+      client = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
+    } catch (Exception e) {
+      LOG.severe("Unable to create client: " + e.getMessage());
+    }
 
     if (!this.commit) {
       LOG.log(Level.INFO, "Commit disabled.");
@@ -229,5 +229,16 @@ public class DeleteProduct {
     }
 
     return prodIds;
+  }
+
+  /**
+   * Not the best place to do this. But, no other option at the moment. Mandatory to close the client once done.
+   * @throws IOException
+   */
+  @Override
+  public void finalize() throws IOException {
+    if (client != null) {
+      client.close();
+    }
   }
 }

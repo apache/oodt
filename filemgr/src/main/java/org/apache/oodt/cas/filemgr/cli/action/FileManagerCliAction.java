@@ -17,17 +17,19 @@
 package org.apache.oodt.cas.filemgr.cli.action;
 
 //JDK imports
-import java.net.MalformedURLException;
-import java.net.URL;
 
-//Apache imports
 import org.apache.commons.lang.Validate;
-
-//OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+//Apache imports
+//OODT imports
 
 /**
  * Base {@link CmdLineAction} for File Manager.
@@ -42,8 +44,7 @@ public abstract class FileManagerCliAction extends CmdLineAction {
       return System.getProperty("org.apache.oodt.cas.filemgr.url");
    }
 
-   protected FileManagerClient getClient()
-         throws MalformedURLException, ConnectionException {
+   protected FileManagerClient getClient() throws MalformedURLException, ConnectionException {
       Validate.notNull(getUrl(), "Must specify url");
 
       if (client != null) {
@@ -55,5 +56,12 @@ public abstract class FileManagerCliAction extends CmdLineAction {
 
    public void setClient(FileManagerClient client) {
       this.client = client;
+   }
+
+   @Override
+   public void finalize() throws IOException {
+      if (client != null) {
+         client.close();
+      }
    }
 }

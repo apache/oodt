@@ -16,7 +16,10 @@
  */
 package org.apache.oodt.cas.pge.util;
 
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.QueryUtils;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
@@ -28,11 +31,6 @@ import org.apache.oodt.cas.pge.config.OutputDir;
 import org.apache.oodt.cas.pge.config.RegExprOutputFiles;
 import org.apache.oodt.cas.pge.exceptions.PGEException;
 import org.apache.oodt.commons.xml.XMLUtils;
-
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -442,20 +440,15 @@ public class XmlHelper {
 
 	public static String fillIn(String value, Metadata inputMetadata,
 			boolean envReplaceRecur) throws PGEException {
-		try {
+		try (FileManagerClient fmClient=RpcCommunicationFactory.createClient(
+				new URL(inputMetadata.getMetadata(QUERY_FILE_MANAGER_URL.getName())))){
 			while ((value = PathUtils
 					.doDynamicReplacement(value, inputMetadata)).contains("[")
 					&& envReplaceRecur) {
 			}
 			if (value.toUpperCase().matches(
 					"^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$")) {
-			  value = QueryUtils
-				  .getQueryResultsAsString(new XmlRpcFileManagerClient(
-					  new URL(inputMetadata
-						  .getMetadata(QUERY_FILE_MANAGER_URL
-							  .getName())))
-					  .complexQuery(SqlParser
-						  .parseSqlQueryMethod(value)));
+				value = QueryUtils.getQueryResultsAsString(fmClient.complexQuery(SqlParser.parseSqlQueryMethod(value)));
 			}
 			return value;
 		} catch (Exception e) {

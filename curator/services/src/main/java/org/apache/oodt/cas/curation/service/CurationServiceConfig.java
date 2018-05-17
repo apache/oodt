@@ -20,7 +20,8 @@ package org.apache.oodt.cas.curation.service;
 
 //OODT imports
 import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
 
@@ -57,13 +58,12 @@ import javax.servlet.ServletContext;
  * 
  */
 public class CurationServiceConfig implements CuratorConfMetKeys {
-  private static CurationServiceConfig instance;
-  private final Map<String, String> parameters = new ConcurrentHashMap<String, String>();
-
-  private XmlRpcFileManagerClient fmClient = null;
 
   private static final Logger LOG = Logger
       .getLogger(CurationServiceConfig.class.getName());
+
+  private static CurationServiceConfig instance;
+  private final Map<String, String> parameters = new ConcurrentHashMap<String, String>();
 
   /**
    * Gets a singleton static instance of the global
@@ -121,12 +121,12 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
 
   /**
    * 
-   * @return The full {@link XmlRpcFileManagerClient} built from the CAS curator
+   * @return The full {@link FileManagerClient} built from the CAS curator
    *         property <code>filemgr.url</code>.
    */
-  public XmlRpcFileManagerClient getFileManagerClient() {
+  public FileManagerClient getFileManagerClient() {
     try {
-      return new XmlRpcFileManagerClient(new URL(this.getFileMgrURL()));
+      return RpcCommunicationFactory.createClient(new URL(this.getFileMgrURL()));
     } catch (Exception e) {
       LOG.log(Level.SEVERE, e.getMessage());
       return null;
@@ -189,12 +189,6 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
   // Note that the constructor is private
   private CurationServiceConfig(ServletConfig conf) {
     readContextParams(conf.getServletContext());
-    try {
-      fmClient = new XmlRpcFileManagerClient(new URL(this.getFileMgrURL()));
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Unable to build CurationServiceConfig: Message: " + e.getMessage());
-    }
   }
 
   @SuppressWarnings("unchecked")

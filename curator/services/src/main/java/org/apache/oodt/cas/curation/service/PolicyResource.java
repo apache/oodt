@@ -28,6 +28,7 @@ import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 
 import net.sf.json.JSONObject;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -116,11 +117,9 @@ public class PolicyResource extends CurationService {
     
     ProductType productType;
     ProductPage page;
-    try {
-      productType = config.getFileManagerClient().getProductTypeByName(
-          productTypeName);
-      page = config.getFileManagerClient().pagedQuery(new Query(),
-          productType, pageNum);
+    try (FileManagerClient fmClient = config.getFileManagerClient()){
+      productType = fmClient.getProductTypeByName(productTypeName);
+      page = fmClient.pagedQuery(new Query(), productType, pageNum);
     } catch (Exception e) {
       LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to obtain products for product type: ["

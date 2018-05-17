@@ -23,7 +23,7 @@ import java.io.File;
 import java.net.URL;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
@@ -41,17 +41,15 @@ import org.springframework.beans.factory.annotation.Required;
  * product exists before generating metadata for it.
  * </p>.
  */
-public class FilemgrUniquenessCheckComparator extends
-        PreConditionComparator<Boolean> {
+public class FilemgrUniquenessCheckComparator extends PreConditionComparator<Boolean> {
 
     private String filemgrUrl;
 
     @Override
     protected int performCheck(File product, Boolean compareItem)
             throws PreconditionComparatorException {
-        try {
-            boolean returnVal = new XmlRpcFileManagerClient(new URL(
-                    this.filemgrUrl)).hasProduct(product.getName());
+        try (FileManagerClient fmClient= RpcCommunicationFactory.createClient(new URL(filemgrUrl))){
+            boolean returnVal = fmClient.hasProduct(product.getName());
             return Boolean.valueOf(returnVal).compareTo(compareItem);
         } catch (Exception e) {
             throw new PreconditionComparatorException(
