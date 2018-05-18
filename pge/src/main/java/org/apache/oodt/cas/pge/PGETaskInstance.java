@@ -16,6 +16,9 @@
  */
 package org.apache.oodt.cas.pge;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
 import org.apache.oodt.cas.crawl.ProductCrawler;
@@ -54,12 +57,6 @@ import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.oodt.cas.workflow.util.ScriptFile;
 import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.exec.ExecUtils;
-import org.apache.xmlrpc.XmlRpcException;
-
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.io.File;
@@ -80,8 +77,14 @@ import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.*;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.*;
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.*;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CONF_FILE_BUILD;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.RUNNING_PGE;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.STAGING_INPUT;
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createConfigFilePropertyAdder;
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createFileStager;
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPgeConfigBuilder;
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createSciPgeConfigFileWriter;
 
 
 /**
@@ -94,24 +97,21 @@ import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.*;
 public class PGETaskInstance implements WorkflowTaskInstance {
 
    protected Logger logger = Logger.getLogger(PGETaskInstance.class.getName());
-   protected WorkflowManagerClient wm;
-   protected String workflowInstId;
+   private WorkflowManagerClient wmClient;
+   private String workflowInstId;
    protected PgeMetadata pgeMetadata;
    protected PgeConfig pgeConfig;
 
    protected PGETaskInstance() {}
 
    @Override
-   public void run(Metadata metadata, WorkflowTaskConfiguration config)
-         throws WorkflowTaskInstanceException {
+   public void run(Metadata metadata, WorkflowTaskConfiguration config) throws WorkflowTaskInstanceException {
       try {
          // Initialize CAS-PGE.
          pgeMetadata = createPgeMetadata(metadata, config);
          pgeConfig = createPgeConfig();
          runPropertyAdders();
-         wm = createWorkflowManagerClient();
-         workflowInstId = getWorkflowInstanceId();
-         logger = createLogger(); // use workflow ID specific logger from now on 
+         logger = createLogger(); // use workflow ID specific logger from now on
 
          // Write out PgeMetadata.
          dumpMetadataIfRequested();
@@ -128,7 +128,9 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          runPge();
 
          // Ingest products.
-         runIngestCrawler(createProductCrawler());
+         ProductCrawler productCrawler = createProductCrawler();
+         runIngestCrawler(productCrawler);
+         productCrawler.shutdown();
 
          // Commit dynamic metadata.
          updateDynamicMetadata();
@@ -141,7 +143,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
    protected void updateStatus(String status) throws Exception {
       logger.info("Updating status to workflow as [" + status + "]");
-      if (!wm.updateWorkflowInstanceStatus(workflowInstId, status)) {
+      if (!getWorkflowManagerClient().updateWorkflowInstanceStatus(workflowInstId, status)) {
          throw new PGEException(
                "Failed to update workflow status : client returned false");
       }
@@ -250,12 +252,15 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             pgeConfig.getPropertyAdderCustomArgs());
    }
 
-   protected WorkflowManagerClient createWorkflowManagerClient()
-       throws MalformedURLException {
-      String url = pgeMetadata.getMetadata(WORKFLOW_MANAGER_URL);
-      logger.info("Creating WorkflowManager client for url [" + url + "]");
-      Validate.notNull(url, "Must specify " + WORKFLOW_MANAGER_URL);
-      return RpcCommunicationFactory.createClient(new URL(url));
+   protected WorkflowManagerClient getWorkflowManagerClient() throws MalformedURLException {
+      if (this.wmClient == null) {
+         String url = pgeMetadata.getMetadata(WORKFLOW_MANAGER_URL);
+         logger.info("Creating WorkflowManager client for url [" + url + "]");
+         Validate.notNull(url, "Must specify " + WORKFLOW_MANAGER_URL);
+         this.wmClient = RpcCommunicationFactory.createClient(new URL(url));
+      }
+
+      return this.wmClient;
    }
 
    protected String getWorkflowInstanceId() {
@@ -586,7 +591,26 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
    protected void updateDynamicMetadata() throws Exception {
       pgeMetadata.commitMarkedDynamicMetadataKeys();
-      wm.updateMetadataForWorkflow(workflowInstId,
-            pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));
+      getWorkflowManagerClient()
+              .updateMetadataForWorkflow(workflowInstId, pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));
+   }
+
+   public String getWorkflowInstId() {
+      return workflowInstId;
+   }
+
+   public void setWorkflowInstId(String workflowInstId) {
+      this.workflowInstId = workflowInstId;
+   }
+
+   public void setWmClient(WorkflowManagerClient wmClient) {
+      this.wmClient = wmClient;
+   }
+
+   @Override
+   public void finalize() throws IOException {
+      if (wmClient != null) {
+         wmClient.close();
+      }
    }
 }

@@ -24,6 +24,7 @@ import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 
+import java.io.Closeable;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
@@ -36,10 +37,11 @@ import java.util.Vector;
  * Base interface for client RPC implementation.
  * </p>
  */
-public interface WorkflowManagerClient {
+public interface WorkflowManagerClient extends Closeable {
 
     boolean refreshRepository()
             throws Exception;
+
     String executeDynamicWorkflow(List<String> taskIds, Metadata metadata)
             throws Exception;
 

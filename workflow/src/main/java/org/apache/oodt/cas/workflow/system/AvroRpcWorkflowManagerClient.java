@@ -20,13 +20,12 @@ package org.apache.oodt.cas.workflow.system;
 import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.Transceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
-import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.util.AvroTypeFactory;
 
 import java.io.IOException;
@@ -45,26 +44,20 @@ import java.util.logging.Logger;
  */
 public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
 
-    private static Logger LOG = Logger
-            .getLogger(AvroRpcWorkflowManagerClient.class.getName());
+    private static Logger LOG = Logger.getLogger(AvroRpcWorkflowManagerClient.class.getName());
 
-    Transceiver client;
-
-    org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager proxy;
-
-    URL workflowManagerUrl;
-
+    private Transceiver client;
+    private org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager proxy;
+    private URL workflowManagerUrl;
 
     public AvroRpcWorkflowManagerClient(URL url){
         workflowManagerUrl = url;
         try {
             client = new NettyTransceiver(new InetSocketAddress(url.getHost(),url.getPort()));
-        proxy = SpecificRequestor.getClient(org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class, client);
-
+            proxy = SpecificRequestor.getClient(org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class, client);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.severe(String.format("Error occurred when creating client: %s", e.getMessage()));
         }
-
     }
 
     @Override
@@ -250,5 +243,19 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (client != null) {
+            client.close();
+            client = null;
+            LOG.info("Closed workflow manager client: " + workflowManagerUrl.toString());
+        }
+    }
+
+    @Override
+    public void finalize() throws IOException {
+        close();
     }
 }

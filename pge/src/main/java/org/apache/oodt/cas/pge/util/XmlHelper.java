@@ -37,6 +37,7 @@ import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -438,21 +439,26 @@ public class XmlHelper {
 		return fillIn(value, inputMetadata, true);
 	}
 
-	public static String fillIn(String value, Metadata inputMetadata,
-			boolean envReplaceRecur) throws PGEException {
-		try (FileManagerClient fmClient=RpcCommunicationFactory.createClient(
-				new URL(inputMetadata.getMetadata(QUERY_FILE_MANAGER_URL.getName())))){
-			while ((value = PathUtils
-					.doDynamicReplacement(value, inputMetadata)).contains("[")
-					&& envReplaceRecur) {
+	public static String fillIn(String value, Metadata inputMetadata, boolean envReplaceRecur) throws PGEException {
+		FileManagerClient fmClient=null;
+		try {
+			while ((value = PathUtils.doDynamicReplacement(value, inputMetadata)).contains("[") && envReplaceRecur) {
 			}
-			if (value.toUpperCase().matches(
-					"^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$")) {
+
+			if (value.toUpperCase().matches("^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$")) {
+				fmClient = RpcCommunicationFactory
+						.createClient(new URL(inputMetadata.getMetadata(QUERY_FILE_MANAGER_URL.getName())));
 				value = QueryUtils.getQueryResultsAsString(fmClient.complexQuery(SqlParser.parseSqlQueryMethod(value)));
 			}
 			return value;
 		} catch (Exception e) {
 			throw new PGEException("Failed to parse value: " + value, e);
+		} finally {
+			if (fmClient != null) {
+				try {
+					fmClient.close();
+				} catch (IOException ignored) { }
+			}
 		}
 	}
 }

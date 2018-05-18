@@ -18,6 +18,9 @@ package org.apache.oodt.cas.pge;
 
 //OODT static imports
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
 import org.apache.oodt.cas.crawl.ProductCrawler;
@@ -35,13 +38,8 @@ import org.apache.oodt.cas.pge.metadata.PgeTaskStatus;
 import org.apache.oodt.cas.pge.writers.MockDynamicConfigFileWriter;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
+import org.apache.oodt.cas.workflow.system.AvroRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.junit.After;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -50,10 +48,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -64,14 +65,18 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.*;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 //JDK imports
 //JUnit imports
 //Apache imports
@@ -219,25 +224,24 @@ public class TestPGETaskInstance {
       assertEquals(Level.SEVERE.getLocalizedName() + ": pge2 message1", messages.get(1));
    }
 
-  @Test
+   @Test
    public void testUpdateStatus() throws Exception {
       final Map<String, String> args = Maps.newHashMap();
-      PGETaskInstance pgeTask = createTestInstance();
-      pgeTask.wm = new XmlRpcWorkflowManagerClient(null) {
-         @Override
-         public boolean updateWorkflowInstanceStatus(String instanceId,
-               String status) {
-            args.put("InstanceId", instanceId);
-            args.put("Status", status);
-            return true;
-         }
-      };
-      String instanceId = "Test ID";
-      String status = PgeTaskStatus.CRAWLING.getWorkflowStatusName();
-      pgeTask.workflowInstId = instanceId;
-      pgeTask.updateStatus(status);
-      assertEquals(instanceId, args.get("InstanceId"));
-      assertEquals(status, args.get("Status"));
+       PGETaskInstance pgeTask = createTestInstance();
+       pgeTask.setWmClient(new AvroRpcWorkflowManagerClient(new URL("http://localhost:9001")) {
+           @Override
+           public boolean updateWorkflowInstanceStatus(String instanceId, String status) {
+               args.put("InstanceId", instanceId);
+               args.put("Status", status);
+               return true;
+           }
+       });
+       String instanceId = "Test ID";
+       String status = PgeTaskStatus.CRAWLING.getWorkflowStatusName();
+       pgeTask.setWorkflowInstId(instanceId);
+       pgeTask.updateStatus(status);
+       assertEquals(instanceId, args.get("InstanceId"));
+       assertEquals(status, args.get("Status"));
    }
 
   @Test
@@ -271,11 +275,8 @@ public class TestPGETaskInstance {
   @Test
    public void testCreateWorkflowManagerClient() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
-      pgeTask.pgeMetadata.replaceMetadata(WORKFLOW_MANAGER_URL,
-            "http://localhost:8888");
-      WorkflowManagerClient wmClient =
-         pgeTask.createWorkflowManagerClient();
-      assertNotNull(wmClient);
+      pgeTask.pgeMetadata.replaceMetadata(WORKFLOW_MANAGER_URL, "http://localhost:8888");
+      assertNotNull(pgeTask.getWorkflowManagerClient());
    }
 
   @Test
@@ -462,12 +463,13 @@ public class TestPGETaskInstance {
       pgeTask.pgeConfig.addOuputDirAndExpressions(new OutputDir("/tmp/dir1", true));
       pgeTask.pgeConfig.addOuputDirAndExpressions(new OutputDir("/tmp/dir2", true));
       pgeTask.pgeMetadata.replaceMetadata(ATTEMPT_INGEST_ALL, Boolean.toString(true));
-      pgeTask.workflowInstId = "WorkflowInstanceId";
+      pgeTask.setWorkflowInstId("WorkflowInstanceId");
 
-      pgeTask.wm = createMock(WorkflowManagerClient.class);
-      expect(pgeTask.wm.updateWorkflowInstanceStatus(pgeTask.workflowInstId,
-            CRAWLING.getWorkflowStatusName())).andReturn(true);
-      replay(pgeTask.wm);
+      pgeTask.setWmClient(createMock(WorkflowManagerClient.class));
+      expect(pgeTask.getWorkflowManagerClient()
+              .updateWorkflowInstanceStatus(pgeTask.getWorkflowInstId(), CRAWLING.getWorkflowStatusName())
+      ).andReturn(true);
+      replay(pgeTask.getWorkflowManagerClient());
 
       AutoDetectProductCrawler pc = createMock(AutoDetectProductCrawler.class);
       pc.crawl(new File("/tmp/dir1"));
@@ -477,14 +479,14 @@ public class TestPGETaskInstance {
 
       pgeTask.runIngestCrawler(pc);
 
-      verify(pgeTask.wm);
+      verify(pgeTask.getWorkflowManagerClient());
       verify(pc);
 
       // Case: UpdateStatus Fail
-      pgeTask.wm = createMock(WorkflowManagerClient.class);
-      expect(pgeTask.wm.updateWorkflowInstanceStatus(pgeTask.workflowInstId,
+      pgeTask.setWmClient(createMock(WorkflowManagerClient.class));
+      expect(pgeTask.getWorkflowManagerClient().updateWorkflowInstanceStatus(pgeTask.getWorkflowInstId(),
             CRAWLING.getWorkflowStatusName())).andReturn(false);
-      replay(pgeTask.wm);
+      replay(pgeTask.getWorkflowManagerClient());
 
       pc = createMock(AutoDetectProductCrawler.class);
       replay(pc);
@@ -494,14 +496,14 @@ public class TestPGETaskInstance {
          fail("Should have thrown");
       } catch (Exception e) { /* expect throw */ }
 
-      verify(pgeTask.wm);
+      verify(pgeTask.getWorkflowManagerClient());
       verify(pc);
 
       // Case: UpdateStatus Success, VerifyIngest Fail
-      pgeTask.wm = createMock(WorkflowManagerClient.class);
-      expect(pgeTask.wm.updateWorkflowInstanceStatus(pgeTask.workflowInstId,
+      pgeTask.setWmClient(createMock(WorkflowManagerClient.class));
+      expect(pgeTask.getWorkflowManagerClient().updateWorkflowInstanceStatus(pgeTask.getWorkflowInstId(),
             CRAWLING.getWorkflowStatusName())).andReturn(true);
-      replay(pgeTask.wm);
+      replay(pgeTask.getWorkflowManagerClient());
 
       pc = createMock(AutoDetectProductCrawler.class);
       pc.crawl(new File("/tmp/dir1"));
@@ -529,7 +531,7 @@ public class TestPGETaskInstance {
          fail("Should have thrown");
       } catch (Exception e) { /* expect throw */ }
 
-      verify(pgeTask.wm);
+      verify(pgeTask.getWorkflowManagerClient());
       verify(pc);
    }
 
@@ -634,7 +636,7 @@ public class TestPGETaskInstance {
    private PGETaskInstance createTestInstance(String workflowInstId)
          throws Exception {
       PGETaskInstance pgeTask = new PGETaskInstance();
-      pgeTask.workflowInstId = workflowInstId;
+       pgeTask.setWorkflowInstId(workflowInstId);
       pgeTask.pgeMetadata = new PgeMetadata();
       pgeTask.pgeMetadata.replaceMetadata(NAME, "TestPGE");
       pgeTask.pgeConfig = new PgeConfig();

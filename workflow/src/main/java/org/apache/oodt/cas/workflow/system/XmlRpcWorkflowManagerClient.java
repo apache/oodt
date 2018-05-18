@@ -534,4 +534,8 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
         client = new XmlRpcClient(workflowManagerUrl);
     }
 
+    @Override
+    public void close() throws IOException {
+
+    }
 }
