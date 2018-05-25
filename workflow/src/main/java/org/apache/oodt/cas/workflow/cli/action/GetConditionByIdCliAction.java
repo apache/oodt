@@ -19,6 +19,7 @@ package org.apache.oodt.cas.workflow.cli.action;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which retrieves WorkflowCondition information for
@@ -33,9 +34,10 @@ public class GetConditionByIdCliAction extends WorkflowCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
+
       try {
-         WorkflowCondition condition = getClient()
-               .getConditionById(conditionId);
+         WorkflowManagerClient client = getClient();
+         WorkflowCondition condition = client.getConditionById(conditionId);
          printer.println("Condition: [id=" + condition.getConditionId()
                + ", name=" + condition.getConditionName() + ", order="
                + condition.getOrder() + ", class="

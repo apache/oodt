@@ -19,13 +19,11 @@
 package org.apache.oodt.cas.workflow.examples;
 
 
-//OODT imports
-
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.struct.avrotypes.AvroWorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 import java.net.MalformedURLException;
@@ -34,15 +32,13 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//JDK imports
-
 
 /**
  * @author mattmann
  * @version $Revision$
  * 
  * This class illustrates OODT-86, demonstrating how the method
- * {@link org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager#updateWorkflowInstance(java.util.Hashtable)}
+ * {@link org.apache.oodt.cas.workflow.system.AvroRpcWorkflowManager#updateWorkflowInstance(AvroWorkflowInstance)}
  * allows a user to change the status of a given {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance}
  * programmatically.
  */
@@ -110,4 +106,10 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
         }
     }
 
+    @Override
+    public void finalize() throws Exception {
+        if (client != null) {
+            client.close();
+        }
+    }
 }

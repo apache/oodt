@@ -17,10 +17,8 @@
 
 package org.apache.oodt.pcs.util;
 
-//JDK imports
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 
@@ -31,8 +29,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//OODT imports
 
 /**
  * 
@@ -48,8 +44,7 @@ public class WorkflowManagerUtils {
   private WorkflowManagerClient client;
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(WorkflowManagerUtils.class
-      .getName());
+  private static final Logger LOG = Logger.getLogger(WorkflowManagerUtils.class.getName());
 
   private URL wmUrl;
 

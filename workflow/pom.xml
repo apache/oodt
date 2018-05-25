@@ -233,7 +233,7 @@ the License.
           </descriptors>
           <archive>
             <manifest>
-              <mainClass>org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient</mainClass>
+              <mainClass>org.apache.oodt.cas.workflow.system.AvroRpcWorkflowManagerClient</mainClass>
             </manifest>
           </archive>
         </configuration>

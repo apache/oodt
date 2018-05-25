@@ -17,17 +17,15 @@
 
 package org.apache.oodt.cas.workflow.tools;
 
-//JDK imports
 import org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
-import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.oodt.commons.date.DateUtils;
-import org.apache.xmlrpc.XmlRpcException;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,7 +44,7 @@ import java.util.logging.Logger;
  * @author mattmann
  * 
  */
-public class InstanceRepoCleaner {
+public class InstanceRepoCleaner implements Closeable {
 
   /* PGE task statuses */
   public static final String STAGING_INPUT = "STAGING INPUT";
@@ -57,8 +55,7 @@ public class InstanceRepoCleaner {
 
   public static final String CRAWLING = "CRAWLING";
 
-  private static final Logger LOG = Logger.getLogger(InstanceRepoCleaner.class
-      .getName());
+  private static final Logger LOG = Logger.getLogger(InstanceRepoCleaner.class.getName());
 
   private WorkflowManagerClient wm;
 
@@ -68,7 +65,7 @@ public class InstanceRepoCleaner {
   }
 
   public InstanceRepoCleaner(String wmUrlStr) throws MalformedURLException {
-    this.wm = new XmlRpcWorkflowManagerClient(new URL(wmUrlStr));
+    this.wm = RpcCommunicationFactory.createClient(new URL(wmUrlStr));
   }
 
   public void setInstanceRepo(String idxPath) {
@@ -83,30 +80,34 @@ public class InstanceRepoCleaner {
       System.exit(1);
     }
 
-    InstanceRepoCleaner clean;
-    if (args.length == 1) {
-      String wmUrlStr = args[0];
-      clean = new InstanceRepoCleaner(wmUrlStr);
-    } else {
-      String idxPath = args[1];
-      clean = new InstanceRepoCleaner();
-      clean.setInstanceRepo(idxPath);
+    InstanceRepoCleaner clean = null;
+    try {
+      if (args.length == 1) {
+        String wmUrlStr = args[0];
+        clean = new InstanceRepoCleaner(wmUrlStr);
+      } else {
+        String idxPath = args[1];
+        clean = new InstanceRepoCleaner();
+        clean.setInstanceRepo(idxPath);
+      }
+      clean.cleanRepository();
+    } finally {
+      if (clean != null) {
+        clean.close();
+      }
     }
-    clean.cleanRepository();
   }
 
   public void cleanRepository() throws Exception {
-    WorkflowInstancePage page = wm != null ? wm.getFirstPage() : rep
-        .getFirstPage();
-    while (page != null && page.getPageWorkflows() != null
-        && page.getPageWorkflows().size() > 0) {
+    WorkflowInstancePage page = wm != null ? wm.getFirstPage() : rep.getFirstPage();
+    while (page != null && page.getPageWorkflows() != null && page.getPageWorkflows().size() > 0) {
 
       LOG.log(Level.INFO,
           "Cleaning workflow instances: page: [" + page.getPageNum() + "] of ["
               + page.getTotalPages() + "]: page size: [" + page.getPageSize()
               + "]");
-      for (WorkflowInstance inst : (List<WorkflowInstance>) page
-          .getPageWorkflows()) {
+
+      for (WorkflowInstance inst : (List<WorkflowInstance>) page.getPageWorkflows()) {
         if (inst.getStatus().equals(WorkflowStatus.CREATED)
             || inst.getStatus().equals(WorkflowStatus.STARTED)
             || inst.getStatus().equals(WorkflowStatus.QUEUED)
@@ -140,9 +141,13 @@ public class InstanceRepoCleaner {
       }
 
       page = wm != null ? wm.getNextPage(page) : rep.getNextPage(page);
-
     }
-
   }
 
+  @Override
+  public void close() throws IOException {
+    if (wm != null) {
+      wm.close();
+    }
+  }
 }

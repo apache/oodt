@@ -118,9 +118,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
     private void updateStatus(String status, Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
-
-        try {
+        try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.updateWorkflowInstanceStatus(workflowInstId, status)) {
                 LOG.log(Level.WARNING,
                         "Unable to update status for workflow instance: ["
@@ -132,9 +130,8 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
     private void updateMetadata(Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
 
-        try {
+        try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.updateMetadataForWorkflow(workflowInstId, met)) {
                 LOG.log(Level.WARNING,
                         "Unable to update Metadata for workflow instance: ["
@@ -147,9 +144,8 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
     private void setWorkflowInstanceCurrentTaskStartDateTime(
             String startDateTime, Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
 
-        try {
+        try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.setWorkflowInstanceCurrentTaskStartDateTime(
                     workflowInstId, startDateTime)) {
                 LOG.log(Level.WARNING,
@@ -163,9 +159,8 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
     private void setWorkflowInstanceCurrentTaskEndDateTime(String endDateTime,
             Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
 
-        try {
+        try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.setWorkflowInstanceCurrentTaskEndDateTime(
                     workflowInstId, endDateTime)) {
                 LOG.log(Level.WARNING,

@@ -46,7 +46,7 @@ public class RpcCommunicationFactory {
             e.printStackTrace();
         }
         return properties.getProperty("workflow.server.factory",
-                "org.apache.oodt.cas.workflow.system.rpc.XmlRpcWorkflowManagerFactory");
+                "org.apache.oodt.cas.workflow.system.rpc.AvroRpcWorkflowManagerFactory");
     }
 
     private static String getRpcClientClassName() {
@@ -58,7 +58,7 @@ public class RpcCommunicationFactory {
             logger.error("Unable to load properties", e);
         }
         return properties.getProperty("workflow.client.factory",
-                "org.apache.oodt.cas.workflow.system.rpc.XmlRpcWorkflowManagerFactory");
+                "org.apache.oodt.cas.workflow.system.rpc.AvroRpcWorkflowManagerFactory");
     }
 
     public static WorkflowManager createServer(int port) {
@@ -66,6 +66,7 @@ public class RpcCommunicationFactory {
             WorkflowManagerFactory workflowManagerFactory =
                     (WorkflowManagerFactory) Class.forName(getRpcServerClassName()).newInstance();
             workflowManagerFactory.setPort(port);
+            logger.debug("Using workflow manager server factory : {}", workflowManagerFactory.getClass());
             return workflowManagerFactory.createServer();
         } catch (Exception e) {
             logger.error("Error creating server", e);
@@ -78,6 +79,7 @@ public class RpcCommunicationFactory {
             WorkflowManagerFactory workflowManagerFactory =
                     (WorkflowManagerFactory) Class.forName(getRpcClientClassName()).newInstance();
             workflowManagerFactory.setUrl(url);
+            logger.debug("Using workflow manager client factory : {}", workflowManagerFactory.getClass());
             return workflowManagerFactory.createClient();
         } catch (Exception e) {
             logger.error("Unable to create client", e);

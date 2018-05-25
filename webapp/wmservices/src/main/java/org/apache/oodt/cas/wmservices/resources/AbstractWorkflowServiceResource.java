@@ -25,11 +25,11 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 
 import org.apache.oodt.cas.wmservices.servlets.WmServicesServlet;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 public abstract class AbstractWorkflowServiceResource {
-  private static final Logger LOGGER = Logger.getLogger(AbstractWorkflowServiceResource.class
-      .getName());
+
+  private static final Logger LOGGER = Logger.getLogger(AbstractWorkflowServiceResource.class.getName());
 
   // Servlet context
   @Context
@@ -42,10 +42,8 @@ public abstract class AbstractWorkflowServiceResource {
    *           if an object cannot be retrieved from the context attribute
    */
   public File getContextPkgReposDir() throws Exception {
-    Object repositoryDirObject = context
-        .getAttribute(WmServicesServlet.ATTR_NAME_PKG_REPO_DIR);
-    if (repositoryDirObject != null
-        && repositoryDirObject instanceof File) {
+    Object repositoryDirObject = context.getAttribute(WmServicesServlet.ATTR_NAME_PKG_REPO_DIR);
+    if (repositoryDirObject instanceof File) {
       return (File) repositoryDirObject;
     }
     String message = "Unable to retrieve packaged repository directory from the servlet context.";
@@ -61,13 +59,11 @@ public abstract class AbstractWorkflowServiceResource {
    * @throws Exception
    *           if an object cannot be retrieved from the context attribute
    */
-  public XmlRpcWorkflowManagerClient getContextClient() throws Exception {
+  public WorkflowManagerClient getContextClient() throws Exception {
     // Get the workflow manager client from the servlet context.
-    Object clientObject = context
-        .getAttribute(WmServicesServlet.ATTR_NAME_CLIENT);
-    if (clientObject != null
-        && clientObject instanceof XmlRpcWorkflowManagerClient) {
-      return (XmlRpcWorkflowManagerClient) clientObject;
+    Object clientObject = context.getAttribute(WmServicesServlet.ATTR_NAME_CLIENT);
+    if (clientObject instanceof WorkflowManagerClient) {
+      return (WorkflowManagerClient) clientObject;
     }
 
     String message = "Unable to retrieve workflow manager client from the "

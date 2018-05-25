@@ -16,17 +16,14 @@
  */
 package org.apache.oodt.cas.workflow.cli.action;
 
-//JDK imports
-import java.net.MalformedURLException;
-import java.net.URL;
 
-//Apache imports
 import org.apache.commons.lang.Validate;
-
-//OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Base {@link CmdLineAction} for Workflow Manager.
@@ -35,24 +32,37 @@ import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
  */
 public abstract class WorkflowCliAction extends CmdLineAction {
 
-   private WorkflowManagerClient client;
+    private WorkflowManagerClient client;
 
-   public String getUrl() {
-      return System.getProperty("org.apache.oodt.cas.workflow.url");
-   }
+    public String getUrl() {
+        return System.getProperty("org.apache.oodt.cas.workflow.url");
+    }
 
-   protected WorkflowManagerClient getClient()
-         throws MalformedURLException {
-      Validate.notNull(getUrl());
+    protected synchronized WorkflowManagerClient getClient() throws MalformedURLException {
+        Validate.notNull(getUrl());
 
-      if (client != null) {
-         return client;
-      } else {
-         return RpcCommunicationFactory.createClient(new URL(getUrl()));
-      }
-   }
+        if (client == null) {
+            client = RpcCommunicationFactory.createClient(new URL(getUrl()));
+        }
 
-   public void setClient(WorkflowManagerClient client) {
-      this.client = client;
-   }
+        return client;
+    }
+
+    public void setClient(WorkflowManagerClient client) {
+        this.client = client;
+    }
+
+    /**
+     * This is not the best way to close the client. For the time being, we go with this way.
+     *
+     * @throws Throwable
+     */
+    @Override
+    public void finalize() throws Throwable {
+        if (client != null) {
+            client.close();
+        }
+
+        super.finalize();
+    }
 }

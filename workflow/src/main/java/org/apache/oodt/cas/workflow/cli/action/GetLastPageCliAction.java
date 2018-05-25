@@ -24,10 +24,9 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
 /**
- * A {@link CmdLineOption} which gets the last page of workflows.
+ * A {@link org.apache.oodt.cas.cli.option.CmdLineOption} which gets the last page of workflows.
  * 
  * @author bfoster (Brian Foster)
  */

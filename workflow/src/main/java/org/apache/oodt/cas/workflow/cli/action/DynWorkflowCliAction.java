@@ -16,55 +16,58 @@
  */
 package org.apache.oodt.cas.workflow.cli.action;
 
-//JDK imports
-import java.util.List;
-
-//Apache imports
 import org.apache.commons.lang.Validate;
-
-//OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+
+import java.util.List;
+import java.util.logging.Logger;
+
 
 /**
  * A {@link CmdLineAction} for submitting dynamically created {@link Workflow}s
  * of pre-defined {@link WorkflowTask}s.
- * 
+ *
  * @author bfoster (Brian Foster)
  */
 public class DynWorkflowCliAction extends WorkflowCliAction {
 
-   private List<String> taskIds;
-   private Metadata metadata;
+    private static final Logger LOGGER = Logger.getLogger(DynWorkflowCliAction.class.getName());
 
-   public DynWorkflowCliAction() {
-      metadata = new Metadata();
-   }
+    private List<String> taskIds;
+    private Metadata metadata;
 
-   @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      Validate.notNull(taskIds, "Must specify taskIds");
+    public DynWorkflowCliAction() {
+        metadata = new Metadata();
+    }
 
-      try {
-         String instId = getClient().executeDynamicWorkflow(taskIds, metadata);
-         printer.println("Started dynamic workflow with id '" + instId + "'");
-      } catch (Exception e) {
-         throw new CmdLineActionException(
-               "Failed to submit dynamic workflow for taskIds " + taskIds
-                     + " with metadata " + metadata.getMap() + " : "
-                     + e.getMessage(), e);
-      }
-   }
+    @Override
+    public void execute(ActionMessagePrinter printer)
+            throws CmdLineActionException {
+        Validate.notNull(taskIds, "Must specify taskIds");
 
-   public void setTaskIds(List<String> taskIds) {
-      this.taskIds = taskIds;
-   }
+        try (WorkflowManagerClient client = getClient()) {
+            LOGGER.fine(String.format("Starting workflow %d tasks", taskIds.size()));
+            String instId = client.executeDynamicWorkflow(taskIds, metadata);
+            LOGGER.fine(String.format("Started workflow with instanceId: %s", instId));
+            printer.println("Started dynamic workflow with id '" + instId + "'");
+        } catch (Exception e) {
+            throw new CmdLineActionException(
+                    "Failed to submit dynamic workflow for taskIds " + taskIds
+                            + " with metadata " + metadata.getMap() + " : "
+                            + e.getMessage(), e);
+        }
+    }
 
-   public void addMetadata(List<String> metadata) {
-      Validate.isTrue(metadata.size() > 1);
+    public void setTaskIds(List<String> taskIds) {
+        this.taskIds = taskIds;
+    }
 
-      this.metadata.addMetadata(metadata.get(0),
-            metadata.subList(1, metadata.size()));
-   }
+    public void addMetadata(List<String> metadata) {
+        Validate.isTrue(metadata.size() > 1);
+
+        this.metadata.addMetadata(metadata.get(0),
+                metadata.subList(1, metadata.size()));
+    }
 }

@@ -24,7 +24,6 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
 /**
  * Gets the first page of workflow instances.
@@ -66,7 +65,6 @@ public class GetFirstPageCliAction extends WorkflowCliAction {
                   + client.getWorkflowCurrentTaskWallClockMinutes(inst.getId())
                   + "]");
          }
-
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to get first page of workflows : " + e.getMessage(), e);

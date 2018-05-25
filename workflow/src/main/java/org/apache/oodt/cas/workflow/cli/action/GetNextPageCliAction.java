@@ -27,11 +27,10 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which gets the next page of workflows.
- * 
+ *
  * @author bfoster (Brian Foster)
  */
 public class GetNextPageCliAction extends WorkflowCliAction {
@@ -41,8 +40,7 @@ public class GetNextPageCliAction extends WorkflowCliAction {
 
    @SuppressWarnings("unchecked")
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
       Validate.isTrue(pageNum != -1);
 
       try {
@@ -61,8 +59,7 @@ public class GetNextPageCliAction extends WorkflowCliAction {
             throw new Exception(
                   "WorkflowManager returned null page of workflows");
          }
-         for (WorkflowInstance inst : (List<WorkflowInstance>) page
-               .getPageWorkflows()) {
+         for (WorkflowInstance inst : (List<WorkflowInstance>) page.getPageWorkflows()) {
             printer.println("Instance: [id=" + inst.getId() + ", status="
                   + inst.getStatus() + ", currentTask="
                   + inst.getCurrentTaskId() + ", workflow="

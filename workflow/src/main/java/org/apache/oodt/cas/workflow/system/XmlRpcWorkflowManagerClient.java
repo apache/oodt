@@ -18,7 +18,6 @@
 
 package org.apache.oodt.cas.workflow.system;
 
-//APACHE imports
 
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
@@ -33,14 +32,11 @@ import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//JDK imports
-//OODT imports
 
 /**
  * @author mattmann
@@ -49,7 +45,7 @@ import java.util.logging.Logger;
  * <p>
  * The XML RPC based workflow manager client.
  * </p>
- * 
+ *
  */
 @Deprecated
 public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
@@ -69,7 +65,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
      * Constructs a new XmlRpcWorkflowManagerClient with the given
      * <code>url</code>.
      * </p>
-     * 
+     *
      * @param url
      *            The url pointer to the xml rpc workflow manager service.
      */
@@ -77,7 +73,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
         client = new XmlRpcClient(url);
         workflowManagerUrl = url;
     }
-    
+
     @Override
     public boolean refreshRepository()
         throws XmlRpcException, IOException {
@@ -93,7 +89,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
     Vector<String> taskIdVector = new Vector<String>();
     taskIdVector.addAll(taskIds);
     String instId;
-    
+
     argList.add(taskIdVector);
     argList.add(metadata.getHashTable());
 
@@ -368,10 +364,10 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
                 .execute("workflowmgr.handleEvent", argList);
 
     }
-    
+
     public boolean clearWorkflowInstances() throws XmlRpcException, IOException{
       Vector argList = new Vector();
-      
+
       return (Boolean)client.execute("workflowmgr.clearWorkflowInstances", argList);
     }
 

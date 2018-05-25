@@ -17,19 +17,20 @@
 
 package org.apache.oodt.cas.wmservices.servlets;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
-import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Initialize workflow manager services servlet
@@ -43,8 +44,8 @@ import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
  * @author vratnakar
  */
 public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
-  private static final Logger LOGGER = Logger
-      .getLogger(WmServicesServlet.class.getName());
+
+  private static final Logger LOGGER = Logger.getLogger(WmServicesServlet.class.getName());
   
   private static final long serialVersionUID = -7830210280506307805L;
 
@@ -57,7 +58,7 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
 
   /**
    * The name of the servlet context attribute that holds a client for the
-   * workflow manager, a {@link XmlRpcWorkflowManagerClient} object.
+   * workflow manager, a {@link org.apache.oodt.cas.workflow.system.WorkflowManagerClient} object.
    */
   public static final String ATTR_NAME_CLIENT = "client";
   
@@ -66,8 +67,9 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
    * packaged repository directory: a {@link File} object.
    */
   public static final String ATTR_NAME_PKG_REPO_DIR = "pkgRepoFilesDir";
-  
-  
+
+  private WorkflowManagerClient client;
+
   @Override
   public void init(ServletConfig configuration) throws ServletException {
     super.init(configuration);
@@ -89,11 +91,10 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
       }
       // Attempt to connect the client to the workflow manager and if successful
       // store the client as a context attribute for other objects to access.
-      XmlRpcWorkflowManagerClient client = new XmlRpcWorkflowManagerClient(url);
+      client = RpcCommunicationFactory.createClient(url);
       context.setAttribute(ATTR_NAME_CLIENT, client);
     } catch (MalformedURLException e) {
-      LOGGER.log(Level.SEVERE,
-          "Encountered a malformed URL for the workflow manager.", e);
+      LOGGER.log(Level.SEVERE, "Encountered a malformed URL for the workflow manager.", e);
       throw new ServletException(e);
     }
 
@@ -110,5 +111,19 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
                 + workflowDir.getAbsolutePath());
       }
     }
+  }
+
+  @Override
+  public void destroy() {
+    if (client != null) {
+      try {
+        client.close();
+        client = null;
+      } catch (IOException e) {
+        LOGGER.severe(String.format("Unable to close WM Client: %s", e.getMessage()));
+      }
+    }
+
+    super.destroy();
   }
 }
