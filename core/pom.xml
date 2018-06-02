@@ -277,11 +277,12 @@ the License.
         <groupId>org.apache.curator</groupId>
         <artifactId>curator-test</artifactId>
         <version>3.3.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.zookeeper</groupId>
-        <artifactId>zookeeper</artifactId>
-        <version>3.5.1-alpha</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
@@ -555,9 +556,9 @@ the License.
         <version>1.7.12</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.12</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>2.11.0</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -601,6 +602,7 @@ the License.
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
