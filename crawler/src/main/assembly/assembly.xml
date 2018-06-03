@@ -44,6 +44,7 @@ the License.
 			<outputDirectory>etc</outputDirectory>
 			<includes>
 				<include>logging.properties</include>
+				<include>log4j2.xml</include>
 			</includes>
 		</fileSet>
 		<fileSet>
