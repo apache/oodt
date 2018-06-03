@@ -22,6 +22,7 @@ import java.util.List;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which get list of current {@link Product} file
@@ -34,9 +35,8 @@ public class GetCurrentTransfersCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
-         List<FileTransferStatus> statuses = getClient()
-               .getCurrentFileTransfers();
+      try (FileManagerClient client = getClient()) {
+         List<FileTransferStatus> statuses = client.getCurrentFileTransfers();
          if (statuses == null) {
             throw new NullPointerException(
                   "FileManager returned null file transfers");

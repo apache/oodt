@@ -22,6 +22,7 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which adds a {@link ProductType} to the file manager.
@@ -38,9 +39,8 @@ public class AddProductTypeCliAction extends FileManagerCliAction {
    private String versioner;
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productTypeId, "Must specify productTypeId");
          Validate.notNull(productTypeName, "Must specify productTypeName");
          Validate.notNull(productTypeDescription,
@@ -56,8 +56,7 @@ public class AddProductTypeCliAction extends FileManagerCliAction {
          type.setProductRepositoryPath(fileRepositoryPath);
          type.setVersioner(versioner);
 
-         printer.println("addProductType: Result: "
-               + getClient().addProductType(type));
+         printer.println("addProductType: Result: " + client.addProductType(type));
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to add product type with "
                + "id '" + productTypeId + "', name '" + productTypeName + "', description '"

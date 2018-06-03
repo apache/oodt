@@ -24,32 +24,24 @@ import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
-
 import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroFileManager;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroFileTransferStatus;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroProduct;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroElement;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroQueryResult;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroProductType;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroReference;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroProductPage;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroQuery;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroMetadata;
-import org.apache.oodt.cas.filemgr.structs.avrotypes.AvroComplexQuery;
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.avrotypes.*;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.util.AvroTypeFactory;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -63,6 +55,8 @@ import java.util.List;
  * <p>Implementaion of FileManagerServer that uses apache avro-ipc API.</p>
  */
 public class AvroFileManagerServer implements AvroFileManager, FileManagerServer {
+
+    private static final Logger logger = LoggerFactory.getLogger(AvroFileManagerServer.class);
 
     /*port for server*/
     protected int port = 1999;
@@ -185,8 +179,15 @@ public class AvroFileManagerServer implements AvroFileManager, FileManagerServer
 
     @Override
     public AvroProductPage getFirstPage(AvroProductType type) throws AvroRemoteException {
-        return AvroTypeFactory.getAvroProductPage(
-                this.fileManager.getFirstPage(AvroTypeFactory.getProductType(type)));
+        logger.debug("Getting first page for type: {}", type.getName());
+        ProductPage firstPage = this.fileManager.getFirstPage(AvroTypeFactory.getProductType(type));
+        logger.debug("Found first page for product type: {} -> {}", type.getName(), firstPage);
+        if (firstPage == null) {
+            logger.warn("No first page found for product type: {}", type.getName());
+            return null;
+        }
+
+        return AvroTypeFactory.getAvroProductPage(firstPage);
     }
 
     @Override
@@ -197,10 +198,9 @@ public class AvroFileManagerServer implements AvroFileManager, FileManagerServer
 
     @Override
     public AvroProductPage getNextPage(AvroProductType type, AvroProductPage currPage) throws AvroRemoteException {
-        return AvroTypeFactory.getAvroProductPage(
-                this.fileManager.getNextPage(
-                        AvroTypeFactory.getProductType(type),
-                        AvroTypeFactory.getProductPage(currPage)));
+
+        return AvroTypeFactory.getAvroProductPage(this.fileManager
+                        .getNextPage(AvroTypeFactory.getProductType(type), AvroTypeFactory.getProductPage(currPage)));
     }
 
     @Override

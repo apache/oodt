@@ -37,10 +37,9 @@ public class GetNumProductsCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productTypeName, "Must specify productTypeName");
 
-         FileManagerClient client = getClient();
          ProductType pt = client.getProductTypeByName(productTypeName);
          if (pt == null) {
             throw new Exception("FileManager returned null ProductType");

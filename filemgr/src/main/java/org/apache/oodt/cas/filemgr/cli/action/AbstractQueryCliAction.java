@@ -29,6 +29,7 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter;
 import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * Abstract query {@link CmdLineAction}.
@@ -54,7 +55,7 @@ public abstract class AbstractQueryCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          ComplexQuery complexQuery = getQuery();
          complexQuery.setSortByMetKey(sortBy);
          complexQuery.setToStringResultFormat(outputFormat);
@@ -72,7 +73,8 @@ public abstract class AbstractQueryCliAction extends FileManagerCliAction {
             }
             complexQuery.setQueryFilter(filter);
          }
-         List<QueryResult> results = getClient().complexQuery(complexQuery);
+
+         List<QueryResult> results = client.complexQuery(complexQuery);
          StringBuilder returnString = new StringBuilder("");
          for (QueryResult qr : results) {
             returnString.append(qr.toString()).append(delimiter);

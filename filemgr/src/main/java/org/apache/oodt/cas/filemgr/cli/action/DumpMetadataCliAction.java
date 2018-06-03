@@ -31,6 +31,7 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.commons.xml.XMLUtils;
@@ -48,14 +49,14 @@ public class DumpMetadataCliAction extends FileManagerCliAction {
    @Override
    public void execute(final ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productId, "Must specify productId");
 
-         Product product = getClient().getProductById(productId);
+         Product product = client.getProductById(productId);
          if (product == null) {
             throw new Exception("FileManager returned null product");
          }
-         Metadata metadata = getClient().getMetadata(product);
+         Metadata metadata = client.getMetadata(product);
          if (metadata == null) {
             throw new Exception("FileManager returned null metadata");
          }

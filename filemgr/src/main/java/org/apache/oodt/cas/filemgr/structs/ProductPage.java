@@ -180,5 +180,9 @@ public class ProductPage {
         blank.setPageProducts(Collections.EMPTY_LIST);
         return blank;
     }
-    
+
+    @Override
+    public String toString() {
+        return String.format("(Page %s -> %d Products)", pageNum, pageProducts.size());
+    }
 }

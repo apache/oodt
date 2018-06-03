@@ -41,11 +41,9 @@ public class GetNextPageCliAction extends FileManagerCliAction {
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
 
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productTypeName, "Must specify productTypeName");
          Validate.isTrue(currentPageNum != -1, "Must specify currentPageNum");
-
-         FileManagerClient client = getClient();
 
          ProductType type = client.getProductTypeByName(productTypeName);
          if (type == null) {

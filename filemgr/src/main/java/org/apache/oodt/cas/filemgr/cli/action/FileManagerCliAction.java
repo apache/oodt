@@ -16,7 +16,6 @@
  */
 package org.apache.oodt.cas.filemgr.cli.action;
 
-//JDK imports
 
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.action.CmdLineAction;
@@ -24,12 +23,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-//Apache imports
-//OODT imports
 
 /**
  * Base {@link CmdLineAction} for File Manager.
@@ -38,30 +33,30 @@ import java.net.URL;
  */
 public abstract class FileManagerCliAction extends CmdLineAction {
 
-   private FileManagerClient client;
+    private FileManagerClient fmc;
 
-   public String getUrl() {
-      return System.getProperty("org.apache.oodt.cas.filemgr.url");
-   }
+    public String getUrl() {
+        return System.getProperty("org.apache.oodt.cas.filemgr.url");
+    }
 
-   protected FileManagerClient getClient() throws MalformedURLException, ConnectionException {
-      Validate.notNull(getUrl(), "Must specify url");
+    /**
+     * TODO(imesha) Fix client closing problem which makes it usable only once
+     *
+     * @return client
+     * @throws MalformedURLException
+     * @throws ConnectionException
+     */
+    protected FileManagerClient getClient() throws MalformedURLException, ConnectionException {
+        Validate.notNull(getUrl(), "Must specify url");
 
-      if (client != null) {
-         return client;
-      } else {
-         return RpcCommunicationFactory.createClient(new URL(getUrl()), false);
-      }
-   }
+        if (this.fmc != null) {
+            return fmc;
+        }
 
-   public void setClient(FileManagerClient client) {
-      this.client = client;
-   }
+        return RpcCommunicationFactory.createClient(new URL(getUrl()), false);
+    }
 
-   @Override
-   public void finalize() throws IOException {
-      if (client != null) {
-         client.close();
-      }
-   }
+    public void setClient(FileManagerClient client) {
+        this.fmc = client;
+    }
 }

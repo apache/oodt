@@ -61,14 +61,12 @@ public class IngestProductCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productName, "Must specify productName");
          Validate.notNull(productStructure, "Must specify productStructure");
          Validate.notNull(productTypeName, "Must specify productTypeName");
          Validate.notNull(metadataFile, "Must specify metadataFile");
          Validate.notNull(references, "Must specify references");
-
-         FileManagerClient client = getClient();
 
          ProductType pt = client.getProductTypeByName(productTypeName);
          if (pt == null) {

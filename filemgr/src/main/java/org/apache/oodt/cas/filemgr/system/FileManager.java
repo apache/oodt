@@ -51,6 +51,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import com.google.common.collect.Lists;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author radu
@@ -60,6 +61,11 @@ import com.google.common.collect.Lists;
  */
 public class FileManager {
 
+    /** Our log stream. Should be replaced by SLF4J logger */
+    @Deprecated
+    private static final Logger LOG = Logger.getLogger(FileManager.class.getName());
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FileManager.class);
+
     private Catalog catalog = null;
 
     /* our RepositoryManager */
@@ -67,10 +73,6 @@ public class FileManager {
 
     /* our DataTransfer */
     private DataTransfer dataTransfer = null;
-
-    /* our log stream */
-    private static final Logger LOG = Logger.getLogger(FileManager.class.getName());
-
 
     /* our data transfer status tracker */
     private TransferStatusTracker transferStatusTracker = null;
@@ -95,6 +97,7 @@ public class FileManager {
     }
 
     public void setCatalog(Catalog catalog) {
+        LOG.fine("Setting catalog: " + catalog.toString());
         this.catalog = catalog;
     }
 
@@ -192,22 +195,20 @@ public class FileManager {
         return prodPage;
     }
 
-    public ProductPage getFirstPage(
-            ProductType type) {
+    public ProductPage getFirstPage(ProductType type) {
+        logger.debug("Getting first page for product type : {}", type.toString());
         ProductPage page = catalog.getFirstPage(type);
         try {
             setProductType(page.getPageProducts());
         } catch (Exception e) {
-            LOG.log(Level.WARNING,
-                    "Unable to set product types for product page list: ["
-                            + page + "]");
+            logger.error("Unable to set product type for product page: {}", page, e);
         }
         return page;
     }
 
-    public ProductPage getLastPage(
-            ProductType type ) {
-
+    public ProductPage getLastPage(ProductType type) {
+        LOG.fine("Getting last page for : " + type.toString());
+        logger.debug("Getting last page for : {}", type);
         ProductPage page = catalog.getLastProductPage(type);
         try {
             setProductType(page.getPageProducts());
@@ -219,10 +220,8 @@ public class FileManager {
         return page;
     }
 
-    public ProductPage getNextPage(
-            ProductType type ,
-            ProductPage currPage) {
-
+    public ProductPage getNextPage(ProductType type , ProductPage currPage) {
+        LOG.fine("Getting next page for : " + type.toString());
         ProductPage page = catalog.getNextPage(type, currPage);
         try {
             setProductType(page.getPageProducts());
@@ -234,9 +233,8 @@ public class FileManager {
         return page;
     }
 
-    public ProductPage getPrevPage(
-            ProductType type,
-            ProductPage currPage) {
+    public ProductPage getPrevPage(ProductType type, ProductPage currPage) {
+        LOG.fine("Getting previous page for : " + type.toString());
         ProductPage page = catalog.getPrevPage(type, currPage);
         try {
             setProductType(page.getPageProducts());
@@ -248,11 +246,10 @@ public class FileManager {
         return page;
     }
 
-    public String addProductType(ProductType productType)
-            throws RepositoryManagerException {
+    public String addProductType(ProductType productType) throws RepositoryManagerException {
+        LOG.fine("Adding product type : " + productType.toString());
         repositoryManager.addProductType(productType);
         return productType.getProductTypeId();
-
     }
 
     public synchronized boolean setProductTransferStatus(
@@ -897,6 +894,7 @@ public class FileManager {
     }
 
     private void setProductType(List<Product> products) throws Exception {
+        logger.debug("Setting product types for products: {}", products);
         if (products != null && products.size() > 0) {
             for (Iterator<Product> i = products.iterator(); i.hasNext();) {
                 Product p = i.next();
@@ -904,6 +902,7 @@ public class FileManager {
                     p.setProductType(repositoryManager.getProductTypeById(p
                             .getProductType().getProductTypeId()));
                 } catch (RepositoryManagerException e) {
+                    logger.error("Unable to set product type for product: {}", p, e);
                     throw new Exception(e.getMessage());
                 }
             }

@@ -40,11 +40,9 @@ public class GetPrevPageCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productTypeName, "Must specify productTypeName");
          Validate.notNull(currentPageNum, "Must specify currentPageNum");
-
-         FileManagerClient client = getClient();
 
          ProductType type = client.getProductTypeByName(productTypeName);
          if (type == null) {

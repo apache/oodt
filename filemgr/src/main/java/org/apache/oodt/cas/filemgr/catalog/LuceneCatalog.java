@@ -36,6 +36,7 @@ import org.apache.poi.hssf.record.formula.functions.Text;
 import org.apache.solr.schema.FieldType;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,6 +63,13 @@ import java.util.logging.Logger;
  * 
  */
 public class LuceneCatalog implements Catalog {
+
+    /* our log stream */
+    @Deprecated
+    private static final Logger LOG = Logger.getLogger(LuceneCatalog.class.getName());
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(LuceneCatalog.class);
+
     Directory indexDir = null;
 
     private DirectoryReader reader;
@@ -79,9 +87,6 @@ public class LuceneCatalog implements Catalog {
 
     /* our product ID generator */
     private static UUIDGenerator generator = UUIDGenerator.getInstance();
-
-    /* our log stream */
-    private static final Logger LOG = Logger.getLogger(LuceneCatalog.class.getName());
 
     /* page size for pagination */
     private int pageSize = -1;
@@ -836,6 +841,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.util.Pagination#getFirstPage(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public ProductPage getFirstPage(ProductType type) {
+        logger.debug("Getting first page for product type: {}", type);
         ProductPage firstPage = new ProductPage();
         List<Product> products;
         Query query = new Query();
@@ -850,14 +856,18 @@ public class LuceneCatalog implements Catalog {
                     "CatalogException getting first page for product type: ["
                             + type.getProductTypeId()
                             + "] from catalog: Message: " + e.getMessage());
+            logger.error("Unable to get first page for product type: {} - {}", type, e.getMessage());
             return null;
         }
         // There are no products and thus no first page
         if (products == null || (products.size() == 0)) {
-        		return null;
+            logger.warn("No product found for first page for product type: {}", type);
+            return null;
         }
 
         firstPage.setPageProducts(products);
+
+        logger.debug("Found first page with products: {}", firstPage.getPageProducts());
 
         return firstPage;
     }
@@ -1364,11 +1374,13 @@ public class LuceneCatalog implements Catalog {
         if (pageNum == -1) {
             doSkip = false;
         }
+
         try {
             reader = DirectoryReader.open(indexDir);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error when creating directory reader, indexDir: {}, error: {}", indexDir, e.getMessage());
         }
+
         try {
             searcher = new IndexSearcher(reader);
 

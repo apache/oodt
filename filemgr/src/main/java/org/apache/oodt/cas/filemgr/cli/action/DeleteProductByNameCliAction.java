@@ -24,7 +24,9 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 /**
@@ -32,8 +34,7 @@ import java.net.MalformedURLException;
  * 
  * @author bfoster (Brian Foster)
  */
-public class DeleteProductByNameCliAction extends
-      AbstractDeleteProductCliAction {
+public class DeleteProductByNameCliAction extends AbstractDeleteProductCliAction {
 
    private String productName;
 
@@ -41,13 +42,16 @@ public class DeleteProductByNameCliAction extends
    protected Product getProductToDelete()
        throws CmdLineActionException, MalformedURLException, ConnectionException, CatalogException {
       Validate.notNull(productName, "Must specify productName");
-
-      Product p = getClient().getProductByName(productName);
-      if (p == null) {
-         throw new CmdLineActionException(
-               "FileManager returned null for product '" + productName + "'");
+      try (FileManagerClient client = getClient()) {
+         Product p = client.getProductByName(productName);
+         if (p == null) {
+            throw new CmdLineActionException(
+                    "FileManager returned null for product '" + productName + "'");
+         }
+         return p;
+      } catch (IOException e) {
+         throw new ConnectionException("Unable to get product by name: " + productName + " : " + e.getMessage());
       }
-      return p;
    }
 
    public void setProductName(String productName) {

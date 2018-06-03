@@ -21,6 +21,7 @@ import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which checks if the File Manager has a given
@@ -35,11 +36,10 @@ public class HasProductCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productName, "Must specify productName");
 
-         printer.println("hasProduct: Result: "
-               + getClient().hasProduct(productName));
+         printer.println("hasProduct: Result: " + client.hasProduct(productName));
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to check for product '"
                + productName + "' : " + e.getMessage(), e);

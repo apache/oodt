@@ -27,8 +27,16 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author radu
@@ -39,6 +47,8 @@ import java.util.*;
  * </p>
  */
 public class AvroTypeFactory {
+
+    private static final Logger logger = LoggerFactory.getLogger(AvroTypeFactory.class);
 
     public static AvroReference getAvroReference(Reference reference){
 

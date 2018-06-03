@@ -39,10 +39,8 @@ public class GetLastPageCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productTypeName, "Must specify productTypeName");
-
-         FileManagerClient client = getClient();
 
          ProductType type = client.getProductTypeByName(productTypeName);
          if (type == null) {

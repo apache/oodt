@@ -32,15 +32,13 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
  * 
  * @author bfoster (Brian Foster)
  */
-public abstract class AbstractDeleteProductCliAction extends
-      FileManagerCliAction {
+public abstract class AbstractDeleteProductCliAction extends FileManagerCliAction {
 
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
       Product p = null;
-      try {
-         FileManagerClient client = getClient();
+      try (FileManagerClient client = getClient()) {
          p = getProductToDelete();
          List<Reference> refs = client.getProductReferences(p);
          if (refs == null) {

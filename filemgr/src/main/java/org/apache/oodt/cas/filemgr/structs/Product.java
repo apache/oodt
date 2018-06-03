@@ -24,6 +24,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,10 +35,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * @author mattmann
@@ -369,5 +368,10 @@ public class Product {
 
     public String getProductReceivedTime() {
         return productReceivedTime;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s-%s]", this.getProductId(), this.getProductName(), this.getProductType().getName());
     }
 }

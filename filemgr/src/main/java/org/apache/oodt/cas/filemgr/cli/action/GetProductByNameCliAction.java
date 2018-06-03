@@ -23,7 +23,9 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 /**
@@ -40,12 +42,15 @@ public class GetProductByNameCliAction extends AbstractGetProductCliAction {
    public Product getProduct() throws MalformedURLException, ConnectionException, CatalogException {
       Validate.notNull(productName, "Must specify productName");
 
-      Product p = getClient().getProductByName(productName);
-      if (p == null) {
-         throw new CatalogException("FileManager returned null product for name '"
-               + productName + "'");
+      try (FileManagerClient client = getClient()) {
+         Product p = client.getProductByName(productName);
+         if (p == null) {
+            throw new CatalogException("FileManager returned null product for name '" + productName + "'");
+         }
+         return p;
+      } catch (IOException e) {
+         throw new ConnectionException("Unable to get product by name: " + productName + " : " + e.getMessage());
       }
-      return p;
    }
 
    public void setProductName(String productName) {

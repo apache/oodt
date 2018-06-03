@@ -16,8 +16,6 @@
  */
 package org.apache.oodt.cas.filemgr.cli.action;
 
-//Apache imports
-
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -26,8 +24,6 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-//OODT imports
 
 /**
  * A {@link CmdLineAction} which deletes a {@link Product} by ID.
@@ -42,13 +38,15 @@ public class DeleteProductByIdCliAction extends AbstractDeleteProductCliAction {
    public Product getProductToDelete() throws CatalogException, ConnectionException, MalformedURLException {
       Validate.notNull(productId, "Must specify productId");
 
-      FileManagerClient client = getClient();
-      Product p = client.getProductById(productId);
-      if (p == null) {
-         throw new CatalogException("FileManager returned null for product '"
-               + productId + "'");
+      try (FileManagerClient client = getClient()) {
+         Product p = client.getProductById(productId);
+         if (p == null) {
+            throw new CatalogException("FileManager returned null for product '" + productId + "'");
+         }
+         return p;
+      } catch (IOException e) {
+         throw new CatalogException("Error occurred when fetching product: " + e.getMessage());
       }
-      return p;
    }
 
    public void setProductId(String productId) {

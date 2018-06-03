@@ -39,11 +39,9 @@ public class GetProductPercentTransferredCliAction extends FileManagerCliAction 
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productId, "Must specify productid");
          Validate.notNull(productTypeName, "Must specify productTypeName");
-
-         FileManagerClient client = getClient();
 
          Product product = new Product();
          // TODO(bfoster): Not sure why ProductType is needed here.

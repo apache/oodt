@@ -22,6 +22,7 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which gets a {@link ProductType} by name.
@@ -35,10 +36,10 @@ public class GetProductTypeByNameCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(productTypeName, "Must specify productTypeName");
 
-         ProductType type = getClient().getProductTypeByName(productTypeName);
+         ProductType type = client.getProductTypeByName(productTypeName);
          if (type == null) {
             throw new Exception("FileManager returned null ProductType");
          }

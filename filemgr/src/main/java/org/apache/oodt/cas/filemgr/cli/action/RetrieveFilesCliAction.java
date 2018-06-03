@@ -41,19 +41,18 @@ public class RetrieveFilesCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
-         FileManagerClient fmClient = getClient();
-         dt.setFileManagerUrl(fmClient.getFileManagerUrl());
+      try (FileManagerClient client = getClient()) {
+         dt.setFileManagerUrl(client.getFileManagerUrl());
          Product product;
          if (productId != null) {
-            product = fmClient.getProductById(productId);
+            product = client.getProductById(productId);
          } else if (productName != null) {
-            product = fmClient.getProductByName(productName);
+            product = client.getProductByName(productName);
          } else {
               throw new Exception("Must specify either productId or productName");
          }
          if (product != null) {
-            product.setProductReferences(fmClient.getProductReferences(product));
+            product.setProductReferences(client.getProductReferences(product));
             dt.retrieveProduct(product, destination);
          } else {
             throw new Exception("Product was not found");

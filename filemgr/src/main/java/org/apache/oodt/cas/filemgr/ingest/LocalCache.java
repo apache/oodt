@@ -28,6 +28,7 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 //JDK imports
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -308,4 +309,9 @@ public class LocalCache implements Cache {
         }
     }
 
+    public void finalize() throws IOException {
+        if (fm != null) {
+            fm.close();
+        }
+    }
 }

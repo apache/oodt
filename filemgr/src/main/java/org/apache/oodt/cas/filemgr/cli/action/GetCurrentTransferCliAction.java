@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.cli.action;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which get the current {@link Product} file transfer.
@@ -30,8 +31,8 @@ public class GetCurrentTransferCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
-         FileTransferStatus status = getClient().getCurrentFileTransfer();
+      try (FileManagerClient client = getClient()) {
+         FileTransferStatus status = client.getCurrentFileTransfer();
          if (status == null) {
             throw new NullPointerException(
                   "FileManager returned null transfer status");

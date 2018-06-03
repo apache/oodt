@@ -26,6 +26,7 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which get percent transferred for a given data file.
@@ -39,14 +40,13 @@ public class GetFilePercentTransferredCliAction extends FileManagerCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (FileManagerClient client = getClient()) {
          Validate.notNull(origRef, "Must specify origRef");
 
          Reference ref = new Reference();
          ref.setOrigReference(getUri(origRef).toString());
 
-         printer.println("Reference: [origRef=" + origRef + ",transferPct="
-               + getClient().getRefPctTransferred(ref) + "]");
+         printer.println("Reference: [origRef=" + origRef + ",transferPct=" + client.getRefPctTransferred(ref) + "]");
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to get percent transfered for" + " file '" + origRef

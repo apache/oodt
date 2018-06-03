@@ -48,6 +48,8 @@ import org.apache.oodt.cas.filemgr.util.AvroTypeFactory;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -55,8 +57,6 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author radu
@@ -65,8 +65,7 @@ import java.util.logging.Logger;
  */
 public class AvroFileManagerClient implements FileManagerClient {
 
-    private static Logger LOG = Logger.getLogger(AvroFileManagerClient.class
-            .getName());
+    private static final Logger logger = LoggerFactory.getLogger(AvroFileManagerClient.class);
 
     /** Avro-Rpc client */
     private Transceiver client;
@@ -92,9 +91,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             this.client = new NettyTransceiver(inetSocketAddress, 40000L);
             proxy = (AvroFileManager) SpecificRequestor.getClient(AvroFileManager.class, client);
         } catch (IOException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING, "IOException when connecting to filemgr: ["
-                    + this.fileManagerUrl + "]");
+            logger.error("Error occurred when creating file manager: {}", url, e);
         }
 
         if (testConnection && !isAlive()) {
@@ -109,9 +106,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         try {
             success = proxy.refreshConfigAndPolicy();
         } catch (AvroRemoteException e) {
-            LOG.log(Level.WARNING, "AvroRemoteException when connecting to filemgr: ["
-                    + this.fileManagerUrl + "]");
-            success = false;
+            logger.error("AvroRemoteException when connecting to filemgr: {}", fileManagerUrl, e);
         }
 
         return success;
@@ -126,8 +121,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                 success = proxy.isAlive();
             } else return false;
         } catch (AvroRemoteException e) {
-            LOG.log(Level.WARNING, "AvroRemoteException when connecting to filemgr: ["
-                    + this.fileManagerUrl + "]");
+            logger.error("Error when connecting to filemgr: {}", fileManagerUrl);
             success = false;
         }
 
@@ -258,15 +252,18 @@ public class AvroFileManagerClient implements FileManagerClient {
 
     @Override
     public ProductPage getFirstPage(ProductType type) throws CatalogException {
+        logger.debug("Getting first page for product type: {}", type.toString());
         try {
             return AvroTypeFactory.getProductPage(this.proxy.getFirstPage(AvroTypeFactory.getAvroProductType(type)));
         } catch (AvroRemoteException e) {
-            throw new CatalogException(e.getMessage());
+            logger.error("Unable to get first page for product type: {}", type.toString(), e);
+            throw new CatalogException("Unable to get first page", e);
         }
     }
 
     @Override
     public ProductPage getLastPage(ProductType type) throws CatalogException {
+        logger.debug("Getting last page for product type: {}", type.toString());
         try {
             return AvroTypeFactory.getProductPage(this.proxy.getLastPage(AvroTypeFactory.getAvroProductType(type)));
         } catch (AvroRemoteException e) {
@@ -276,6 +273,7 @@ public class AvroFileManagerClient implements FileManagerClient {
 
     @Override
     public ProductPage getNextPage(ProductType type, ProductPage currPage) throws CatalogException {
+        logger.debug("Getting next page for product type: {}, current page: {}", type.toString(), currPage.getPageNum());
         try {
             return AvroTypeFactory.getProductPage(this.proxy.getNextPage(
                     AvroTypeFactory.getAvroProductType(type),
@@ -288,6 +286,7 @@ public class AvroFileManagerClient implements FileManagerClient {
 
     @Override
     public ProductPage getPrevPage(ProductType type, ProductPage currPage) throws CatalogException {
+        logger.debug("Getting previous page for product type: {}, current page: {}", type.toString(), currPage.getPageNum());
         try {
             return AvroTypeFactory.getProductPage(this.proxy.getPrevPage(
                     AvroTypeFactory.getAvroProductType(type),
@@ -300,6 +299,7 @@ public class AvroFileManagerClient implements FileManagerClient {
 
     @Override
     public String addProductType(ProductType type) throws RepositoryManagerException {
+        logger.debug("Adding product type: {}", type.toString());
         try {
             return this.proxy.addProductType(AvroTypeFactory.getAvroProductType(type));
         } catch (AvroRemoteException e) {
@@ -582,8 +582,8 @@ public class AvroFileManagerClient implements FileManagerClient {
     }
 
     @Override
-    public String ingestProduct(Product product, Metadata metadata,
-            boolean clientTransfer) throws Exception {
+    public String ingestProduct(Product product, Metadata metadata, boolean clientTransfer) throws Exception {
+        logger.debug("Ingesting product: {}", product.getProductName());
         try {
             // ingest product
             String productId = this.proxy.ingestProduct(
@@ -592,12 +592,12 @@ public class AvroFileManagerClient implements FileManagerClient {
                     clientTransfer);
 
             if (clientTransfer) {
-                LOG.log(Level.FINEST, "File Manager Client: clientTransfer enabled: transfering product ["
-                        + product.getProductName() + "]");
+                logger.debug("clientTransfer enabled: transfering product: {}", product.getProductName());
 
                 // we need to transfer the product ourselves
                 // make sure we have the product ID
                 if (productId == null) {
+                    logger.error("Product ID is null for product: {}", product.getProductName());
                     throw new Exception("Request to ingest product: "
                             + product.getProductName()
                             + " but no product ID returned from File "
@@ -605,6 +605,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                 }
 
                 if (dataTransfer == null) {
+                    logger.warn("Data transferer is null. Product: {}", product.getProductName());
                     throw new Exception("Request to ingest product: ["
                             + product.getProductName()
                             + "] using client transfer, but no "
@@ -624,14 +625,8 @@ public class AvroFileManagerClient implements FileManagerClient {
                     try {
                         addProductReferences(product);
                     } catch (CatalogException e) {
-                        LOG
-                                .log(
-                                        Level.SEVERE,
-                                        "ingestProduct: RepositoryManagerException "
-                                                + "when adding Product References for Product : "
-                                                + product.getProductName()
-                                                + " to RepositoryManager: Message: "
-                                                + e.getMessage());
+                        logger.error("Error when adding Product references for Product [{}] to repository manager: {}",
+                                product.getProductName(), e.getMessage());
                         throw e;
                     }
                 } else {
@@ -648,20 +643,13 @@ public class AvroFileManagerClient implements FileManagerClient {
                     try {
                         setProductTransferStatus(product);
                     } catch (CatalogException e) {
-                        LOG
-                                .log(
-                                        Level.SEVERE,
-                                        "ingestProduct: RepositoryManagerException "
-                                                + "when updating product transfer status for Product: "
-                                                + product.getProductName()
-                                                + " Message: " + e.getMessage());
+                        logger.error("Error when updating product transfer status for Product[{}]: {}",
+                                product.getProductName(), e.getMessage());
                         throw e;
                     }
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE,
-                            "ingestProduct: DataTransferException when transfering Product: "
-                                    + product.getProductName() + ": Message: "
-                                    + e.getMessage());
+                    logger.error("DataTransferException when transferring Product[{}]: {}",
+                            product.getProductName(), e.getMessage());
                     throw new DataTransferException(e);
                 }
 
@@ -670,26 +658,18 @@ public class AvroFileManagerClient implements FileManagerClient {
 
             // error versioning file
         } catch (VersioningException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
-                    "ingestProduct: VersioningException when versioning Product: "
-                            + product.getProductName() + " with Versioner "
-                            + product.getProductType().getVersioner()
-                            + ": Message: " + e.getMessage());
+            logger.error("VersioningException when versioning Product[{}] with versioner: {}: {}",
+                    product.getProductName(), product.getProductType().getVersioner(), e.getMessage());
             throw new VersioningException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Failed to ingest product [" + product
-                    + "] : " + e.getMessage() + " -- rolling back ingest");
+            logger.error("Failed to ingest product [{}]. -- rolling back ingest", product, e);
             try {
                 AvroProduct avroProduct = AvroTypeFactory.getAvroProduct(product);
                 this.proxy.removeProduct(avroProduct);
             } catch (Exception e1) {
-                LOG.log(Level.SEVERE, "Failed to rollback ingest of product ["
-                        + product + "] : " + e.getMessage());
+                logger.error("Failed to rollback ingest of product [{}]", product, e);
             }
-            throw new Exception("Failed to ingest product [" + product + "] : "
-                    + e.getMessage());
+            throw new Exception("Failed to ingest product [" + product + "] : " + e.getMessage());
         }
     }
 
@@ -722,7 +702,6 @@ public class AvroFileManagerClient implements FileManagerClient {
     @Override
     public void setFileManagerUrl(URL fileManagerUrl) {
         this.fileManagerUrl = fileManagerUrl;
-
     }
 
     @Override
@@ -737,6 +716,7 @@ public class AvroFileManagerClient implements FileManagerClient {
 
     @Override
     public void close() throws IOException {
+        logger.info("Closing file manager client for URL: {}", fileManagerUrl);
         if (client != null) {
             client.close();
         }
