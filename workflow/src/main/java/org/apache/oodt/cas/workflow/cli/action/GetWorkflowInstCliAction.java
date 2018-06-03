@@ -32,10 +32,8 @@ public class GetWorkflowInstCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
-         WorkflowManagerClient client = getClient();
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
+      try (WorkflowManagerClient client = getClient()) {
          WorkflowInstance inst = client.getWorkflowInstanceById(instanceId);
          if (inst == null) {
             throw new Exception(

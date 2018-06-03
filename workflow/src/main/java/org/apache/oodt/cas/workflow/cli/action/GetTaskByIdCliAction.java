@@ -19,6 +19,7 @@ package org.apache.oodt.cas.workflow.cli.action;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which retrieves WorkflowTask information for
@@ -31,32 +32,31 @@ public class GetTaskByIdCliAction extends WorkflowCliAction {
    private String taskId;
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
-         WorkflowTask task = getClient().getTaskById(taskId);
-         
-         StringBuilder requiredMetFields = new StringBuilder();
-        for (Object o : task.getRequiredMetFields()) {
-          if (requiredMetFields.length() > 0) {
-            requiredMetFields.append(", ");
-          }
-          requiredMetFields.append((String) o);
-        }
-         
-         printer.println("Task: [id=" + task.getTaskId() 
-               + ", name=" + task.getTaskName() 
-               + ", order=" + task.getOrder() 
-               + ", class=" + task.getClass().getName() 
-               + ", numConditions=" + task.getConditions().size() 
-               + ", requiredMetadataFields=[" + requiredMetFields.toString()+"]"
-               + ", configuration="+ task.getTaskConfig().getProperties() + "]");
-         
-      } catch (Exception e) {
-         throw new CmdLineActionException(
-               "Failed to get task by id for taskId '" + taskId + "' : "
-                     + e.getMessage(), e);
-      }
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
+       try (WorkflowManagerClient client = getClient()) {
+           WorkflowTask task = client.getTaskById(taskId);
+
+           StringBuilder requiredMetFields = new StringBuilder();
+           for (Object o : task.getRequiredMetFields()) {
+               if (requiredMetFields.length() > 0) {
+                   requiredMetFields.append(", ");
+               }
+               requiredMetFields.append((String) o);
+           }
+
+           printer.println("Task: [id=" + task.getTaskId()
+                   + ", name=" + task.getTaskName()
+                   + ", order=" + task.getOrder()
+                   + ", class=" + task.getClass().getName()
+                   + ", numConditions=" + task.getConditions().size()
+                   + ", requiredMetadataFields=[" + requiredMetFields.toString() + "]"
+                   + ", configuration=" + task.getTaskConfig().getProperties() + "]");
+
+       } catch (Exception e) {
+           throw new CmdLineActionException(
+                   "Failed to get task by id for taskId '" + taskId + "' : "
+                           + e.getMessage(), e);
+       }
    }
 
    public void setTaskId(String taskId) {

@@ -88,10 +88,6 @@ the License.
       <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
     </dependency>
@@ -161,6 +157,21 @@ the License.
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+    </dependency>
+    <!-- Logging - JUL to SLF4J -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
     </dependency>
   </dependencies>
   <build>

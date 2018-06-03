@@ -21,6 +21,7 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which gets a list of registered events.
@@ -29,16 +30,16 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
  */
 public class GetRegisteredEventsCliAction extends WorkflowCliAction {
 
+   @SuppressWarnings("unchecked")
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
-         @SuppressWarnings("unchecked")
-         List<String> events = getClient().getRegisteredEvents();
-
+      try (WorkflowManagerClient client = getClient()) {
+         List<String> events = client.getRegisteredEvents();
          if (events == null) {
             throw new Exception("WorkflowManager returned null event list");
          }
+
          for (String event : events) {
             printer.println("Event: [name=" + event + "]");
          }

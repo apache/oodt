@@ -20,6 +20,7 @@ package org.apache.oodt.cas.workflow.cli.action;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which retrieves Workflow information for
@@ -32,10 +33,9 @@ public class GetWorkflowByIdCliAction extends WorkflowCliAction {
    private String workflowId;
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
-         Workflow workflow = getClient().getWorkflowById(workflowId);
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
+      try (WorkflowManagerClient client = getClient()) {
+         Workflow workflow = client.getWorkflowById(workflowId);
          
          StringBuilder taskIds = new StringBuilder();
          for (WorkflowTask wt : workflow.getTasks()) {

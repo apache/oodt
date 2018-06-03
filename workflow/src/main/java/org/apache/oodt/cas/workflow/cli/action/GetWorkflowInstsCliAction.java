@@ -32,13 +32,12 @@ import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
  */
 public class GetWorkflowInstsCliAction extends WorkflowCliAction {
 
+   @SuppressWarnings("unchecked")
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
 
-      try {
-         WorkflowManagerClient client = getClient();
-         @SuppressWarnings("unchecked")
+      try (WorkflowManagerClient client = getClient()) {
          List<WorkflowInstance> insts = client.getWorkflowInstances();
 
          if (insts == null) {

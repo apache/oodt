@@ -18,6 +18,7 @@ package org.apache.oodt.cas.workflow.cli.action;
 
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which stops a workflow instance.
@@ -29,12 +30,10 @@ public class PauseWorkflowInstCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
-         if (getClient().pauseWorkflowInstance(instanceId)) {
-            printer.println("Successfully paused workflow '" + instanceId
-                  + "'");
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
+      try (WorkflowManagerClient client = getClient()) {
+         if (client.pauseWorkflowInstance(instanceId)) {
+            printer.println("Successfully paused workflow '" + instanceId + "'");
          } else {
             throw new Exception("Paused workflow returned false");
          }

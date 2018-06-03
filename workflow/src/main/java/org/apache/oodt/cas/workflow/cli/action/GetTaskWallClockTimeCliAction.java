@@ -18,6 +18,7 @@ package org.apache.oodt.cas.workflow.cli.action;
 
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which get a workflow instance's current task's wall
@@ -32,9 +33,8 @@ public class GetTaskWallClockTimeCliAction extends WorkflowCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
-         double wallClockTime = getClient()
-               .getWorkflowCurrentTaskWallClockMinutes(instanceId);
+      try (WorkflowManagerClient client = getClient()) {
+         double wallClockTime = client.getWorkflowCurrentTaskWallClockMinutes(instanceId);
          printer.println(wallClockTime + " minutes");
       } catch (Exception e) {
          throw new CmdLineActionException(

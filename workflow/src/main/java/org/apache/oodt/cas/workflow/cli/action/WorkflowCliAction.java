@@ -59,10 +59,10 @@ public abstract class WorkflowCliAction extends CmdLineAction {
      */
     @Override
     public void finalize() throws Throwable {
+        super.finalize();
+
         if (client != null) {
             client.close();
         }
-
-        super.finalize();
     }
 }

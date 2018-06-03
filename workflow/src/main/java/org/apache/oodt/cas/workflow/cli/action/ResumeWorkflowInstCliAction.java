@@ -18,6 +18,7 @@ package org.apache.oodt.cas.workflow.cli.action;
 
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which resumes a paused workflow instance.
@@ -31,8 +32,8 @@ public class ResumeWorkflowInstCliAction extends WorkflowCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
-         if (getClient().resumeWorkflowInstance(instanceId)) {
+      try (WorkflowManagerClient client = getClient()) {
+         if (client.resumeWorkflowInstance(instanceId)) {
             printer.println("Successfully resumed workflow '" + instanceId
                   + "'");
          } else {

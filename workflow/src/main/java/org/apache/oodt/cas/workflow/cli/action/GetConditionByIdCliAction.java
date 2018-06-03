@@ -35,8 +35,7 @@ public class GetConditionByIdCliAction extends WorkflowCliAction {
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
 
-      try {
-         WorkflowManagerClient client = getClient();
+      try (WorkflowManagerClient client = getClient()) {
          WorkflowCondition condition = client.getConditionById(conditionId);
          printer.println("Condition: [id=" + condition.getConditionId()
                + ", name=" + condition.getConditionName() + ", order="

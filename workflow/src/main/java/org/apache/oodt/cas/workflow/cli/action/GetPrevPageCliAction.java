@@ -44,8 +44,7 @@ public class GetPrevPageCliAction extends WorkflowCliAction {
          throws CmdLineActionException {
       Validate.isTrue(pageNum != -1);
 
-      try {
-         WorkflowManagerClient client = getClient();
+      try (WorkflowManagerClient client = getClient()) {
          WorkflowInstancePage page;
          if (status != null && !status.equals("")) {
             page = client.paginateWorkflowInstances(pageNum - 1, status);

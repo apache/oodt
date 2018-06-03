@@ -25,6 +25,7 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which triggers a workflow event.
@@ -41,14 +42,12 @@ public class SendEventCliAction extends WorkflowCliAction {
    }
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
       Validate.notNull(eventName, "Must specify eventName");
 
-      try {
+      try (WorkflowManagerClient client = getClient()) {
          printer.print("Sending event '" + eventName + "'... ");
-         printer.println(getClient().sendEvent(eventName, metadata) ?
-               "SUCCESS" : "FAILURE");
+         printer.println(client.sendEvent(eventName, metadata) ? "SUCCESS" : "FAILURE");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to send event '" + eventName
                + "' to url '" + getUrl() + "' with metadata '"

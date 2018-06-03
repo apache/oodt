@@ -22,6 +22,7 @@ import java.util.List;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which get list of know workflow models from
@@ -34,9 +35,9 @@ public class GetWorkflowsCliAction extends WorkflowCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
+      try (WorkflowManagerClient client = getClient()) {
          @SuppressWarnings("unchecked")
-         List<Workflow> workflows = getClient().getWorkflows();
+         List<Workflow> workflows = client.getWorkflows();
 
          if (workflows == null) {
             throw new Exception(

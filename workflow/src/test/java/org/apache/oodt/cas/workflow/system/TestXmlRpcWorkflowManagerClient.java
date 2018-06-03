@@ -75,7 +75,7 @@ public class TestXmlRpcWorkflowManagerClient {
   private static final String catalogPath = new File("./target/instTestMetCat")
       .getAbsolutePath();
 
-  private static XmlRpcWorkflowManagerClient fmc = null;
+  private static XmlRpcWorkflowManagerClient wmc = null;
 
   private static LuceneWorkflowInstanceRepository repo = null;
   private static WorkflowInstance testWrkInst = null;
@@ -141,7 +141,7 @@ public class TestXmlRpcWorkflowManagerClient {
     testWrkInst.setSharedContext(sharedContext);
     startXmlRpcWorkflowManager();
     startWorkflow();
-    fmc = new XmlRpcWorkflowManagerClient(new URL(
+    wmc = new XmlRpcWorkflowManagerClient(new URL(
         "http://localhost:" + WM_PORT));
   }
 
@@ -175,7 +175,7 @@ public class TestXmlRpcWorkflowManagerClient {
   public void testGetWorkflowInstanceMetadataActuallyUsingTheXmlRpcWorkflowManagerClient()
       throws IOException, RepositoryException, XmlRpcException {
 
-    List<Workflow> workflows = fmc.getWorkflows();
+    List<Workflow> workflows = wmc.getWorkflows();
     assertThat(workflows, is(not(empty())));
 
 
@@ -189,7 +189,7 @@ public class TestXmlRpcWorkflowManagerClient {
     Thread.sleep(3000);
     WorkflowInstancePage page = null, lastpage = null, nextpage = null, prevpage = null;
     try{
-      page = fmc.getFirstPage();
+      page = wmc.getFirstPage();
     }
     catch(Exception e){
       e.printStackTrace();
@@ -197,7 +197,7 @@ public class TestXmlRpcWorkflowManagerClient {
     assumeNotNull(page);
 
     try{
-      lastpage = fmc.getLastPage();
+      lastpage = wmc.getLastPage();
     }
     catch(Exception e){
       e.printStackTrace();
@@ -207,7 +207,7 @@ public class TestXmlRpcWorkflowManagerClient {
 
 
     try{
-      nextpage = fmc.getNextPage(page);
+      nextpage = wmc.getNextPage(page);
     }
     catch(Exception e){
       e.printStackTrace();
@@ -216,7 +216,7 @@ public class TestXmlRpcWorkflowManagerClient {
     assumeNotNull(nextpage);
 
     try{
-      prevpage = fmc.getPrevPage(nextpage);
+      prevpage = wmc.getPrevPage(nextpage);
     }
     catch(Exception e){
       e.printStackTrace();
@@ -229,7 +229,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetWorkflowsByEvent() throws Exception {
 
-    List<Workflow> wflows = fmc.getWorkflowsByEvent("long");
+    List<Workflow> wflows = wmc.getWorkflowsByEvent("long");
 
     assertNotNull(wflows);
 
@@ -243,7 +243,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetWorkflowInstancesByStatus() throws Exception {
 
-    List<WorkflowInstance> wflows = fmc.getWorkflowInstancesByStatus("QUEUED");
+    List<WorkflowInstance> wflows = wmc.getWorkflowInstancesByStatus("QUEUED");
 
     assertNotNull(wflows);
 
@@ -251,12 +251,12 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetWorkflowInstanceMetadata2() throws Exception {
-    WorkflowInstance wf = (WorkflowInstance) fmc.getFirstPage().getPageWorkflows().get(0);
+    WorkflowInstance wf = (WorkflowInstance) wmc.getFirstPage().getPageWorkflows().get(0);
 
     assertThat(wf, is(not(Matchers.nullValue())));
 
 
-    Metadata meta = fmc.getWorkflowInstanceMetadata(wf.getId());
+    Metadata meta = wmc.getWorkflowInstanceMetadata(wf.getId());
 
     assertNotNull(meta);
 
@@ -281,7 +281,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetTaskById() throws Exception {
 
-    WorkflowTask task = fmc.getTaskById("urn:oodt:HelloWorld");
+    WorkflowTask task = wmc.getTaskById("urn:oodt:HelloWorld");
 
     assertThat(task, is(not(nullValue())));
 
@@ -293,7 +293,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetRegisteredEvents() throws Exception {
 
-    List<String> events = fmc.getRegisteredEvents();
+    List<String> events = wmc.getRegisteredEvents();
 
     assertThat(events, is(not(nullValue())));
 
@@ -305,17 +305,15 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetNumWorkflowInstancesByStatus() throws Exception {
-
-    int inst = fmc.getNumWorkflowInstancesByStatus("QUEUED");
+    int inst = wmc.getNumWorkflowInstancesByStatus("QUEUED");
 
     assertThat(inst, equalTo(0));
-
   }
 
   @Test
   public void testGetConditionById() throws Exception {
 
-    WorkflowCondition cond = fmc.getConditionById("urn:oodt:TrueCondition");
+    WorkflowCondition cond = wmc.getConditionById("urn:oodt:TrueCondition");
 
     assertNotNull(cond);
 
@@ -326,7 +324,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetNumWorkflowInstances() throws Exception {
 
-    int num = fmc.getNumWorkflowInstances();
+    int num = wmc.getNumWorkflowInstances();
 
     assertThat(num, is(not(0)));
 
@@ -336,7 +334,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetWorkflowInstances() throws IOException, XmlRpcException {
 
-    List<WorkflowInstance> wfinstances = fmc.getWorkflowInstances();
+    List<WorkflowInstance> wfinstances = wmc.getWorkflowInstances();
 
     assertNotNull(wfinstances);
   }
@@ -344,7 +342,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetWFMUrl(){
 
-    URL url = fmc.getWorkflowManagerUrl();
+    URL url = wmc.getWorkflowManagerUrl();
 
     assertThat(url, is(not(nullValue())));
 
@@ -357,7 +355,7 @@ public class TestXmlRpcWorkflowManagerClient {
       throws RepositoryException, XmlRpcException, IOException, InterruptedException {
 
     Thread.sleep(3000);
-    WorkflowInstance instance = fmc.getWorkflowInstanceById("1234");
+    WorkflowInstance instance = wmc.getWorkflowInstanceById("1234");
 
     assertThat(instance, is(nullValue()));
 
@@ -365,7 +363,7 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetNullWorkflowInstancesByStatus() throws XmlRpcException, IOException {
-    List<WorkflowInstance> instances = fmc.getWorkflowInstancesByStatus("NULL");
+    List<WorkflowInstance> instances = wmc.getWorkflowInstancesByStatus("NULL");
 
     assertThat(instances, is(empty()));
 
@@ -373,13 +371,13 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetWorkflowById() throws RepositoryException, XmlRpcException, IOException {
-    List<Workflow> workflowlist = fmc.getWorkflows();
+    List<Workflow> workflowlist = wmc.getWorkflows();
 
     assertThat(workflowlist, is(not(nullValue())));
 
     assertThat(workflowlist.size(), is(not(0)));
 
-    Workflow work = fmc.getWorkflowById(workflowlist.get(0).getId());
+    Workflow work = wmc.getWorkflowById(workflowlist.get(0).getId());
 
     assertThat(work, is(not(nullValue())));
 
@@ -388,13 +386,13 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetWorkflowInstanceById() throws XmlRpcException, IOException, RepositoryException {
 
-    List<WorkflowInstance> workflowlist = fmc.getWorkflowInstances();
+    List<WorkflowInstance> workflowlist = wmc.getWorkflowInstances();
 
     assertThat(workflowlist, is(not(nullValue())));
 
     assertThat(workflowlist.size(), is(not(0)));
 
-    WorkflowInstance instance = fmc.getWorkflowInstanceById(workflowlist.get(0).getId());
+    WorkflowInstance instance = wmc.getWorkflowInstanceById(workflowlist.get(0).getId());
 
     assertThat(instance, is(not(nullValue())));
 
@@ -414,7 +412,7 @@ public class TestXmlRpcWorkflowManagerClient {
     boolean upd = false;
     
     try{
-      workflowlist = fmc.getWorkflowInstances();
+      workflowlist = wmc.getWorkflowInstances();
     }
     catch(Exception e){
       e.printStackTrace();
@@ -424,7 +422,7 @@ public class TestXmlRpcWorkflowManagerClient {
     assertThat(workflowlist.size(), is(not(0)));
 
     try{
-      instance = fmc.getWorkflowInstanceById(workflowlist.get(0).getId());
+      instance = wmc.getWorkflowInstanceById(workflowlist.get(0).getId());
     }
     catch(Exception e){
       e.printStackTrace();
@@ -433,7 +431,7 @@ public class TestXmlRpcWorkflowManagerClient {
     assertThat(instance, is(not(nullValue())));
 
     try{
-      upd = fmc.updateWorkflowInstanceStatus(instance.getId(), "RUNNING");
+      upd = wmc.updateWorkflowInstanceStatus(instance.getId(), "RUNNING");
     }
     catch(Exception e){
       e.printStackTrace();
@@ -470,17 +468,17 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetWorkflowWallClockMinutes() throws RepositoryException, XmlRpcException, IOException {
-    List<WorkflowInstance> workflowlist = fmc.getWorkflowInstances();
+    List<WorkflowInstance> workflowlist = wmc.getWorkflowInstances();
 
     assertThat(workflowlist, is(not(nullValue())));
 
     assertThat(workflowlist.size(), is(not(0)));
 
-    WorkflowInstance instance = fmc.getWorkflowInstanceById(workflowlist.get(0).getId());
+    WorkflowInstance instance = wmc.getWorkflowInstanceById(workflowlist.get(0).getId());
 
     assertThat(instance, is(not(nullValue())));
 
-    double clock = fmc.getWorkflowWallClockMinutes(instance.getId());
+    double clock = wmc.getWorkflowWallClockMinutes(instance.getId());
 
     assertThat(clock, is(not(nullValue())));
   }
@@ -494,7 +492,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testPaginateWorkflowInstances() throws XmlRpcException, IOException {
 
-    WorkflowInstancePage paginate = fmc.paginateWorkflowInstances(2);
+    WorkflowInstancePage paginate = wmc.paginateWorkflowInstances(2);
 
     assertThat(paginate, is(not(nullValue())));
   }
@@ -502,7 +500,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testPaginateWorkflowInstancesByStatus() throws XmlRpcException, IOException {
 
-    WorkflowInstancePage paginate = fmc.paginateWorkflowInstances(2, "QUEUED");
+    WorkflowInstancePage paginate = wmc.paginateWorkflowInstances(2, "QUEUED");
 
     assertThat(paginate, is(not(nullValue())));
   }
@@ -516,7 +514,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testRefreshRepository() throws XmlRpcException, IOException {
 
-    boolean refresh = fmc.refreshRepository();
+    boolean refresh = wmc.refreshRepository();
 
     assertThat(refresh, equalTo(true));
   }

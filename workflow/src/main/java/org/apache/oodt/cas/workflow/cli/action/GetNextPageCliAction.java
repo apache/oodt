@@ -43,8 +43,7 @@ public class GetNextPageCliAction extends WorkflowCliAction {
    public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
       Validate.isTrue(pageNum != -1);
 
-      try {
-         WorkflowManagerClient client = getClient();
+      try (WorkflowManagerClient client = getClient()) {
          WorkflowInstancePage page;
          if (status != null && !status.equals("")) {
             page = client.paginateWorkflowInstances(pageNum + 1, status);

@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which get the current list of workflows by
@@ -34,19 +35,18 @@ public class GetWorkflowsByEventCliAction extends WorkflowCliAction {
 
    private String eventName;
 
+   @SuppressWarnings("unchecked")
    @Override
    public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
-      
-	   try {
-         @SuppressWarnings("unchecked")
-         List<Workflow> workflows = getClient().getWorkflowsByEvent(eventName);
+
+       try (WorkflowManagerClient client = getClient()) {
+         List<Workflow> workflows = client.getWorkflowsByEvent(eventName);
 
          if (workflows == null) {
             throw new Exception("WorkflowManager returned null workflow list");
          }
          
          for (Workflow workflow : workflows) {
-        	 
              StringBuilder taskIds = new StringBuilder();
              for (WorkflowTask wt : workflow.getTasks()) {
             	 if (taskIds.length()>0) {

@@ -38,8 +38,7 @@ public class GetLastPageCliAction extends WorkflowCliAction {
    @Override
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
-      try {
-         WorkflowManagerClient client = getClient();
+      try (WorkflowManagerClient client = getClient()) {
          WorkflowInstancePage page;
          if (status != null && !status.equals("")) {
             WorkflowInstancePage firstPage = client.paginateWorkflowInstances(

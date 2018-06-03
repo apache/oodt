@@ -22,6 +22,7 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which get workflow instance metadata.
@@ -37,8 +38,8 @@ public class GetWorkflowInstMetCliAction extends WorkflowCliAction {
          throws CmdLineActionException {
       Validate.notNull(instanceId);
 
-      try {
-         Metadata met = getClient().getWorkflowInstanceMetadata(instanceId);
+      try (WorkflowManagerClient client = getClient()) {
+         Metadata met = client.getWorkflowInstanceMetadata(instanceId);
          printer.println("[id=" + instanceId + ", met=" + met.getMap()
                + "]");
       } catch (Exception e) {

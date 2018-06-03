@@ -27,13 +27,13 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.util.AvroTypeFactory;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 /**
  * @author radu
@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  */
 public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
 
-    private static Logger LOG = Logger.getLogger(AvroRpcWorkflowManagerClient.class.getName());
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AvroRpcWorkflowManagerClient.class);
 
     private Transceiver client;
     private org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager proxy;
@@ -56,19 +56,20 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
             client = new NettyTransceiver(new InetSocketAddress(url.getHost(),url.getPort()));
             proxy = SpecificRequestor.getClient(org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class, client);
         } catch (IOException e) {
-            LOG.severe(String.format("Error occurred when creating client: %s", e.getMessage()));
+            logger.error("Error occurred when creating client for: {}", url, e);
         }
+        logger.info("Client created successfully for workflow manager URL: {}", url);
     }
 
     @Override
     public boolean refreshRepository() throws Exception {
-            return proxy.refreshRepository();
+        return proxy.refreshRepository();
     }
 
     @Override
     public String executeDynamicWorkflow(List<String> taskIds, Metadata metadata) throws Exception {
+        logger.debug("Executing dynamic workflow for taskIds: {}", taskIds);
         return proxy.executeDynamicWorkflow(taskIds, AvroTypeFactory.getAvroMetadata(metadata));
-
     }
 
     @Override
@@ -153,6 +154,7 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
 
     @Override
     public boolean updateWorkflowInstanceStatus(String workflowInstId, String status) throws Exception {
+        logger.debug("Updating workflow instance status for instance ID: {}, status: {}", workflowInstId, status);
         return proxy.updateWorkflowInstanceStatus(workflowInstId, status);
     }
 
@@ -240,7 +242,7 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
             client = new NettyTransceiver(new InetSocketAddress(workflowManagerUrl.getPort()));
             proxy = SpecificRequestor.getClient(org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class, client);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error occurred when setting workflow manager url: {}", workflowManagerUrl, e);
         }
 
     }
@@ -250,12 +252,13 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
         if (client != null) {
             client.close();
             client = null;
-            LOG.info("Closed workflow manager client: " + workflowManagerUrl.toString());
+            logger.info("Closed workflow manager client: {}", workflowManagerUrl.toString());
         }
     }
 
     @Override
     public void finalize() throws IOException {
         close();
+        logger.info("Finalized client");
     }
 }

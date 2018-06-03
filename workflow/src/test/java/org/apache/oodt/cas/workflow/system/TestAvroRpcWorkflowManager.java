@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.system;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.oodt.cas.workflow.util.AvroTypeFactory;
 
 import java.io.File;
@@ -47,22 +46,18 @@ public class TestAvroRpcWorkflowManager extends TestCase {
 
         Vector workflowInsts = null;
 
-        int numInsts = -1;
-        while (numInsts != 2) {
-            try {
-                List list = AvroTypeFactory.getWorkflowInstances(wmgr.getWorkflowInstances());
-                workflowInsts = new Vector();
-                for (Object o : list){
-                    workflowInsts.add(o);
-                }
-            } catch (Exception e) {
-
-                e.printStackTrace();
+        try {
+            List list = AvroTypeFactory.getWorkflowInstances(wmgr.getWorkflowInstances());
+            workflowInsts = new Vector();
+            for (Object o : list) {
+                workflowInsts.add(o);
             }
+        } catch (Exception e) {
 
-            assertNotNull(workflowInsts);
-            numInsts = workflowInsts.size();
+            e.printStackTrace();
         }
+
+        assertNotNull(workflowInsts);
 
         assertEquals(2, workflowInsts.size());
     }
@@ -73,25 +68,16 @@ public class TestAvroRpcWorkflowManager extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-
+        wmgr.shutdown();
     }
 
     private void startWorkflow() {
-        WorkflowManagerClient client = null;
-        try {
-            client = new AvroRpcWorkflowManagerClient(new URL("http://localhost:"
-                    + WM_PORT));
+        try (WorkflowManagerClient client =
+                     new AvroRpcWorkflowManagerClient(new URL("http://localhost:" + WM_PORT))) {
+            client.sendEvent("long", new Metadata());
         } catch (Exception e) {
             fail(e.getMessage());
         }
-
-        try {
-            client.sendEvent("long", new Metadata());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
     }
 
     private void startAvroRpcWorkflowManager() {

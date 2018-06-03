@@ -36,10 +36,8 @@ public class GetFirstPageCliAction extends WorkflowCliAction {
 
    @SuppressWarnings("unchecked")
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
-         WorkflowManagerClient client = getClient();
+   public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
+      try (WorkflowManagerClient client = getClient()) {
          WorkflowInstancePage page;
          if (status != null && !status.equals("")) {
             page = client.paginateWorkflowInstances(1, status);

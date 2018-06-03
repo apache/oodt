@@ -156,4 +156,9 @@ public class WorkflowInstancePage {
         blank.setPageSize(0);
         return blank;
     }
+
+    @Override
+    public String toString() {
+        return String.format("(WorkflowInstancePage %s -> %d Workflows)", pageNum, pageWorkflows.size());
+    }
 }
