@@ -17,18 +17,14 @@
 
 package org.apache.oodt.cas.workflow.structs;
 
-//JDK imports
-
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.commons.util.DateConvert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 
 /**
  * A WorkflowInstance is an instantiation of the abstract description of a
@@ -61,7 +57,9 @@ import java.util.logging.Logger;
  * 
  */
 public class WorkflowInstance {
-  private static Logger LOG = Logger.getLogger(WorkflowInstance.class.getName());
+
+  private static final Logger logger = LoggerFactory.getLogger(WorkflowInstance.class);
+
   private ParentChildWorkflow workflow;
 
   private String id;
@@ -92,8 +90,8 @@ public class WorkflowInstance {
   public WorkflowInstance(Workflow workflow, String id, WorkflowState state,
       String currentTaskId, Date startDate, Date endDate, 
       Metadata sharedContext, int timesBlocked, Priority priority) {
-    this.workflow = workflow != null && workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
-        : new ParentChildWorkflow(workflow != null ? workflow : new Workflow());
+    this.workflow = workflow instanceof ParentChildWorkflow ?
+            (ParentChildWorkflow) workflow : new ParentChildWorkflow(workflow != null ? workflow : new Workflow());
     this.id = id;
     this.state = state;
     this.currentTaskId = currentTaskId;
@@ -138,6 +136,7 @@ public class WorkflowInstance {
     WorkflowState state = new WorkflowState();
     state.setName(status);
     this.state = state;
+    logger.debug("Workflow state updated to: {}", state.getName());
   }
 
   /**
@@ -312,7 +311,7 @@ public class WorkflowInstance {
       try {
         this.endDate = DateConvert.isoParse(endDateTimeIsoStr);
       } catch (ParseException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        logger.error("Error when parsing end time: {}", e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }
@@ -337,7 +336,7 @@ public class WorkflowInstance {
       try {
         this.startDate = DateConvert.isoParse(startDateTimeIsoStr);
       } catch (ParseException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        logger.error("Error when parsing start time: {}", e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }
@@ -368,7 +367,7 @@ public class WorkflowInstance {
         this.getTaskById(currentTaskId).
           setEndDate(DateConvert.isoParse(currentTaskEndDateTimeIsoStr));
       } catch (ParseException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        logger.error("Error when parsing time: {}", e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }
@@ -398,7 +397,7 @@ public class WorkflowInstance {
         this.getTaskById(currentTaskId).setStartDate(DateConvert
             .isoParse(currentTaskStartDateTimeIsoStr));
       } catch (ParseException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        logger.error("Error when parsing time: {}", e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }
@@ -446,6 +445,4 @@ public class WorkflowInstance {
       return null;
     }
   }
-
-
 }
