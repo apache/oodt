@@ -19,7 +19,7 @@ package org.apache.oodt.cas.workflow.system;
 
 import com.google.common.base.Preconditions;
 import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyServer;
+import org.apache.avro.ipc.HttpServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -48,7 +48,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -100,11 +99,16 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
         engine.setWorkflowManagerUrl(safeGetUrlFromString("http://" + getHostname() + ":" + port));
         repo = getWorkflowRepositoryFromProperty();
 
-        logger.debug("Starting Netty Server");
+        logger.debug("Starting Http Server...");
         // start up the server
-        server = new NettyServer(new SpecificResponder(
-                org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class,this),
-                new InetSocketAddress(port));
+        try {
+            server = new HttpServer(new SpecificResponder(
+                    org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class,this), port);
+        } catch (IOException e) {
+            logger.error("Unable to create http server on port: {}", e);
+            throw new IllegalStateException("Unable to start http server on port: " + port, e);
+        }
+
         logger.debug("Server created. Starting ...");
         server.start();
         logger.info("Workflow Manager started by {} for url: {}",
@@ -155,7 +159,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
             Metadata met = new Metadata();
             met.addMetadata(AvroTypeFactory.getMetadata(metadata));
 
-            logger.debug("Created dynamic workflow[{}] for task IDs: {}", dynamicWorkflow.getName(), taskIds);
+            logger.info("Created dynamic workflow[{}] for task IDs: {}", dynamicWorkflow.getName(), taskIds);
             WorkflowInstance inst = this.engine.startWorkflow(dynamicWorkflow, met);
             return inst.getId();
         }catch (RepositoryException | EngineException e){
