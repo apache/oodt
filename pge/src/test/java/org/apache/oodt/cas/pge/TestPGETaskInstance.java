@@ -189,15 +189,15 @@ public class TestPGETaskInstance {
       PGETaskInstance pgeTask1 = createTestInstance();
       PGETaskInstance pgeTask2 = createTestInstance();
 
-      pgeTask1.logger.log(Level.INFO, "pge1 message1");
-      pgeTask1.logger.log(Level.INFO, "pge1 message2");
-      pgeTask2.logger.log(Level.SEVERE, "pge2 message1");
-      pgeTask1.logger.log(Level.INFO, "pge1 message3");
+      pgeTask1.julLogger.log(Level.INFO, "pge1 message1");
+      pgeTask1.julLogger.log(Level.INFO, "pge1 message2");
+      pgeTask2.julLogger.log(Level.SEVERE, "pge2 message1");
+      pgeTask1.julLogger.log(Level.INFO, "pge1 message3");
 
-      for (Handler handler : pgeTask1.logger.getHandlers()) {
+      for (Handler handler : pgeTask1.julLogger.getHandlers()) {
          handler.flush();
       }
-      for (Handler handler : pgeTask2.logger.getHandlers()) {
+      for (Handler handler : pgeTask2.julLogger.getHandlers()) {
          handler.flush();
       }
       File logDir = new File(pgeTask1.pgeConfig.getExeDir() + "/logs");
@@ -586,17 +586,17 @@ public class TestPGETaskInstance {
             Lists.newArrayList(precondsFailIngestStatus));
       replay(pc);
 
-      pgeTask.logger = createMock(Logger.class);
-      pgeTask.logger.info("Verifying ingests successful...");
-      pgeTask.logger.warning(
+      pgeTask.julLogger = createMock(Logger.class);
+      pgeTask.julLogger.info("Verifying ingests successful...");
+      pgeTask.julLogger.warning(
             "Product was not ingested [file='/tmp/dir1',result='PRECONDS_FAILED',msg='Preconditions failed']");
-      pgeTask.logger.info("Ingests were successful");
-      replay(pgeTask.logger);
+      pgeTask.julLogger.info("Ingests were successful");
+      replay(pgeTask.julLogger);
 
       pgeTask.verifyIngests(pc);
 
       verify(pc);
-      verify(pgeTask.logger);
+      verify(pgeTask.julLogger);
 
       // Test case success.
       pc = createMock(AutoDetectProductCrawler.class);
@@ -618,15 +618,15 @@ public class TestPGETaskInstance {
             Lists.newArrayList(successIngestStatus));
       replay(pc);
 
-      pgeTask.logger = createMock(Logger.class);
-      pgeTask.logger.info("Verifying ingests successful...");
-      pgeTask.logger.info("Ingests were successful");
-      replay(pgeTask.logger);
+      pgeTask.julLogger = createMock(Logger.class);
+      pgeTask.julLogger.info("Verifying ingests successful...");
+      pgeTask.julLogger.info("Ingests were successful");
+      replay(pgeTask.julLogger);
 
       pgeTask.verifyIngests(pc);
 
       verify(pc);
-      verify(pgeTask.logger);
+      verify(pgeTask.julLogger);
    }
 
    private PGETaskInstance createTestInstance() throws Exception {
@@ -642,7 +642,7 @@ public class TestPGETaskInstance {
       pgeTask.pgeConfig = new PgeConfig();
       File exeDir = new File(createTmpDir(), workflowInstId);
       pgeTask.pgeConfig.setExeDir(exeDir.getAbsolutePath());
-      pgeTask.logger = pgeTask.createLogger();
+      pgeTask.julLogger = pgeTask.createLogger();
       return pgeTask;
    }
 

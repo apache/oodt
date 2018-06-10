@@ -20,10 +20,11 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPGETaskInstance;
 
@@ -37,7 +38,7 @@ import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPGETask
  */
 public class PGETask {
 
-    private static final Logger LOGGER = Logger.getLogger(PGETask.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PGETask.class);
 
     private Metadata metadata;
 
@@ -51,8 +52,7 @@ public class PGETask {
     public void run(String pgeTaskInstanceClasspath)
             throws
         WorkflowTaskInstanceException {
-        PGETaskInstance pgeTaskInst = createPGETaskInstance(
-                pgeTaskInstanceClasspath, LOGGER);
+        PGETaskInstance pgeTaskInst = createPGETaskInstance(pgeTaskInstanceClasspath, logger);
         pgeTaskInst.run(this.metadata, this.wftConfig);
     }
 

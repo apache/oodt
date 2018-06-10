@@ -16,17 +16,11 @@
  */
 package org.apache.oodt.cas.pge.util;
 
-
-//OODT imports
 import org.apache.oodt.cas.pge.ConfigFilePropertyAdder;
 import org.apache.oodt.cas.pge.PGETaskInstance;
 import org.apache.oodt.cas.pge.config.PgeConfigBuilder;
 import org.apache.oodt.cas.pge.staging.FileStager;
 import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -38,66 +32,48 @@ public class GenericPgeObjectFactory {
 
    private GenericPgeObjectFactory() {}
 
-   public static PGETaskInstance createPGETaskInstance(
-         String clazz, Logger logger) {
+   public static PGETaskInstance createPGETaskInstance(String clazz, org.slf4j.Logger logger) {
       try {
          return (PGETaskInstance) Class.forName(clazz).newInstance();
       } catch (Exception e) {
-         logger.log(Level.SEVERE, "Failed to create PGETaskInstance ["
-               + clazz + "] : " + e.getMessage(), e);
+         logger.error("Failed to create PGETaskInstance [{}]", clazz, e);
          return null;
       }
    }
 
-   public static PgeConfigBuilder createPgeConfigBuilder(
-         String clazz, Logger logger) {
+   public static PgeConfigBuilder createPgeConfigBuilder(String clazz, org.slf4j.Logger logger) {
       try {
          return (PgeConfigBuilder) Class.forName(clazz).newInstance();
-      } catch (InstantiationException e) {
-         logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
-                                  + clazz + "] : " + e.getMessage(), e);
-         return null;
-      } catch (IllegalAccessException e) {
-         logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
-                                  + clazz + "] : " + e.getMessage(), e);
-         return null;
-      } catch (ClassNotFoundException e) {
-         logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
-                                  + clazz + "] : " + e.getMessage(), e);
+      } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+         logger.error("Failed to create PgeConfigBuilder [{}] : ", clazz, e);
          return null;
       }
 
    }
 
-   public static ConfigFilePropertyAdder createConfigFilePropertyAdder(
-         String clazz, Logger logger) {
+   public static ConfigFilePropertyAdder createConfigFilePropertyAdder(String clazz, org.slf4j.Logger logger) {
       try {
          return (ConfigFilePropertyAdder) Class.forName(clazz).newInstance();
       } catch (Exception e) {
-         logger.log(Level.SEVERE, "Failed to create ConfigFilePropertyAdder ["
-               + clazz + "] : " + e.getMessage(), e);
+         logger.error("Failed to create ConfigFilePropertyAdder [{}]", clazz, e);
          return null;
       }
    }
 
-   public static FileStager createFileStager(
-         String clazz, Logger logger) {
+   public static FileStager createFileStager(String clazz, org.slf4j.Logger logger) {
       try {
          return (FileStager) Class.forName(clazz).newInstance();
       } catch (Exception e) {
-         logger.log(Level.SEVERE, "Failed to create FileStager ["
-               + clazz + "] : " + e.getMessage(), e);
+         logger.error("Failed to create FileStager [{}]", clazz, e);
          return null;
       }
    }
 
-   public static SciPgeConfigFileWriter createSciPgeConfigFileWriter(
-         String clazz, Logger logger) {
+   public static SciPgeConfigFileWriter createSciPgeConfigFileWriter(String clazz, org.slf4j.Logger logger) {
       try {
          return (SciPgeConfigFileWriter) Class.forName(clazz).newInstance();
       } catch (Exception e) {
-         logger.log(Level.SEVERE, "Failed to create SciPgeConfigFileWriter ["
-               + clazz + "] : " + e.getMessage(), e);
+         logger.error("Failed to create SciPgeConfigFileWriter [{}]", clazz, e);
          return null;
       }
    }

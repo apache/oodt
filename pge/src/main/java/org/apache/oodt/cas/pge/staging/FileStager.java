@@ -30,6 +30,7 @@ import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,8 +39,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER_URL;
 
@@ -51,36 +50,26 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER
  */
 public abstract class FileStager {
 
-   public void stageFiles(FileStagingInfo fileStagingInfo,
-         PgeMetadata pgeMetadata, Logger logger)
+   public void stageFiles(FileStagingInfo fileStagingInfo, PgeMetadata pgeMetadata, Logger logger)
        throws PGEException, CatalogException, URISyntaxException, IOException, ConnectionException,
        InstantiationException, DataTransferException {
-      logger.log(Level.INFO, "Creating staging directory ["
-            + fileStagingInfo.getStagingDir() + "]");
+      logger.info("Creating staging directory [{}]", fileStagingInfo.getStagingDir());
       new File(fileStagingInfo.getStagingDir()).mkdirs();
       for (String file : fileStagingInfo.getFilePaths()) {
          File fileHandle = new File(file);
          if (fileStagingInfo.isForceStaging() || !fileHandle.exists()) {
-            logger.log(Level.INFO, "Staging file [" + file
-                  + "] to directory ["
-                  + fileStagingInfo.getStagingDir() + "]");
-            stageFile(asURI(file), new File(fileStagingInfo.getStagingDir()),
-                  pgeMetadata, logger);
+            logger.info("Staging file [{}] to directory [{}]", file,  fileStagingInfo.getStagingDir());
+            stageFile(asURI(file), new File(fileStagingInfo.getStagingDir()), pgeMetadata, logger);
          }
       }
       if (!fileStagingInfo.getProductIds().isEmpty()) {
          FileManagerClient fmClient = createFileManagerClient(pgeMetadata);
          for (String productId : fileStagingInfo.getProductIds()) {
-            logger.log(Level.INFO, "Staging product [" + productId
-                  + "] to directory ["
-                  + fileStagingInfo.getStagingDir() + "]");
+            logger.info("Staging product [{}] to directory [{}]", productId, fileStagingInfo.getStagingDir());
             for (URI uri : getProductReferences(productId, fmClient)) {
-               logger.log(Level.INFO, "Staging product [" + productId
-                     + "] reference [" + uri
-                     + "] to directory ["
-                     + fileStagingInfo.getStagingDir() + "]");
-               stageFile(uri, new File(fileStagingInfo.getStagingDir()),
-                     pgeMetadata, logger);
+               logger.info("Staging product [{}] reference [{}] to directory [{}]",
+                       productId, uri, fileStagingInfo.getStagingDir());
+               stageFile(uri, new File(fileStagingInfo.getStagingDir()), pgeMetadata, logger);
             }
          }
       }

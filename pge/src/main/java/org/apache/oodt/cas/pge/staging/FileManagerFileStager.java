@@ -32,6 +32,7 @@ import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 //Google imports
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
 
 //JDK imports
 import java.io.File;
@@ -39,8 +40,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A {@link FileStager} which uses a FileManager {@link DataTransferer}.
@@ -53,8 +52,7 @@ public class FileManagerFileStager extends FileStager {
    public void stageFile(URI stageFile, File destDir,
          PgeMetadata pgeMetadata, Logger logger) throws IOException, DataTransferException, InstantiationException {
       DataTransfer dataTransferer = createDataTransfer(pgeMetadata, logger);
-      logger.log(Level.INFO, "Using DataTransfer ["
-               + dataTransferer.getClass().getCanonicalName() + "]");
+      logger.info("Using DataTransfer [{}]", dataTransferer.getClass().getCanonicalName());
       setFileManagerUrl(dataTransferer, pgeMetadata, logger);
       dataTransferer.retrieveProduct(createProduct(stageFile), destDir);
    }
@@ -67,7 +65,7 @@ public class FileManagerFileStager extends FileStager {
                .getDataTransferServiceFromFactory(pgeMetadata
                      .getMetadata(QUERY_CLIENT_TRANSFER_SERVICE_FACTORY));
       } else {
-         logger.log(Level.INFO, "Using default DataTransferer");
+         logger.info("Using default DataTransferer");
          return new RemoteDataTransferFactory().createDataTransfer();
       }
    }
@@ -79,9 +77,8 @@ public class FileManagerFileStager extends FileStager {
       if (filemgrUrl != null) {
          dataTransferer.setFileManagerUrl(new URL(filemgrUrl));
       } else {
-         logger.log(Level.WARNING, "Metadata field [" + QUERY_FILE_MANAGER_URL
-               + "] was not set, if DataTranferer requires filemgr server,"
-               + " your transfers will fail");
+         logger.warn("Metadata field [{}] was not set, if DataTranferer requires filemgr server, your transfers will fail",
+                 QUERY_FILE_MANAGER_URL);
       }
    }
 
