@@ -43,7 +43,7 @@
             <outputDirectory>etc</outputDirectory>
             <includes>
                 <include>config-publisher.xml</include>
-                <include>log4j.xml</include>
+                <include>log4j2.xml</include>
             </includes>
         </fileSet>
         <fileSet>
