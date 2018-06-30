@@ -360,7 +360,7 @@ public class Product {
     }
     /**
      * Set time product was ingested.
-     * @param productRecievedTime
+     * @param productReceivedTime
      */
     public void setProductRecievedTime(String productReceivedTime) {
         this.productReceivedTime = productReceivedTime;
@@ -372,6 +372,6 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("%s[%s-%s]", this.getProductId(), this.getProductName(), this.getProductType().getName());
+        return String.format("%s[%s-%s]", this.getProductId(), this.getProductName(), this.getProductType());
     }
 }

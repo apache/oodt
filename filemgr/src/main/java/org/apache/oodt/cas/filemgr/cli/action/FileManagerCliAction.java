@@ -40,7 +40,10 @@ public abstract class FileManagerCliAction extends CmdLineAction {
     }
 
     /**
-     * TODO(imesha) Fix client closing problem which makes it usable only once
+     * Returns a new {@link FileManagerClient}. The client should be closed by calling {@link FileManagerClient#close()}
+     * after using.
+     *
+     * TODO remove reference to {@link #fmc} which cannot be removed atm due to mock client used in tests.
      *
      * @return client
      * @throws MalformedURLException

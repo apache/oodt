@@ -552,7 +552,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected void verifyIngests(ProductCrawler crawler) throws PGEException {
-      logger.debug("Verifying ingests successful...");
+      julLogger.info("Verifying ingests successful...");
       boolean ingestsSuccess = true;
       String exceptionMsg = "";
       for (IngestStatus status : crawler.getIngestStatus()) {
@@ -563,16 +563,16 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                   + status.getResult() + "',msg='" + status.getMessage() + "']";
             ingestsSuccess = false;
          } else if (!status.getResult().equals(IngestStatus.Result.SUCCESS)) {
-            logger.warn("Product was not ingested [file='{}', result='{}', msg='{}'",
-                    status.getProduct().getAbsolutePath(), status.getResult(),status.getMessage());
+            julLogger.warning(String.format("Product was not ingested [file='%s',result='%s',msg='%s']",
+                    status.getProduct().getAbsolutePath(), status.getResult(),status.getMessage()));
          }
       }
 
       if (!ingestsSuccess) {
-         logger.error("Ingest wasn't successful: {}", exceptionMsg);
+         julLogger.severe("Ingest wasn't successful: " + exceptionMsg);
          throw new PGEException(exceptionMsg);
       } else {
-         logger.info("Ingests were successful");
+         julLogger.info("Ingests were successful");
       }
    }
 
