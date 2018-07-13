@@ -22,7 +22,7 @@ import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.NIOFSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.apache.oodt.cas.filemgr.structs.*;
@@ -131,7 +131,7 @@ public class LuceneCatalog implements Catalog {
         this.mergeFactor = mergeFactor;
 
         try {
-            indexDir = FSDirectory.open(new File( indexFilePath ).toPath());
+            indexDir = NIOFSDirectory.open(new File( indexFilePath ).toPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
