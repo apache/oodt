@@ -637,7 +637,7 @@ public class LuceneCatalog implements Catalog {
         return products;
     }
 
-    public Metadata getMetadata(Product product) throws CatalogException {
+    public synchronized Metadata getMetadata(Product product) throws CatalogException {
         IndexSearcher searcher = null;
         try {
             try {
@@ -722,7 +722,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int)
      */
-    public List<Product> getTopNProducts(int n) throws CatalogException {
+    public synchronized List<Product> getTopNProducts(int n) throws CatalogException {
         List<Product> products = null;
         IndexSearcher searcher = null;
 
@@ -792,7 +792,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int,
      *      org.apache.oodt.cas.filemgr.structs.ProductType)
      */
-    public List<Product> getTopNProducts(int n, ProductType type)
+    public synchronized List<Product> getTopNProducts(int n, ProductType type)
             throws CatalogException {
         int numPages = 1;
         if (n > this.pageSize) {
@@ -1062,7 +1062,7 @@ public class LuceneCatalog implements Catalog {
     private synchronized void addCompleteProductToIndex(CompleteProduct cp)
             throws CatalogException {
         IndexWriter writer = null;
-        try {
+        /*try {*/
             /*writer = new IndexWriter(indexFilePath, new StandardAnalyzer(),
                     createIndex);*/
             //writer.setCommitLockTimeout(this.commitLockTimeout * 1000);
@@ -1074,12 +1074,21 @@ public class LuceneCatalog implements Catalog {
             lmp.setMergeFactor(mergeFactor);
             config.setMergePolicy(lmp);
 
-                writer = new IndexWriter(indexDir, config);
+        try {
+            writer = new IndexWriter(indexDir, config);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            Document doc = toDoc(cp.getProduct(), cp.getMetadata());
+        Document doc = toDoc(cp.getProduct(), cp.getMetadata());
+        try {
             writer.addDocument(doc);
-            // TODO: determine a better way to optimize the index
-        } catch (Exception e) {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // TODO: determine a better way to optimize the index
+       /* } catch (Exception e) {
             LOG.log(Level.WARNING, "Unable to index product: ["
                     + cp.getProduct().getProductName() + "]: Message: "
                     + e.getMessage(), e);
@@ -1094,7 +1103,7 @@ public class LuceneCatalog implements Catalog {
             } catch (Exception e) {
                 System.out.println("failed"+e.getLocalizedMessage());
             }
-        }
+        }*/
 
     }
 
