@@ -1060,11 +1060,6 @@ public class LuceneCatalog implements Catalog {
     private synchronized void addCompleteProductToIndex(CompleteProduct cp)
             throws CatalogException {
         IndexWriter writer = null;
-        /*try {*/
-            /*writer = new IndexWriter(indexFilePath, new StandardAnalyzer(),
-                    createIndex);*/
-            //writer.setCommitLockTimeout(this.commitLockTimeout * 1000);
-            //writer.setWriteLockTimeout(this.writeLockTimeout * 1000);
             IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
 
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
@@ -1082,11 +1077,8 @@ public class LuceneCatalog implements Catalog {
         try {
             writer.addDocument(doc);
             writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         // TODO: determine a better way to optimize the index
-       /* } catch (Exception e) {
+       } catch (Exception e) {
             LOG.log(Level.WARNING, "Unable to index product: ["
                     + cp.getProduct().getProductName() + "]: Message: "
                     + e.getMessage(), e);
@@ -1101,7 +1093,7 @@ public class LuceneCatalog implements Catalog {
             } catch (Exception e) {
                 System.out.println("failed"+e.getLocalizedMessage());
             }
-        }*/
+        }
 
     }
 
