@@ -1361,7 +1361,7 @@ public class LuceneCatalog implements Catalog {
         return numHits;
     }
 
-    private List<Product> paginateQuery(Query query, ProductType type, int pageNum, ProductPage page)
+    private synchronized List<Product> paginateQuery(Query query, ProductType type, int pageNum, ProductPage page)
             throws CatalogException {
         List<Product> products = null;
         IndexSearcher searcher = null;
