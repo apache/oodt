@@ -14,6 +14,6 @@
 # limitations under the License.
 
 mvn archetype:generate -DarchetypeGroupId=org.apache.oodt \
-    -DarchetypeArtifactId=radix-archetype -DarchetypeVersion=1.2.2 \
-    -Doodt=1.2.2 -DgroupId=com.mycompany \
+    -DarchetypeArtifactId=radix-archetype -DarchetypeVersion=1.2.3 \
+    -Doodt=1.2.3 -DgroupId=com.mycompany \
     -DartifactId=oodt -Dversion=0.1
