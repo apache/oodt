@@ -1,5 +1,9 @@
 Apache OODT Change Log
 ======================
+Release 1.2.4 - 08/13/2018
+
+* Restore JDK 8 Support
+
 Release 1.2.3 - 08/06/2018
 
 * OODT-989 Fix Lucene Catalog crashes
