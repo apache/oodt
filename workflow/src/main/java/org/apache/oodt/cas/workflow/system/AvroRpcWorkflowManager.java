@@ -111,6 +111,13 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
 
         logger.debug("Server created. Starting ...");
         server.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                shutdown();
+            }
+        });
         logger.info("Workflow Manager started by {} for url: {}",
                 System.getProperty("user.name", "unknown"), workflowManagerUrl);
 
@@ -135,7 +142,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
     }
 
     @Override
-    public String executeDynamicWorkflow(List<String> taskIds, Map<String, String> metadata) throws AvroRemoteException {
+    public String executeDynamicWorkflow(List<String> taskIds, Map<String, Object> metadata) throws AvroRemoteException {
         logger.debug("Executing dynamic workflow with task IDs: {}", taskIds);
         try {
             if (taskIds == null || taskIds.size() == 0){
@@ -286,14 +293,14 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
     }
 
     @Override
-    public Map<String, String> getWorkflowInstanceMetadata(String wInstId) throws AvroRemoteException {
+    public Map<String, Object> getWorkflowInstanceMetadata(String wInstId) throws AvroRemoteException {
         Metadata met = engine.getWorkflowInstanceMetadata(wInstId);
         return AvroTypeFactory.getAvroMetadata(met);
     }
 
 
     @Override
-    public boolean handleEvent(String eventName, Map<String, String> metadata) throws AvroRemoteException {
+    public boolean handleEvent(String eventName, Map<String, Object> metadata) throws AvroRemoteException {
         logger.info("Received event: {}", eventName);
         logger.debug("Reveiced meta data for event: {} -> {}", eventName, metadata);
 
@@ -553,7 +560,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
     }
 
     @Override
-    public synchronized boolean updateMetadataForWorkflow(String workflowInstId, Map<String, String> metadata) throws AvroRemoteException {
+    public synchronized boolean updateMetadataForWorkflow(String workflowInstId, Map<String, Object> metadata) throws AvroRemoteException {
         Metadata met = new Metadata();
         met.addMetadata(AvroTypeFactory.getMetadata(metadata));
         return this.engine.updateMetadata(workflowInstId, met);
