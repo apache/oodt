@@ -30,6 +30,7 @@
 
     <Loggers>
         <Logger name="org.springframework" level="error"/>
+        <Logger name="org.mortbay" level="error"/>
 
         <Root level="debug">
             <AppenderRef ref="Console"/>

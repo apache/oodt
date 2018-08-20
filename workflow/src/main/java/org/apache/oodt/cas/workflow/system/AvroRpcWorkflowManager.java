@@ -19,7 +19,7 @@ package org.apache.oodt.cas.workflow.system;
 
 import com.google.common.base.Preconditions;
 import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyServer;
+import org.apache.avro.ipc.HttpServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -48,7 +48,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -100,13 +99,25 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
         engine.setWorkflowManagerUrl(safeGetUrlFromString("http://" + getHostname() + ":" + port));
         repo = getWorkflowRepositoryFromProperty();
 
-        logger.debug("Starting Netty Server");
+        logger.debug("Starting Http Server...");
         // start up the server
-        server = new NettyServer(new SpecificResponder(
-                org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class,this),
-                new InetSocketAddress(port));
+        try {
+            server = new HttpServer(new SpecificResponder(
+                    org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class,this), port);
+        } catch (IOException e) {
+            logger.error("Unable to create http server on port: {}", e);
+            throw new IllegalStateException("Unable to start http server on port: " + port, e);
+        }
+
         logger.debug("Server created. Starting ...");
         server.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                shutdown();
+            }
+        });
         logger.info("Workflow Manager started by {} for url: {}",
                 System.getProperty("user.name", "unknown"), workflowManagerUrl);
 
@@ -131,7 +142,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
     }
 
     @Override
-    public String executeDynamicWorkflow(List<String> taskIds, Map<String, String> metadata) throws AvroRemoteException {
+    public String executeDynamicWorkflow(List<String> taskIds, Map<String, Object> metadata) throws AvroRemoteException {
         logger.debug("Executing dynamic workflow with task IDs: {}", taskIds);
         try {
             if (taskIds == null || taskIds.size() == 0){
@@ -155,7 +166,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
             Metadata met = new Metadata();
             met.addMetadata(AvroTypeFactory.getMetadata(metadata));
 
-            logger.debug("Created dynamic workflow[{}] for task IDs: {}", dynamicWorkflow.getName(), taskIds);
+            logger.info("Created dynamic workflow[{}] for task IDs: {}", dynamicWorkflow.getName(), taskIds);
             WorkflowInstance inst = this.engine.startWorkflow(dynamicWorkflow, met);
             return inst.getId();
         }catch (RepositoryException | EngineException e){
@@ -282,14 +293,14 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
     }
 
     @Override
-    public Map<String, String> getWorkflowInstanceMetadata(String wInstId) throws AvroRemoteException {
+    public Map<String, Object> getWorkflowInstanceMetadata(String wInstId) throws AvroRemoteException {
         Metadata met = engine.getWorkflowInstanceMetadata(wInstId);
         return AvroTypeFactory.getAvroMetadata(met);
     }
 
 
     @Override
-    public boolean handleEvent(String eventName, Map<String, String> metadata) throws AvroRemoteException {
+    public boolean handleEvent(String eventName, Map<String, Object> metadata) throws AvroRemoteException {
         logger.info("Received event: {}", eventName);
         logger.debug("Reveiced meta data for event: {} -> {}", eventName, metadata);
 
@@ -549,7 +560,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
     }
 
     @Override
-    public synchronized boolean updateMetadataForWorkflow(String workflowInstId, Map<String, String> metadata) throws AvroRemoteException {
+    public synchronized boolean updateMetadataForWorkflow(String workflowInstId, Map<String, Object> metadata) throws AvroRemoteException {
         Metadata met = new Metadata();
         met.addMetadata(AvroTypeFactory.getMetadata(metadata));
         return this.engine.updateMetadata(workflowInstId, met);

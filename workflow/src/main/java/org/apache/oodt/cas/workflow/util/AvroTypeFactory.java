@@ -224,11 +224,11 @@ public class AvroTypeFactory {
         return avroWorkflowInstance;
     }
 
-    public static Map<String,String> getAvroMetadata(Metadata metadata){
-        Map<String,String> avroMetadata = new HashMap<String, String>();
-        if(metadata.getHashTable().size() > 0)
-            for (String key : metadata.getAllKeys()){
-                avroMetadata.put(key,metadata.getMetadata(key));
+    public static Map<String, Object> getAvroMetadata(Metadata metadata) {
+        Map<String, Object> avroMetadata = new HashMap<>();
+        if (metadata.getHashTable().size() > 0)
+            for (String key : metadata.getAllKeys()) {
+                avroMetadata.put(key, metadata.getAllMetadata(key));
             }
         return avroMetadata;
     }
@@ -251,11 +251,15 @@ public class AvroTypeFactory {
         return workflowInstance;
     }
 
-    public static Metadata getMetadata(Map<String,String> avroMetadata){
+    public static Metadata getMetadata(Map<String, Object> avroMetadata) {
         Metadata metadata = new Metadata();
         if (avroMetadata.size() > 0)
-            for (String key : avroMetadata.keySet()){
-                metadata.addMetadata(key,avroMetadata.get(key));
+            for (String key : avroMetadata.keySet()) {
+                if (avroMetadata.get(key) instanceof List) {
+                    metadata.addMetadata(key, (List) avroMetadata.get(key));
+                } else {
+                    metadata.addMetadata(key, (String) avroMetadata.get(key));
+                }
             }
         return metadata;
     }
