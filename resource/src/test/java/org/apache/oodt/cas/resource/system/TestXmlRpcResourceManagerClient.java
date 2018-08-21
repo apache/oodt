@@ -52,6 +52,7 @@ public class TestXmlRpcResourceManagerClient {
     private static ResourceManagerClient rmc;
     private static ResourceManager rm;
 
+    @SuppressWarnings("deprecation")
     @BeforeClass
     public static void setUp() throws Exception {
         generateTestConfiguration();

@@ -53,7 +53,7 @@ public final class PGEXMLFileUtils {
   private static final Logger LOG = Logger.getLogger(PGEXMLFileUtils.class
       .getName());
 
-  public static Map getMatrixsAsMap(Element group)
+  public static Map<String, PGEMatrix> getMatrixsAsMap(Element group)
       throws PGEConfigFileException {
     // get the nodelist for the matrixs
     NodeList matrixs = group.getElementsByTagName("matrix");
@@ -63,7 +63,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyMap();
     }
 
-    Map matrixMap = new ConcurrentHashMap(matrixs.getLength());
+    Map<String, PGEMatrix> matrixMap = new ConcurrentHashMap<String, PGEMatrix>(matrixs.getLength());
 
     // for each matrix in the list, create a PGEMatrix with the name
     // attribute and the appropriate value
@@ -103,7 +103,7 @@ public final class PGEXMLFileUtils {
           pgeMatrix.setNumCols(colNodeList.getLength());
         }
 
-        List colList = new Vector(colNodeList.getLength());
+        List<Object> colList = new Vector<Object>(colNodeList.getLength());
 
         for (int k = 0; k < colNodeList.getLength(); k++) {
           Element colElement = (Element) colNodeList.item(k);
@@ -118,7 +118,7 @@ public final class PGEXMLFileUtils {
     return matrixMap;
   }
 
-  public static List getMatrixs(Element group) throws PGEConfigFileException {
+  public static List<PGEMatrix> getMatrixs(Element group) throws PGEConfigFileException {
     // get the nodelist for the matrixs
     NodeList matrixs = group.getElementsByTagName("matrix");
 
@@ -127,7 +127,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyList();
     }
 
-    List matrixList = new Vector(matrixs.getLength());
+    List<PGEMatrix> matrixList = new Vector<PGEMatrix>(matrixs.getLength());
 
     // for each matrix in the list, create a PGEMatrix with the name
     // attribute and the appropriate value
@@ -167,7 +167,7 @@ public final class PGEXMLFileUtils {
           pgeMatrix.setNumCols(colNodeList.getLength());
         }
 
-        List colList = new Vector(colNodeList.getLength());
+        List<Object> colList = new Vector<Object>(colNodeList.getLength());
 
         for (int k = 0; k < colNodeList.getLength(); k++) {
           Element colElement = (Element) colNodeList.item(k);
@@ -183,7 +183,7 @@ public final class PGEXMLFileUtils {
     return matrixList;
   }
 
-  public static Map getScalarsAsMap(Element group) {
+  public static Map<String, PGEScalar> getScalarsAsMap(Element group) {
     // get the nodelist for scalars
     NodeList scalars = group.getElementsByTagName("scalar");
 
@@ -192,7 +192,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyMap();
     }
 
-    Map scalarMap = new ConcurrentHashMap(scalars.getLength());
+    Map<String, PGEScalar> scalarMap = new ConcurrentHashMap<String, PGEScalar>(scalars.getLength());
 
     // for each scalar in the list, create a PGEScalar with the name
     // attribute, and appropriate value
@@ -211,7 +211,7 @@ public final class PGEXMLFileUtils {
     return scalarMap;
   }
 
-  public static List getScalars(Element group) {
+  public static List<PGEScalar> getScalars(Element group) {
     // get the nodelist for scalars
     NodeList scalars = group.getElementsByTagName("scalar");
 
@@ -220,7 +220,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyList();
     }
 
-    List scalarList = new Vector(scalars.getLength());
+    List<PGEScalar> scalarList = new Vector<PGEScalar>(scalars.getLength());
 
     // for each scalar in the list, create a PGEScalar with the name
     // attribute, and appropriate value
@@ -239,7 +239,7 @@ public final class PGEXMLFileUtils {
     return scalarList;
   }
 
-  public static Map getVectorsAsMap(Element group)
+  public static Map<String, PGEVector> getVectorsAsMap(Element group)
       throws PGEConfigFileException {
     // get the nodelist for scalars
     NodeList vectors = group.getElementsByTagName("vector");
@@ -249,7 +249,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyMap();
     }
 
-    Map vectorMap = new ConcurrentHashMap(vectors.getLength());
+    Map<String, PGEVector> vectorMap = new ConcurrentHashMap<String, PGEVector>(vectors.getLength());
 
     // for each vector in the list, create a PGEVector with the name
     // attribute, and appropriate value
@@ -270,7 +270,7 @@ public final class PGEXMLFileUtils {
             "There must be at least one element in a PGEVector!");
       }
 
-      List vecElemList = new Vector(vecElems.getLength());
+      List<Object> vecElemList = new Vector<Object>(vecElems.getLength());
 
       for (int j = 0; j < vecElems.getLength(); j++) {
         Element vecElem = (Element) vecElems.item(j);
@@ -284,7 +284,7 @@ public final class PGEXMLFileUtils {
     return vectorMap;
   }
 
-  public static List getVectors(Element group) throws PGEConfigFileException {
+  public static List<PGEVector> getVectors(Element group) throws PGEConfigFileException {
     // get the nodelist for scalars
     NodeList vectors = group.getElementsByTagName("vector");
 
@@ -293,7 +293,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyList();
     }
 
-    List vectorList = new Vector(vectors.getLength());
+    List<PGEVector> vectorList = new Vector<PGEVector>(vectors.getLength());
 
     // for each vector in the list, create a PGEVector with the name
     // attribute, and appropriate value
@@ -314,7 +314,7 @@ public final class PGEXMLFileUtils {
             "There must be at least one element in a PGEVector!");
       }
 
-      List vecElemList = new Vector(vecElems.getLength());
+      List<Object> vecElemList = new Vector<Object>(vecElems.getLength());
 
       for (int j = 0; j < vecElems.getLength(); j++) {
         Element vecElem = (Element) vecElems.item(j);
@@ -338,7 +338,7 @@ public final class PGEXMLFileUtils {
     InputStream xmlInputStream;
 
     try {
-      xmlInputStream = new File(xmlFile).toURL().openStream();
+      xmlInputStream = new File(xmlFile).toURI().toURL().openStream();
     } catch (IOException e) {
       LOG.log(Level.WARNING, "IOException when getting input stream from ["
           + xmlFile + "]: returning null document root");

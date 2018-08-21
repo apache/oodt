@@ -60,7 +60,7 @@ public class SolrCatalogFactory implements CatalogFactory {
 		String productSerializerClass = System.getProperty("org.apache.oodt.cas.filemgr.catalog.solr.productSerializer");
 		if (productSerializerClass!=null) {
 			try {
-				productSerializer = (ProductSerializer)Class.forName( PathUtils.replaceEnvVariables(productSerializerClass) ).newInstance();
+				productSerializer = (ProductSerializer)Class.forName( PathUtils.replaceEnvVariables(productSerializerClass) ).getConstructor().newInstance();
 			} catch(Exception e) {
 				LOG.severe(e.getMessage());
 				System.exit(-1);
@@ -73,7 +73,7 @@ public class SolrCatalogFactory implements CatalogFactory {
 		String productIdGeneratorClass = System.getProperty("org.apache.oodt.cas.filemgr.catalog.solr.productIdGenerator");
 		if (productIdGeneratorClass!=null) {
 			try {
-				productIdGenerator = (ProductIdGenerator)Class.forName( PathUtils.replaceEnvVariables(productIdGeneratorClass) ).newInstance();
+				productIdGenerator = (ProductIdGenerator)Class.forName( PathUtils.replaceEnvVariables(productIdGeneratorClass) ).getConstructor().newInstance();
 			} catch(Exception e) {
 				LOG.severe(e.getMessage());
 				System.exit(-1);

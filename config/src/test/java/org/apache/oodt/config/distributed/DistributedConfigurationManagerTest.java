@@ -66,7 +66,7 @@ public class DistributedConfigurationManagerTest extends AbstractDistributedConf
         });
 
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_PUBLISHER_XML);
-        Map distributedConfigurationPublishers = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
+        Map<?, ?> distributedConfigurationPublishers = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
         publishers = new ArrayList<>();
         configurationManagers = new HashMap<>();

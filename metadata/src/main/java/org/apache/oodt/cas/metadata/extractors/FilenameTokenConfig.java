@@ -76,6 +76,7 @@ public class FilenameTokenConfig implements MetExtractorConfig {
         TOKEN_DELIMETER_SCALAR).getValue();
   }
 
+  @SuppressWarnings("unchecked")
   public List<String> getTokenMetKeyNames() {
     return (List<String>) (List<?>) this.conf.getPgeSpecificGroups().get(
         TOKEN_LIST_GROUP).getVector(TOKEN_MET_KEYS_VECTOR).getElements();
@@ -101,6 +102,7 @@ public class FilenameTokenConfig implements MetExtractorConfig {
     return met;
   }
 
+  @SuppressWarnings("unchecked")
   public Metadata getCommonMet() {
     PGEGroup commonMetGroup = this.conf.getPgeSpecificGroups().get(
         COMMON_METADATA_GROUP);

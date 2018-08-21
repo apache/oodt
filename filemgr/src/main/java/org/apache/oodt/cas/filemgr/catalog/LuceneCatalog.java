@@ -90,9 +90,11 @@ public class LuceneCatalog implements Catalog {
     private int pageSize = -1;
 
     /* write lock timeout for writing to the index */
+    @SuppressWarnings("unused")
     private long writeLockTimeout = -1L;
 
     /* commit lock timeout for writing/reading to the index */
+    @SuppressWarnings("unused")
     private long commitLockTimeout = -1L;
 
     /* lucene index merge factor */
@@ -372,6 +374,7 @@ public class LuceneCatalog implements Catalog {
         return prod.getProduct();
     }
 
+    @SuppressWarnings("unused")
     private CompleteProduct getCompleteProductById(String productId)
             throws CatalogException {
         return getCompleteProductById(productId, false);
@@ -645,7 +648,7 @@ public class LuceneCatalog implements Catalog {
             }
             searcher = new IndexSearcher(reader);
             TermQuery qry = new TermQuery(new Term("*", "*"));
-            TopDocs tdocks  = searcher.search(qry, 100);
+            searcher.search(qry, 100);
             Term productIdTerm = new Term("product_id", product.getProductId());
             org.apache.lucene.search.Query query = new TermQuery(productIdTerm);
             //TODO FIX NUMBER OF RECORDS
@@ -1097,6 +1100,7 @@ public class LuceneCatalog implements Catalog {
 
     }
 
+    @SuppressWarnings("unused")
     private CompleteProduct toCompleteProduct(Document doc) {
         return toCompleteProduct(doc, true, true);
     }
@@ -1530,6 +1534,7 @@ public class LuceneCatalog implements Catalog {
 
         private Product product = null;
 
+        @SuppressWarnings("unused")
         public CompleteProduct(Metadata met, List<Reference> refs, Product p) {
             this.metadata = met;
             this.product = p;
@@ -1580,6 +1585,7 @@ public class LuceneCatalog implements Catalog {
          * @param references
          *            The references to set.
          */
+        @SuppressWarnings("unused")
         public void setReferences(List<Reference> references) {
             this.product.setProductReferences(references);
         }

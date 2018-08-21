@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 /**
  * @author mattmann
  * @version $Revision$
- * @deprecated soon be replaced by avro-rpc
+ * @deprecated use {@link AvroRpcResourceManagerClient}
  * <p>
  * The XML RPC based resource manager client.
  * </p>

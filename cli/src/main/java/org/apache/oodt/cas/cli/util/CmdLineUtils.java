@@ -18,6 +18,7 @@ package org.apache.oodt.cas.cli.util;
 
 //JDK imports
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -1113,7 +1114,7 @@ public class CmdLineUtils {
       } else if (type.equals(Double.class) || type.equals(Double.TYPE)) {
          List<Object> doubles = new LinkedList<Object>();
          for (String value : values) {
-            doubles.add(new Double(value));
+            doubles.add(Double.valueOf(value));
          }
          return doubles;
       } else if (type.equals(String.class)) {
@@ -1125,7 +1126,12 @@ public class CmdLineUtils {
       } else {
          List<Object> objects = new LinkedList<Object>();
          for (String value : values) {
-            Object object = Class.forName(value).newInstance();
+            Object object = null;
+            try {
+              object = Class.forName(value).getConstructor().newInstance();
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+              e.printStackTrace();
+            }
             if (!type.isAssignableFrom(object.getClass())) {
                throw new RuntimeException(object.getClass() + " is not a valid"
                      + " type or sub-type of " + type);

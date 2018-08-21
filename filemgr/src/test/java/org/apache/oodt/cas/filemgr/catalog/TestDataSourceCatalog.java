@@ -423,7 +423,8 @@ public class TestDataSourceCatalog extends TestCase {
         }
 
         try {
-            List<Reference> productReferences = myCat.getProductReferences(testProduct);
+            @SuppressWarnings("unchecked")
+            List<Reference> productReferences = (List<Reference>) myCat.getProductReferences(testProduct);
             assertNotNull(productReferences);
             assertFalse(productReferences.isEmpty());
             assertEquals(productReferences.get(0).getMimeType().getName(), "text/plain");

@@ -17,9 +17,6 @@
 
 package org.apache.oodt.cas.resource.structs;
 
-import org.apache.avro.ipc.Responder;
-import org.apache.avro.reflect.AvroName;
-import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.avrotypes.*;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 

@@ -22,7 +22,7 @@ package org.apache.oodt.cas.resource.examples;
 
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.NameValueJobInput;
-import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
+import org.apache.oodt.cas.resource.system.AvroRpcResourceManagerClient;
 
 import java.net.URL;
 import java.util.logging.Level;
@@ -44,13 +44,13 @@ public class TestResmgr {
   public static void main(String[] Args) {
 
     if (Args.length != 1) {
-      System.err.println("Specify a XmlRpcResourceManager Host");
+      System.err.println("Specify a AvroRpcResourceManager Host");
       System.exit(1);
     }
 
     try {
       URL managerUrl = new URL(Args[0]);
-      XmlRpcResourceManagerClient client = new XmlRpcResourceManagerClient(
+      AvroRpcResourceManagerClient client = new AvroRpcResourceManagerClient(
           managerUrl);
 
       Job hw1 = new Job("JobOne", "HelloWorldJob",

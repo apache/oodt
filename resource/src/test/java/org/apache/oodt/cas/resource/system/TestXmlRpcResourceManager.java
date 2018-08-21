@@ -48,6 +48,7 @@ public class TestXmlRpcResourceManager extends TestCase {
 
   private File tmpPolicyDir;
 
+  @SuppressWarnings("deprecation")
   private XmlRpcResourceManager rm;
 
   private static final int RM_PORT = 50001;
@@ -55,6 +56,7 @@ public class TestXmlRpcResourceManager extends TestCase {
   /**
    * @since OODT-182
    */
+  @SuppressWarnings("deprecation")
   public void testDynSetNodeCapacity() {
     XmlRpcResourceManagerClient rmc = null;
     try {
@@ -85,6 +87,7 @@ public class TestXmlRpcResourceManager extends TestCase {
    *
    * @see junit.framework.TestCase#setUp()
    */
+  @SuppressWarnings("deprecation")
   @Override
   protected void setUp() throws Exception {
     System.out.println(NameValueJobInput.class.getCanonicalName());
@@ -98,6 +101,7 @@ public class TestXmlRpcResourceManager extends TestCase {
    *
    * @see junit.framework.TestCase#tearDown()
    */
+  @SuppressWarnings("deprecation")
   @Override
   protected void tearDown() throws Exception {
     this.rm.shutdown();

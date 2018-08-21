@@ -49,8 +49,6 @@ public class BooleanQueryCriteria extends QueryCriteria {
 
     public static final int NOT = 2;
 
-    private static final long serialVersionUID = 4718948237682772671L;
-
     private int operator;
 
     private List<QueryCriteria> terms;

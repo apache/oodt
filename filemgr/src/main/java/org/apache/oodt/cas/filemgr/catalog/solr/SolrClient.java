@@ -16,22 +16,19 @@
  */
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -39,12 +36,7 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
@@ -286,11 +278,7 @@ public class SolrClient {
 		// build HTTP/POST request
 		HttpPost method = new HttpPost(url);
 		HttpEntity requestEntity = null;
-		try {
-			requestEntity = new StringEntity(document, mimeType, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		requestEntity = new StringEntity(document, ContentType.create(mimeType));
 
 		method.setEntity(requestEntity);
 		// send HTTP/POST request, return response
@@ -311,7 +299,7 @@ public class SolrClient {
 		try {
 
 			// send request
-			HttpClient httpClient = new DefaultHttpClient();
+			HttpClient httpClient = HttpClientBuilder.create().build();
 			// OODT-719 Prevent httpclient from spawning closewait tcp connections
 			method.setHeader("Connection", "close");
 

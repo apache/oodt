@@ -40,6 +40,7 @@ import com.google.common.collect.Lists;
  * 
  * @author bfoster (Brian Foster)
  */
+@SuppressWarnings("deprecation")
 public class MockXmlRpcResourceManagerClient extends
       XmlRpcResourceManagerClient {
 

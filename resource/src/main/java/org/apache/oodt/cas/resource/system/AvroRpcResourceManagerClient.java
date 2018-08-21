@@ -26,6 +26,7 @@ import org.apache.oodt.cas.resource.structs.AvroTypeFactory;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.avrotypes.AvroJob;
 import org.apache.oodt.cas.resource.structs.avrotypes.ResourceManager;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
@@ -46,7 +47,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
 
     /* our log stream */
     private static Logger LOG = Logger
-            .getLogger(XmlRpcResourceManagerClient.class.getName());
+            .getLogger(AvroRpcResourceManagerClient.class.getName());
 
     /* resource manager url */
     private URL resMgrUrl = null;
@@ -197,7 +198,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     }
 
     @Override
-    public List getNodes() throws MonitorException {
+    public List<ResourceNode> getNodes() throws MonitorException {
         try {
             return AvroTypeFactory.getListResourceNode(proxy.getNodes());
         } catch (AvroRemoteException e) {
@@ -325,7 +326,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     }
 
     @Override
-    public List getQueuedJobs() throws JobQueueException {
+    public List<AvroJob> getQueuedJobs() throws JobQueueException {
         try {
             return proxy.getQueuedJobs();
         } catch (AvroRemoteException e) {

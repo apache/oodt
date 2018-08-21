@@ -57,7 +57,7 @@ public interface Monitor {
    *           If any error occurs getting the {@link List} of
    *           {@link ResourceNode}s.
    */
-  List getNodes() throws MonitorException;
+  List<ResourceNode> getNodes() throws MonitorException;
   
   
   /**

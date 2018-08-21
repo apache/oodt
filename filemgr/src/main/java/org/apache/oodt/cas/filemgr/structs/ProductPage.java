@@ -177,7 +177,7 @@ public class ProductPage {
         blank.setPageNum(0);
         blank.setTotalPages(0);
         blank.setPageSize(0);
-        blank.setPageProducts(Collections.EMPTY_LIST);
+        blank.setPageProducts(Collections.<Product> emptyList());
         return blank;
     }
 

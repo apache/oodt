@@ -24,6 +24,7 @@ import java.io.IOException;
 public class TestServer {
 
     public static void main(String[] args) throws Exception {
+        @SuppressWarnings("resource")
         final TestingServer zookeeper = new TestingServer(2181);
         zookeeper.start();
         System.out.printf(zookeeper.getConnectString());

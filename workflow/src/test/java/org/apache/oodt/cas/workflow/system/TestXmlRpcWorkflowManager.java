@@ -45,6 +45,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
 
   private static final int WM_PORT = 50002;
 
+  @SuppressWarnings("deprecation")
   private XmlRpcWorkflowManager wmgr;
 
   private String luceneCatLoc;
@@ -52,6 +53,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
   private static final Logger LOG = Logger
       .getLogger(TestXmlRpcWorkflowManager.class.getName());
 
+  @SuppressWarnings("deprecation")
   public void testGetWorkflowInstances() {
 
     List workflowInsts = null;
@@ -80,6 +82,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
 
   }
 
+  @SuppressWarnings("deprecation")
   private void startWorkflow() {
     XmlRpcWorkflowManagerClient client = null;
     try {
@@ -98,6 +101,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
 
   }
 
+  @SuppressWarnings("deprecation")
   private void startXmlRpcWorkflowManager() {
     System.setProperty("java.util.logging.config.file", new File(
         "./src/main/resources/logging.properties").getAbsolutePath());

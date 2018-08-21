@@ -178,7 +178,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
     @Override
     public List<AvroResourceNode> getNodes() throws AvroRemoteException {
 
-        List resNodes = null;
+        List<ResourceNode> resNodes = null;
         try {
             resNodes = scheduler.getMonitor().getNodes();
         } catch (MonitorException e) {
@@ -233,7 +233,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
         try {
 
             // get a sorted list of nodes
-            List nodes = scheduler.getMonitor().getNodes();
+            List<ResourceNode> nodes = scheduler.getMonitor().getNodes();
             Collections.sort(nodes, new ResourceNodeComparator());
 
             // formulate the report string
@@ -260,7 +260,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
 
     public List<AvroJob> getQueuedJobs() {
         List<AvroJob> jobs = new ArrayList<>();
-        List jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
+        List<JobSpec> jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
 
         if (jobSpecs != null && jobSpecs.size() > 0) {
             for (Object jobSpec : jobSpecs) {
@@ -280,7 +280,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
 
             // get a sorted list of all nodes, since the report should be
             // alphabetically sorted by node
-            List resNodes = scheduler.getMonitor().getNodes();
+            List<ResourceNode> resNodes = scheduler.getMonitor().getNodes();
             if (resNodes.size() == 0) {
                 throw new MonitorException(
                         "No jobs can be executing, as there are no nodes in the Monitor");

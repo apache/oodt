@@ -18,8 +18,6 @@
 package org.apache.oodt.config.distributed.cli;
 
 import org.apache.oodt.cas.cli.CmdLineUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Class with main method which gets invoked by the CLI.
@@ -35,8 +33,6 @@ import org.slf4j.LoggerFactory;
  * @author Imesha Sudasingha
  */
 public class ConfigPublisher {
-
-    private static final Logger logger = LoggerFactory.getLogger(ConfigPublisher.class);
 
     public static void main(String[] args) throws Exception {
         CmdLineUtility cmdLineUtility = new CmdLineUtility();

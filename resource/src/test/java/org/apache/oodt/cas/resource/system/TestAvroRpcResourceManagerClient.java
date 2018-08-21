@@ -19,6 +19,7 @@ package org.apache.oodt.cas.resource.system;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.avrotypes.AvroJob;
 import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
@@ -32,7 +33,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 
@@ -104,7 +104,7 @@ public class TestAvroRpcResourceManagerClient {
 
     @Test
     public void testGetNodes() throws MonitorException {
-        List<Hashtable> nodes = rmc.getNodes();
+        List<ResourceNode> nodes = rmc.getNodes();
 
         assertThat(nodes, is(not(nullValue())));
         assertThat(nodes, hasSize(1));
@@ -177,7 +177,7 @@ public class TestAvroRpcResourceManagerClient {
 
     @Test
     public void testQueuedJobs() throws JobQueueException {
-        List jobs = rmc.getQueuedJobs();
+        List<AvroJob> jobs = rmc.getQueuedJobs();
 
         assertThat(jobs, is(not(nullValue())));
 

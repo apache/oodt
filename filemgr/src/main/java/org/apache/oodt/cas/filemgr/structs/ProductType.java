@@ -205,8 +205,8 @@ public class ProductType {
     public static ProductType blankProductType(){
       ProductType type = new ProductType();
       type.setDescription("blank");
-      type.setExtractors(Collections.EMPTY_LIST);
-      type.setHandlers(Collections.EMPTY_LIST);
+      type.setExtractors(Collections.<ExtractorSpec> emptyList());
+      type.setHandlers(Collections.<TypeHandler> emptyList());
       type.setName("blank");
       type.setProductRepositoryPath("");
       type.setProductTypeId("");

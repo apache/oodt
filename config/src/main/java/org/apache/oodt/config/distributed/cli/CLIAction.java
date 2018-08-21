@@ -52,7 +52,7 @@ public class CLIAction extends CmdLineAction {
     public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
         try {
             ApplicationContext applicationContext = new ClassPathXmlApplicationContext(configFile);
-            Map distributedConfigurationPublisher = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
+            Map<?, ?> distributedConfigurationPublisher = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
             for (Object bean : distributedConfigurationPublisher.values()) {
                 DistributedConfigurationPublisher publisher = (DistributedConfigurationPublisher) bean;

@@ -37,7 +37,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.RemoteRef;
-import java.rmi.server.RemoteStub;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -168,8 +168,8 @@ public class AvroExecServer {
         for (Iterator i = org.apache.oodt.commons.util.Utility.parseCommaList(initList); i.hasNext();) {
             String iname = (String) i.next();
             try {
-                Class initClass = Class.forName(iname);
-                Initializer init = (Initializer) initClass.newInstance();
+                Class<?> initClass = Class.forName(iname);
+                Initializer init = (Initializer) initClass.getConstructor().newInstance();
                 init.initialize();
             } catch (ClassNotFoundException ex) {
                 System.err.println("Initializer \"" + iname + "\" not found; aborting");
@@ -180,6 +180,14 @@ public class AvroExecServer {
             } catch (IllegalAccessException ex) {
                 System.err.println("Initializer \"" + iname + "\" isn't public; aborting");
                 throw new EDAException(ex);
+            } catch (IllegalArgumentException e) {
+              e.printStackTrace();
+            } catch (InvocationTargetException e) {
+              e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+              e.printStackTrace();
+            } catch (SecurityException e) {
+              e.printStackTrace();
             } 
         }
     }
@@ -219,10 +227,11 @@ public class AvroExecServer {
             if (Boolean.getBoolean(PRINT_IOR_PROPERTY)) {
                 if (server.getServant() instanceof RemoteObject) {
                     RemoteObject remoteObject = (RemoteObject) server.getServant();
-                    RemoteStub remoteStub = (RemoteStub) RemoteObject.toStub(remoteObject);
+                    UnicastRemoteObject remoteStub = (UnicastRemoteObject) RemoteObject.toStub(remoteObject);
                     RemoteRef ref = remoteStub.getRef();
                     System.out.print("RMI:");
                     System.out.flush();
+                    @SuppressWarnings("resource")
                     ObjectOutputStream objOut
                             = new ObjectOutputStream(new Base64EncodingOutputStream(System.out));
                     objOut.writeObject(ref);

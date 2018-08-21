@@ -264,9 +264,9 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
 
         int rowNum = 0;
         for (List<Object> objects : matrix.getRows()) {
-          List rowValues = (List) objects;
+          List<?> rowValues = (List<?>) objects;
 
-          Element rowElem = document.createElement(MATRIX_ROW_TAG);
+          document.createElement(MATRIX_ROW_TAG);
 
           int colNum = 0;
           for (Object rowValue : rowValues) {

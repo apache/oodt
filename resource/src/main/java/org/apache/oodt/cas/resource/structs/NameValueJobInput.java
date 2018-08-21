@@ -78,7 +78,7 @@ public class NameValueJobInput implements JobInput {
       return;
     }
 
-    Map readable = (Map) in;
+    Map<?, ?> readable = (Map<?, ?>) in;
     for (Object o : readable.keySet()) {
       String key = (String) o;
       String value = (String) readable.get(key);
@@ -93,7 +93,7 @@ public class NameValueJobInput implements JobInput {
    * @see org.apache.oodt.cas.resource.util.XmlRpcWriteable#write()
    */
   public Object write() {
-    Map writeable = new ConcurrentHashMap();
+    Map<String, String> writeable = new ConcurrentHashMap<String, String>();
     if (props != null && props.size() > 0) {
       for (Object o : props.keySet()) {
         String key = (String) o;

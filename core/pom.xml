@@ -321,6 +321,7 @@ the License.
         <version>${jena.version}</version>
         <type>pom</type>
       </dependency>
+
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
@@ -338,19 +339,8 @@ the License.
       </dependency>
       <dependency>
          <groupId>org.apache.lucene</groupId>
-	 <artifactId>lucene-backward-codecs</artifactId>
-	 <version>6.6.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queryparser</artifactId>
-        <version>6.1.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers-common</artifactId>
-        <version>6.1.0</version>
+         <artifactId>lucene-backward-codecs</artifactId>
+         <version>6.6.5</version>
       </dependency>
 
       <dependency>

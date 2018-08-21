@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
         });
 
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_PUBLISHER_XML);
-        Map distributedConfigurationPublishers = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
+        Map<?, ?> distributedConfigurationPublishers = applicationContext.getBeansOfType(DistributedConfigurationPublisher.class);
 
         List<DistributedConfigurationPublisher> publishers = new ArrayList<>(distributedConfigurationPublishers.values().size());
         for (Object bean : distributedConfigurationPublishers.values()) {
@@ -81,7 +82,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
                 Assert.assertNotNull(client.checkExists().forPath(zNodePath));
 
                 String storedContent = new String(client.getData().forPath(zNodePath));
-                String fileContent = FileUtils.readFileToString(new File(entry.getKey()));
+                String fileContent = FileUtils.readFileToString(new File(entry.getKey()), Charset.defaultCharset());
                 Assert.assertEquals(fileContent, storedContent);
             }
 
@@ -91,7 +92,7 @@ public class DistributedConfigurationPublisherTest extends AbstractDistributedCo
                 Assert.assertNotNull(client.checkExists().forPath(zNodePath));
 
                 String storedContent = new String(client.getData().forPath(zNodePath));
-                String fileContent = FileUtils.readFileToString(new File(entry.getKey()));
+                String fileContent = FileUtils.readFileToString(new File(entry.getKey()), Charset.defaultCharset());
                 Assert.assertEquals(fileContent, storedContent);
             }
         }

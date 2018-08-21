@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 //Apache imports
 import org.apache.commons.io.FileUtils;
@@ -70,27 +71,28 @@ public class TestDumpMetadataCliAction extends TestCase {
       ActionMessagePrinter printer = new ActionMessagePrinter();
       cliAction.execute(printer);
       assertEquals(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-          + "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">\n"
-          + "<keyval type=\"vector\">\n"
-          + "<key>Filename</key>\n"
-          + "<val>data.dat</val>\n"
-          + "</keyval>\n"
-          + "</cas:metadata>\n",
-            printer.getPrintedMessages().get(0));
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
+          + "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">"
+          + "<keyval type=\"vector\">"
+          + "<key>Filename</key>"
+          + "<val>data.dat</val>"
+          + "</keyval>"
+          + "</cas:metadata>",
+            printer.getPrintedMessages().get(0).replaceAll("\\s{2,}", "").replaceAll("\n","").trim());
 
       cliAction.setOutputDir(tmpFile);
       cliAction.execute(printer);
       assertTrue(new File(tmpFile, FILE_NAME + ".met").exists());
       assertEquals(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-            + "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">\n"
-            + "<keyval type=\"vector\">\n"
-            + "<key>Filename</key>\n"
-            + "<val>data.dat</val>\n"
-            + "</keyval>\n"
-            + "</cas:metadata>\n",
-            FileUtils.readFileToString(new File(tmpFile, FILE_NAME + ".met")));
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
+            + "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">"
+            + "<keyval type=\"vector\">"
+            + "<key>Filename</key>"
+            + "<val>data.dat</val>"
+            + "</keyval>"
+            + "</cas:metadata>",
+            FileUtils.readFileToString(new File(tmpFile, FILE_NAME + ".met"), 
+                    Charset.defaultCharset()).replaceAll("\\s{2,}", "").replaceAll("\n","").trim());
    }
 
    public class MockDumpMetadataCliAction extends DumpMetadataCliAction {

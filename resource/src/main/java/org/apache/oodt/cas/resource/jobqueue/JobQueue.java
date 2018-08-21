@@ -65,7 +65,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error obtaining the queued jobs.
    */
-  List getQueuedJobs();
+  List<JobSpec> getQueuedJobs();
 
   /**
    * Purges all {@link JobSpec}s from the queue.

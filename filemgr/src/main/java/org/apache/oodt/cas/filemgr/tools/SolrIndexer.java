@@ -20,10 +20,9 @@ package org.apache.oodt.cas.filemgr.tools;
 //JDK imports
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -583,22 +582,22 @@ public class SolrIndexer {
 		    "Optimize the Solr index"));
 		options.addOption(new Option("d", "delete", false,
 		    "Delete item before indexing"));
-		options.addOption(OptionBuilder.withArgName("Solr URL").hasArg()
-		    .withDescription("URL to the Solr instance").withLongOpt("solrUrl")
-		    .create("su"));
-		options.addOption(OptionBuilder.withArgName("Filemgr URL").hasArg()
-		    .withDescription("URL to the File Manager").withLongOpt("fmUrl")
-		    .create("fmu"));
+		options.addOption(Option.builder().argName("Solr URL").hasArg()
+		    .desc("URL to the Solr instance").longOpt("solrUrl")
+		    .build());
+		options.addOption(Option.builder().argName("Filemgr URL").hasArg()
+		    .desc("URL to the File Manager").longOpt("fmUrl")
+		    .build());
 
 		OptionGroup group = new OptionGroup();
 		Option all = new Option("a", "all", false,
 		    "Index all products from the File Manager");
-		Option product = OptionBuilder.withArgName("productId").hasArg()
-		    .withDescription("Index the product from the File Manager")
-		    .withLongOpt("product").create("p");
-		Option met = OptionBuilder.withArgName("file").hasArg().withDescription(
-		    "Index the product from a metadata file").withLongOpt("metFile")
-		    .create("mf");
+		Option product = Option.builder().argName("productId").hasArg()
+		    .desc("Index the product from the File Manager")
+		    .longOpt("product").build();
+		Option met = Option.builder().argName("file").hasArg().desc(
+		    "Index the product from a metadata file").longOpt("metFile")
+		    .build();
 		Option read = new Option("r", "read", false,
 		    "Index all products based on a list of product identifiers passed in");
 		Option types = new Option("t", "types", false,
@@ -625,7 +624,7 @@ public class SolrIndexer {
 	 */
 	public static void main(String[] args)  {
 		Options options = SolrIndexer.buildCommandLine();
-		CommandLineParser parser = new GnuParser();
+		CommandLineParser parser = new DefaultParser();
 		CommandLine line = null;
 
 		try {

@@ -86,7 +86,7 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                 NodeList argNodes = argsElem.getElementsByTagName(ARG_TAG);
 
                 if (argNodes != null && argNodes.getLength() > 0) {
-                    Vector argVector = new Vector();
+                    Vector<String> argVector = new Vector<String>();
                     for (int i = 0; i < argNodes.getLength(); i++) {
                         Element argElem = (Element) argNodes.item(i);
                         String argStr;

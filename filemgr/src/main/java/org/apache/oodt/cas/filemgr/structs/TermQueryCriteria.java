@@ -29,8 +29,6 @@ package org.apache.oodt.cas.filemgr.structs;
  */
 public class TermQueryCriteria extends QueryCriteria {
 
-    private static final long serialVersionUID = 1L;
-
     private String elementName;
 
     private String value;

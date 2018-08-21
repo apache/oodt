@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -273,7 +274,7 @@ public class DistributedConfigurationPublisher {
     private String getFileContent(String file) {
         String content;
         try {
-            content = FileUtils.readFileToString(new File(file));
+            content = FileUtils.readFileToString(new File(file), Charset.defaultCharset());
         } catch (IOException e) {
             logger.error("Unable to read file : {}", file, e);
             throw new IllegalArgumentException("Unable to read content of the file : " + file);

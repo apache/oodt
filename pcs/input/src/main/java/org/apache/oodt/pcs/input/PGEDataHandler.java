@@ -22,7 +22,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -36,18 +35,14 @@ import java.util.logging.Logger;
  */
 public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
 
-  /* our log stream */
-  private static final Logger LOG = Logger.getLogger(PGEDataHandler.class
-      .getName());
-
   /* scalars to be set as tags are encountered */
-  private Map scalars = new ConcurrentHashMap();
+  private Map<String, PGEScalar> scalars = new ConcurrentHashMap<String, PGEScalar>();
 
   /* vectors to be set as tags are encountered */
-  private Map vectors = new ConcurrentHashMap();
+  private Map<String, PGEVector> vectors = new ConcurrentHashMap<String, PGEVector>();
 
   /* matrices to be set as tags are encountered */
-  private Map matrices = new ConcurrentHashMap();
+  private Map<String, PGEMatrix> matrices = new ConcurrentHashMap<String, PGEMatrix>();
 
   /* the status of the parse handler */
   private int parseStatus = UNSET;
@@ -176,7 +171,7 @@ public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
   /**
    * @return the matrices
    */
-  public Map getMatrices() {
+  public Map<String, PGEMatrix> getMatrices() {
     return matrices;
   }
 
@@ -184,14 +179,14 @@ public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
    * @param matrices
    *          the matrices to set
    */
-  public void setMatrices(Map matrices) {
+  public void setMatrices(Map<String, PGEMatrix> matrices) {
     this.matrices = matrices;
   }
 
   /**
    * @return the scalars
    */
-  public Map getScalars() {
+  public Map<String, PGEScalar> getScalars() {
     return scalars;
   }
 
@@ -199,14 +194,14 @@ public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
    * @param scalars
    *          the scalars to set
    */
-  public void setScalars(Map scalars) {
+  public void setScalars(Map<String, PGEScalar> scalars) {
     this.scalars = scalars;
   }
 
   /**
    * @return the vectors
    */
-  public Map getVectors() {
+  public Map<String, PGEVector> getVectors() {
     return vectors;
   }
 
@@ -214,7 +209,7 @@ public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
    * @param vectors
    *          the vectors to set
    */
-  public void setVectors(Map vectors) {
+  public void setVectors(Map<String, PGEVector> vectors) {
     this.vectors = vectors;
   }
 

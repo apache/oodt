@@ -55,13 +55,11 @@ the License.
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
-      <version>1.8.1</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.avro/avro-ipc -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-ipc</artifactId>
-      <version>1.8.1</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -219,7 +217,7 @@ the License.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkMode>pertest</forkMode>
+          <reuseForks>true</reuseForks>
           <useSystemClassLoader>false</useSystemClassLoader>
           <systemProperties>
             <property>
@@ -241,7 +239,6 @@ the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-2</version>
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/assembly.xml</descriptor>

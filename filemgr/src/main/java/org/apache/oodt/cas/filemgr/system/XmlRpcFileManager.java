@@ -544,6 +544,7 @@ public class XmlRpcFileManager {
     return this.getProductReferencesCore(productHash);
   }
 
+  @SuppressWarnings("unchecked")
   public List<Map<String, Object>> getProductReferencesCore(
       Map<String, Object> productHash)
       throws CatalogException {
@@ -551,7 +552,7 @@ public class XmlRpcFileManager {
     Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
 
     try {
-      referenceList = catalog.getProductReferences(product);
+      referenceList = (List<Reference>) catalog.getProductReferences(product);
       return XmlRpcStructFactory.getXmlRpcReferences(referenceList);
     } catch (CatalogException e) {
       LOG.log(Level.SEVERE, e.getMessage());

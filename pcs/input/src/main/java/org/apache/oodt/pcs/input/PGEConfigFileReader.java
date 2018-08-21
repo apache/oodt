@@ -155,9 +155,9 @@ public class PGEConfigFileReader {
   private void addPGESpecificGroup(PGEConfigurationFile configFile,
       Element group) throws PGEConfigFileException {
 
-    List scalars = PGEXMLFileUtils.getScalars(group);
-    List vectors = PGEXMLFileUtils.getVectors(group);
-    List matrixs = PGEXMLFileUtils.getMatrixs(group);
+    List<?> scalars = PGEXMLFileUtils.getScalars(group);
+    List<?> vectors = PGEXMLFileUtils.getVectors(group);
+    List<?> matrixs = PGEXMLFileUtils.getMatrixs(group);
 
     PGEGroup pgeGroup = new PGEGroup(group.getAttribute("name"));
 
@@ -182,7 +182,7 @@ public class PGEConfigFileReader {
 
   private void addMonitorLevels(PGEConfigurationFile configFile, Element group) {
 
-    List scalars = PGEXMLFileUtils.getScalars(group);
+    List<?> scalars = PGEXMLFileUtils.getScalars(group);
 
     if (scalars != null && scalars.size() > 0) {
       for (Object scalar1 : scalars) {
@@ -196,7 +196,7 @@ public class PGEConfigFileReader {
   private void addMonitorGroup(PGEConfigurationFile configFile, Element group)
       throws PGEConfigFileException {
 
-    List scalars = PGEXMLFileUtils.getScalars(group);
+    List<?> scalars = PGEXMLFileUtils.getScalars(group);
 
     // the list should be not be null
     if (scalars == null) {
@@ -223,7 +223,7 @@ public class PGEConfigFileReader {
 
   private void addProductPath(PGEConfigurationFile configFile, Element group)
       throws PGEConfigFileException {
-    List scalars = PGEXMLFileUtils.getScalars(group);
+    List<?> scalars = PGEXMLFileUtils.getScalars(group);
 
     // the list should be size 1
     if (scalars == null || (scalars.size() != 1)) {
@@ -247,7 +247,7 @@ public class PGEConfigFileReader {
       throws PGEConfigFileException {
 
     // get the scalars, there should be only one
-    List scalars = PGEXMLFileUtils.getScalars(group);
+    List<?> scalars = PGEXMLFileUtils.getScalars(group);
 
     // the list should be size 1
     if (scalars == null || (scalars.size() != 1)) {
@@ -291,7 +291,7 @@ public class PGEConfigFileReader {
 
   private void addScalarFilesToGroup(Element group, PGEGroup pgeGroup) {
     // get the scalars, and add them to the group
-    List scalars = PGEXMLFileUtils.getScalars(group);
+    List<?> scalars = PGEXMLFileUtils.getScalars(group);
 
     if (scalars != null && scalars.size() > 0) {
       for (Object scalar1 : scalars) {
@@ -304,7 +304,7 @@ public class PGEConfigFileReader {
   private void addVectorFilesToGroup(Element group, PGEGroup pgeGroup)
       throws PGEConfigFileException {
     // get the vectors, and add them to the group
-    List vectors = PGEXMLFileUtils.getVectors(group);
+    List<?> vectors = PGEXMLFileUtils.getVectors(group);
 
     if (vectors != null && vectors.size() > 0) {
       for (Object vector1 : vectors) {

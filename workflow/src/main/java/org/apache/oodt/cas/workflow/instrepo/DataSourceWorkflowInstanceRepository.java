@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
@@ -805,7 +804,7 @@ public class DataSourceWorkflowInstanceRepository extends
                 int numGrabbed;
                 if(pageNum == 1){
                     numGrabbed = 1;
-                    wInstIds.add(rs.getString("workflow_instance_id"));                    
+                    wInstIds.add(rs.getString("workflow_instance_id"));
                 }
                 else{
                     numGrabbed = 0;
@@ -813,7 +812,7 @@ public class DataSourceWorkflowInstanceRepository extends
 
                 if(pageNum != 1){
                     // now move the cursor to the correct position
-                    rs.relative(startNum);                    
+                    rs.relative(startNum);
                 }
 
                 // grab the rest

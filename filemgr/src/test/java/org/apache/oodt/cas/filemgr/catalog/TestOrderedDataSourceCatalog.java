@@ -86,7 +86,6 @@ public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
       fail(e.getMessage());
     }
 
-    Product retProduct;
     try {
       Metadata retMet = myCat.getMetadata(testProduct);
       assertNotNull(retMet);

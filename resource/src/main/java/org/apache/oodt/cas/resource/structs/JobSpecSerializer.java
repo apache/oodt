@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.resource.structs;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * A class used to serialize and de-serialize a job spec
@@ -71,7 +72,12 @@ public class JobSpecSerializer implements java.io.Serializable {
         tmp.setStatus(status);
         //Read in job input, using proper class
         Class<?> clazz = Class.forName(jobInputClassName);
-        JobInput input = ((JobInput)clazz.newInstance());
+        JobInput input = null;
+        try {
+          input = ((JobInput)clazz.getConstructor().newInstance());
+        } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+          e.printStackTrace();
+        }
         input.read(jobInput);
         JobSpec spec = new JobSpec();
         spec.setIn(input);

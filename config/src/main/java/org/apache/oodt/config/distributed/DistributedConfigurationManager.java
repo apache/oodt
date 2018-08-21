@@ -42,7 +42,6 @@ import java.util.concurrent.TimeUnit;
 import static org.apache.oodt.config.Constants.Properties.ZK_CONNECT_STRING;
 import static org.apache.oodt.config.Constants.Properties.ZK_PROPERTIES_FILE;
 import static org.apache.oodt.config.Constants.Properties.ZK_STARTUP_TIMEOUT;
-import static org.apache.oodt.config.distributed.utils.ConfigUtils.getOODTProjectName;
 
 
 /**

@@ -21,6 +21,7 @@ package org.apache.oodt.cas.metadata.util;
 //OODT imports
 import org.apache.oodt.cas.metadata.MetExtractor;
 
+import java.lang.reflect.InvocationTargetException;
 //JDK imports
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,12 +41,12 @@ public final class GenericMetadataObjectFactory {
       .getLogger(GenericMetadataObjectFactory.class.getName());
 
   public static MetExtractor getMetExtractorFromClassName(String className) {
-    Class metExtractorClass;
+    Class<?> metExtractorClass;
     MetExtractor extractor;
 
     try {
       metExtractorClass = Class.forName(className);
-      extractor = (MetExtractor) metExtractorClass.newInstance();
+      extractor = (MetExtractor) metExtractorClass.getConstructor().newInstance();
       return extractor;
     } catch (ClassNotFoundException e) {
       LOG.log(Level.SEVERE, e.getMessage());
@@ -62,6 +63,14 @@ public final class GenericMetadataObjectFactory {
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading met extractor class "
               + className + " Message: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
     }
 
     return null;

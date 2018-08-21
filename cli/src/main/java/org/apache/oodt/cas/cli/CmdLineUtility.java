@@ -31,7 +31,6 @@ import static org.apache.oodt.cas.cli.util.CmdLineUtils.isAdvancedOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
@@ -47,7 +46,6 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionExecutionException;
 import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
 import org.apache.oodt.cas.cli.exception.CmdLineConstructionException;
 import org.apache.oodt.cas.cli.exception.CmdLineOptionStoreException;
-import org.apache.oodt.cas.cli.exception.CmdLineParserException;
 import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
@@ -80,7 +78,6 @@ import com.google.common.collect.Lists;
  * @author bfoster (Brian Foster)
  */
 public class CmdLineUtility {
-   private static Logger LOG = Logger.getLogger(CmdLineUtility.class.getName());
    private boolean debugMode;
    private CmdLineParser parser;
    private CmdLineConstructor constructor;

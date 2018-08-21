@@ -31,20 +31,15 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 import com.google.common.collect.Lists;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
-import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
-import org.junit.Ignore;
 
 /**
  * @author woollard
@@ -63,9 +58,6 @@ public class TestLuceneCatalog extends TestCase {
     private String tmpDirPath = null;
 
     private static final int catPageSize = 20;
-
-    private Properties initialProperties = new Properties(
-      System.getProperties());
 
     public void setUpProperties() {
 
@@ -174,7 +166,6 @@ public class TestLuceneCatalog extends TestCase {
             }
         }
 
-      //  System.setProperties(initialProperties);
     }
     
     /**
@@ -410,7 +401,7 @@ public class TestLuceneCatalog extends TestCase {
         assertNotNull(page.getPageProducts());
         assertEquals(1, page.getPageProducts().size());
         assertEquals(2, page.getTotalPages());
-        List<Product> prods = page.getPageProducts();
+        page.getPageProducts();
         assertNotNull(page.getPageProducts().get(0));
         Product retProd = page.getPageProducts().get(0);
         assertEquals("ShouldBeFirstForPage.txt", retProd.getProductName());
@@ -1026,7 +1017,7 @@ public class TestLuceneCatalog extends TestCase {
 
         // set references
         Reference ref = new Reference("file:///foo.txt", "file:///bar.txt", 100);
-        Vector references = new Vector();
+        Vector<Reference> references = new Vector<Reference>();
         references.add(ref);
         testProduct.setProductReferences(references);
 

@@ -244,6 +244,7 @@ public class SerializableMetadata extends Metadata implements Serializable {
 
                 String elemName = XMLUtils.read(keyValElem, "key",
                         this.xmlEncoding);
+                @SuppressWarnings("unchecked")
                 List<String> elemValues = XMLUtils.readMany(keyValElem, "val",
                         this.xmlEncoding);
                 this.addMetadata(elemName, elemValues);

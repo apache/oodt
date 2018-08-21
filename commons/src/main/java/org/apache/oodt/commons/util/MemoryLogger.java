@@ -52,8 +52,9 @@ public class MemoryLogger implements LogListener {
 	 *
 	 * @return A list of message strings.
 	 */
-	public List getMessages() {
-		return (List) messages.clone();
+	@SuppressWarnings("unchecked")
+	public List<Object> getMessages() {
+		return (List<Object>) messages.clone();
 	}
 
 	/** Get the maximum size of the cache.
@@ -98,7 +99,7 @@ public class MemoryLogger implements LogListener {
 	}
 
 	/** The list of messages. */
-	private LinkedList messages = new LinkedList();
+	private LinkedList<Object> messages = new LinkedList<Object>();
 
 	/** Maximum size of message cache. */
 	private int size;

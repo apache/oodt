@@ -22,7 +22,6 @@ package org.apache.oodt.cas.resource.structs;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.oodt.cas.metadata.Metadata;
 //OODT imports
 import org.apache.oodt.cas.resource.util.Configurable;
 import org.apache.oodt.cas.resource.util.XmlRpcWriteable;

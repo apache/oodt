@@ -112,7 +112,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus, CoreMet
 
   public IterativeWorkflowProcessorThread(WorkflowInstance wInst, WorkflowInstanceRepository instRep, URL wParentUrl) {
     workflowInst = wInst;
-    taskIterator = workflowInst.getWorkflow().getTasks().iterator();
+    taskIterator = workflowInst.getParentChildWorkflow().getTasks().iterator();
     this.instanceRepository = instRep;
 
     /* start out the gates running */
@@ -130,7 +130,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus, CoreMet
 
     wmgrParentUrl = wParentUrl;
     logger.info("Thread created for workflowInstance: {}[{}], instanceRepository class: {}, wmgrParentUrl: {}",
-            workflowInst.getId(), workflowInst.getWorkflow().getName(),
+            workflowInst.getId(), workflowInst.getParentChildWorkflow().getName(),
             instanceRepository.getClass().getName(), wmgrParentUrl);
   }
 

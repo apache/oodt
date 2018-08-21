@@ -107,7 +107,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
        * 
        * @see java.lang.Thread#interrupt()
        */
-      @SuppressWarnings("deprecation")
+      @SuppressWarnings("removal")
       @Override
       public void interrupt() {
         super.interrupt();
@@ -148,7 +148,6 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    */
   @Override
   public boolean hasOpenSlots(TaskProcessor taskProcessor) {
-    // TODO Auto-generated method stub
     return true;
   }
 
@@ -157,7 +156,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    */
   @Override
   public void setInstanceRepository(WorkflowInstanceRepository instRep) {
-    this.instRep = instRep;    
+    this.instRep = instRep;
   }
 
 }

@@ -20,11 +20,8 @@ package org.apache.oodt.cas.filemgr.catalog;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;

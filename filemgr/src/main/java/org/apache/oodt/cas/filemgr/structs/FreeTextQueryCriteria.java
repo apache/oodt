@@ -35,8 +35,6 @@ import java.util.StringTokenizer;
  */
 public class FreeTextQueryCriteria extends QueryCriteria {
 
-    private static final long serialVersionUID = 1L;
-
     private String elementName;
 
     private List<String> values;

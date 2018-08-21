@@ -78,7 +78,7 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
         File metFile = new File(metFilePath);
 
         // get exe args
-        List commandLineList = new Vector();
+        List<String> commandLineList = new Vector<String>();
         commandLineList.add(((ExternalMetExtractorConfig) this.config)
                 .getExtractorBinPath());
         if (((ExternalMetExtractorConfig) this.config).getArgList() != null

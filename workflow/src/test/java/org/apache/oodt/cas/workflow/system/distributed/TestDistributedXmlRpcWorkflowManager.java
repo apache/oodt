@@ -36,6 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+@SuppressWarnings("deprecation")
 public class TestDistributedXmlRpcWorkflowManager extends AbstractDistributedConfigurationTest {
 
     private static final int WM_PORT = 50002;

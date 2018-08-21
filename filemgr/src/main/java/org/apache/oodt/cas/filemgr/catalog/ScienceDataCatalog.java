@@ -268,7 +268,6 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       conn.setAutoCommit(true);
-      int count = 0;
       statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(queryExists);
       while (rs.next()) {
@@ -528,7 +527,7 @@ public class ScienceDataCatalog implements Catalog {
 
   public List<Reference> getProductReferences(Product product)
       throws CatalogException {
-    return Collections.EMPTY_LIST;
+    return Collections.emptyList();
   }
 
   public List<Product> getProducts() throws CatalogException {
@@ -1054,6 +1053,7 @@ public class ScienceDataCatalog implements Catalog {
     return size;
   }
 
+  @SuppressWarnings("unused")
   private String getStartDateTime(Product product) {
     String sql = "SELECT MIN(time) as start_date_time FROM dataPoint "
         + "          WHERE granule_id IN (SELECT granule_id FROM granule "
@@ -1103,6 +1103,7 @@ public class ScienceDataCatalog implements Catalog {
 
   }
 
+  @SuppressWarnings("unused")
   private String getEndDateTime(Product product) {
     String sql = "SELECT MAX(time) as end_date_time FROM dataPoint "
         + "          WHERE granule_id IN (SELECT granule_id FROM granule "

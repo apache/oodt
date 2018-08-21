@@ -111,8 +111,6 @@ public class TestAvroRpcResourceManager {
     private void generateTestConfiguration() throws IOException {
         Properties config = new Properties();
 
-        String propertiesFile = "." + File.separator + "src" + File.separator +
-                "test" + File.separator + "resources" + File.separator + "test.resource.properties";
         System.getProperties().load(new FileInputStream(new File("./src/test/resources/test.resource.properties")));
 
         // stage policy
