@@ -51,8 +51,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author mattmann
  * @version $Revision$
  */
-public class DatasetDeliveryServlet extends HttpServlet implements
-    DataDeliveryKeys {
+public class DatasetDeliveryServlet extends HttpServlet implements DataDeliveryKeys {
 
   /* our log stream */
   private static final Logger LOG = Logger
@@ -264,6 +263,14 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       this.workingDirPath += this.workingDirPath.endsWith("/") ? "" : "/";
     }
 
+  }
+
+  public void destroy() {
+    if (client != null) {
+      try {
+        client.close();
+      } catch (IOException ignored) { }
+    }
   }
 
   private boolean alreadyZipped(Product p, Map hash) {

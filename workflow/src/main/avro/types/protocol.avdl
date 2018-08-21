@@ -8,7 +8,7 @@ import schema "AvroWorkflowInstancePage.avsc";
 
     boolean refreshRepository();
 
-    string executeDynamicWorkflow(array<string> taskIds, map<string> metadata);
+    string executeDynamicWorkflow(array<string> taskIds, map<union {string, array<string>}> metadata);
 
     array<string> getRegisteredEvents();
 
@@ -26,9 +26,9 @@ import schema "AvroWorkflowInstancePage.avsc";
 
     array<AvroWorkflow> getWorkflowsByEvent(string eventName);
 
-    map<string> getWorkflowInstanceMetadata(string wInstId);
+    map<union {string, array<string>}> getWorkflowInstanceMetadata(string wInstId);
 
-    boolean handleEvent(string eventName, map<string> metadata);
+    boolean handleEvent(string eventName, map<union {string, array<string>}> metadata);
 
     AvroWorkflowInstance getWorkflowInstanceById(string wInstId);
 
@@ -59,7 +59,7 @@ import schema "AvroWorkflowInstancePage.avsc";
     AvroWorkflow getWorkflowById(string workflowId);
 
     boolean updateMetadataForWorkflow(
-            string workflowInstId, map<string> metadata);
+            string workflowInstId, map<union {string, array<string>}> metadata);
 
     boolean updateWorkflowInstance(AvroWorkflowInstance instance);
 
