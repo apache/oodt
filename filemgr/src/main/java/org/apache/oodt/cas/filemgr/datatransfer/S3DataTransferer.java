@@ -70,7 +70,7 @@ public class S3DataTransferer implements DataTransfer {
 			      bucketName, dataStoreRef, new File(origRef));
 			  if (encrypt) {
   				ObjectMetadata requestMetadata = new ObjectMetadata();
-  				requestMetadata.setServerSideEncryption(AES_256_SERVER_SIDE_ENCRYPTION);     
+  				requestMetadata.setSSEAlgorithm(AES_256_SERVER_SIDE_ENCRYPTION);
   				request.setMetadata(requestMetadata);
 			  }
         s3Client.putObject(request);

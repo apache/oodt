@@ -16,10 +16,10 @@
  */
 package org.apache.oodt.cas.filemgr.datatransfer;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 /**
  * {@link DataTransferFactory} which creates {@link S3DataTransferer}s.
@@ -47,8 +47,12 @@ public class S3DataTransfererFactory implements DataTransferFactory {
     String secretKey = System.getProperty(SECRET_KEY_PROPERTY);
     boolean encrypt = Boolean.getBoolean(ENCRYPT_PROPERTY);
 
-		AmazonS3Client s3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
-    s3.setRegion(Region.getRegion(Regions.valueOf(region)));
+		AmazonS3Client s3 = (AmazonS3Client) AmazonS3ClientBuilder.standard()
+		        .withRegion(region)
+		        .withCredentials(
+		                new AWSStaticCredentialsProvider(
+		                        new BasicAWSCredentials(accessKey, secretKey)))
+		        .build();
 
     return new S3DataTransferer(s3, bucketName, encrypt);
   }
