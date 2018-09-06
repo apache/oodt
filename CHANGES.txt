@@ -1,5 +1,9 @@
 Apache OODT Change Log
 ======================
+Release 1.2.5 - 09/06/2018
+
+* Fix logging for webapps 
+
 Release 1.2.4 - 08/13/2018
 
 * Restore JDK 8 Support
