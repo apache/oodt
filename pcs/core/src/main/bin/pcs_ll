@@ -42,6 +42,6 @@ set DIR_PATH = `pwd`
 cd $ORIG_DIR
 
 java -Djava.util.logging.config.file=$DIR_PATH/../aux/pcs/pcs.logging.properties \
-    -Djava.ext.dirs=$DIR_PATH/../lib:$DIR_PATH/../filemgr/lib:$DIR_PATH/../workflow/lib \
+    -classpath=$DIR_PATH/../lib:$DIR_PATH/../filemgr/lib:$DIR_PATH/../workflow/lib \
 	org.apache.oodt.pcs.tools.PCSLongLister \
 	$FILEMGR_URL $DIR_PATH/../aux/pcs/pcs-ll-conf.xml $argv[2-$#argv]

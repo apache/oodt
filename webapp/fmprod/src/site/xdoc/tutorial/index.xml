@@ -487,7 +487,7 @@ acceptableTypes.add("image/*");</source>
 
 	<p>Here's an example:</p>
 
-	<source>% <b>java -Djava.ext.dirs=. \
+	<source>% <b>java -classpath=. \
   org.apache.oodt.xmlquery.XMLQuery \
   -expr donutsEaten \&gt; 5 AND RETURN = episodeNumber</b>
 kwdQueryString: donutsEaten &gt; 5 AND RETURN = episodeNumber

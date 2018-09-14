@@ -48,7 +48,7 @@ export PATH
 case "$1" in
   start)
         echo -n "Starting cas workflow manager: "
-        $JAVA_HOME/bin/java -Djava.ext.dirs=${CAS_WORKFLOW_HOME}/lib \
+        $JAVA_HOME/bin/java -classpath=${CAS_WORKFLOW_HOME}/lib \
         -Dlog4j.configurationFile=${CAS_WORKFLOW_HOME}/etc/log4j2.xml \
         -Djava.util.logging.config.file=${CAS_WORKFLOW_HOME}/etc/logging.properties \
         -Dorg.apache.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \

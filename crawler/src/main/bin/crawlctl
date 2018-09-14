@@ -18,4 +18,4 @@
 java \
     -Dlog4j.configurationFile=../etc/log4j2.xml \
     -Djava.util.logging.config.file=../etc/logging.properties \
-    -Djava.ext.dirs=../lib org.apache.oodt.cas.crawl.daemon.CrawlDaemonController $*
+    -classpath=../lib org.apache.oodt.cas.crawl.daemon.CrawlDaemonController $*

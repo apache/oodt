@@ -615,7 +615,7 @@ FileHandler.class</source>
       </p>
 
       <source>#!/bin/sh
-exec java -Djava.ext.dirs=$PS_HOME/lib \
+exec java -classpath=$PS_HOME/lib \
     -Dhandlers=ConstantHandler,FileHandler \
     jpl.eda.ExecServer \
     jpl.eda.product.rmi.ProductServiceImpl \
