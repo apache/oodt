@@ -401,7 +401,7 @@ the License.
       <p>The command to run the job, assuming that you started the Resource Manager on the default port of <code>9002</code>:</p>
 
       <source>
-      java -Djava.ext.dirs=../lib org.apache.oodt.cas.resource.tools.JobSubmitter \
+      java -classpath=../lib org.apache.oodt.cas.resource.tools.JobSubmitter \
                        --rUrl http://localhost:9002 \
                        --file /usr/local/resmgr/examples/exJob.xml
       </source>

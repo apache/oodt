@@ -195,7 +195,7 @@ total 312
 
 	<p>Here's the <code>rmi-reg</code> script:</p>
 	<source>#!/bin/sh
-exec java -Djava.ext.dirs=$PS_HOME/lib \
+exec java -classpath=$PS_HOME/lib \
     gov.nasa.jpl.oodt.rmi.RMIRegistry</source>
 
 	<p>This script tells the Java virtual machine to find
@@ -268,7 +268,7 @@ total 376
 	</p>
 
 	<source>#!/bin/sh
-exec java -Djava.ext.dirs=$PS_HOME/lib \
+exec java -classpath=$PS_HOME/lib \
     jpl.eda.ExecServer \
     jpl.eda.product.rmi.ProductServiceImpl \
     urn:eda:rmi:MyProductService</source>
@@ -382,7 +382,7 @@ if [ $# -ne 1 ]; then
    exit 1
 fi
 
-exec java -Djava.ext.dirs=$PS_HOME/lib \
+exec java -classpath=$PS_HOME/lib \
      jpl.eda.product.ProductClient \
      -out \
      urn:eda:rmi:MyProductService \

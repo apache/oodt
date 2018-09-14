@@ -22,9 +22,9 @@
 # For complete documentation see: 
 #     https://cwiki.apache.org/confluence/display/OODT/BASH+and+TCSH+shell+tools+for+File+Manager
 #
-alias lucenequery 'java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --lucene -query '
-alias sqlquery 'java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --sql -query '
-alias fmdel 'java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.DeleteProduct --fileManagerUrl http://localhost:9000 --read'
-alias metdump 'java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.MetadataDumper --url http://localhost:9000 --out . --productId '
+alias lucenequery 'java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -classpath=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --lucene -query '
+alias sqlquery 'java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -classpath=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --sql -query '
+alias fmdel 'java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -classpath=../lib org.apache.oodt.cas.filemgr.tools.DeleteProduct --fileManagerUrl http://localhost:9000 --read'
+alias metdump 'java -classpath=../lib org.apache.oodt.cas.filemgr.tools.MetadataDumper --url http://localhost:9000 --out . --productId '
 #
 ################################################

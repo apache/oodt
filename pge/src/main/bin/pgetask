@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.    
 
-$JAVA_HOME/bin/java -Djava.ext.dirs=../lib \
+$JAVA_HOME/bin/java -classpath=../lib \
         -Djava.util.logging.config.file=../etc/logging.properties \
         -Djavax.xml.transform.TransformerFactory=net.sf.saxon.TransformerFactoryImpl \
         org.apache.oodt.cas.pge.PGETask --metadata ../etc/examples/WorkflowMgrInput/pcs-pge-dyn-metadata.met \
