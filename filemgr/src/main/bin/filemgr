@@ -46,7 +46,7 @@ export PATH
 
 ## make sure that casfile manager has a run directory
 ## just to be on the safe side
-mkdir -p ${RUN_HOME}
+mkdir -p "${RUN_HOME}"
 
 for file in `find ../lib/*.jar`; do
      LIB_DEPS="${file}:${LIB_DEPS}"
