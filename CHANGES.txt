@@ -25,6 +25,8 @@ Release 1.9 - In Progress
 
 * OODT-991 Change logging.properties levels from ALL to DEBUG
 
+* OODT-998 Updated cas-filemgr shell scripts to work when distribution is located in a path with spaces
+
 =======
 Release 1.2.2 - 02/05/2018
 
