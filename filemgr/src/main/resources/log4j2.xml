@@ -23,13 +23,14 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <File name="File" fileName="../logs/cas_file_mgr.log" immediateFlush="false">
+        <File name="File" fileName="../logs/cas_file_mgr.log" immediateFlush="true">
             <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
     </Appenders>
 
     <Loggers>
         <Logger name="org.springframework" level="error"/>
+        <Logger name="org.jboss.netty" level="error"/>
 
         <Root level="debug">
             <AppenderRef ref="Console"/>
