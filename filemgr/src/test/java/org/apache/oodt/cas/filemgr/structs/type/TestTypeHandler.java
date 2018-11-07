@@ -234,7 +234,7 @@ public class TestTypeHandler extends TestCase {
         List<Reference> refs = new LinkedList<Reference>();
         URL refUrl = this.getClass().getResource("/ingest/test.txt");
         Reference ref = new Reference();
-        ref.setOrigReference(new File(refUrl.getFile()).toURL().toExternalForm());
+        ref.setOrigReference(new File(refUrl.getFile()).toURI().toURL().toExternalForm());
         ref.setFileSize(123);
         refs.add(ref);
         testProduct.setProductReferences(refs);
