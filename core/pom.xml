@@ -25,7 +25,7 @@ the License.
 	</parent>    
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <name>OODT Core</name>
     <packaging>pom</packaging>
     <properties>
@@ -42,39 +42,6 @@ the License.
         <system>JIRA</system>
         <url>https://issues.apache.org/jira/browse/OODT</url>
     </issueManagement>
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>javax-transaction</id>
-            <name>Java Sun Maven2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
-            <layout>default</layout>
-        </repository>
-       <repository>
-          <id>apache.snapshots</id>
-          <name>Apache Snapshots</name>
-          <url>http://repository.apache.org/snapshots/</url>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>       
-       </repository>
-	   <repository>
-	     <id>globus-repo</id>
-	     <name>Globus Toolkit Internal Maven2 Repository</name>
-	     <url>http://projects.iplantcollaborative.org/archiva/repository/internal</url>
-	     <releases>
-	       <enabled>true</enabled>
-	     </releases>
-	     <snapshots>
-	       <enabled>true</enabled>
-	     </snapshots>
-	  </repository> 
-    </repositories>
     <inceptionYear>1999</inceptionYear>
     <mailingLists>
         <mailingList>
@@ -99,9 +66,19 @@ the License.
     </mailingLists>
     <developers>
         <developer>
-            <id>ahart</id>
-            <name>Andrew Hart</name>
-            <email>ahart@apache.org</email>
+            <id>thomas</id>
+            <name>Thomas Bennett</name>
+            <email>thomas@apache.org</email>
+            <organization>SKA South Africa</organization>
+            <timezone>+2</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>    
+        <developer>
+            <id>crichton</id>
+            <name>Daniel Crichton</name>
+            <email>crichton@apache.org</email>
             <organization>NASA Jet Propulsion Laboratory</organization>
             <timezone>-8</timezone>
             <roles>
@@ -117,27 +94,17 @@ the License.
             <roles>
                 <role>committer</role>
             </roles>
-        </developer>
+        </developer>     
         <developer>
-            <id>crichton</id>
-            <name>Daniel Crichton</name>
-            <email>crichton@apache.org</email>
-            <organization>NASA Jet Propulsion Laboratory</organization>
+            <id>joshuaga</id>
+            <name>Joshua Garcia</name>
+            <email>joshuaga@apache.org</email>
+            <organization>University of Southern California</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
             </roles>
-        </developer>
-        <developer>
-            <id>davekale</id>
-            <name>Dave Kale</name>
-            <email>davekale@apache.org</email>
-            <organization>Childrens Hospital Los Angeles</organization>
-            <timezone>-8</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
+        </developer>           
         <developer>
             <id>goodale</id>
             <name>Cameron Goodale</name>
@@ -153,15 +120,35 @@ the License.
             </properties>
         </developer>
         <developer>
-            <id>joshuaga</id>
-            <name>Joshua Garcia</name>
-            <email>joshuaga@apache.org</email>
-            <organization>University of Southern California</organization>
+            <id>shardman</id>
+            <name>Sean Hardman</name>
+            <email>shardman@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
             </roles>
-        </developer>
+        </developer>        
+        <developer>
+            <id>ahart</id>
+            <name>Andrew Hart</name>
+            <email>ahart@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>  
+        <developer>
+            <id>davekale</id>
+            <name>Dave Kale</name>
+            <email>davekale@apache.org</email>
+            <organization>Childrens Hospital Los Angeles</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>              
         <developer>
             <id>kelly</id>
             <name>Sean Kelly</name>
@@ -207,9 +194,9 @@ the License.
             </roles>
         </developer>
         <developer>
-            <id>shardman</id>
-            <name>Sean Hardman</name>
-            <email>shardman@apache.org</email>
+            <id>smcclees</id>
+            <name>Sean McCleese</name>
+            <email>smcclees@apache.org</email>
             <organization>NASA Jet Propulsion Laboratory</organization>
             <timezone>-8</timezone>
             <roles>
@@ -217,9 +204,29 @@ the License.
             </roles>
         </developer>
         <developer>
-            <id>smcclees</id>
-            <name>Sean McCleese</name>
-            <email>smcclees@apache.org</email>
+            <id>gabe</id>
+            <name>Gabe Resneck</name>
+            <email>gabriel.m.resneck@jpl.nasa.gov</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>        
+        <developer>
+            <id>pvee</id>
+            <name>Paul Vee</name>
+            <email>pvee@apache.org</email>
+            <organization>Childrens Hospital Los Angeles</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>riverma</id>
+            <name>Rishi Verma</name>
+            <email>riverma@apache.org</email>
             <organization>NASA Jet Propulsion Laboratory</organization>
             <timezone>-8</timezone>
             <roles>
@@ -236,16 +243,6 @@ the License.
                 <role>committer</role>
             </roles>
         </developer>
-        <developer>
-            <id>thomas</id>
-            <name>Thomas Bennett</name>
-            <email>thomas@apache.org</email>
-            <organization>SKA South Africa</organization>
-            <timezone>+2</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>        
     </developers>
     <licenses>
         <license>
@@ -259,6 +256,11 @@ the License.
         <name>Apache OODT</name>
         <url>http://oodt.apache.org/</url>
     </organization>
+    <scm>
+    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/core</connection>
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/core</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/core</url>
+    </scm>
     <build>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
@@ -266,8 +268,8 @@ the License.
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -421,10 +423,4 @@ the License.
             </plugin>
         </plugins>
     </reporting>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/pom/tags/0.3/oodt-core</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/pom/tags/0.3/oodt-core</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/pom/tags/0.3/oodt-core</url>
-  </scm>
 </project>

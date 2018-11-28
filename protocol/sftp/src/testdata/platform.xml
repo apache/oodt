@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Platform configuration file - Determines the behaviour of platform specific services
+-->
+<PlatformConfiguration>
+   <!-- The process provider for executing and redirecting a process -->
+   <NativeProcessProvider>org.apache.oodt.cas.protocol.sftp.UnsupportedShellProcessProvider</NativeProcessProvider>
+   <!-- The authentication provider for authenticating users and obtaining user information -->
+   <!-- 
+                WARNING: the dummy provider here doesn't ask for any passwords so obviously it's
+                extremely insecure. You should only use it for testing. 
+        -->
+   <NativeAuthenticationProvider>org.apache.oodt.cas.protocol.sftp.DummyAuthenticationProvider</NativeAuthenticationProvider>
+   <!-- The file system provider for SFTP -->
+   <NativeFileSystemProvider>com.sshtools.daemon.vfs.VirtualFileSystem</NativeFileSystemProvider>
+   <!-- Native settings which may be used by the process or authentication provider -->
+   <!-- Add native settings here -->
+   <!-- <NativeSetting Name="AuthenticateOnDomain" Value="."/> -->
+</PlatformConfiguration>

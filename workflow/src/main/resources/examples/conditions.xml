@@ -23,4 +23,6 @@
             <property name="reqMetKeys" value="Met1,Met2,Met3"/>
         </configuration>
     </condition>
+    <condition id="urn:oodt:TimeoutCondition" name="Timeout Condition" class="org.apache.oodt.cas.workflow.examples.FalseCondition" timeout="30"/>
+    <condition id="urn:oodt:OptionalCondition" name="Optional Condition" class="org.apache.oodt.cas.workflow.examples.FalseCondition" optional="true"/>
 </cas:conditions>

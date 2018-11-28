@@ -14,24 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.config;
 
 //OODT imports
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Interface for building a {@link PgeConfig}
- * </p>.
+ * Interface for building a {@link PgeConfig}.
+ *
+ * @author bfoster (Brian Foster)
  */
 public interface PgeConfigBuilder {
 
     public PgeConfig build(PgeMetadata pgeMetadata) throws Exception;
-
 }

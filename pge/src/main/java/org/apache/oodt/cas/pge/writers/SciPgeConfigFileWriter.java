@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
@@ -26,26 +24,13 @@ import java.io.IOException;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
  * Abstract interface for generating PGE config input files defining the input
- * necessary to run the underlying PGE
- * </p>.
+ * necessary to run the underlying PGE.
+ *
+ * @author bfoster (Brian Foster)
  */
 public interface SciPgeConfigFileWriter {
 
-    /**
-     * 
-     * @param sciPgeConfigFilePath
-     * @param inputMetadata
-     * @param customArgs
-     * @return
-     * @throws IOException
-     */
     public File createConfigFile(String sciPgeConfigFilePath,
             Metadata inputMetadata, Object... customArgs) throws IOException;
-
 }

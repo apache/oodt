@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.config;
 
 //JDK imports
@@ -33,16 +31,13 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 
-/**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
+/** 
  * Turns a {@link ProductCrawler} into a Spring-configurable entity.
- * </p>
+ *
+ * @author bfoster (Brian Foster)
  */
-public class ProductCrawlerBean implements SpringSetIdInjectionType, CoreMetKeys {
+public abstract class ProductCrawlerBean implements
+      SpringSetIdInjectionType, CoreMetKeys {
 
     private HashSet<String> requiredMetadata;
 

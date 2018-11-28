@@ -69,5 +69,19 @@ public interface OpendapConfigMetKeys {
   public static final String DATASET_MET_NAME_ATTR = "name";
   
   public static final String DATASET_MET_VALUE_ATTR = "value";
+  
+  public static final String RES_LOCATION_ATTR = "resLocation";
+  
+  public static final String PROCESSING_INSTRUCTIONS_TAG = "processingInstructions";
+  
+  public static final String PROCESSING_INSTRUCTION_TAG = "processingInstruction";
+  
+  public static final String PROCESSING_INSTRUCTION_NAME_ATTR = "name";
+  
+  public static final String PROCESSING_INSTRUCTION_VALUE_ATTR = "value";
+  
+  public static final String EXCLUDE_VARIABLES_ATTR = "excludeVariables";
+  
+  public static final String DATETIME_FORMAT_ATTR = "datetimeFormat";
 
 }

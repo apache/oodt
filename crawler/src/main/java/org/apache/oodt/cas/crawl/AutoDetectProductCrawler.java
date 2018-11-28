@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl;
 
 //OODT imports
@@ -25,6 +23,7 @@ import org.apache.oodt.cas.crawl.typedetection.MimeExtractorRepo;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.preconditions.PreCondEvalUtils;
 
 //JDK imports
@@ -39,10 +38,6 @@ import org.apache.tika.mime.MimeType; //for javadoc
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * @author mattmann
- * @author bfoster
- * @version $Revision$
- * 
  * <p>
  * A {@link ProductCrawler} that uses a suite of files to define its crawling
  * and ingestion policy:
@@ -68,65 +63,78 @@ import org.springframework.beans.factory.annotation.Required;
  * is then mapped to an extractor vai the <code>mime-extractor-map.xml</code>
  * file, described above. </li>
  * </p>.
+ *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public class AutoDetectProductCrawler extends ProductCrawler implements
-        CoreMetKeys {
-    
-    private MimeExtractorRepo mimeExtractorRepo;
-    
-    protected Metadata getMetadataForProduct(File product) {
-        try {
-            List<MetExtractorSpec> specs = this.mimeExtractorRepo
-                    .getExtractorSpecsForFile(product);
-            Metadata metadata = new Metadata();
-            metadata.addMetadata(MIME_TYPES_HIERARCHY, 
-                    this.mimeExtractorRepo.getMimeTypes(product));
-            for (int i = 0; i < specs.size(); i++) {
-                Metadata m = ((MetExtractorSpec) specs.get(i))
-                        .getMetExtractor().extractMetadata(product);
-                if (m != null)
-                    metadata.addMetadata(m.getHashtable(), true);
-            }
-            return metadata;
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to get metadata for product "
-                    + product + " : " + e.getMessage());
-            return new Metadata();
-        }
-    }
+      CoreMetKeys {
 
-    protected boolean passesPreconditions(File product) {
-        try {
-            List<MetExtractorSpec> specs = this.mimeExtractorRepo
-                    .getExtractorSpecsForFile(product);
-            if (specs.size() > 0) {
-                if (this.getApplicationContext() != null) {
-                    PreCondEvalUtils evalUtils = new PreCondEvalUtils(
-                            this.getApplicationContext());
-                    for (int i = 0; i < specs.size(); i++) {
-                        List<String> preCondComparatorIds = ((MetExtractorSpec) specs
-                                .get(i)).getPreCondComparatorIds();
-                        if (!evalUtils.eval(preCondComparatorIds, product))
-                            return false;
-                    }
-                }
-                return true;
-            } else {
-                LOG.log(Level.WARNING, "No extractor specs specified for "
-                        + product);
-                return false;
+   private MimeExtractorRepo mimeExtractorRepo;
+
+   @Override
+   protected Metadata getMetadataForProduct(File product) throws Exception {
+      List<MetExtractorSpec> specs = this.mimeExtractorRepo
+            .getExtractorSpecsForFile(product);
+      Metadata metadata = new Metadata();
+      metadata.addMetadata(MIME_TYPES_HIERARCHY,
+            mimeExtractorRepo.getMimeTypes(product));
+      for (int i = 0; i < specs.size(); i++) {
+         Metadata m = ((MetExtractorSpec) specs.get(i)).getMetExtractor()
+               .extractMetadata(product);
+         if (m != null) {
+            metadata.addMetadata(m.getHashtable(), true);
+         }
+      }
+      return metadata;
+   }
+
+   @Override
+   protected boolean passesPreconditions(File product) {
+      try {
+         List<MetExtractorSpec> specs = this.mimeExtractorRepo
+               .getExtractorSpecsForFile(product);
+         if (specs.size() > 0) {
+            if (this.getApplicationContext() != null) {
+               PreCondEvalUtils evalUtils = new PreCondEvalUtils(
+                     this.getApplicationContext());
+               for (int i = 0; i < specs.size(); i++) {
+                  List<String> preCondComparatorIds = ((MetExtractorSpec) specs
+                        .get(i)).getPreCondComparatorIds();
+                  if (!evalUtils.eval(preCondComparatorIds, product))
+                     return false;
+               }
             }
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to evaluate preconditions : "
-                    + e.getMessage());
+            return true;
+         } else {
+            LOG.log(Level.WARNING, "No extractor specs specified for "
+                  + product);
             return false;
-        }
-    }
+         }
+      } catch (Exception e) {
+         LOG.log(Level.WARNING,
+               "Failed to evaluate preconditions : " + e.getMessage());
+         return false;
+      }
+   }
 
-    @Required
-    public void setMimeExtractorRepo(String mimeExtractorRepo) throws Exception {
-        this.mimeExtractorRepo = MimeExtractorConfigReader
-                .read(mimeExtractorRepo);
-    }
+   @Override
+   protected File renameProduct(File product, Metadata productMetadata)
+         throws Exception {
+      String namingConventionId = mimeExtractorRepo
+            .getNamingConventionId(mimeExtractorRepo.getMimeType(product));
+      if (namingConventionId != null) {
+         NamingConvention namingConvention = (NamingConvention) getApplicationContext()
+               .getBean(namingConventionId);
+         return namingConvention.rename(product, productMetadata);
+      } else {
+         return product;
+      }
+   }
 
+   @Required
+   public void setMimeExtractorRepo(String mimeExtractorRepo) throws Exception {
+      this.mimeExtractorRepo = MimeExtractorConfigReader
+            .read(mimeExtractorRepo);
+   }
 }

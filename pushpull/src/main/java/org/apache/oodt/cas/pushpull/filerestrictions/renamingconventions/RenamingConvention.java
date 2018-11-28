@@ -18,14 +18,16 @@
 
 package org.apache.oodt.cas.pushpull.filerestrictions.renamingconventions;
 
-//OODT imports
+//JDK imports
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
+//OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
 
 /**
  * 
@@ -51,7 +53,7 @@ public class RenamingConvention {
      *            The file for which a unique name will be generated
      * @return The unique file name (just the name).
      */
-    public static String rename(ProtocolFile fileToGenNewNameFor,
+    public static String rename(RemoteSiteFile fileToGenNewNameFor,
             String renamingString) {
     	try {
     	    renamingString = grepReplace(renamingString, fileToGenNewNameFor);
@@ -61,15 +63,15 @@ public class RenamingConvention {
 	        renamingString = replace(renamingString, "[PATH_NO_FILENAME]",
 	                getParentPath(fileToGenNewNameFor));
 	        renamingString = replace(renamingString, "[HOST]", fileToGenNewNameFor
-	                .getHostName());
+	                .getSite().getURL().getHost());
 	        renamingString = replace(renamingString, "[PARENT_FILENAME]",
 	                getParentFileName(fileToGenNewNameFor));
 	        renamingString = replace(renamingString, "[PARENT_PATH_NO_FILENAME]",
 	                getGrandParentPath(fileToGenNewNameFor));
 	        renamingString = replace(renamingString, "[URL]", fileToGenNewNameFor
-	                .getURL().toExternalForm());
+	                .getSite().getURL().toExternalForm());
 	        renamingString = replace(renamingString, "[IS_DIR]", String
-	                .valueOf(fileToGenNewNameFor.isDirectory()));
+	                .valueOf(fileToGenNewNameFor.isDir()));
 	        renamingString = PathUtils.doDynamicReplacement(renamingString);
     	}catch (Exception e) {
     		LOG.log(Level.WARNING, "Failed to rename " + fileToGenNewNameFor 
@@ -79,7 +81,7 @@ public class RenamingConvention {
     }
 
     private static String grepReplace(String theString,
-            ProtocolFile fileToGenNewNameFor) {
+            RemoteSiteFile fileToGenNewNameFor) {
         Pattern grepPattern = Pattern.compile("\\[GREP\\(.*\\,.*\\)\\]");
         Matcher grepMatcher = grepPattern.matcher(theString);
         while (grepMatcher.find()) {
@@ -103,7 +105,7 @@ public class RenamingConvention {
     }
 
     private static String grepRemoveReplace(String theString,
-            ProtocolFile fileToGenNewNameFor) {
+            RemoteSiteFile fileToGenNewNameFor) {
         Pattern grepPattern = Pattern.compile("\\[GREP_RM\\(.*,.*\\)\\]");
         Matcher grepMatcher = grepPattern.matcher(theString);
         while (grepMatcher.find()) {
@@ -139,8 +141,7 @@ public class RenamingConvention {
     private static String getParentPath(ProtocolFile fileToGenNewNameFor) {
         String parentPath = "";
         try {
-            parentPath = fileToGenNewNameFor.getParentFile().getProtocolPath()
-                    .getPathString();
+            parentPath = fileToGenNewNameFor.getParent().getPath();
         } catch (Exception e) {
         }
         return parentPath;
@@ -149,7 +150,7 @@ public class RenamingConvention {
     private static String getParentFileName(ProtocolFile fileToGenNewNameFor) {
         String parentFileName = "";
         try {
-            parentFileName = fileToGenNewNameFor.getParentFile().getName();
+            parentFileName = fileToGenNewNameFor.getParent().getName();
         } catch (Exception e) {
         }
         return parentFileName;
@@ -158,8 +159,8 @@ public class RenamingConvention {
     private static String getGrandParentPath(ProtocolFile fileToGenNewNameFor) {
         String grandParentPath = "";
         try {
-            grandParentPath = fileToGenNewNameFor.getParentFile()
-                    .getParentFile().getProtocolPath().getPathString();
+            grandParentPath = fileToGenNewNameFor.getParent()
+                    .getParent().getPath();
         } catch (Exception e) {
         }
         return grandParentPath;

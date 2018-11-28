@@ -196,7 +196,8 @@ public class WorkflowMgrConn implements Serializable {
       this.taskName = task.getTaskName();
       this.taskId = task.getTaskId();
       this.taskInstanceClassName = task.getTaskInstanceClassName();
-      this.conditions = task.getConditions();
+      this.preConditions = task.getPreConditions();
+      this.postConditions = task.getPostConditions();
       this.order = task.getOrder();
       this.requiredMetFields = task.getRequiredMetFields();
       this.taskConfig = task.getTaskConfig();

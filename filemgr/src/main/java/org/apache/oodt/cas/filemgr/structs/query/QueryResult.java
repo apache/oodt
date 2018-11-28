@@ -18,9 +18,8 @@
 package org.apache.oodt.cas.filemgr.structs.query;
 
 //JDK imports
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.springframework.util.StringUtils;
 
@@ -76,23 +75,48 @@ public class QueryResult {
         return convertMetadataToString(this.metadata, this.toStringFormat);
     }
     
-    private static String convertMetadataToString(Metadata metadata,
-            String format) {
+    private static String convertMetadataToString(Metadata metadata, String format) {
         if (format == null)
             return concatMetadataIntoString(metadata);
         String outputString = format;
-        for (Entry<String, Object> entry : (Set<Entry<String, Object>>) metadata
-                .getHashtable().entrySet())
-            outputString = outputString.replaceAll("\\$" + entry.getKey(), StringUtils.collectionToDelimitedString((List<String>)entry.getValue(), ","));
+        for (String key : metadata.getAllKeys())
+            outputString = outputString.replaceAll("\\$" + key,
+                StringUtils.collectionToCommaDelimitedString(metadata.getAllMetadata(key)));
         return outputString;
     }
     
     private static String concatMetadataIntoString(Metadata metadata) {
-        String outputString = "";
-        for (Entry<String, Object> entry : (Set<Entry<String, Object>>) metadata
-                .getHashtable().entrySet()) 
-            outputString += StringUtils.collectionToDelimitedString((List<String>)entry.getValue(), ",") + ",";
-        return outputString.substring(0, outputString.length() - 1);
+        List<String> outputString = new ArrayList<String>();
+        for (String key : metadata.getAllKeys())
+            outputString.add(StringUtils.collectionToCommaDelimitedString(metadata.getAllMetadata(key)));
+        return StringUtils.collectionToCommaDelimitedString(outputString);
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      QueryResult other = (QueryResult) obj;
+      if (metadata == null) {
+        if (other.metadata != null)
+          return false;
+      } else if (!metadata.equals(other.metadata))
+        return false;
+      if (product == null) {
+        if (other.product != null)
+          return false;
+      } else if (!product.equals(other.product))
+        return false;
+      if (toStringFormat == null) {
+        if (other.toStringFormat != null)
+          return false;
+      } else if (!toStringFormat.equals(other.toStringFormat))
+        return false;
+      return true;
+    }
+
 }

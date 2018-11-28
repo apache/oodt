@@ -19,19 +19,25 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
+import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
 //JDK imports
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -257,6 +263,53 @@ public class XMLWorkflowRepository implements WorkflowRepository {
         WorkflowTask task = (WorkflowTask) taskMap.get(taskId);
         return task.getTaskConfig();
     }
+    
+
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#addWorkflow(org.apache.oodt.cas.workflow.structs.Workflow)
+     */
+    @Override
+    public String addWorkflow(Workflow workflow) throws RepositoryException {
+       // first check to see that its tasks are all present
+      if(workflow.getTasks() == null || (workflow.getTasks() != null && workflow.getTasks().size() == 0)){
+        throw new RepositoryException("Attempt to define a new worklfow: ["+workflow.getName()+"] with no tasks.");
+      }
+      
+      for(WorkflowTask task: (List<WorkflowTask>)workflow.getTasks()){
+        if(!this.taskMap.containsKey(task.getTaskId())){
+          throw new RepositoryException("Reference in new workflow: ["+workflow.getName()+"] to undefined task with id: ["+task.getTaskId()+"]");
+        }
+        
+        // check its conditions
+        if(task.getConditions() != null && task.getConditions().size() > 0){
+          for(WorkflowCondition cond: (List<WorkflowCondition>)task.getConditions()){
+            if(!this.conditionMap.containsKey(cond.getConditionId())){
+              throw new RepositoryException("Reference in new workflow: ["+workflow.getName()+"] to undefined condition ith id: ["+cond.getConditionId()+"]");
+            }
+          }
+        }
+      }
+      
+      // generate its ID
+      String workflowId = UUID.randomUUID().toString();
+      workflow.setId(workflowId);
+      this.workflowMap.put(workflowId, workflow);
+      this.eventMap.put(workflowId, Collections.singletonList(workflow));
+      return workflowId;
+    }    
+    
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#getConditionsByWorkflowId(java.lang.String)
+     */
+    @Override
+    public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
+        throws RepositoryException {
+      if(!this.workflowMap.containsKey(workflowId)) throw new 
+         RepositoryException("Attempt to obtain conditions for a workflow: " +
+         		"["+workflowId+"] that does not exist!");
+      
+      return ((Workflow)this.workflowMap.get(workflowId)).getConditions();
+    }    
 
     /**
      * @param args
@@ -319,7 +372,9 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                         System.out.println("Condition: ["
                                 + condition.getClass().getName() + ", id="
                                 + condition.getConditionId() + ", name="
-                                + condition.getConditionName() + ", order="
+                                + condition.getConditionName() + ", timeout="
+                                + condition.getTimeoutSeconds()+ ", optional="
+                                + condition.isOptional()+", order="
                                 + condition.getOrder() + "]");
                         
                         System.out.println("Configuration: ");
@@ -468,7 +523,12 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                             if (workflowMap.get(workflowId) == null) {
                                 Workflow w = XmlStructFactory.getWorkflow(
                                         workflowRoot.getDocumentElement(),
-                                        taskMap);
+                                        taskMap, conditionMap);
+                                
+                                if(w.getConditions() != null && w.getConditions().size() > 0){
+                                  // add a virtual first task, with the conditions 
+                                  w.getTasks().add(0, getGlobalWorkflowConditionsTask(w.getName(), w.getId(), w.getConditions()));
+                                }
                                 workflowMap.put(workflowId, w);
                             } else {
                                 LOG
@@ -597,6 +657,17 @@ public class XMLWorkflowRepository implements WorkflowRepository {
         }
 
         return document;
+    }
+    
+    private WorkflowTask getGlobalWorkflowConditionsTask(String workflowName, String workflowId, List<WorkflowCondition> conditions){
+      WorkflowTask task = new WorkflowTask();
+      task.setConditions(conditions);
+      task.setTaskConfig(new WorkflowTaskConfiguration());
+      task.setTaskId(workflowId+"-global-conditions-eval");
+      task.setTaskName(workflowName+"-global-conditions-eval");
+      task.setTaskInstanceClassName(NoOpTask.class.getName());
+      this.taskMap.put(task.getTaskId(), task);
+      return task;
     }
 
 }

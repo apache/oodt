@@ -1,0 +1,26 @@
+<wicket:panel>
+ 
+<wicket:container wicket:id="has_children">
+ <div class="trigger"
+	wicket:id="parent_trigger" onclick="javascript:showBranch('branch1.1');swapFolder('folder1.1');">
+	<wicket:link>
+		<img src="closed.gif" border="0" wicket:id="parent_folder" id="folder1.1" />
+	</wicket:link>
+	<span wicket:id="parent_product_name">testfile.txt</span>
+</div>
+
+<span wicket:id="children_container">
+<span wicket:id="children">
+  <span wicket:id="child"/>
+</span>
+</span>
+</wicket:container>
+
+<wicket:container wicket:id="no_children">
+<wicket:link>
+	<img src="doc.gif" />
+</wicket:link>
+<span wicket:id="product_name">testfile3.txt</span> <br />
+</wicket:container>
+
+</wicket:panel>

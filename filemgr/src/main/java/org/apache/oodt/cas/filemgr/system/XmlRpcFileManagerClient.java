@@ -19,7 +19,6 @@ package org.apache.oodt.cas.filemgr.system;
 
 //APACHE imports
 import org.apache.xmlrpc.CommonsXmlRpcTransport;
-import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcClientException;
 import org.apache.xmlrpc.XmlRpcException;
@@ -28,11 +27,9 @@ import org.apache.xmlrpc.XmlRpcTransportFactory;
 
 //JDK imports
 import java.net.URL;
-import java.net.URI;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -47,9 +44,8 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodRetryHandler;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.structs.Element;
@@ -62,7 +58,6 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
-import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
@@ -71,8 +66,8 @@ import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 
 /**
- * @author mattmann
- * @author bfoster
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  * @version $Revision$
  * 
  * <p>
@@ -95,6 +90,10 @@ public class XmlRpcFileManagerClient {
     /* data transferer needed if client is request to move files itself */
     private DataTransfer dataTransfer = null;
 
+    public XmlRpcFileManagerClient(final URL url) throws ConnectionException {
+       this(url, true);
+    }
+
     /**
      * <p>
      * Constructs a new XmlRpcFileManagerClient with the given <code>url</code>.
@@ -102,8 +101,11 @@ public class XmlRpcFileManagerClient {
      * 
      * @param url
      *            The url pointer to the xml rpc file manager service.
+     * @param testConnection
+     *            Whether or not to check if server at given url is alive.
      */
-    public XmlRpcFileManagerClient(final URL url) throws ConnectionException {
+    public XmlRpcFileManagerClient(final URL url, boolean testConnection)
+          throws ConnectionException {
         // set up the configuration, if there is any
         if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
             String configFile = System
@@ -174,7 +176,7 @@ public class XmlRpcFileManagerClient {
         client = new XmlRpcClient(url, transportFactory);
         fileManagerUrl = url;
 
-        if (!isAlive()) {
+        if (testConnection && !isAlive()) {
             throw new ConnectionException("Exception connecting to filemgr: ["
                     + this.fileManagerUrl + "]");
         }
@@ -704,21 +706,41 @@ public class XmlRpcFileManagerClient {
         }
     }
 
-    public void addMetadata(Product product, Metadata metadata)
-            throws CatalogException {
+  public void addMetadata(Product product, Metadata metadata)
+      throws CatalogException {
 
-        Vector<Object> argList = new Vector<Object>();
-        argList.add(XmlRpcStructFactory.getXmlRpcProduct(product));
-        argList.add(metadata.getHashtable());
+    Vector<Object> argList = new Vector<Object>();
+    argList.add(XmlRpcStructFactory.getXmlRpcProduct(product));
+    argList.add(metadata.getHashtable());
 
-        try {
-            client.execute("filemgr.addMetadata", argList);
-        } catch (XmlRpcException e) {
-            throw new CatalogException(e.getMessage());
-        } catch (IOException e) {
-            throw new CatalogException(e.getMessage());
-        }
+    try {
+      client.execute("filemgr.addMetadata", argList);
+    } catch (XmlRpcException e) {
+      throw new CatalogException(e.getMessage());
+    } catch (IOException e) {
+      throw new CatalogException(e.getMessage());
     }
+  }
+
+  public boolean updateMetadata(Product product, Metadata met)
+      throws CatalogException {
+    Vector<Object> argList = new Vector<Object>();
+    argList.add(XmlRpcStructFactory.getXmlRpcProduct(product));
+    argList.add(met.getHashtable());
+
+    boolean result = false;
+
+    try {
+      result = (Boolean) client.execute("filemgr.updateMetadata", argList);
+    } catch (XmlRpcException e) {
+      throw new CatalogException(e.getMessage());
+    } catch (IOException e) {
+      throw new CatalogException(e.getMessage());
+    }
+
+    return result;
+
+  }
 
     public String catalogProduct(Product product) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -803,6 +825,22 @@ public class XmlRpcFileManagerClient {
 
         return success;
     }
+
+   public byte[] retrieveFile(String filePath, int offset, int numBytes)
+         throws DataTransferException {
+      Vector<Object> argList = new Vector<Object>();
+      argList.add(filePath);
+      argList.add(new Integer(offset));
+      argList.add(new Integer(numBytes));
+
+      try {
+         return (byte[]) client.execute("filemgr.retrieveFile", argList);
+      } catch (XmlRpcException e) {
+         throw new DataTransferException(e.getMessage());
+      } catch (IOException e) {
+         throw new DataTransferException(e.getMessage());
+      }
+   }
 
     public void transferFile(String filePath, byte[] fileData, int offset,
             int numBytes) throws DataTransferException {
@@ -1280,524 +1318,9 @@ public class XmlRpcFileManagerClient {
                         .execute("filemgr.getCatalogQuery", args));
     }
 
-    public static void main(String[] args) throws MalformedURLException,
-            CatalogException, RepositoryManagerException, URISyntaxException {
-
-        String addProductTypeOperation = "--addProductType --typeName <name> --typeDesc <description> --repository <path> --versionClass <classname of versioning impl>\n";
-        String ingestProductOperation = "--ingestProduct --productName <name> --productStructure <Hierarchical|Flat> --productTypeName <name of product type> --metadataFile <file> [--clientTransfer --dataTransfer <java class name of data transfer factory>] --refs <ref1>...<refn>\n";
-        String hasProductOperation = "--hasProduct --productName <name>\n";
-        String getProductTypeByNameOperation = "--getProductTypeByName --productTypeName <name>\n";
-        String getNumProductsOperation = "--getNumProducts --productTypeName <name>\n";
-        String getFirstPageOperation = "--getFirstPage --productTypeName <name>\n";
-        String getNextPageOperation = "--getNextPage --productTypeName <name> --currentPageNum <number>\n";
-        String getPrevPageOperation = "--getPrevPage --productTypeName <name> --currentPageNum <number>\n";
-        String getLastPageOperation = "--getLastPage --productTypeName <name>\n";
-        String getCurrentTransferOperation = "--getCurrentTransfer\n";
-        String getCurrentTransfersOperation = "--getCurrentTransfers\n";
-        String getProductPctTransferredOperation = "--getProductPctTransferred --productId <id> --productTypeName <name>\n";
-        String getFilePctTransferOperation = "--getFilePctTransferred --origRef <uri>\n";
-
-        String usage = "filemgr-client --url <url to xml rpc service> --operation [<operation> [params]]\n"
-                + "operations:\n"
-                + addProductTypeOperation
-                + ingestProductOperation
-                + hasProductOperation
-                + getProductTypeByNameOperation
-                + getNumProductsOperation
-                + getFirstPageOperation
-                + getNextPageOperation
-                + getPrevPageOperation
-                + getLastPageOperation
-                + getCurrentTransferOperation
-                + getCurrentTransfersOperation
-                + getProductPctTransferredOperation
-                + getFilePctTransferOperation;
-
-        String operation = null, url = null;
-
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("--operation")) {
-                operation = args[++i];
-            } else if (args[i].equals("--url")) {
-                url = args[++i];
-            }
-        }
-
-        if (operation == null) {
-            System.err.println(usage);
-            System.exit(1);
-        }
-
-        // create the client
-        XmlRpcFileManagerClient client = null;
-        try {
-            client = new XmlRpcFileManagerClient(new URL(url));
-        } catch (ConnectionException e) {
-            System.err.println("Could not connect to filemgr");
-            System.exit(1);
-        }
-
-        if (operation.equals("--addProductType")) {
-            String typeName = null, typeDesc = null, typeVers = null, typeRepo = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--typeName")) {
-                    typeName = args[++i];
-                } else if (args[i].equals("--typeDesc")) {
-                    typeDesc = args[++i];
-                } else if (args[i].equals("--repository")) {
-                    typeRepo = args[++i];
-                } else if (args[i].equals("--versionClass")) {
-                    typeVers = args[++i];
-                }
-            }
-
-            if (typeName == null || typeDesc == null || typeVers == null
-                    || typeRepo == null) {
-                System.err.println(addProductTypeOperation);
-                System.exit(1);
-            }
-
-            ProductType type = new ProductType();
-            type.setName(typeName);
-            type.setDescription(typeDesc);
-            type.setProductRepositoryPath(typeRepo);
-            type.setVersioner(typeVers);
-
-            System.out.println("addProductType: Result: "
-                    + client.addProductType(type));
-
-        } else if (operation.equals("--ingestProduct")) {
-            String productName = null, productStructure = null, productTypeName = null, metadataFileName = null;
-            boolean clientTransfer = false;
-            String dataTransferClass = null;
-            Vector<String> refs = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productName")) {
-                    productName = args[++i];
-                } else if (args[i].equals("--productStructure")) {
-                    productStructure = args[++i];
-                } else if (args[i].equals("--productTypeName")) {
-                    productTypeName = args[++i];
-                } else if (args[i].equals("--metadataFile")) {
-                    metadataFileName = args[++i];
-                } else if (args[i].equals("--refs")) {
-                    refs = new Vector<String>();
-                    for (int j = i + 1; j < args.length; j++) {
-                        refs.add(args[j]);
-                    }
-                } else if (args[i].equals("--clientTransfer")) {
-                    clientTransfer = true;
-                } else if (args[i].equals("--dataTransfer")) {
-                    dataTransferClass = args[++i];
-                }
-            }
-
-            if (productName == null || productStructure == null
-                    || productTypeName == null || metadataFileName == null
-                    || refs == null
-                    || (clientTransfer && dataTransferClass == null)) {
-                System.err.println(ingestProductOperation);
-                System.exit(1);
-            }
-
-            Product product = new Product();
-            product.setProductName(productName);
-            product.setProductStructure(productStructure);
-            product
-                    .setProductType(client
-                            .getProductTypeByName(productTypeName));
-
-            if (clientTransfer) {
-                client.setDataTransfer(GenericFileManagerObjectFactory
-                        .getDataTransferServiceFromFactory(dataTransferClass));
-            }
-
-            // need to build up the ref uri list in case the Product structure
-            // is
-            // heirarchical
-            if (product.getProductStructure().equals(
-                    Product.STRUCTURE_HIERARCHICAL)) {
-                String ref = (String) refs.get(0);
-                refs.addAll(VersioningUtils.getURIsFromDir(new File(
-                        new URI(ref))));
-            }
-
-            // add Product References from the URI list
-            VersioningUtils.addRefsFromUris(product, refs);
-
-            try {
-                Metadata metadata = null;
-                URL metaUrl = new File(new URI(metadataFileName)).toURL();
-                metadata = new SerializableMetadata(metaUrl.openStream());
-                System.out.println("ingestProduct: Result: "
-                        + client.ingestProduct(product, metadata,
-                                clientTransfer));
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOG.log(Level.SEVERE, "Exception ingesting product!: Message: "
-                        + e.getMessage());
-                throw new RuntimeException(e);
-            }
-
-        } else if (operation.equals("--hasProduct")) {
-            String productName = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productName")) {
-                    productName = args[++i];
-                }
-            }
-
-            if (productName == null) {
-                System.err.println(hasProductOperation);
-                System.exit(1);
-            }
-
-            try {
-                System.out.println("hasProduct: Result: "
-                        + client.hasProduct(productName));
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        } else if (operation.equals("--getProductTypeByName")) {
-            String productTypeName = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productTypeName")) {
-                    productTypeName = args[++i];
-                }
-            }
-
-            if (productTypeName == null) {
-                System.err.println(getProductTypeByNameOperation);
-                System.exit(1);
-            }
-
-            try {
-                ProductType type = client.getProductTypeByName(productTypeName);
-                System.out.println("getProductTypeByName: Result: [name="
-                        + type.getName() + ", description="
-                        + type.getDescription() + ", id="
-                        + type.getProductTypeId() + ", versionerClass="
-                        + type.getVersioner() + ", repositoryPath="
-                        + type.getProductRepositoryPath() + "]");
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        } else if (operation.equals("--getNumProducts")) {
-            String typeName = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productTypeName")) {
-                    typeName = args[++i];
-                }
-            }
-
-            if (typeName == null) {
-                System.err.println(getNumProductsOperation);
-                System.exit(1);
-            }
-
-            try {
-                System.out.println("Type: ["
-                        + typeName
-                        + "], Num Products: ["
-                        + client.getNumProducts(client
-                                .getProductTypeByName(typeName)) + "]");
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        } else if (operation.equals("--getFirstPage")) {
-            String typeName = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productTypeName")) {
-                    typeName = args[++i];
-                }
-            }
-
-            if (typeName == null) {
-                System.err.println(getFirstPageOperation);
-                System.exit(1);
-            }
-
-            try {
-                ProductType type = client.getProductTypeByName(typeName);
-                ProductPage firstPage = client.getFirstPage(type);
-
-                System.out.println("Page: [num=" + firstPage.getPageNum()
-                        + ", totalPages=" + firstPage.getTotalPages()
-                        + ", pageSize=" + firstPage.getPageSize() + "]");
-                System.out.println("Products:");
-
-                if (firstPage.getPageProducts() != null
-                        && firstPage.getPageProducts().size() > 0) {
-                    for (Iterator<Product> i = firstPage.getPageProducts()
-                            .iterator(); i.hasNext();) {
-                        Product p = i.next();
-                        System.out.println("Product: [id=" + p.getProductId()
-                                + ",name=" + p.getProductName() + ",type="
-                                + p.getProductType().getName() + ",structure="
-                                + p.getProductStructure() + ", transferStatus="
-                                + p.getTransferStatus() + "]");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-
-        } else if (operation.equals("--getNextPage")) {
-            String typeName = null;
-            int currentPageNum = -1;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productTypeName")) {
-                    typeName = args[++i];
-                } else if (args[i].equals("--currentPageNum")) {
-                    currentPageNum = Integer.parseInt(args[++i]);
-                }
-            }
-
-            if (typeName == null || currentPageNum == -1) {
-                System.err.println(getNextPageOperation);
-                System.exit(1);
-            }
-
-            try {
-                ProductType type = client.getProductTypeByName(typeName);
-                ProductPage firstPage = client.getFirstPage(type);
-                ProductPage currentPage = new ProductPage();
-                currentPage.setPageNum(currentPageNum);
-                currentPage.setPageSize(firstPage.getPageSize());
-                currentPage.setTotalPages(firstPage.getTotalPages());
-                ProductPage nextPage = client.getNextPage(type, currentPage);
-
-                System.out.println("Page: [num=" + nextPage.getPageNum()
-                        + ", totalPages=" + nextPage.getTotalPages()
-                        + ", pageSize=" + nextPage.getPageSize() + "]");
-                System.out.println("Products:");
-
-                if (nextPage.getPageProducts() != null
-                        && nextPage.getPageProducts().size() > 0) {
-                    for (Iterator<Product> i = nextPage.getPageProducts()
-                            .iterator(); i.hasNext();) {
-                        Product p = i.next();
-                        System.out.println("Product: [id=" + p.getProductId()
-                                + ",name=" + p.getProductName() + ",type="
-                                + p.getProductType().getName() + ",structure="
-                                + p.getProductStructure() + ", transferStatus="
-                                + p.getTransferStatus() + "]");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        } else if (operation.equals("--getPrevPage")) {
-            String typeName = null;
-            int currentPageNum = -1;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productTypeName")) {
-                    typeName = args[++i];
-                } else if (args[i].equals("--currentPageNum")) {
-                    currentPageNum = Integer.parseInt(args[++i]);
-                }
-            }
-
-            if (typeName == null || currentPageNum == -1) {
-                System.err.println(getNextPageOperation);
-                System.exit(1);
-            }
-
-            try {
-                ProductType type = client.getProductTypeByName(typeName);
-                ProductPage firstPage = client.getFirstPage(type);
-                ProductPage currentPage = new ProductPage();
-                currentPage.setPageNum(currentPageNum);
-                currentPage.setPageSize(firstPage.getPageSize());
-                currentPage.setTotalPages(firstPage.getTotalPages());
-                ProductPage prevPage = client.getPrevPage(type, currentPage);
-
-                System.out.println("Page: [num=" + prevPage.getPageNum()
-                        + ", totalPages=" + prevPage.getTotalPages()
-                        + ", pageSize=" + prevPage.getPageSize() + "]");
-                System.out.println("Products:");
-
-                if (prevPage.getPageProducts() != null
-                        && prevPage.getPageProducts().size() > 0) {
-                    for (Iterator<Product> i = prevPage.getPageProducts()
-                            .iterator(); i.hasNext();) {
-                        Product p = i.next();
-                        System.out.println("Product: [id=" + p.getProductId()
-                                + ",name=" + p.getProductName() + ",type="
-                                + p.getProductType().getName() + ",structure="
-                                + p.getProductStructure() + ", transferStatus="
-                                + p.getTransferStatus() + "]");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        } else if (operation.equals("--getLastPage")) {
-            String typeName = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productTypeName")) {
-                    typeName = args[++i];
-                }
-            }
-
-            if (typeName == null) {
-                System.err.println(getLastPageOperation);
-                System.exit(1);
-            }
-
-            try {
-                ProductType type = client.getProductTypeByName(typeName);
-                ProductPage lastPage = client.getLastPage(type);
-
-                System.out.println("Page: [num=" + lastPage.getPageNum()
-                        + ", totalPages=" + lastPage.getTotalPages()
-                        + ", pageSize=" + lastPage.getPageSize() + "]");
-                System.out.println("Products:");
-
-                if (lastPage.getPageProducts() != null
-                        && lastPage.getPageProducts().size() > 0) {
-                    for (Iterator<Product> i = lastPage.getPageProducts()
-                            .iterator(); i.hasNext();) {
-                        Product p = i.next();
-                        System.out.println("Product: [id=" + p.getProductId()
-                                + ",name=" + p.getProductName() + ",type="
-                                + p.getProductType().getName() + ",structure="
-                                + p.getProductStructure() + ", transferStatus="
-                                + p.getTransferStatus() + "]");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-
-        } else if (operation.equals("--getCurrentTransfer")) {
-            FileTransferStatus status = null;
-
-            try {
-                status = client.getCurrentFileTransfer();
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-
-            System.out.println("File Transfer: [ref={orig="
-                    + status.getFileRef().getOrigReference() + ",ds="
-                    + status.getFileRef().getDataStoreReference()
-                    + "},product=" + status.getParentProduct().getProductName()
-                    + ",fileSize=" + status.getFileRef().getFileSize()
-                    + ",amtTransferred=" + status.getBytesTransferred()
-                    + ",pct=" + status.computePctTransferred() + "]");
-        } else if (operation.equals("--getCurrentTransfers")) {
-            List<FileTransferStatus> statuses = null;
-
-            try {
-                statuses = client.getCurrentFileTransfers();
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-
-            if (statuses != null && statuses.size() > 0) {
-                for (Iterator<FileTransferStatus> i = statuses.iterator(); i
-                        .hasNext();) {
-                    FileTransferStatus status = i.next();
-                    System.out.println("File Transfer: [ref={orig="
-                            + status.getFileRef().getOrigReference() + ",ds="
-                            + status.getFileRef().getDataStoreReference()
-                            + "},product="
-                            + status.getParentProduct().getProductName()
-                            + ",fileSize=" + status.getFileRef().getFileSize()
-                            + ",amtTransferred=" + status.getBytesTransferred()
-                            + ",pct=" + status.computePctTransferred() + "]");
-                }
-            }
-        } else if (operation.equals("--getProductPctTransferred")) {
-            String productTypeName = null, productId = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--productId")) {
-                    productId = args[++i];
-                } else if (args[i].equals("--productTypeName")) {
-                    productTypeName = args[++i];
-                }
-            }
-
-            if (productTypeName == null || productId == null) {
-                System.err.println(getProductPctTransferredOperation);
-                System.exit(1);
-            }
-
-            Product product = new Product();
-            product.setProductName(" ");
-            product.setProductStructure(" ");
-            product
-                    .setProductType(client
-                            .getProductTypeByName(productTypeName));
-            product.setProductId(productId);
-
-            double pct = 0.0;
-
-            try {
-                pct = client.getProductPctTransferred(product);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-
-            System.out.println("Product: [id=" + productId + ", transferPct="
-                    + pct + "]");
-
-        } else if (operation.equals("--getFilePctTransferred")) {
-            String origFileRef = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--origRef")) {
-                    origFileRef = args[++i];
-                }
-            }
-
-            if (origFileRef == null) {
-                System.err.println(getFilePctTransferOperation);
-                System.exit(1);
-            }
-
-            Reference ref = new Reference();
-            ref.setOrigReference(origFileRef);
-            ref.setDataStoreReference("file:/foo/bar"); // doesn't matter: won't
-            // be
-            // used in the comparison on
-            // the server side
-
-            double pct = 0.0;
-
-            try {
-                pct = client.getRefPctTransferred(ref);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-
-            System.out.println("Reference: [origRef=" + origFileRef
-                    + ",transferPct=" + pct + "]");
-        } else
-            throw new IllegalArgumentException("Unknown Operation!");
-
+    public static void main(String[] args) {
+       CmdLineUtility cmdLineUtility = new CmdLineUtility();
+       cmdLineUtility.run(args);
     }
 
     /**

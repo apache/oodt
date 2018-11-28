@@ -67,9 +67,9 @@ public class HandlerQueryParser implements ParseConstants {
 
       String logOpType = qe.getValue();
       if (logOpType.equalsIgnoreCase(XMLQUERY_AND)) {
-        return new AndExpression(parse(queryStack), parse(queryStack, map));
+        return new AndExpression(parse(queryStack, map), parse(queryStack, map));
       } else if (logOpType.equalsIgnoreCase(XMLQUERY_OR)) {
-        return new OrExpression(parse(queryStack), parse(queryStack, map));
+        return new OrExpression(parse(queryStack, map), parse(queryStack, map));
       } else
         return null;
 

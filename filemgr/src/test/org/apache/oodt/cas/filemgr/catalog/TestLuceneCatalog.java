@@ -37,6 +37,8 @@ import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import com.google.common.collect.Lists;
+
 //Junit imports
 import junit.framework.TestCase;
 
@@ -116,7 +118,7 @@ public class TestLuceneCatalog extends TestCase {
         // now override the val layer ones
         System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
-                        + new File("./src/main/resources/examples")
+                        + new File("./src/main/resources/examples/core")
                                 .getAbsolutePath());
 
     }
@@ -155,6 +157,64 @@ public class TestLuceneCatalog extends TestCase {
             }
         }
 
+    }
+    
+    /**
+    * @since OODT-382
+    */
+    public void testNoCatalogDirectoryQueries() {
+        // Test querying against a catalog directory that has not yet been created or is empty. 
+        // The LuceneCatalogFactory should be creating the index directory if not there.
+        try {
+            myCat.getTopNProducts(10);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    public void testGetMetadata() throws CatalogException {
+       Product product = getTestProduct();
+       myCat.addProduct(product);
+       myCat.addProductReferences(product);
+       Metadata m = new Metadata();
+       m.addMetadata(CoreMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
+       myCat.addMetadata(m, product);
+       Metadata rndTripMet = myCat.getMetadata(product);
+
+       assertNotNull(rndTripMet);
+       assertEquals(2, rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/1"));
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
+    }
+    
+    public void testGetReducedMetadata() throws CatalogException {
+       Product product = getTestProduct();
+       myCat.addProduct(product);
+       myCat.addProductReferences(product);
+       Metadata m = new Metadata();
+       m.addMetadata(CoreMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
+       myCat.addMetadata(m, product);
+       Metadata rndTripMet = myCat.getReducedMetadata(product,
+             Lists.newArrayList(CoreMetKeys.FILE_LOCATION));
+
+       assertNotNull(rndTripMet);
+       assertEquals(2, rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/1"));
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
+    }
+
+    public void testGetReducedMetadataNull() throws CatalogException {
+	      Product p = getTestProduct();
+	      myCat.addProduct(p);
+	      myCat.addProductReferences(p);
+	      myCat.addMetadata(new Metadata(), p);
+
+	      // should not throw NPE here
+	      Metadata rndTripMet = myCat.getReducedMetadata(p, Lists.newArrayList(CoreMetKeys.FILENAME));
+
+	      assertNotNull(rndTripMet);
+	      // should return null if met key has no value
+	      assertNull(rndTripMet.getAllMetadata(CoreMetKeys.FILENAME));
     }
 
     public void testRemoveProduct() {

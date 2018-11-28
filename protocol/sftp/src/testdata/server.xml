@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ServerConfiguration>
+        <!-- this key needs generating by the provided keygen tool -->
+        <ServerHostKey PrivateKeyFile="src/testdata/sample-dsa.key"/>
+        <!--  Port>2023</Port -->
+        <!--  UserConfigDirectory>src/testdata</UserConfigDirectory -->
+        <!-- add other authentication methods as desired -->
+        <AllowedAuthentication>password</AllowedAuthentication>
+        <AllowedAuthentication>keyboard-interactive</AllowedAuthentication>
+        <!-- You can specify more subsystems, or even a replacement SFTP subsystem -->
+        <Subsystem Name="sftp" Type="class" Provider="com.sshtools.daemon.sftp.SftpSubsystemServer" />
+</ServerConfiguration>

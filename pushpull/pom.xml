@@ -21,11 +21,29 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent> 
   <artifactId>cas-pushpull</artifactId>
   <name>CAS Push-Pull-Framework</name>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/pushpull</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/pushpull</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/pushpull</url>
+  </scm>
+  <repositories>
+	   <repository>
+	     <id>globus-repo</id>
+	     <name>Globus Toolkit Internal Maven2 Repository</name>
+	     <url>http://projects.iplantcollaborative.org/archiva/repository/internal</url>
+	     <releases>
+	       <enabled>true</enabled>
+	     </releases>
+	     <snapshots>
+	       <enabled>true</enabled>
+	     </snapshots>
+	  </repository>   
+  </repositories>
  <build>
     <plugins>
       <plugin>
@@ -94,30 +112,30 @@
       <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.3</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-protocol-api</artifactId>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <version>3.0</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-protocol-ftp</artifactId>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-net</groupId>
-      <artifactId>commons-net</artifactId>
-      <version>2.2</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-protocol-http</artifactId>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-protocol-imaps</artifactId>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.3</version>
-    </dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-protocol-sftp</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>            
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
@@ -127,61 +145,6 @@
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
       <version>2.0.8</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.13</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.javamail</groupId>
-      <artifactId>geronimo-javamail_1.4_mail</artifactId>
-      <version>1.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-activation_1.1_spec</artifactId>
-      <version>1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>pdfbox</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.0-FINAL</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-      <version>0.8</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-parsers</artifactId>
-      <version>0.8</version>
-    </dependency>
-    <dependency>
-      <groupId>nekohtml</groupId>
-      <artifactId>nekohtml</artifactId>
-      <version>1.9.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-      <version>3.4.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.globus</groupId>
-      <artifactId>cog-jglobus</artifactId>
-      <version>1.8.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.jcraft</groupId>
-      <artifactId>jsch</artifactId>
-      <version>0.1.42</version>    
     </dependency>
     <dependency>
       <groupId>junit</groupId>

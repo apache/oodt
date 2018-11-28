@@ -6,7 +6,7 @@ OVERVIEW
 This is the OODT Balance Framework library. It provides a common codebase
 upon which to build PHP web applications utilizing the OODT framework.
 
-More information about the project is available at http://balance.jpl.nasa.gov
+More information about the project is available at http://oodt.apache.org/
 
 INSTALLATION
 ====================
@@ -30,5 +30,5 @@ USAGE
 This library forms a codebase upon which applications can be developed. It is a
 prerequisite for Balance application development, but can do nothing on its own.
 For information on creating and developing applications that target this library,
-visit http://balance.jpl.nasa.gov/
+visit http://oodt.apache.org/
 

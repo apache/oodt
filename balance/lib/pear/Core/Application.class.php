@@ -33,7 +33,7 @@ class Org_Apache_Oodt_Balance_Core_Application {
 	
 	public $subrequest;
 	
-	public $authProviderInstance = null;
+	public $authenticationProviderInstance = null;
 	
 	public $authorizationProviderInstance = null;
 	
@@ -68,7 +68,7 @@ class Org_Apache_Oodt_Balance_Core_Application {
 	
 	public function getResponse() {
 		
-		$this->setAuthProviderInstance();
+		$this->setAuthenticationProviderInstance();
 		$this->setAuthorizationProviderInstance();
 		
 		// Interpret the request uri of the current request
@@ -123,19 +123,19 @@ class Org_Apache_Oodt_Balance_Core_Application {
 		return false;
 	}
 	
-	public function getAuthProvider() {
-		return $this->authProviderInstance;
+	public function getAuthenticationProvider() {
+		return $this->authenticationProviderInstance;
 	}
 	
-	public function setAuthProviderInstance() {
+	public function setAuthenticationProviderInstance() {
 		
 		// Check if the user wants authentication for application 
-		if ( $this->settings['auth_class_path'] != null &&
-			 $this->settings['auth_class']      != null   ) {
+		if ( $this->settings['authentication_class_path'] != null &&
+			 $this->settings['authentication_class']      != null   ) {
 			 	
-			 	require_once $this->settings['auth_class_path'];
-				$authProvider 		  		= $this->settings['auth_class'];
-				$this->authProviderInstance = new $authProvider();
+			 	require_once $this->settings['authentication_class_path'];
+				$authProvider = $this->settings['authentication_class'];
+				$this->authenticationProviderInstance = new $authProvider();
 		}
 	}
 	
@@ -145,7 +145,7 @@ class Org_Apache_Oodt_Balance_Core_Application {
 	
 	public function setAuthorizationProviderInstance() {
 		
-		// Check if the user wants authentication for application 
+		// Check if the user wants authorization for application 
 		if ( $this->settings['authorization_class_path'] != null &&
 			 $this->settings['authorization_class']      != null   ) {
 			 	
@@ -181,7 +181,20 @@ class Org_Apache_Oodt_Balance_Core_Application {
 
 			// Read in the module config file and append to application config
 			if (file_exists($modulePath . '/config.ini')) {
-				$moduleSettings   = parse_ini_file($modulePath . '/config.ini');
+			   	// Get the raw contents of the config file
+			   	$ini = file_get_contents($modulePath . '/config.ini');
+				// Perform environment replacement
+				$ini = str_replace('[MODULE_PATH]',  $modClass->modulePath,   $ini);
+				$ini = str_replace('[MODULE_ROOT]',  $modClass->moduleRoot,   $ini);
+				$ini = str_replace('[MODULE_STATIC]',$modClass->moduleStatic, $ini);
+
+				$ini = str_replace('[HOME]', HOME, $ini);
+				$ini = str_replace('[SITE_ROOT]', SITE_ROOT, $ini);
+
+				// Parse the env-replaced content
+				$moduleSettings   = parse_ini_string($ini);
+				// Append (union) with global settings. += ensures that
+				// application settings always override module settings.
 				$this->settings  += $moduleSettings;
 			}
 			

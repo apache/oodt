@@ -19,37 +19,25 @@ package org.apache.oodt.opendapps;
 
 //JDK imports
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//APACHE imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.opendapps.extractors.MetadataExtractor;
+import org.apache.oodt.opendapps.extractors.ThreddsMetadataExtractor;
 
-//OPeNDAP/THREDDS imports
 import thredds.catalog.InvAccess;
 import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
-import thredds.catalog.InvDocumentation;
-import thredds.catalog.InvProperty;
-import thredds.catalog.ThreddsMetadata.Contributor;
-import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
-import thredds.catalog.ThreddsMetadata.Range;
-import thredds.catalog.ThreddsMetadata.Source;
-import thredds.catalog.ThreddsMetadata.Variable;
-import thredds.catalog.ThreddsMetadata.Variables;
-import thredds.catalog.ThreddsMetadata.Vocab;
-import thredds.catalog.crawl.CatalogCrawler;
 import thredds.catalog.InvService;
-import ucar.nc2.units.DateType;
-import ucar.unidata.geoloc.LatLonRect;
+import thredds.catalog.ServiceType;
+import thredds.catalog.crawl.CatalogCrawler;
 
 /**
  * Crawls a catalog and returns all the datasets and their references.
@@ -64,10 +52,13 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
   private Map<String, Metadata> datasetMet;
 
   private String datasetURL = null;
+  
+  private OpendapConfig conf = null;
 
-  public DatasetCrawler(String datasetURL) {
+  public DatasetCrawler(String datasetURL, OpendapConfig conf) {
     this.datasetURL = datasetURL.endsWith("/") ? datasetURL : datasetURL + "/";
     this.datasetMet = new HashMap<String, Metadata>();
+    this.conf = conf;
   }
 
   /*
@@ -89,29 +80,30 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
    * .InvDataset, java.lang.Object)
    */
   public void getDataset(InvDataset dd, Object context) {
-    String url = this.datasetURL + dd.getCatalogUrl().split("#")[1];
-    String id = dd.getID();
-    this.datasetMet.put(url, this.extractDatasetMet(dd));
-    LOG.log(Level.INFO, url + " is the computed access URL for this dataset");
+  	String url = this.datasetURL + dd.getCatalogUrl().split("#")[1];
+    String id = dd.getID();    
+    LOG.log(Level.FINE, url + " is the computed access URL for this dataset");
+    // look for an OpenDAP access URL, only extract metadata if it is found
     List<InvAccess> datasets = dd.getAccess();
     if (dd.getAccess() != null && dd.getAccess().size() > 0) {
       Iterator<InvAccess> sets = datasets.iterator();
       while (sets.hasNext()) {
         InvAccess single = sets.next();
         InvService service = single.getService();
-        if (service.getName().equals("odap")
-            || service.getName().equals("rdbmDods")) // only get the opendap one
-        {
-          LOG.log(Level.INFO,
-              "Found a service-specific dataset URL to over-ride the computed URL: "
-                  + single.getUrlPath());
-          url = this.datasetURL + single.getUrlPath();
+        // note: select the OpenDAP access URL based on THREDDS service type
+        if (service.getServiceType()==ServiceType.OPENDAP) {
+          LOG.log(Level.FINE, "Found OpenDAP access URL: "+ single.getUrlPath());
+          String opendapurl = this.datasetURL + single.getUrlPath();
+          // extract metadata from THREDDS catalog
+          MetadataExtractor extractor = new ThreddsMetadataExtractor(dd);
+          Metadata met = new Metadata();
+          extractor.extract(met, conf);
+          // index metadata by opendap access URL
+          this.datasetMet.put(opendapurl, met);
+          this.urls.add(opendapurl);
           break;
         }
       }
-    }
-    if (url != null) {
-      this.urls.add(url);
     }
   }
 
@@ -132,183 +124,6 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
    */
   public Map<String, Metadata> getDatasetMet() {
     return this.datasetMet;
-  }
-
-  private Metadata extractDatasetMet(InvDataset dataset) {
-    Metadata met = new Metadata();
-    this.addIfNotNull(met, "Authority", dataset.getAuthority());
-    this.addIfNotNull(met, "CatalogUrl", dataset.getCatalogUrl());
-    this.addIfNotNull(met, "DatasetFullName", dataset.getFullName());
-    if (dataset.getContributors() != null) {
-      for (Contributor contributor : dataset.getContributors()) {
-        this.addIfNotNull(met, "Contributor", contributor.getName());
-      }
-    }
-
-    if (dataset.getCreators() != null) {
-      for (Source source : dataset.getCreators()) {
-        this.addIfNotNull(met, "Creator", source.getName());
-      }
-    }
-
-    if (dataset.getDataFormatType() != null){
-    	this.addIfNotNull(met, "DataFormatType", dataset.getDataFormatType()
-    			.toString());
-    }
-    
-    if (dataset.getDataType() != null){
-    	this.addIfNotNull(met, "DataType", dataset.getDataType().toString());
-    }
-    
-    if (dataset.getDates() != null) {
-      for (DateType dateType : dataset.getDates()) {
-        String dateString = null;
-        try {
-          dateString = toISO8601(dateType.getDate());
-        } catch (Exception e) {
-          LOG.log(Level.WARNING, "Error converting date: ["
-              + dateType.getDate() + "]: Message: " + e.getMessage());
-        }
-        this.addIfNotNull(met, "Dates", dateString);
-      }
-    }
-
-    if (dataset.getDocumentation() != null) {
-      for (InvDocumentation doc : dataset.getDocumentation()) {
-        this.addIfNotNull(met, "Documentation", doc.getInlineContent());
-      }
-    }
-
-    this.addIfNotNull(met, "FullName", dataset.getFullName());
-    GeospatialCoverage geoCoverage = dataset.getGeospatialCoverage();
-    if (geoCoverage != null) {
-      LatLonRect bbox = geoCoverage.getBoundingBox();
-      if (bbox != null) {
-        this.addIfNotNull(met, "SouthwestBC", bbox.getLowerLeftPoint()
-            .toString());
-        this.addIfNotNull(met, "NorthwestBC", bbox.getUpperLeftPoint()
-            .toString());
-        this.addIfNotNull(met, "NortheastBC", bbox.getUpperRightPoint()
-            .toString());
-        this.addIfNotNull(met, "SoutheastBC", bbox.getLowerRightPoint()
-            .toString());
-      } else {
-        // try north south, east west
-        if (geoCoverage.getNorthSouthRange() != null) {
-          Range nsRange = geoCoverage.getNorthSouthRange();
-          this.addIfNotNull(met, "NorthSouthRangeStart", String.valueOf(nsRange
-              .getStart()));
-          this.addIfNotNull(met, "NorthSouthRangeResolution", String
-              .valueOf(nsRange.getResolution()));
-          this.addIfNotNull(met, "NorthSouthRangeSize", String.valueOf(nsRange
-              .getSize()));
-          this.addIfNotNull(met, "NorthSouthRangeUnits", nsRange.getUnits());
-        }
-
-        if (geoCoverage.getEastWestRange() != null) {
-          Range nsRange = geoCoverage.getEastWestRange();
-          this.addIfNotNull(met, "EastWestRangeStart", String.valueOf(nsRange
-              .getStart()));
-          this.addIfNotNull(met, "EastWestRangeResolution", String
-              .valueOf(nsRange.getResolution()));
-          this.addIfNotNull(met, "EastWestRangeSize", String.valueOf(nsRange
-              .getSize()));
-          this.addIfNotNull(met, "EastWestRangeUnits", nsRange.getUnits());
-        }
-      }
-
-      this.addIfNotNull(met, "GeospatialCoverageLatitudeResolution", String
-          .valueOf(dataset.getGeospatialCoverage().getLatResolution()));
-      this.addIfNotNull(met, "GeospatialCoverageLongitudeResolution", String
-          .valueOf(dataset.getGeospatialCoverage().getLonResolution()));
-      
-      if(dataset.getGeospatialCoverage().getNames() != null){
-        for(Vocab gName: dataset.getGeospatialCoverage().getNames()){
-           this.addIfNotNull(met, "GeospatialCoverage", gName.getText());
-        }
-      }
-      
-    }
-
-    this.addIfNotNull(met, "History", dataset.getHistory());
-    this.addIfNotNull(met, "ID", dataset.getID());
-    if (dataset.getKeywords() != null) {
-      for (Vocab vocab : dataset.getKeywords()) {
-        this.addIfNotNull(met, "Keywords", vocab.getText());
-      }
-    }
-    this.addIfNotNull(met, "Name", dataset.getName());
-    this.addIfNotNull(met, "Processing", dataset.getProcessing());
-    if (dataset.getProjects() != null) {
-      for (Vocab vocab : dataset.getProjects()) {
-        this.addIfNotNull(met, "Projects", vocab.getText());
-      }
-    }
-
-    if (dataset.getProperties() != null) {
-      for (InvProperty prop : dataset.getProperties()) {
-        this.addIfNotNull(met, prop.getName(), prop.getValue());
-      }
-    }
-
-    if (dataset.getPublishers() != null) {
-      for (Source source : dataset.getPublishers()) {
-        this.addIfNotNull(met, "Publishers", source.getName());
-      }
-    }
-
-    this.addIfNotNull(met, "RestrictAccess", dataset.getRestrictAccess());
-    this.addIfNotNull(met, "Rights", dataset.getRights());
-    this.addIfNotNull(met, "Summary", dataset.getSummary());
-    if (dataset.getTimeCoverage() != null) {
-      String startDateTimeStr = null, endDateTimeStr = null;
-      try {
-        startDateTimeStr = toISO8601(dataset.getTimeCoverage()
-            .getStart().getDate());
-        endDateTimeStr = toISO8601(dataset.getTimeCoverage()
-            .getEnd().getDate());
-      } catch (Exception e) {
-        LOG.log(Level.WARNING,
-            "Error converting start/end date time strings: Message: "
-                + e.getMessage());
-      }
-
-      this.addIfNotNull(met, "StartDateTime", startDateTimeStr);
-      this.addIfNotNull(met, "EndDateTime", endDateTimeStr);
-    }
-
-    if (dataset.getTimeCoverage() != null && dataset.getTimeCoverage().getResolution() != null) {
-      this.addIfNotNull(met, "TimeCoverageResolution", dataset
-          .getTimeCoverage().getResolution().getText());
-    }
-    this.addIfNotNull(met, "UniqueID", dataset.getUniqueID());
-
-    if (dataset.getVariables() != null) {
-      for (Variables vars : dataset.getVariables()) {
-        if (vars.getVariableList() != null) {
-          for (Variable var : vars.getVariableList()) {
-            this.addIfNotNull(met, "Variables", var.getName());
-          }
-        }
-      }
-    }
-    return met;
-  }
-
-  private void addIfNotNull(Metadata met, String field, String value) {
-    if (value != null && !value.equals("")) {
-      met.addMetadata(field, value);
-    }
-  }
-  
-  // inspired from ASLv2 code at:
-  // http://www.java2s.com/Code/Java/Data-Type/ISO8601dateparsingutility.htm
-  private String toISO8601(Date date) {
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    TimeZone tz = TimeZone.getTimeZone("UTC");
-    df.setTimeZone(tz);
-    String output = df.format(date);
-    return output;
   }
 
 }

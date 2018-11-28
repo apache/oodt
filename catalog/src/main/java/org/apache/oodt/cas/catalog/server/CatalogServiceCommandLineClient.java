@@ -18,43 +18,27 @@ package org.apache.oodt.cas.catalog.server;
 
 //JDK imports
 import java.io.FileInputStream;
-import java.util.List;
-
-//Spring imports
-import org.apache.oodt.cas.catalog.server.action.CatalogServiceServerAction;
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClientFactory;
-import org.apache.oodt.cas.catalog.util.Serializer;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 //OODT imports
-import org.apache.oodt.commons.option.CmdLineOptionInstance;
-import org.apache.oodt.commons.option.util.CmdLineOptionUtils;
-import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.cli.CmdLineUtility;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
- * Client Utility for sending commands to servers
- * <p>
+ * Client Utility for sending commands to servers.
+ * 
+ * @author bfoster (Brian Foster)
  */
 public class CatalogServiceCommandLineClient {
 
-	public static void main(String[] args) throws Exception {
-		String propertiesFile = System.getProperty("org.apache.oodt.cas.catalog.properties.file");
-		if (propertiesFile != null)
-			System.getProperties().load(new FileInputStream(propertiesFile));
-		String configFile = PathUtils.doDynamicReplacement(System.getProperty("org.apache..oodt.cas.catalog.client.config.file", "classpath:/org/apache/oodt/cas/catalog/config/catserv-client-config.xml"));
-		FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(new String[] { configFile }, false);
-//		appContext.setClassLoader(new Serializer().getClassLoader());
-		appContext.refresh();
-        List<CmdLineOptionInstance> optionInstances = CmdLineOptionUtils.loadValidateAndHandleInstances(appContext, args);
-        CmdLineOptionInstance instance = CmdLineOptionUtils.getOptionInstanceByName("clientFactoryBeanId", optionInstances);
-		CatalogServiceClientFactory csClientFactory = (CatalogServiceClientFactory) appContext.getBean(instance.getValues().get(0), CatalogServiceClientFactory.class);
-		CatalogServiceClient csClient = csClientFactory.createCatalogService();
-        instance = CmdLineOptionUtils.getOptionInstanceByName("action", optionInstances);
-		((CatalogServiceServerAction) appContext.getBean(instance.getValues().get(0), CatalogServiceServerAction.class)).performAction(csClient);
-	}
+   public static void main(String[] args) throws Exception {
+      // Load Catalog Service properties.
+      String propertiesFile = System
+            .getProperty("org.apache.oodt.cas.catalog.properties.file");
+      if (propertiesFile != null) {
+         System.getProperties().load(new FileInputStream(propertiesFile));
+      }
+
+      // Run Command line.
+      CmdLineUtility cmdLineUtility = new CmdLineUtility();
+      cmdLineUtility.run(args);
+   }
 }

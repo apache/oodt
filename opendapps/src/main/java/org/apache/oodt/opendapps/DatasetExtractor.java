@@ -29,15 +29,16 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.xmlquery.XMLQuery;
+
 //NetCDF-Java imports
 import thredds.catalog.crawl.CatalogCrawler;
 import ucar.nc2.util.CancelTask;
 import opendap.dap.DConnect;
 import opendap.dap.DataDDS;
-
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * 
@@ -65,11 +66,14 @@ public class DatasetExtractor {
   private List<String> allUrls;
 
   private Map<String, Metadata> datasetMet;
+  
+  private OpendapConfig conf;
 
-  public DatasetExtractor(XMLQuery q, String mainCatalogURL, String datasetURL) {
+  public DatasetExtractor(XMLQuery q, String mainCatalogURL, String datasetURL, OpendapConfig conf) {
     this.q = q.getKwdQueryString().trim();
     this.mainCatalogURL = mainCatalogURL;
     this.datasetURL = datasetURL;
+    this.conf = conf;
     this.initExtraction();
   }
 
@@ -91,7 +95,7 @@ public class DatasetExtractor {
   }
 
   private void initExtraction() {
-    DatasetCrawler listener = new DatasetCrawler(this.datasetURL);
+    DatasetCrawler listener = new DatasetCrawler(this.datasetURL, this.conf);
     CancelTask ignore = new CancelTask() {
       public boolean isCancel() {
         return false;
@@ -103,16 +107,16 @@ public class DatasetExtractor {
 
     };
 
-    LOG.log(Level.INFO, "catalogURL: " + this.mainCatalogURL);
-    CatalogCrawler crawler = new CatalogCrawler(CatalogCrawler.USE_ALL_DIRECT,
-        false, listener);
+    LOG.log(Level.FINE, "catalogURL: " + this.mainCatalogURL);
+    // Note: look for all datasets, that have either a urlPath="" attribute, or a <access> subelement
+    CatalogCrawler crawler = new CatalogCrawler(CatalogCrawler.USE_ALL, false, listener);
     crawler.crawl(this.mainCatalogURL, ignore, System.out, this);
     this.allUrls = listener.getURLs();
     this.datasetMet = listener.getDatasetMet();
   }
 
   private List<String> getFindQuery() {
-    LOG.log(Level.INFO, "PFunction: findquery selected: orig query: [" + this.q
+    LOG.log(Level.FINE, "PFunction: findquery selected: orig query: [" + this.q
         + "]");
     String queryExpression = "";
     Pattern parameterPattern = Pattern.compile("PParameter=\"(.+?)\"");
@@ -149,7 +153,7 @@ public class DatasetExtractor {
   }
 
   private List<String> getFindSome() {
-    LOG.log(Level.INFO, "PFunction: findsome selected");
+    LOG.log(Level.FINE, "PFunction: findsome selected");
     String urlsString = "";
     Pattern parameterPattern = Pattern.compile("PParameter=\"(.+?)\"");
     Matcher urlsMatch = parameterPattern.matcher(this.q);
@@ -157,7 +161,7 @@ public class DatasetExtractor {
       urlsString = urlsMatch.group(1);
     }
 
-    LOG.log(Level.INFO, "PParameter: [" + urlsString
+    LOG.log(Level.FINE, "PParameter: [" + urlsString
         + "] parsed from original string query: [" + this.q + "]");
 
     List<String> openDapUrls = new ArrayList<String>();
@@ -167,7 +171,7 @@ public class DatasetExtractor {
       openDapUrls.add(tokens.nextToken());
     }
 
-    LOG.log(Level.INFO, "OPeNDAP urls: [" + openDapUrls + "]");
+    LOG.log(Level.FINE, "OPeNDAP urls: [" + openDapUrls + "]");
     return openDapUrls;
   }
 

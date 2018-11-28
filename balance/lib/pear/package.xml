@@ -75,7 +75,7 @@
         <file name="IApplicationWidget.php" role="php"/>
       </dir>
       <dir name="Providers">
-        <dir name="Auth">
+        <dir name="Authentication">
           <file name="LDAPAuthenticationProvider.class.php" role="php"/>
         </dir>
         <dir name="Authorization">

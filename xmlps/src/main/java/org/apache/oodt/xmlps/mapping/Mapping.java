@@ -19,13 +19,12 @@ package org.apache.oodt.xmlps.mapping;
 
 //JDK imports
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * 
+ *
  * <p>
  * An Mapping is a {@link List} of {@link MappingField}s that define the
  * translation of common ontological queries into queries against a local site's
@@ -35,16 +34,16 @@ import java.util.TreeMap;
  */
 public class Mapping {
 
-  private Map<String, MappingField> fields;
+  private final Map<String, MappingField> fields;
 
-  private DatabaseTableGroup tables;
+  private final DatabaseTableGroup tables;
 
   private String id;
 
   private String name;
 
   /**
-     * 
+     *
      */
   public Mapping() {
     this.fields = new TreeMap<String, MappingField>();
@@ -72,33 +71,13 @@ public class Mapping {
       return null;
     }
 
-    for (Iterator<String> i = this.fields.keySet().iterator(); i.hasNext();) {
-      String commonName = i.next();
-      MappingField fld = this.fields.get(commonName);
-      if (getFieldLocalName(fld).equals(localName)) {
+    for (MappingField fld : this.fields.values()) {
+      if (fld.getLocalName().equals(localName)) {
         return fld;
       }
     }
 
     return null;
-
-  }
-
-  public String getFieldLocalName(MappingField fld) {
-    String newFldName = fld.getName();
-    if (fld.getDbName() != null && !fld.getDbName().equals("")) {
-      newFldName = fld.getDbName();
-    }
-
-    if (fld.isAppendTableName()) {
-      if (fld.getTableName() != null && !fld.getTableName().equals("")) {
-        newFldName = fld.getTableName() + "." + newFldName;
-      } else {
-        newFldName = getDefaultTable() + "." + newFldName;
-      }
-    }
-
-    return newFldName;
   }
 
   public MappingField getFieldByName(String name) {
@@ -112,7 +91,7 @@ public class Mapping {
       return true; // leave it out
     }
 
-    if (fld.getType().equals(FieldType.CONSTANT)) {
+    if (fld.getType() == FieldType.CONSTANT) {
       return true;
     } else
       return false;

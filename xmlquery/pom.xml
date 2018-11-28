@@ -15,12 +15,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0   http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-xmlquery</artifactId>
@@ -34,6 +34,11 @@
     query.  It's used by many other components as the standard way to
     pass a query and its results between servers, clients, nodes, and
     other components.</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/xmlquery</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/xmlquery</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/xmlquery</url>
+  </scm>
   <build>
     <resources>
       <resource>

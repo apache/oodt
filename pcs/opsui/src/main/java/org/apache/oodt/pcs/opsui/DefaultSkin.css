@@ -1,0 +1,231 @@
+/**
+ * HEADERS 
+**/
+h1, h2, h3, h4, h5 {
+    background-color:#283848;
+    color:#eee;
+    border-top:solid 1px #2e3e4e;
+    border-bottom:solid 1px #233343;
+    padding:8px;
+}
+h1 {
+
+}
+
+h2 {
+
+}
+
+h3 {
+    
+}
+
+h4 {
+    background-color:transparent;
+    border-top:none;
+    margin:10px;
+}
+
+h5 {
+
+}
+
+/**
+ * TABLES
+**/
+table {
+  padding:2px;
+  width:100%;
+  border: none;
+}
+table tr {
+    
+}
+
+table tr th {
+
+}
+
+table tr td {
+    border-bottom:solid 1px #234;
+    border-right:solid 1px #234;
+    padding:5px;
+    color:#111;
+}
+
+table table td {
+    border-bottom:none;
+    border-right:none;
+}
+
+/**
+ * BREADCRUMBS
+ */
+div#breadcrumbs {
+    color:#777;
+    margin-left:20px;
+    margin-top:15px;
+}
+
+div#breadcrumbs a {
+
+}
+
+div#breadcrumbs span.divider {
+    padding:0px 5px;
+}
+
+
+
+
+
+
+/**
+ * FILE MANAGER: Types.css
+**/ 
+#cas_fm_browser_ptype_table{
+
+}
+
+#cas_fm_browser_ptype_table td{
+
+}
+
+/**
+ * FILE MANAGER: TypeBrowser.css
+**/ 
+
+#criteria_form_add_element_value{
+	font-weight:bold;
+}
+
+#product_table{
+
+}
+
+#product_table td{
+
+}
+
+#pagination_table{
+	border-spacing:3px;
+	width:100%;
+}
+
+#pagination_table_result_hdr{
+	width:100px;
+	white-space: nowrap;
+	font-weight:bold;
+}
+
+/**
+ * FILE MANAGER: ProductBrowser.css
+**/ 
+#met_table{
+
+}
+
+#met_elem_name{
+	
+}
+
+#met_values_table{
+
+}
+
+.nada{
+	
+}
+
+#ref_table{
+	
+}
+
+#ref_table_hdr{
+	
+}
+
+/**
+ * FILE MANAGER: ProductRefsBrowser.css
+**/ 
+ 
+.nada{
+	
+}
+
+#ref_table{
+	
+}
+
+#ref_table_hdr{
+	
+}
+
+/**
+ * FILE MANAGER: ProductPaginator.css
+**/ 
+#paginator-break{
+  border:2;
+  width:100%;
+}
+
+#container-div{
+  width:100%;
+}
+
+#paginator-table{
+  border-spacing:3;
+  width:100;
+}
+
+#paginator-table-header{
+  width:100%;
+  white-space:nowrap;
+  font-weight:bold;
+}
+
+
+#page_repeater{
+
+}
+
+a, a:hover, a:focus, a:active{
+	text-decoration: none;
+}
+
+.selected{
+  font-weight:bold;
+  color:red;
+}
+
+/**
+ * FILE MANAGER: MetadataBrowser.css
+**/ 
+
+#met_table{
+
+}
+
+#met_elem_name{
+	
+}
+
+#met_values_table{
+
+}
+
+.nada{
+	
+}
+
+/**
+ * WORKFLOW MANAGER: Workflow Instances 
+**/
+#instance_filter_header p {
+    padding-left:20px;
+}
+a.workflow_status {
+    border-right:solid 1px #ccc;
+    padding-left:15px;
+    padding-right:15px;
+}

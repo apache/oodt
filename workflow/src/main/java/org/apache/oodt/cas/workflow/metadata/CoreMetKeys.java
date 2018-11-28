@@ -39,5 +39,7 @@ public interface CoreMetKeys {
     public static final String WORKFLOW_MANAGER_URL = "WorkflowManagerUrl";
 
     public static final String QUEUE_NAME = "QueueName";
+    
+    public static final String TASK_LOAD = "TaskLoad";
 
 }

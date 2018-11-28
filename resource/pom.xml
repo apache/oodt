@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-resource</artifactId>
@@ -28,6 +28,11 @@ the License.
   <description>The resource management component of a Catalog and Archive Service. This component
      provides job management, and management of the underlying software system hardware
      and resources, such as disk space, computational resources, and shared identity.</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/resource</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/resource</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/resource</url>
+  </scm>
   <build>
     <plugins>
       <plugin>
@@ -83,6 +88,11 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-cli</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
     <dependency>

@@ -1,14 +1,14 @@
 <wicket:panel>
-<wicket:link>
+<wicket:remove>
   <link rel="stylesheet" type="text/css" href="TypeBrowser.css"/>
-</wicket:link>
+</wicket:remove>
 
 <h3 wicket:id="ptype_name">GenericFile Products</h3>
    
-<p>Products <span style="font-weight:bold;" wicket:id="start_idx">1</span>-<span style="font-weight:bold;" wicket:id="end_idx">20</span> 
+<p>Showing products <span style="font-weight:bold;" wicket:id="start_idx">1</span>-<span style="font-weight:bold;" wicket:id="end_idx">20</span> 
 of <span wicket:id="num_products">100</span> total</p>
 
-<h3>Existing Criteria</h3>
+<h4>Existing Filter Criteria</h4>
 
 <form wicket:id="existing_criteria_form">
 <table>
@@ -21,7 +21,7 @@ of <span wicket:id="num_products">100</span> total</p>
 </table>
 </form>
 
-<h3>Specify New Criteria</h3>
+<h4>Specify New Filter Criteria</h4>
 <form wicket:id="new_criteria_form">
 <table>
   <tr>
@@ -41,7 +41,6 @@ of <span wicket:id="num_products">100</span> total</p>
  </table>
                 
 </form>
-
 
 <table id="product_table">
 <tr>

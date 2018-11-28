@@ -2,7 +2,6 @@
   <id>bin</id>
   <formats>
     <format>tar.gz</format>
-    <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <baseDirectory>filemgr</baseDirectory>
@@ -18,24 +17,31 @@
       <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
-      <directory>${basedir}/src/main/bin</directory>
+      <directory>${basedir}/src/main/resources/bin</directory>
       <outputDirectory>filemgr/bin</outputDirectory>
       <includes/>
       <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
-      <directory>${basedir}/src/main/resources</directory>
+      <directory>target</directory>
       <outputDirectory>filemgr/logs</outputDirectory>
-      <includes>
-        <include>REMOVE.log</include>
-      </includes>
-      <fileMode>775</fileMode>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
-      <directory>${basedir}/src/main/resources</directory>
+      <directory>target</directory>
+      <outputDirectory>filemgr/run</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources/etc</directory>
       <outputDirectory>filemgr/etc</outputDirectory>
       <includes>
         <include>**.properties</include>
+        <include>**.xml</include>
       </includes>
       <fileMode>664</fileMode>
       <directoryMode>775</directoryMode>
@@ -44,7 +50,7 @@
       <directory>${basedir}/src/main/resources/policy</directory>
       <outputDirectory>filemgr/policy</outputDirectory>
       <includes>
-        <include>**.xml</include>
+        <include>**/**.xml</include>
       </includes>
       <fileMode>664</fileMode>
       <directoryMode>775</directoryMode>

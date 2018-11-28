@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<cas:mimetypemap xmlns:cas="http://oodt.jpl.nassa.gov/1.0/cas" magic="false"
+    mimeRepo="mime-types.xml">
+
+  <!-- This will be the default extractor used if product doesn't match any
+    of the mime-types defined in mime-types.xml file (this element is optional) -->
+  <default>
+    <!-- you can put a default NamingConvention here too.
+    <namingConvention id="PDFNamingConv" />
+    -->
+    <!-- You can add multiple extractors here if there are more than one,
+      however extractor is optional, so below extractor can be removed -->
+    <extractor class="org.apache.oodt.cas.metadata.extractors.MetReaderExtractor" />
+  </default>
+
+  <mime type="all/products">
+    <extractor class="org.apache.oodt.cas.metadata.extractors.MetReaderExtractor" />
+  </mime>
+
+  <!-- Example type where PGE generates a metadata file for the product, but
+    the product also needs additional metadata extraction from it... in the
+    mime-types.xml file txt/product has super type all/products, which means
+    that for any product that is a txt/product then all/products extractors
+    will be first be run on it (which, in this case, is just one extractor
+    which reads in the existing metadata file) followed by txt/product
+    extractors which is a filename based extractor. -->
+  <mime type="txt/product">
+    <extractor class="org.apache.oodt.cas.metadata.extractors.FilenameTokenMetExtractor">
+      <config file="filename.extractor.config.xml" />
+    </extractor>
+  </mime>
+
+  <!-- This is an example of a type where only one extractor is run on
+    product, this is because pdf/product only specifies one extractor and
+    in mime-types.xml file pdf/product has no super type. -->
+  <mime type="pdf/product">
+    <namingConvention id="PDFNamingConv" />
+    <extractor class="org.apache.oodt.cas.metadata.extractors.FilenameTokenMetExtractor">
+      <config file="filename.extractor.config.xml" />
+    </extractor>
+  </mime>
+
+  <!-- This is an example of a type where two extractors get run... this case
+    is an alternative way of handling txt/product... txt/product will run
+    the same 2 extractors which this type will run but for different reasons...
+    doc/product doesn't have any super type, it instead defines both extractors
+    directly to itself. -->
+  <mime type="doc/product">
+    <extractor class="org.apache.oodt.cas.metadata.extractors.MetReaderExtractor" />
+    <extractor class="org.apache.oodt.cas.metadata.extractors.FilenameTokenMetExtractor">
+      <config file="filename.extractor.config.xml" />
+    </extractor>
+  </mime>
+</cas:mimetypemap>

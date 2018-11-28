@@ -59,7 +59,7 @@ class Org_Apache_Oodt_Balance_Core_ApplicationRequest {
 		$this->config = $config;
 		
 		// Store the uri as provided
-		$this->uri = $requestURI;
+		$this->uri = htmlentities($requestURI);
 		
 		// Initialize the segments and view path
 		$this->segments = array();

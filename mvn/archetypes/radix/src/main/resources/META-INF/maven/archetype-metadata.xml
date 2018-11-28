@@ -3,10 +3,73 @@
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modules>
-    <module id="exts" dir="extensions" name="extensions" />
-    <module id="filemgr" dir="filemgr" name="filemgr" />
-    <module id="workflow" dir="workflow" name="workflow" />
-    <module id="crawler" dir="crawler" name="crawler" />
-    <module id="distribution" dir="distribution" name="distribution" />
+    <module id="extensions" dir="extensions" name="extensions">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="filemgr" dir="filemgr" name="filemgr">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="workflow" dir="workflow" name="workflow">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="crawler" dir="crawler" name="crawler">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="distribution" dir="distribution" name="distribution">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="webapps" dir="webapps" name="webapps">
+      <modules>
+        <module id="opsui" dir="opsui" name="opsui">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="pcs-services" dir="pcs-services" name="pcs-services">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="fmprod" dir="fmprod" name="fmprod">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+      </modules>
+    </module>
   </modules>
 </archetype-descriptor>

@@ -15,7 +15,6 @@
 
 package org.apache.oodt.cas.metadata;
 
-//JDK imports
 import org.apache.oodt.commons.xml.XMLUtils;
 
 import java.io.ByteArrayInputStream;
@@ -23,27 +22,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-//JUnit imports
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
- * 
- * 
+ *
+ *
  * Test class for SerializableMetadata.
- * 
+ *
  * @author bfoster
  * @author mattmann
- * 
+ *
  */
 public class TestSerializableMetadata extends TestCase {
 
-  private String[] encodings = new String[] { "UTF-8", "iso-8859-1",
+  private final String[] encodings = new String[] { "UTF-8", "iso-8859-1",
       "windows-1252", "UTF-16", "US-ASCII" };
 
   public TestSerializableMetadata() {
     super();
   }
 
+  @Override
   protected void setUp() throws Exception {
     super.setUp();
   }
@@ -164,4 +168,36 @@ public class TestSerializableMetadata extends TestCase {
     assertNotNull(metadata2.getMetadata("Name2"));
     assertEquals("Value2", metadata2.getMetadata("Name2"));
   }
+
+  public void testNamespace() throws Exception {
+    SerializableMetadata metadata = new SerializableMetadata();
+    metadata.addMetadata("Name1", "Value1");
+    metadata.addMetadata("Name2", "Value2");
+
+    // write xml DOM to string
+    ByteArrayOutputStream array = new ByteArrayOutputStream();
+    metadata.writeMetadataToXmlStream(array);
+
+    // read string into new xml DOM
+    DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+    f.setNamespaceAware(true);
+    Document doc = f.newDocumentBuilder().parse(new ByteArrayInputStream(array.toByteArray()));
+
+    final String NS = "http://oodt.jpl.nasa.gov/1.0/cas";
+    final String PREFIX = "cas";
+
+    // compare namespaces in DOM before and after the write/read operation
+    Element before = metadata.toXML().getDocumentElement();
+    String nsBefore = before.getNamespaceURI();
+    String preBefore = before.getPrefix();
+    assertEquals(NS, nsBefore);
+    assertEquals(PREFIX, preBefore);
+
+    Element after = doc.getDocumentElement();
+    String nsAfter = after.getNamespaceURI();
+    String preAfter = after.getPrefix();
+    assertEquals(NS, nsAfter);
+    assertEquals(PREFIX, preAfter);
+  }
+
 }

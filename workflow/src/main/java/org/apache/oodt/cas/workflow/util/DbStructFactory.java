@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.workflow.util;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
@@ -65,6 +66,7 @@ public final class DbStructFactory {
                 .getString("current_task_start_date_time"));
         workflowInst.setCurrentTaskEndDateTimeIsoStr(rs
                 .getString("current_task_end_date_time"));
+        workflowInst.setPriority(Priority.getPriority(rs.getDouble("priority")));
         Workflow workflow = new Workflow();
         workflow.setId(rs.getString("workflow_id"));
         workflowInst.setWorkflow(workflow);
@@ -107,6 +109,8 @@ public final class DbStructFactory {
             condition.setConditionId(String.valueOf(rs
                     .getInt("workflow_condition_id")));
             condition.setConditionName(rs.getString("workflow_condition_name"));
+            condition.setTimeoutSeconds(rs.getLong("workflow_condition_timeout"));
+            condition.setOptional(rs.getBoolean("workflow_condition_optional"));
             if (setOrder) {
                 condition.setOrder(rs.getInt("condition_order"));
             }

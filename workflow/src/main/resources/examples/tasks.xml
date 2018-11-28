@@ -113,4 +113,24 @@
 			<property name="mail.from" value="oodt@jpl.nasa.gov"/>
 		</configuration>
 	</task>	
+	<task id="urn:oodt:TestTimeoutTask" name="Test Timeout"
+		class="org.apache.oodt.cas.workflow.examples.LongTask">
+		<conditions>
+		   <condition id="urn:oodt:TimeoutCondition"/>
+		</conditions>
+		<configuration />
+		<requiredMetFields>
+			<metfield name="numSeconds" />
+		</requiredMetFields>
+	</task>	
+	<task id="urn:oodt:OptionalTask" name="Optional Task" 
+	    class="org.apache.oodt.cas.workflow.examples.LongTask">
+	  <conditions>
+	     <condition id="urn:oodt:OptionalCondition"/>
+	  </conditions>
+	  <configuration/>
+	  <requiredMetFields>
+	     <metfield name="numSeconds"/>
+	  </requiredMetFields>
+	</task>
 </cas:tasks>

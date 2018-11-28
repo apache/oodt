@@ -16,50 +16,64 @@
  */
 package org.apache.oodt.cas.crawl.action;
 
+//OODT static imports
+import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
+
 //JDK imports
 import java.io.File;
 import java.util.logging.Level;
 
+//Apache imports
+import org.apache.commons.lang.Validate;
+
 //OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.exec.ExecUtils;
 
 /**
+ * Execute some external command as a {@link CrawlerAction} response.
  * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Execute some external command as a {@link CrawlerAction} reponse
- * </p>.
+ * @author bfoster (Brian Foster)
  */
 public class ExternAction extends CrawlerAction {
 
-	private String executeCommand;
-	private String workingDir;
-	
-	@Override
-	public boolean performAction(File product, Metadata productMetadata)
-			throws CrawlerActionException {
-		String currentExcecuteCommand = this.executeCommand;
-		try {
-			if (currentExcecuteCommand == null)
-				throw new Exception("Must specify execute command");
-			return ExecUtils.callProgram(currentExcecuteCommand = PathUtils.doDynamicReplacement(currentExcecuteCommand, productMetadata), LOG, new File(workingDir != null ? workingDir : product.getParent())) == 0;
-		}catch (Exception e) {
-			LOG.log(Level.SEVERE, "Failed to execute extern command '" + currentExcecuteCommand + "' : " + e.getMessage(), e);
-			return false;
-		}
-	}
-	
-	public void setExecuteCommand(String executeCommand) {
-		this.executeCommand = executeCommand;
-	}
-	
-	public void setWorkingDir(String workingDir) throws Exception {
-		this.workingDir = PathUtils.doDynamicReplacement(workingDir);
-	}
+   private String executeCommand;
+   private String workingDir;
 
+   @Override
+   public boolean performAction(File product, Metadata productMetadata)
+         throws CrawlerActionException {
+      try {
+         String envReplacedExecuteCommand = doDynamicReplacement(
+               executeCommand, productMetadata);
+         return ExecUtils.callProgram(
+               envReplacedExecuteCommand,
+               LOG,
+               new File(workingDir != null ? doDynamicReplacement(workingDir,
+                     productMetadata) : product.getParent())) == 0;
+      } catch (Exception e) {
+         LOG.log(Level.SEVERE, "Failed to execute extern command '"
+               + executeCommand + "' : " + e.getMessage(), e);
+         return false;
+      }
+   }
+
+   @Override
+   public void validate() throws CrawlerActionException {
+      super.validate();
+      try {
+         Validate.notNull(executeCommand, "Must specify executeCommand");
+      } catch (Exception e) {
+         throw new CrawlerActionException(e);
+      }
+   }
+
+   public void setExecuteCommand(String executeCommand) {
+      this.executeCommand = executeCommand;
+   }
+
+   public void setWorkingDir(String workingDir) throws Exception {
+      this.workingDir = workingDir;
+   }
 }

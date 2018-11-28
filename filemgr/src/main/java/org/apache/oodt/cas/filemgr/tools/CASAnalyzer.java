@@ -26,6 +26,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.analysis.StopFilter;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 
@@ -63,7 +64,7 @@ public class CASAnalyzer extends Analyzer {
      * StandardFilter}, a {@link LowerCaseFilter} and a {@link StopFilter}.
      */
     public TokenStream tokenStream(String fieldName, Reader reader) {
-        TokenStream result = new StandardTokenizer(reader);
+        TokenStream result = new WhitespaceTokenizer(reader);
         result = new StandardFilter(result);
         result = new StopFilter(result, stopSet);
         return result;

@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 import org.apache.oodt.commons.database.SqlScript;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
@@ -101,6 +102,27 @@ public class TestWorkflowDataSourceRepository extends TestCase {
     protected void tearDown() throws Exception {
         ds.getConnection().close();
     }
+    
+    /**
+     * @since OODT-205
+     */
+    public void testWorkflowConditions(){
+      DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+            
+      Workflow w = null;
+      try{
+        w = repo.getWorkflowById("1");
+      }
+      catch(Exception e){
+        fail(e.getMessage());
+      }
+      
+      assertNotNull(w);
+      assertNotNull(w.getConditions());
+      assertTrue(w.getConditions().size() > 0);
+      assertEquals(w.getConditions().size(), 1);
+    }
+    
     
     public void testDataSourceRepo() throws SQLException, RepositoryException {
         DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);

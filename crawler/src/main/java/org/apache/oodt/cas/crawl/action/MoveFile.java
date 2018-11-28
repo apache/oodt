@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
@@ -23,6 +21,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -30,67 +29,74 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * 
- * @author bfoster
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
  * Moves a {@link Product} file as a reponse to a Crawler lifecycle phase
- * </p>.
+ * 
+ * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
 public class MoveFile extends CrawlerAction {
 
-    private String file;
+   private String file;
+   private String toDir;
+   private String fileExtension;
+   private boolean createToDir;
 
-    private String toDir;
+   public MoveFile() {
+      super();
+      this.createToDir = false;
+   }
 
-    private String fileExtension;
-    
-    private boolean createToDir;
+   public boolean performAction(File product, Metadata productMetadata)
+         throws CrawlerActionException {
+      String mvFile = file;
+      try {
+         if (mvFile == null) {
+            mvFile = product.getAbsolutePath();
+            if (this.fileExtension != null)
+               mvFile += "." + this.fileExtension;
+         }
+         File srcFile = new File(mvFile);
+         File toFile = new File(toDir + "/" + srcFile.getName());
+         if (createToDir)
+            toFile.getParentFile().mkdirs();
+         LOG.log(Level.INFO, "Moving file " + srcFile.getAbsolutePath()
+               + " to " + toFile.getAbsolutePath());
+         return srcFile.renameTo(toFile);
+      } catch (Exception e) {
+         throw new CrawlerActionException("Failed to move file from " + mvFile
+               + " to " + this.toDir + " : " + e.getMessage());
+      }
+   }
 
-    public MoveFile() {
-    	super();
-    	this.createToDir = false;
-    }
-    
-    public boolean performAction(File product, Metadata productMetadata)
-            throws CrawlerActionException {
-    	String mvFile = file;
-        try {
-            if (mvFile == null) {
-            	mvFile = product.getAbsolutePath();
-                if (this.fileExtension != null)
-                    mvFile += "." + this.fileExtension;
-            }
-            File srcFile = new File(mvFile);
-            File toFile = new File(toDir + "/" + srcFile.getName());
-            if (createToDir)
-            	toFile.getParentFile().mkdirs();
-            LOG.log(Level.INFO, "Moving file " + srcFile.getAbsolutePath() 
-            		+ " to " + toFile.getAbsolutePath());
-            return srcFile.renameTo(toFile);
-        } catch (Exception e) {
-            throw new CrawlerActionException("Failed to move file from " + mvFile
-                    + " to " + this.toDir + " : " + e.getMessage());
-        }
-    }
-    
-    public void setCreateToDir(boolean createToDir) {
-    	this.createToDir = createToDir;
-    }
+   @Override
+   public void validate() throws CrawlerActionException {
+      super.validate();
+      try {
+         Validate.isTrue(file == null || fileExtension == null,
+               "Must specify either file or fileExtension");
+      } catch (Exception e) {
+         throw new CrawlerActionException(e);
+      }
+   }
 
-    public void setFile(String file) {
-        this.file = file;
-    }
+   public void setCreateToDir(boolean createToDir) {
+      this.createToDir = createToDir;
+   }
 
-    @Required
-    public void setToDir(String toDir) {
-        this.toDir = toDir;
-    }
+   public void setFile(String file) {
+      this.file = file;
+   }
 
-    public void setFileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
-    }
+   @Required
+   public void setToDir(String toDir) {
+      this.toDir = toDir;
+   }
 
+   public String getToDir() {
+      return toDir;
+   }
+
+   public void setFileExtension(String fileExtension) {
+      this.fileExtension = fileExtension;
+   }
 }

@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-catalog</artifactId>
@@ -30,6 +30,11 @@
   are mapped to a common dictionary, and then integrated locally so that
   they may be queried across and ingested into.
   </description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/catalog</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/catalog</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/catalog</url>
+  </scm>
   <profiles>
     <profile>
       <id>audit</id>
@@ -140,6 +145,11 @@
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
       <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-cli</artifactId>
+      <version>${project.parent.version}</version>    
     </dependency>  
     <dependency>
       <groupId>commons-io</groupId>
@@ -185,4 +195,18 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+<!-- 
+  <reporting>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-project-info-reports-plugin</artifactId>
+  			<version>2.4</version>
+  			<configuration>
+  				<checkoutDirectoryName>catalog</checkoutDirectoryName>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  </reporting>
+-->
 </project>

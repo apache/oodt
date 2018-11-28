@@ -19,10 +19,6 @@
 
   @package CAS_Filemgr
   @author Chris A. Mattmann
-  @version $Revision$
-  @copyright Copyright (c) 2008, California Institute of Technology. 
-  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
-  @version $Id$
 -->
 <package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
   xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
@@ -55,8 +51,8 @@
     <api>stable</api>
   </stability>
   <license
-    uri="http://openchannelsoftware.com/project/print_license.php?group_id=332&amp;license_id=40">
-    OODT License
+    uri="http://www.apache.org/licenses/LICENSE-2.0">
+    Apache License, Version 2.0
   </license>
   <notes>
     This package provides a PHP-based XML-RPC client for the CAS filemgr
@@ -65,9 +61,15 @@
   </notes>
   <contents>
     <dir name="/" baseinstalldir="CAS/Filemgr">
+      <file name="BooleanQueryCriteria.class.php" role="php" />
+      <file name="Element.class.php" role="php" />
       <file name="Metadata.class.php" role="php" />
       <file name="Product.class.php" role="php" />
+      <file name="ProductPage.class.php" role="php" />
       <file name="ProductType.class.php" role="php" />
+      <file name="Query.class.php" role="php" />
+      <file name="RangeQueryCriteria.class.php" role="php" />
+      <file name="TermQueryCriteria.class.php" role="php" />
       <file name="XmlRpcFilemgrClient.class.php" role="php" />
     </dir><!-- / -->
   </contents>
@@ -94,8 +96,8 @@
       </stability>
       <date>2008-10-24</date>
       <license
-        uri="http://openchannelsoftware.com/project/print_license.php?group_id=332&amp;license_id=40">
-        OODT License
+        uri="http://www.apache.org/licenses/LICENCE-2.0">
+        Apache License, Version 2.0
       </license>
       <notes>
         This package provides a PHP-based XML-RPC client for the CAS filemgr

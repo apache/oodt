@@ -1,0 +1,69 @@
+
+#widenoborder{
+  width:100%;
+  border:0px;
+}
+
+#fm_status{
+
+}
+
+#wm_status{
+
+}
+
+#rm_status{
+
+}
+
+#report_date{
+
+}
+
+.roundtable table{
+border-top: 2px solid #bbb8a9;
+border-bottom: 2px solid #bbb8a9;
+border-left: 2px solid #bbb8a9;
+border-right: 2px solid #bbb8a9;
+}
+
+.nowrap{
+  white-space:nowrap;
+}
+
+.heading{
+  font-size:14px;
+  font-weight:bold;
+}
+
+.avg_crawl_time{
+
+}
+
+.num_crawls{
+
+}
+
+.crawler_name{
+
+}
+
+.file_ingest_datetime{
+
+}
+
+.file_path{
+
+}
+
+.status_name{
+
+}
+
+.batch_stub_url{
+
+}
+
+.crawler_name_and_url{
+
+}

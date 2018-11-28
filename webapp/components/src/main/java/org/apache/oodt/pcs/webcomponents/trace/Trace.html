@@ -1,0 +1,66 @@
+<wicket:panel>
+<wicket:link>
+  <script type="text/javascript" src="Trace.js" language="Javascript"></script>
+  <link rel="stylesheet" type="text/css" href="Trace.css"/>
+</wicket:link>
+
+<wicket:remove>
+  <script type="text/javascript" language="Javascript">
+  <!--
+  var openImg = new Image();
+  openImg.src = "open.gif";
+  var closedImg = new Image();
+  closedImg.src = "closed.gif";
+
+  function showBranch(branch) {
+  	var objBranch = document.getElementById(branch).style;
+  	if (objBranch.display == "block")
+  		objBranch.display = "none";
+  	else
+  		objBranch.display = "block";
+  }
+
+  function swapFolder(img) {
+  	objImg = document.getElementById(img);
+  	if (objImg.src.indexOf('closed.gif') > -1)
+  		objImg.src = openImg.src;
+  	else
+  		objImg.src = closedImg.src;
+  }  
+  //-->  
+  </script>
+</wicket:remove>
+
+
+<h3 id="upstream_pedigree_heading">Upstream Pedigree</h3>
+<span id="upstream_pedigree_tree" wicket:id="upstream_pedigree_tree">
+</span>
+
+<h3 id="downstream_pedigree_heading">Downstream Pedigree</h3>
+<span wicket:id="downstream_pedigree_tree" id="downstream_pedigree_tree">
+</span>
+</wicket:panel>
+
+<wicket:remove>
+<div class="trigger"
+	onClick="javascript:showBranch('branch1.1');swapFolder('folder1.1');">
+		<img src="closed.gif" border="0" id="folder1.1" />
+	testfile.txt
+</div>
+<span class="branch" id="branch1.1">
+	<div class="trigger"
+		onClick="javascript:showBranch('branch2.1');swapFolder('folder2.1');">
+			<img src="closed.gif" border="0" id="folder2.1" />
+		testfile2.txt
+    </div>
+	<span class="branch" id="branch2.1">
+			<img src="doc.gif" />
+		testfile3.txt<br />
+
+				<img src="doc.gif" />
+			testfile4.txt<br />
+   </span>   
+</span>
+
+</wicket:remove>
+

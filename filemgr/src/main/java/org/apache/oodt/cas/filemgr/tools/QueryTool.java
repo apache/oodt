@@ -60,6 +60,7 @@ import org.apache.lucene.search.TermQuery;
  * A tool to return product ids given a {@link Query} against the File Manager.
  * </p>
  */
+@Deprecated
 public final class QueryTool {
 
     private static String freeTextBlock = "__FREE__";

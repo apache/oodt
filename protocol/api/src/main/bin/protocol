@@ -1,0 +1,14 @@
+#!/bin/csh
+
+set args
+
+if ( $#args > 0 ) then
+        set args = "$*"
+endif
+
+${JAVA_HOME}/bin/java \
+        -Djava.ext.dirs=../lib \
+        -Djava.util.logging.config.file=../etc/logging.properties \
+        -Dorg.apache.oodt.cas.cli.action.spring.config=../policy/cmd-line-actions.xml \
+        -Dorg.apache.oodt.cas.cli.option.spring.config=../policy/cmd-line-options.xml \
+        org.apache.oodt.cas.protocol.system.ProtocolCommandLine ${args}

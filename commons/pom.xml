@@ -21,13 +21,18 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-commons</artifactId>
   <name>Common Utilities</name>
   <packaging>jar</packaging>
   <description>Apache OODT Common Utilities Project</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/commons</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/commons</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/commons</url>
+  </scm>
   <build>
     <resources>
         <resource>
@@ -148,6 +153,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-hibernate3</artifactId>
       <version>2.0.8</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
         <groupId>xmlrpc</groupId>

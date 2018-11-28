@@ -23,18 +23,19 @@ import org.apache.oodt.cas.pushpull.config.Config;
 import org.apache.oodt.cas.pushpull.config.SiteInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
 import org.apache.oodt.cas.pushpull.exceptions.CrawlerException;
-import org.apache.oodt.cas.pushpull.exceptions.ProtocolException;
 import org.apache.oodt.cas.pushpull.exceptions.ProtocolFileException;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
 import org.apache.oodt.cas.pushpull.exceptions.ThreadEvaluatorException;
 import org.apache.oodt.cas.pushpull.exceptions.ToManyFailedDownloadsException;
 import org.apache.oodt.cas.pushpull.exceptions.UndefinedTypeException;
 import org.apache.oodt.cas.pushpull.filerestrictions.renamingconventions.RenamingConvention;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFileFilter;
-import org.apache.oodt.cas.pushpull.protocol.Protocol;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.pushpull.protocol.ProtocolHandler;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
+import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
 
@@ -253,7 +254,7 @@ public class FileRetrievalSystem {
                 : false;
     }
 
-    public List<ProtocolFile> getNextPage(final ProtocolFile dir,
+    public List<RemoteSiteFile> getNextPage(final RemoteSiteFile dir,
             final ProtocolFileFilter filter) throws RemoteConnectionException {
         for (int i = 0; i < 3; i++) {
             try {
@@ -276,7 +277,7 @@ public class FileRetrievalSystem {
     }
 
     public void changeToRoot(RemoteSite remoteSite) throws ProtocolException,
-            MalformedURLException {
+            MalformedURLException, org.apache.oodt.cas.protocol.exceptions.ProtocolException {
         if (validate(remoteSite))
             protocolHandler.cdToROOT(protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true));
@@ -304,9 +305,9 @@ public class FileRetrievalSystem {
             throw new ProtocolException("Not a valid remote site " + remoteSite);
     }
 
-    public void changeToDir(ProtocolFile pFile) throws ProtocolException,
+    public void changeToDir(RemoteSiteFile pFile) throws ProtocolException,
             MalformedURLException {
-        RemoteSite remoteSite = pFile.getRemoteSite();
+        RemoteSite remoteSite = pFile.getSite();
         if (validate(remoteSite))
             protocolHandler.cd(protocolHandler.getAppropriateProtocolBySite(
                     remoteSite, true), pFile);
@@ -392,7 +393,7 @@ public class FileRetrievalSystem {
         }
     }
 
-    public boolean addToDownloadQueue(ProtocolFile file, String renamingString,
+    public boolean addToDownloadQueue(RemoteSiteFile file, String renamingString,
             File downloadToDir, String uniqueMetadataElement,
             boolean deleteAfterDownload) throws ToManyFailedDownloadsException,
             RemoteConnectionException, AlreadyInDatabaseException,
@@ -559,7 +560,7 @@ public class FileRetrievalSystem {
         }
     }
 
-    Protocol getNextAvaliableSession(ProtocolFile file) throws CrawlerException {
+    Protocol getNextAvaliableSession(RemoteSiteFile file) throws CrawlerException {
         // wait for available session, then load it
         Protocol session;
         while ((session = getSession(file)) == null) {
@@ -612,11 +613,11 @@ public class FileRetrievalSystem {
      *             If downloading session Protocol has to be reconnected and
      *             there is an error communicating with the server
      */
-    synchronized Protocol getSession(ProtocolFile file) throws CrawlerException {
+    synchronized Protocol getSession(RemoteSiteFile file) throws CrawlerException {
         try {
             Protocol session = null;
-			if (file.getRemoteSite().getMaxConnections() < 0
-					|| file.getRemoteSite().getMaxConnections() > this.getCurrentlyDownloadingFiles().size()) {
+			if (file.getSite().getMaxConnections() < 0
+					|| file.getSite().getMaxConnections() > this.getCurrentlyDownloadingFiles().size()) {
 	            if (avaliableSessions.size() > 0) {
 	                session = modifyAvailableSessionForPath(file);
 	            } else if (numberOfSessions < max_sessions) {
@@ -631,27 +632,27 @@ public class FileRetrievalSystem {
         }
     }
 
-    Protocol createNewSessionForPath(ProtocolFile file)
+    Protocol createNewSessionForPath(RemoteSiteFile file)
             throws RemoteConnectionException {
         return protocolHandler.getAppropriateProtocol(file, /* reuse */false, /* navigate */
         true);
     }
 
-    Protocol modifyAvailableSessionForPath(ProtocolFile file)
+    Protocol modifyAvailableSessionForPath(RemoteSiteFile file)
             throws ProtocolException, RemoteConnectionException {
         Protocol session = getAvailableSession();
-        if (!protocolHandler.getRemoteSite(session).getURL().getHost().equals(
-                file.getURL().getHost())
+        if (!file.getSite().getURL().getHost().equals(
+                file.getSite().getURL().getHost())
                 || !protocolHandler.isProtocolConnected(session)) {
             protocolHandler.disconnect(session);
             session = protocolHandler.getAppropriateProtocol(file, /* reuse */
             false, /* navigate */true);
         } else {
             try {
-                if (file.isDirectory())
+                if (file.isDir())
                     protocolHandler.cd(session, file);
                 else
-                    protocolHandler.cd(session, file.getParentFile());
+                    protocolHandler.cd(session, new RemoteSiteFile(file.getParent()));
             } catch (Exception e) {
                 e.printStackTrace();
                 try {

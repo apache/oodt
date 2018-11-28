@@ -18,41 +18,39 @@
 package org.apache.oodt.xmlps.product;
 
 //OODT imports
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
+import org.apache.oodt.product.ProductException;
+import org.apache.oodt.product.QueryHandler;
 import org.apache.oodt.xmlps.mapping.DatabaseTable;
-import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.FieldScope;
+import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.mapping.MappingReader;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.queryparser.Expression;
 import org.apache.oodt.xmlps.queryparser.HandlerQueryParser;
 import org.apache.oodt.xmlps.structs.CDEResult;
-import org.apache.oodt.xmlps.structs.CDERow;
 import org.apache.oodt.xmlps.structs.CDEValue;
 import org.apache.oodt.xmlps.util.XMLQueryHelper;
-
-//OODT imports
-import org.apache.oodt.product.ProductException;
-import org.apache.oodt.product.QueryHandler;
 import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * 
+ *
  * <p>
  * An XML configurable version of a Product Server that requires no code
  * to be written to plug into a local site's relational backend DBMS.
@@ -115,7 +113,7 @@ public class XMLPSProductHandler implements QueryHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.oodt.product.QueryHandler#query(org.apache.oodt.xmlquery.XMLQuery)
      */
     public XMLQuery query(XMLQuery query) throws ProductException {
@@ -125,10 +123,12 @@ public class XMLPSProductHandler implements QueryHandler {
             translateToDomain(selectSet, true);
             translateToDomain(whereSet, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.severe(e.getMessage());
             throw new ProductException(e.getMessage());
         }
+
         queryAndPackageResults(query);
+
         return query;
     }
 
@@ -149,7 +149,7 @@ public class XMLPSProductHandler implements QueryHandler {
     protected List<QueryElement> getElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
         if (origSet == null || (origSet != null && origSet.size() == 0))
-            return null;
+            return Collections.emptyList();
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
@@ -170,7 +170,7 @@ public class XMLPSProductHandler implements QueryHandler {
     protected List<QueryElement> getConstElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
         if (origSet == null || (origSet != null && origSet.size() == 0))
-            return null;
+            return Collections.emptyList();
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
@@ -190,10 +190,10 @@ public class XMLPSProductHandler implements QueryHandler {
                 .createQueryStack(query.getWhereElementSet());
         Expression parsedQuery = HandlerQueryParser.parse(queryStack,
                 this.mapping);
-        List<QueryElement> names = getElemNamesFromQueryElemSet(query
+        List<QueryElement> selectNames = getElemNamesFromQueryElemSet(query
                 .getSelectElementSet());
 
-        String querySelectNames = toNames(names);
+        String querySelectNames = toSQLSelectColumns(selectNames);
 
         StringBuffer sqlBuf = new StringBuffer("SELECT ");
         sqlBuf.append(querySelectNames);
@@ -202,10 +202,9 @@ public class XMLPSProductHandler implements QueryHandler {
         sqlBuf.append(" ");
 
         if (mapping.getNumTables() > 0) {
-            for (Iterator<String> i = mapping.getTableNames().iterator(); i
-                    .hasNext();) {
-                String tableName = i.next();
-                DatabaseTable tbl = mapping.getTableByName(tableName);
+            List<QueryElement> whereNames = getElemNamesFromQueryElemSet(query.getWhereElementSet());
+            Set<DatabaseTable> requiredTables = getRequiredTables(whereNames, selectNames);
+            for (DatabaseTable tbl : requiredTables) {
                 sqlBuf.append("INNER JOIN ");
                 sqlBuf.append(tbl.getName());
                 sqlBuf.append(" ON ");
@@ -213,9 +212,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 sqlBuf.append(".");
                 sqlBuf.append(tbl.getJoinFieldName());
                 sqlBuf.append(" = ");
-                sqlBuf.append((tbl.getDefaultTableJoin() != null && 
-                        !tbl.getDefaultTableJoin().equals("")) ? tbl
-                        .getDefaultTableJoin() : mapping.getDefaultTable());
+                sqlBuf.append(tbl.getDefaultTableJoin());
                 sqlBuf.append(".");
                 sqlBuf.append(tbl.getDefaultTableJoinFieldName());
                 sqlBuf.append(" ");
@@ -224,28 +221,17 @@ public class XMLPSProductHandler implements QueryHandler {
 
         if(parsedQuery != null){
             sqlBuf.append(" WHERE ");
-            sqlBuf.append(parsedQuery.evaluate());            
+            sqlBuf.append(parsedQuery.evaluate());
         }
 
         LOG.log(Level.INFO, sqlBuf.toString());
 
         if (executor != null) {
             try {
-                CDEResult res = executor.executeLocalQuery(this.mapping,
-                        sqlBuf.toString(), Arrays.asList(querySelectNames
-                                .split(",")));
-
-                res = addConstFields(res,
-                        getConstElemNamesFromQueryElemSet(query
-                                .getSelectElementSet()));
-
-                if (res.getRows() == null
-                        || (res.getRows() != null && res.getRows().size() == 0)) {
-                }
-                Result r = res.toResult();
-                if (r != null) {
-                    query.getResults().add(r);
-                }
+                CDEResult res = executor.executeLocalQuery(sqlBuf.toString());
+                res.setMapping(mapping);
+                res.setConstValues(getConstValuesForQuery(query));
+                query.getResults().add(res);
             } catch (SQLException e) {
                 e.printStackTrace();
                 LOG.log(Level.WARNING, "Error executing sql: ["
@@ -255,46 +241,34 @@ public class XMLPSProductHandler implements QueryHandler {
 
     }
 
-    private CDEResult addConstFields(CDEResult res,
-            List<QueryElement> constFlds) {
-        CDEResult newRes = res;
-        if (constFlds != null && constFlds.size() > 0) {
-            if (res == null
-                    || (res != null && (res.getRows() == null || (res.getRows() != null && res
-                            .getRows().size() == 0)))) {
-                newRes = new CDEResult();
-                // add one row
-                newRes.getRows().add(new CDERow());
-            }
-
-            for (Iterator<QueryElement> i = constFlds.iterator(); i.hasNext();) {
-                QueryElement elem = i.next();
-                MappingField fld = this.mapping.getFieldByLocalName(elem
-                        .getValue());
-
-                for (Iterator<CDERow> j = newRes.getRows().iterator(); j
-                        .hasNext();) {
-                    CDERow row = j.next();
-                    CDEValue val = new CDEValue(fld.getName(), fld
-                            .getConstantValue());
-                    row.getVals().add(val);
+    private List<CDEValue> getConstValuesForQuery(XMLQuery query) {
+        List<QueryElement> select = query.getSelectElementSet();
+        List<QueryElement> constNames = getConstElemNamesFromQueryElemSet(select);
+        List<CDEValue> constValues = new ArrayList<CDEValue>();
+        if (constNames != null) {
+            for (QueryElement qe : constNames) {
+                MappingField fld = mapping.getFieldByLocalName(qe.getValue());
+                if (fld != null) {
+                    constValues.add(new CDEValue(fld.getName(), fld.getConstantValue()));
                 }
             }
         }
-
-        return newRes;
-
+        return constValues;
     }
 
-    private String toNames(List<QueryElement> elems) {
+    private String toSQLSelectColumns(List<QueryElement> elems) {
         if (elems == null || (elems != null && elems.size() == 0))
             return null;
 
-        StringBuffer buf = new StringBuffer();
-        for (Iterator<QueryElement> i = elems.iterator(); i.hasNext();) {
-            QueryElement elem = i.next();
-            buf.append(elem.getValue());
-            buf.append(",");
+        StringBuilder buf = new StringBuilder();
+        for (QueryElement qe : elems) {
+            MappingField fld = this.mapping.getFieldByLocalName(qe.getValue());
+            if (fld != null) {
+                buf.append(fld.getLocalName());
+                buf.append(" as ");
+                buf.append(fld.getName());
+                buf.append(",");
+            }
         }
 
         buf.deleteCharAt(buf.length() - 1);
@@ -330,7 +304,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 // check to see if it has a dbname attr, if not, then the name
                 // stays
                 // the same
-                String newFldName = this.mapping.getFieldLocalName(fld);
+                String newFldName = fld.getLocalName();
 
                 elem.setValue(newFldName);
 
@@ -364,6 +338,50 @@ public class XMLPSProductHandler implements QueryHandler {
             }
         }
 
+    }
+
+    protected Set<DatabaseTable> getRequiredTables(
+            List<QueryElement> whereElemNames, List<QueryElement> selectElemNames) {
+        Set<DatabaseTable> tables = new HashSet<DatabaseTable>();
+        // add tables from where element set
+        if (whereElemNames != null) {
+            for (QueryElement qe : whereElemNames) {
+                MappingField fld = mapping.getFieldByLocalName(qe.getValue());
+                if (fld != null) {
+                    DatabaseTable t = mapping.getTableByName(fld.getTableName());
+                    if (t != null && !tables.contains(t)) {
+                        tables.add(t);
+                    }
+                }
+            }
+        }
+        // add tables from select element set
+        if (selectElemNames != null) {
+            for (QueryElement qe : selectElemNames) {
+                MappingField fld = mapping.getFieldByLocalName(qe.getValue());
+                if (fld != null) {
+                    DatabaseTable t = mapping.getTableByName(fld.getTableName());
+                    if (t != null && !tables.contains(t)) {
+                        tables.add(t);
+                    }
+                }
+            }
+        }
+        // the tables found may be joined on columns from tables we haven't found
+        // yet
+        // add additional required join tables
+        Set<DatabaseTable> moreTables = new HashSet<DatabaseTable>(tables);
+        for (DatabaseTable t : tables) {
+            DatabaseTable join = mapping.getTableByName(t.getDefaultTableJoin());
+            // recursively add all join tables until we get to either
+            // (a) the mapping default table (join == null)
+            // (b) or a table already found (moreTables.contains(join))
+            while (join != null && !moreTables.contains(join)) {
+                moreTables.add(join);
+                join = mapping.getTableByName(join.getDefaultTableJoin());
+            }
+        }
+        return moreTables;
     }
 
 }

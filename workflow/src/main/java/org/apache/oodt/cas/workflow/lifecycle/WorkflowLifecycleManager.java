@@ -33,7 +33,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
  * @version $Revision$
  * 
  * <p>
- * A Manager interface for the {@link WorkflowLifecycles} used by the webapp to
+ * A Manager interface for the {@link WorkflowLifecycles} to
  * determine status for a {@link WorkflowInstance}.
  * </p>.
  */

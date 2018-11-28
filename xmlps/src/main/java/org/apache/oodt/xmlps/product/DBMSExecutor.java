@@ -19,27 +19,17 @@ package org.apache.oodt.xmlps.product;
 
 //OODT imports
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-import org.apache.oodt.xmlps.mapping.Mapping;
-import org.apache.oodt.xmlps.mapping.FieldType;
-import org.apache.oodt.xmlps.mapping.MappingField;
-import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.structs.CDEResult;
-import org.apache.oodt.xmlps.structs.CDERow;
-import org.apache.oodt.xmlps.structs.CDEValue;
 
-//JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
 /**
- * 
+ *
  * <p>
  * Executes CDE Queries against an underlying JDBC database, backed by Apache
  * commons-pool and commons-dbcp.
@@ -48,98 +38,29 @@ import javax.sql.DataSource;
  */
 public class DBMSExecutor {
 
-  private DataSource dataSource;
-
-  private static final Logger LOG = Logger.getLogger(DBMSExecutor.class
-      .getName());
+  private final DataSource dataSource;
 
   public DBMSExecutor() {
     String jdbcUrl = System.getProperty("xmlps.datasource.jdbc.url");
     String user = System.getProperty("xmlps.datasource.jdbc.user");
     String pass = System.getProperty("xmlps.datasource.jdbc.pass");
     String driver = System.getProperty("xmlps.datasource.jdbc.driver");
-    dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass, driver,
-        jdbcUrl);
+    dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass, driver, jdbcUrl);
   }
 
-  public CDEResult executeLocalQuery(Mapping map, String sql,
-      List<String> returnNames) throws SQLException {
-    Connection conn = null;
-    Statement statement = null;
-
-    CDEResult result = null;
-
+  public CDEResult executeLocalQuery(String sql) throws SQLException {
     try {
-      conn = dataSource.getConnection();
-      statement = conn.createStatement();
+      Connection conn = dataSource.getConnection();
+      Statement statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(sql);
-
-      result = new CDEResult();
-
-      while (rs.next()) {
-        CDERow row = toCDERow(rs, map, returnNames);
-        result.getRows().add(row);
-      }
-
+      CDEResult result = new CDEResult(rs, conn);
+      return result;
     } catch (SQLException e) {
       e.printStackTrace();
       throw e;
-    } finally {
-      if (statement != null) {
-        try {
-          statement.close();
-        } catch (Exception ignore) {
-        }
-
-        statement = null;
-      }
-
-      if (conn != null) {
-        try {
-          conn.close();
-        } catch (Exception ignore) {
-        }
-
-        conn = null;
-      }
     }
-
-    return result;
-
+    // do not close the Statement or Connection here
+    // call CDEResult#close() to close ResultSet and Connection
   }
-
-  private CDERow toCDERow(ResultSet rs, Mapping map, List<String> returnNames) {
-    CDERow row = new CDERow();
-    if (returnNames != null && returnNames.size() > 0) {
-      for (Iterator<String> i = returnNames.iterator(); i.hasNext();) {
-        String retName = i.next();
-        MappingField fld = map.getFieldByLocalName(retName);
-        // only handle dynamic fields here
-        // if it was a constant field, then it will be dealt with
-        // later
-        if (fld.getType().equals(FieldType.DYNAMIC)) {
-          // go ahead and add it in
-          try {
-            String elemDbVal = rs.getString(retName);
-            for (Iterator<MappingFunc> j = fld.getFuncs().iterator(); j
-                .hasNext();) {
-              MappingFunc func = j.next();
-              CDEValue origVal = new CDEValue(fld.getName(), elemDbVal);
-              CDEValue newVal = func.inverseTranslate(origVal);
-              elemDbVal = newVal.getVal();
-            }
-
-            row.getVals().add(new CDEValue(fld.getName(), elemDbVal));
-          } catch (SQLException e) {
-            LOG.log(Level.WARNING, "Unable to obtain field: [" + retName
-                + "] from result set: message: " + e.getMessage());
-          }
-        }
-      }
-    }
-
-    return row;
-
-  }
-
+  
 }

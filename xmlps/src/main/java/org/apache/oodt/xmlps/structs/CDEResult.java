@@ -18,75 +18,112 @@
 package org.apache.oodt.xmlps.structs;
 
 //JDK imports
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-//OODT imports
-import org.apache.oodt.commons.util.DateConvert;
+import org.apache.oodt.xmlps.mapping.Mapping;
+import org.apache.oodt.xmlps.mapping.MappingField;
+import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlquery.Result;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.List;
+
 /**
- * 
- * <p>
- * A {@link List} of {@link CDERow}s returned from a query against a
- * Product Server.
- * </p>.
+ * A {@link Result} that wraps a {@link ResultSet} and returns rows as Strings,
+ * applying {@link MappingFuncs} if a {@link Mapping} is provided, and appending
+ * constant fields if a {@link List} of {@link CDEValue}s is provided.
  */
-public class CDEResult {
+public class CDEResult extends Result {
 
-    private List<CDERow> rows;
+  private static final long serialVersionUID = 1L;
 
-    private static final String ROW_TERMINATOR = "$";
+  private static final String ROW_TERMINATOR = "$";
 
-    public CDEResult() {
-        rows = new Vector<CDERow>();
+  private final ResultSet rs;
+  private final Connection con;
+  private Mapping mapping;
+  private List<CDEValue> constValues;
+
+  public CDEResult(ResultSet rs, Connection con) {
+    this.rs = rs;
+    this.con = con;
+    setMimeType("text/plain");
+  }
+
+  public void setMapping(Mapping mapping) {
+    this.mapping = mapping;
+  }
+
+  public void setConstValues(List<CDEValue> constValues) {
+    this.constValues = constValues;
+  }
+
+  @Override
+  public InputStream getInputStream() throws IOException {
+    if (rs == null || con == null)
+      throw new IOException("InputStream not ready, ResultSet or Connection is null!");
+    return new CDEResultInputStream(this);
+  }
+
+  @Override
+  public long getSize() {
+    return -1;
+  }
+
+ public void close() throws SQLException {
+    if (rs != null)
+      rs.close();
+    if (con != null)
+      con.close();
+  }
+
+  public String getNextRowAsString() throws SQLException {
+    if (rs.next()) {
+      CDERow row = createCDERow();
+      if (mapping != null)
+        applyMappingFuncs(row);
+      if (constValues != null)
+        addConstValues(row);
+      // if there is some kind of configurable response writer,
+      // here would be a nice place to put it...
+      return row.toString() + ROW_TERMINATOR;
     }
+    return null;
+  }
 
-    public Result toResult() {
-        String strVal = toString();
-        if (strVal == null || (strVal != null && strVal.equals(""))) {
-            return null;
+  private CDERow createCDERow() throws SQLException {
+    CDERow row = new CDERow();
+    ResultSetMetaData met = rs.getMetaData();
+    int count = met.getColumnCount();
+    for (int i = 1; i <= count; i++) {
+      // since the SQL query was built with "SELECT ${fieldlocalname} as ${fieldname}"
+      // we know that ResultSet column names equal CDE field names
+      // and appear in the correct order as well
+      String colName = met.getColumnName(i);
+      String colValue = rs.getString(i);
+      CDEValue val = new CDEValue(colName, colValue);
+      row.getVals().add(val);
+    }
+    return row;
+  }
+
+  private void applyMappingFuncs(CDERow row) {
+    for (CDEValue value : row.getVals()) {
+      MappingField fld = mapping.getFieldByName(value.getCdeName());
+      if (fld != null) {
+        for (MappingFunc func : fld.getFuncs()) {
+          CDEValue newValue = func.inverseTranslate(value);
+          value.setVal(newValue.getVal());
         }
-
-        Result r = new Result();
-        r.setID(DateConvert.isoFormat(new Date()));
-        r.setMimeType("text/plain");
-        r.setResourceID("UNKNOWN");
-        r.setValue(toString());
-        return r;
+      }
     }
+  }
 
-    public String toString() {
-        StringBuffer rStr = new StringBuffer();
-        if (rows != null && rows.size() > 0) {
-            for (Iterator<CDERow> i = rows.iterator(); i.hasNext();) {
-                CDERow row = i.next();
-                rStr.append(row.toString());
-                rStr.append(ROW_TERMINATOR);
-            }
-
-            rStr.deleteCharAt(rStr.length() - 1);
-        }
-
-        return rStr.toString();
-
-    }
-
-    /**
-     * @return the rows
-     */
-    public List<CDERow> getRows() {
-        return rows;
-    }
-
-    /**
-     * @param rows
-     *            the rows to set
-     */
-    public void setRows(List<CDERow> rows) {
-        this.rows = rows;
-    }
+  private void addConstValues(CDERow row) {
+    row.getVals().addAll(constValues);
+  }
 
 }
