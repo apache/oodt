@@ -32,7 +32,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  *
  * @author bfoster (Brian Foster)
  */
-public class MockDynamicConfigFileWriter implements DynamicConfigFileWriter {
+public class MockDynamicConfigFileWriter extends DynamicConfigFileWriter {
 
    @Override
    public File generateFile(String filePath, Metadata metadata, Logger logger,

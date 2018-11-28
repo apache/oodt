@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.util;
 
 //JDK imports
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -27,9 +28,11 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,6 +49,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
 /**
  * @author mattmann
  * @author bfoster
+ * @author riverma
  * @version $Revision$
  * 
  * <p>
@@ -96,36 +100,36 @@ public final class XmlStructFactory {
         repositoryPath = PathUtils.replaceEnvVariables(repositoryPath);
 
         // grab metadata
-        Metadata met = null;
+        Metadata met = new Metadata();
         Element metadataRoot = XMLUtils.getFirstElement("metadata",
                 productTypeElem);
         if (metadataRoot != null) {
             Hashtable<String, Object> metHash = new Hashtable<String, Object>();
-            met = new Metadata();
             NodeList keyValElems = metadataRoot.getElementsByTagName("keyval");
 
             for (int i = 0; i < keyValElems.getLength(); i++) {
                 Element keyValElem = (Element) keyValElems.item(i);
 
                 String elemName = XMLUtils.read(keyValElem, "key");
+                @SuppressWarnings("unchecked")
                 List<String> elemValues = XMLUtils.readMany(keyValElem, "val");
                 metHash.put(elemName, elemValues);
             }
 
             met.replaceMetadata(metHash);
+        } else {
+        	LOG.warning("metadata node missing for product type : "+id);
         }
 
         // grab extractors
-        List<ExtractorSpec> extractors = null;
+        List<ExtractorSpec> extractors = new Vector<ExtractorSpec>();
         Element extractorRoot = XMLUtils.getFirstElement("metExtractors",
                 productTypeElem);
 
         if (extractorRoot != null) {
             NodeList extractorNodes = extractorRoot
                     .getElementsByTagName("extractor");
-
             if (extractorNodes != null && extractorNodes.getLength() > 0) {
-                extractors = new Vector<ExtractorSpec>();
                 for (int i = 0; i < extractorNodes.getLength(); i++) {
                     Element extractorElem = (Element) extractorNodes.item(i);
                     ExtractorSpec spec = new ExtractorSpec();
@@ -170,6 +174,8 @@ public final class XmlStructFactory {
                 }
 
             }
+        } else {
+        	LOG.warning("metExtractors node missing from product type : "+id);
         }
         
         List<TypeHandler> handlers = null;
@@ -368,6 +374,51 @@ public final class XmlStructFactory {
                 versionerClassPathElem.setAttribute("class", type
                         .getVersioner());
                 typeElem.appendChild(versionerClassPathElem);
+
+                // add extractor info
+                Element metExtractorsElem = document.createElement("metExtractors");
+                for (Object specObject : type.getExtractors()) {
+                    ExtractorSpec spec = (ExtractorSpec) specObject;
+                    Element extractorElem = document.createElement("extractor");
+                    extractorElem.setAttribute("class", spec.getClassName());
+                    
+                    if (spec.getConfiguration() != null) {
+                        Element extractorConfigElem = document.createElement("configuration");
+                        Enumeration e = spec.getConfiguration().propertyNames();
+                        
+                        while (e.hasMoreElements()) {
+                            String key = (String) e.nextElement();
+                            
+                            Element propertyElem = document.createElement("property");
+                            propertyElem.setAttribute("name", key);
+                            propertyElem.setAttribute("value", spec.getConfiguration().getProperty(key));
+                            
+                            extractorConfigElem.appendChild(propertyElem);
+                        }
+                        
+                        extractorElem.appendChild(extractorConfigElem);
+                    }
+                    
+                    metExtractorsElem.appendChild(extractorElem);
+                }
+                typeElem.appendChild(metExtractorsElem);
+                
+                // add type metadata
+                Element metElem = document.createElement("metadata");
+                for (String key : type.getTypeMetadata().getAllKeys()) {
+                    Element keyValElem = document.createElement("keyval");
+                    Element keyElem = document.createElement("key");
+                    Element valElem = document.createElement("val");
+                    
+                    keyElem.appendChild(document.createTextNode(key));
+                    valElem.appendChild(document.createTextNode(
+                            type.getTypeMetadata().getMetadata(key)));
+                    keyValElem.appendChild(keyElem);
+                    keyValElem.appendChild(valElem);
+                    
+                    metElem.appendChild(keyValElem);
+                }
+                typeElem.appendChild(metElem);
 
                 root.appendChild(typeElem);
             }

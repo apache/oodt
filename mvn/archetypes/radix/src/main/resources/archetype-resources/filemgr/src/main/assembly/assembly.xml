@@ -56,7 +56,7 @@
       <directory>${basedir}/src/main/resources/etc</directory>
       <outputDirectory>filemgr/etc</outputDirectory>
       <includes>
-        <include>**.properties</include>
+        <include>filemgr.properties</include>
         <include>**.xml</include>
       </includes>
       <fileMode>664</fileMode>

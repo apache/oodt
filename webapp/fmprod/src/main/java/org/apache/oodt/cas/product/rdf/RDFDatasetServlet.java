@@ -43,6 +43,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
@@ -220,7 +223,18 @@ public class RDFDatasetServlet extends HttpServlet {
 
               for (Iterator<String> k = vals.iterator(); k.hasNext();) {
                 String val = (String) k.next();
-                Element rdfElem = RDFUtils.getRDFElement(key, val, this.rdfConf, doc);
+                //OODT-665 fix, take keys like 
+                //PRODUCT Experiment Type
+                //and transform it into ProductExperimentType
+                String outputKey = key;
+                if (outputKey.indexOf(" ") != -1) {
+                  outputKey = StringUtils.join(WordUtils.capitalizeFully(outputKey).split(
+                      " "));
+                }
+                
+                val = StringEscapeUtils.escapeXml(val);
+                Element rdfElem = RDFUtils.getRDFElement(outputKey, val,
+                    this.rdfConf, doc);
                 productTypeRdfDesc.appendChild(rdfElem);
               }
 

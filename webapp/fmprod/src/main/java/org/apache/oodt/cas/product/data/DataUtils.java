@@ -143,6 +143,11 @@ public final class DataUtils implements DataDeliveryKeys {
 
       try {
         File prodFile = new File(new URI(r.getDataStoreReference()));
+        if (prodFile.isDirectory()) {
+            LOG.log(Level.WARNING, "Data store reference is a directory. Not adding directory to the zip file: ["
+                    + r.getDataStoreReference() + "]");
+            continue;
+        }
         String filename = prodFile.getName();
         FileInputStream in = new FileInputStream(prodFile.getAbsoluteFile());
         addZipEntryFromStream(in, out, filename);

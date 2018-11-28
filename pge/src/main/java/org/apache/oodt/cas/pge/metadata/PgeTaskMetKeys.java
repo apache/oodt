@@ -43,13 +43,13 @@ public enum PgeTaskMetKeys {
     */
    PGE_CONFIG_BUILDER(
          "PGETask/PgeConfigBuilder",
-         "PGETask/PgeConfigBuilder"),
+         "PGETask_PgeConfigBuilder"),
    /**
     * The java logger {@link FileHandler} pattern (only for filename though).
     */
    LOG_FILENAME_PATTERN(
          "PGETask/LogFilenamePattern",
-         "PGETask/LogFilenamePattern"),
+         "PGETask_LogFilenamePattern"),
    /**
     * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
     */
@@ -62,13 +62,13 @@ public enum PgeTaskMetKeys {
     */
    FILE_STAGER(
          "PGETask/FileStager",
-         "PGETask/FileStager"),
+         "PGETask_FileStager"),
    /**
     * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
     */
    DUMP_METADATA(
          "PGETask/DumpMetadata",
-         "PGETask/DumpMetadata"),
+         "PGETask_DumpMetadata"),
    /**
     * Set by CAS-PGE to the number of milliseconds it took CAS-PGE to run.
     */
@@ -111,7 +111,7 @@ public enum PgeTaskMetKeys {
     */
    CRAWLER_CONFIG_FILE(
          "PGETask/Ingest/CrawlerConfigFile",
-         "PGETask/Ingest/CrawlerConfigFile"),
+         "PCS_ActionRepoFile"),
    /**
     * The IDs of the {@link CrawlerAction}s in the {@link #ACTION_REPO_FILE} to run.
     */
@@ -136,7 +136,7 @@ public enum PgeTaskMetKeys {
     */
    MIME_EXTRACTOR_REPO(
          "PGETask/Ingest/MimeExtractorRepo",
-         "PGETask/Ingest/MimeExtractorRepo"),
+         "PGETask_MimeExtractorRepo"),
    /**
     * List of metadata keys required for Product ingest.
     */
@@ -150,9 +150,21 @@ public enum PgeTaskMetKeys {
     */
    ATTEMPT_INGEST_ALL(
          "PGETask/Ingest/AttemptIngestAll",
-         "PGETask_AttemptIngestAll");
+         "PGETask_AttemptIngestAll"),
+   
+   /**
+    * Identifies the metadata file name extension to use when CAS-PGE 
+    * is running in legacy mode and generating metadata files for the 
+    * StdProductCrawler. If not set, will default in CAS-PGE to .met.
+    * Note, there is no new version of this property, it only exists in
+    * legacy mode, but an attempt is made to provide a new path style/grouped
+    * version of the key for forward compat.
+    */
+   MET_FILE_EXT("PGETask/Ingest/MetFileExtension", 
+                "PCS_MetFileExtension");
 
-   public static final String USE_LEGACY_PROPERTY = "org.apache.oodt.cas.pge.legacyMode";
+
+   public static final String USE_LEGACY_PROPERTY = "org.apache.oodt.cas.pge.task.metkeys.legacyMode";
 
    @VisibleForTesting String name;
    @VisibleForTesting String legacyName;

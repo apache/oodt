@@ -68,6 +68,32 @@ public final class XmlRpcStructFactory {
   job.setStatus((String)jobHash.get("job.status"));
 		return job;
 	}
+	
+	public static Vector getXmlRpcJobList(List jobs){
+		Vector jobVector = new Vector();
+		
+		if(jobs != null && jobs.size() > 0){
+			for(Iterator i = jobs.iterator(); i.hasNext();){
+				Job job = (Job)i.next();
+				jobVector.add(getXmlRpcJob(job));
+			}
+		}
+		
+		return jobVector;
+	}
+	
+	public static List getJobListFromXmlRpc(Vector jobVector){
+		List jobs = new Vector();
+		
+		if(jobVector != null && jobVector.size() > 0){
+			for(Iterator i = jobVector.iterator(); i.hasNext(); ){
+				Hashtable jobHash = (Hashtable)i.next();
+				jobs.add(getJobFromXmlRpc(jobHash));
+			}
+		}
+		
+		return jobs;
+	}
 
  public static Vector getXmlRpcResourceNodeList(List resNodes) {
     Vector resNodeVector = new Vector();

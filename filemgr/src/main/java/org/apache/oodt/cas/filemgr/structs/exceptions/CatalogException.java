@@ -29,19 +29,15 @@ public class CatalogException extends Exception {
 
     private static final long serialVersionUID = 3690753990686029110L;
 
-    /**
-     * <p>Default Constructor</p>
-     */
     public CatalogException() {
         super();
     }
 
-    /**
-     * @param message The message for this exception.
-     */
     public CatalogException(String message) {
         super(message);
     }
 
-
+    public CatalogException(String message, Throwable t) {
+        super(message, t);
+    }
 }

@@ -21,9 +21,9 @@ package org.apache.oodt.cas.filemgr.ingest;
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.MetExtractor;
-import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
+
 
 //JDK imports
 import java.io.BufferedReader;
@@ -106,7 +106,7 @@ public class CmdLineIngester extends StdIngester {
         CmdLineIngester ingester = new CmdLineIngester(transferServiceFactory);
         MetExtractor extractor = null;
         if (readFromStdin) {
-            List prods = readProdFilesFromStdin();
+            List<String> prods = readProdFilesFromStdin();
             extractor = GenericMetadataObjectFactory
                     .getMetExtractorFromClassName(extractorClassName);
             ingester.ingest(new URL(fmUrlStr), prods, extractor, new File(

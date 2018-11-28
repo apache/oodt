@@ -54,7 +54,7 @@ CLASSPATH=
 if [ -r "$OODT_BASE"/bin/setenv.sh ]; then
   . "$OODT_BASE"/bin/setenv.sh
 elif [ -r "$OODT_HOME"/bin/setenv.sh ]; then
-  . "$OODT_HOME"/bin/settenv.sh
+  . "$OODT_HOME"/bin/setenv.sh
 fi
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
@@ -120,6 +120,16 @@ if [ -z "$CRAWLER_HOME" ]; then
   export CRAWLER_HOME
 fi
 
+if [ -z "$PGE_ROOT" ]; then
+  PGE_ROOT="$OODT_HOME"/pge
+  export PGE_ROOT
+fi
+
+if [ -z "$SOLR_HOME" ]; then
+  SOLR_HOME="$OODT_HOME"/solr
+  export SOLR_HOME
+fi
+
 if [ -z "$OODT_TMPDIR" ]; then
   # Define the java.io.tmpdir to use for OODT
   OODT_TMPDIR="$OODT_BASE"/temp
@@ -132,17 +142,17 @@ if [ -z "$FILEMGR_PORT" ]; then
 fi
 
 if [ -z "$CRAWLER_PORT" ]; then
-  CRAWLER_PORT=9100
+  CRAWLER_PORT=9020
   export CRAWLER_PORT
 fi 
 
 if [ -z "$WORKFLOW_PORT" ]; then
-  WORKFLOW_PORT=9200
+  WORKFLOW_PORT=9001
   export WORKFLOW_PORT
 fi
 
 if [ -z "$RESMGR_PORT" ]; then
-  RESMGR_PORT=9300
+  RESMGR_PORT=9002
   export RESMGR_PORT
 fi
 

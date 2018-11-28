@@ -79,7 +79,7 @@ public class XmlRpcWorkflowManager {
    private final int webServerPort;
    private WebServer webServer;
    private final WorkflowEngine engine;
-   private final WorkflowRepository repo;
+   private WorkflowRepository repo;
 
    public XmlRpcWorkflowManager() {
       this(DEFAULT_WEB_SERVER_PORT);
@@ -110,6 +110,12 @@ public class XmlRpcWorkflowManager {
          return true;
       } else
          return false;
+   }
+
+   public boolean refreshRepository()
+       throws RepositoryException {
+     repo = getWorkflowRepositoryFromProperty();
+     return true;
    }
 
   public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
@@ -165,7 +171,7 @@ public class XmlRpcWorkflowManager {
     }
 
     public Hashtable getFirstPage() {
-        WorkflowInstancePage page = engine.getInstanceRepository()
+    	WorkflowInstancePage page = engine.getInstanceRepository()
                 .getFirstPage();
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
@@ -174,7 +180,6 @@ public class XmlRpcWorkflowManager {
             return XmlRpcStructFactory
                     .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
                             .blankPage());
-
     }
 
     public Hashtable getNextPage(Hashtable currentPage) {
@@ -399,6 +404,12 @@ public class XmlRpcWorkflowManager {
                     // TODO: hack for now, fix this, we shouldn't have to cast
                     // here, bad
                     // design
+                    if(wDesc == null){
+                      //Possible dynamic workflow for instance
+                      //reconsitute it from cache
+                      wDesc = wInst.getWorkflow();
+                      repo.addWorkflow(wDesc);
+                    }
                     wInst.setWorkflow(wDesc);
                     Hashtable workflowInstance = XmlRpcStructFactory
                             .getXmlRpcWorkflowInstance(wInst);
@@ -441,6 +452,14 @@ public class XmlRpcWorkflowManager {
                     // pick up the description of the workflow
                     Workflow wDesc = repo.getWorkflowById(wInst.getWorkflow()
                             .getId());
+                    if(wDesc == null){
+                      //possible dynamic workflow
+                      //reconsitute it from cached instance
+                      wDesc = wInst.getWorkflow();
+                      //now save it
+                      repo.addWorkflow(wDesc);
+
+                    }
                     // TODO: hack for now, fix this, we shouldn't have to cast
                     // here, bad
                     // design
@@ -666,8 +685,27 @@ public class XmlRpcWorkflowManager {
         if (wInsts != null && wInsts.size() > 0) {
             for (Iterator i = wInsts.iterator(); i.hasNext();) {
                 WorkflowInstance wInst = (WorkflowInstance) i.next();
-                wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
-                        .getId()));
+                if(wInst.getWorkflow() == null || 
+                	(wInst.getWorkflow() != null && 
+                	  (wInst.getWorkflow().getName() == null || 
+                	   wInst.getWorkflow().getId() == null))){
+                    wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
+                            .getId()));                	
+                }
+                else{
+                	// check to see if the workflow exists in the 
+                	// repo
+                	try {
+						if(repo.getWorkflowById(wInst.getWorkflow().getId()) == null){
+							repo.addWorkflow(wInst.getWorkflow());
+						}
+					} catch (RepositoryException e) {
+						LOG.log(Level.WARNING, "Attempting to look up workflow: ["+wInst.getWorkflow()
+								.getId()+"] in populate workflows. Message: "+e.getMessage());
+						e.printStackTrace();
+					}
+
+                }
             }
         }
     }

@@ -43,7 +43,12 @@ the License.
 	 
 	<Parameter name="ganglia.url" value="[GANGLIA_URL]"/>
 	<Parameter name="contact.email" value="user@oodt.apache.org"/>
-	
+
+    <Parameter name="org.apache.oodt.pcs.trace.excludeList"
+               value=""/>   
+    <Parameter name="org.apache.oodt.pcs.trace.enableNotCat"
+               value="true"/>
+               	
         <!-- OPSUI SKINNING
                 Directions: Set the 'opsui.skin' property's value attribute. 
                 Supported skins:

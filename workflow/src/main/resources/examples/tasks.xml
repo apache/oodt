@@ -145,4 +145,19 @@
 	      <property name="TaskLoad" value="2"/>
 	   </configuration>  
 	</task>
+    <task id="urn:oodt:FilterTask" name="Filter Task"
+       class="org.apache.oodt.cas.workflow.examples.FilterTask">
+       <conditions>
+       </conditions> 
+       <configuration>
+          <!--  comma separated list of keys to remove from the metadata. -->
+          <property name="Remove_Key" value="ProductionDateTime"/>
+          <!-- you can list many of these Rename_[Key] parameters, to
+               remove specific keys from the metadata. Note that renames
+               are processed *first* before removes, so you can conceivably
+               rename a field, and then *remove* it too, so be careful.
+           -->
+          <property name="Rename_Filename" value="Prior_Filename"/>
+       </configuration>  
+    </task>
 </cas:tasks>

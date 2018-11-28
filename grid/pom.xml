@@ -20,12 +20,12 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>web-grid</artifactId>
-  <name>OODT Web Grid</name>
   <packaging>war</packaging>
+  <name>OODT Web Grid</name>
   <description>The OODT grid services (product and profile services) use CORBA or
     RMI as their underlying network transport.  However, limitations
     of CORBA and RMI make them inappropriate for large-scale
@@ -57,74 +57,81 @@ the License.
     profiles.  Further, it provides a password-protected mechanism to
     add new sets of product and profile query handlers, enabling
     seamless activation of additional capabilities.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>
-  </scm>
+  <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
+     Once the dependency is in the core pom, it can then be used in other modules without the version tags.
+     For example, within core/pom.xml:
+
+      <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+     Elsewhere in the platform:
+     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+    </dependency>
+
+     Where possible the same dependency version should be used across the whole platform but if required the version
+     can be overridden in a specific pom and should have a comment explaing why the version has been overridden
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>apache-jena-libs</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-product</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-profile</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-xmlquery</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
-          <webResources />
+          <webResources></webResources>
           <warSourceDirectory>src/main/webapp</warSourceDirectory>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-profile</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-product</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-xmlquery</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <version>2.6.3</version>
-    </dependency>
-    <dependency>
-       <groupId>javax.servlet</groupId>
-       <artifactId>servlet-api</artifactId>
-       <version>2.4</version>
-       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>xerces</groupId>
-        <artifactId>xercesImpl</artifactId>
-        <version>2.4.0</version>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.9.1</version>
-    </dependency>
-    <dependency>
-        <groupId>xalan</groupId>
-        <artifactId>xalan</artifactId>
-        <version>2.7.1</version>
-    </dependency>
-  </dependencies>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>
+  </scm>
 </project>

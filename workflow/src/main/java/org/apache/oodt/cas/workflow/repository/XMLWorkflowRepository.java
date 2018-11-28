@@ -317,12 +317,17 @@ public class XMLWorkflowRepository implements WorkflowRepository {
         }
       }
       
-      // generate its ID
-      String workflowId = UUID.randomUUID().toString();
-      workflow.setId(workflowId);
-      this.workflowMap.put(workflowId, workflow);
-      this.eventMap.put(workflowId, Collections.singletonList(workflow));
-      return workflowId;
+        String workflowId = workflow.getId();
+		if (workflowId == null
+				|| (workflowId != null && workflowId.equals(""))) {
+			// generate its ID
+			workflowId = UUID.randomUUID().toString();
+			workflow.setId(workflowId);
+		}
+		this.workflowMap.put(workflowId, workflow);
+		this.eventMap.put(workflowId, Collections.singletonList(workflow));
+		return workflowId;
+		
     }    
     
     /* (non-Javadoc)

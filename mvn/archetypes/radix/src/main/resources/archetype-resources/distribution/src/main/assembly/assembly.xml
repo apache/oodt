@@ -30,6 +30,11 @@
       <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
+      <directory>${basedir}/src/main/resources/etc</directory>
+      <outputDirectory>data/met</outputDirectory>
+      <includes/>
+    </fileSet>    
+    <fileSet>
       <directory>target</directory>
       <outputDirectory>logs</outputDirectory>
       <excludes>
@@ -102,6 +107,7 @@
         <exclude>${groupId}:${parent.artifactId}-opsui</exclude>
         <exclude>${groupId}:${parent.artifactId}-pcs-services</exclude>
         <exclude>${groupId}:${parent.artifactId}-fmprod</exclude>
+        <exclude>${groupId}:${parent.artifactId}-solr-webapp</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>

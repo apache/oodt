@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
+import java.util.UUID;
 /**
  * @author mattmann
  * @author bfoster
@@ -66,18 +66,22 @@ public class CoreMetExtractor extends AbstractFilemgrMetExtractor implements
         Metadata extractMet = new Metadata();
         /* copy through original metadata */
         merge(met, extractMet);
-
-        File prodFile = getProductFile(product);
-
+        File prodFile = null;
+        if (!product.getProductStructure().equals(Product.STRUCTURE_STREAM))
+        {
+            prodFile = getProductFile(product);
+        }
+        //GUID used when no file is associated with product i.e. stream
+        String guid=UUID.randomUUID().toString();
         extractMet
                 .addMetadata(isNsReplace(PRODUCT_ID) ? elementNs + nsSeparator
                         + PRODUCT_ID : PRODUCT_ID, product.getProductId());
         addMetadataIfUndefined(met, extractMet,
                 isNsReplace(FILENAME) ? elementNs + nsSeparator + FILENAME
-                        : FILENAME, prodFile.getName());
+                        : FILENAME, (prodFile == null)?guid:prodFile.getName());
         addMetadataIfUndefined(met, extractMet,
                 isNsReplace(FILE_LOCATION) ? elementNs + nsSeparator
-                        + FILE_LOCATION : FILE_LOCATION, prodFile
+                        + FILE_LOCATION : FILE_LOCATION, (prodFile==null)?guid:prodFile
                         .getParentFile().getAbsolutePath());
         addMetadataIfUndefined(met, extractMet,
                 isNsReplace(PRODUCT_NAME) ? elementNs + nsSeparator

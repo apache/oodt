@@ -20,9 +20,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <requiredProperties>
     <requiredProperty key="oodt">
-      <defaultValue>0.6-SNAPSHOT</defaultValue>
+      <defaultValue>0.7-SNAPSHOT</defaultValue>
     </requiredProperty>
   </requiredProperties>
+  <fileSets>
+    <fileSet filtered="true" packaged="false">
+      <directory></directory>
+      <includes>
+        <include>README.txt</include>
+      </includes>
+    </fileSet>
+  </fileSets>
   <modules>
     <module id="extensions" dir="extensions" name="extensions">
       <fileSets>
@@ -64,6 +72,14 @@
         </fileSet>
       </fileSets>
     </module>
+    <module id="pge" dir="pge" name="pge">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
     <module id="crawler" dir="crawler" name="crawler">
       <fileSets>
         <fileSet>
@@ -72,6 +88,14 @@
         </fileSet>
       </fileSets>
     </module>
+    <module id="solr" dir="solr" name="solr">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>    
     <module id="distribution" dir="distribution" name="distribution">
       <fileSets>
         <fileSet>
@@ -106,6 +130,14 @@
             </fileSet>
           </fileSets>
         </module>
+        <module id="solr-webapp" dir="solr-webapp" name="solr-webapp">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>        
       </modules>
     </module>
   </modules>

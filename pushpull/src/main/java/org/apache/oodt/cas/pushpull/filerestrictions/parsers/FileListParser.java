@@ -22,6 +22,8 @@ package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 import java.io.FileInputStream;
 import java.util.Scanner;
 
+
+import org.apache.oodt.cas.metadata.Metadata;
 //OODT imports
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
@@ -39,7 +41,7 @@ public class FileListParser implements Parser {
 
 	public FileListParser() {}
 	
-    public VirtualFileStructure parse(FileInputStream inputFile)
+    public VirtualFileStructure parse(FileInputStream inputFile, Metadata metadata)
             throws ParserException {
         Scanner scanner = new Scanner(inputFile);
         VirtualFile root = VirtualFile.createRootDir();

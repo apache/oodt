@@ -42,7 +42,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  *
  * @author bfoster (Brian Foster)
  */
-public class TextConfigFileWriter implements DynamicConfigFileWriter {
+public class TextConfigFileWriter extends DynamicConfigFileWriter {
 
    private static final int TEMPLATE_INDEX = 0;
 

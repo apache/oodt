@@ -17,20 +17,29 @@
 
 package org.apache.oodt.cas.resource.monitor.ganglia.loadcalc;
 
-import org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys;
-
+//JDK imports
 import java.text.NumberFormat;
-import java.util.HashMap;
+import java.util.Map;
+
+//OODT imports
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.MAXIMUM_FRACTION_DIGITS;
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.TN;
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.TMAX;
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.CPU_NUM;
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.LOAD_ONE;
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.LOAD_FIVE;
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.LOAD_FIFTEEN;
 
 /**
  * @author rajith
+ * @author mattmann
  * @version $Revision$
  */
 public class WeightedAverageLoadCalc implements LoadCalculator {
 
-    private int loadOneWeight;
-    private int loadFiveWeight;
-    private int loadFifteenWeight;
+    private double loadOneWeight;
+    private double loadFiveWeight;
+    private double loadFifteenWeight;
 
     /* to format the load value*/
     private NumberFormat numberFormat;
@@ -41,7 +50,7 @@ public class WeightedAverageLoadCalc implements LoadCalculator {
      * @param loadFiveWeight weight for the load_five
      * @param loadFifteenWeight weight for the load_fifteen
      */
-    public WeightedAverageLoadCalc (int loadOneWeight, int loadFiveWeight, int loadFifteenWeight){
+    public WeightedAverageLoadCalc (double loadOneWeight, double loadFiveWeight, double loadFifteenWeight){
         this.loadOneWeight = loadOneWeight;
         this.loadFiveWeight = loadFiveWeight;
         this.loadFifteenWeight = loadFifteenWeight;
@@ -53,34 +62,36 @@ public class WeightedAverageLoadCalc implements LoadCalculator {
      * {@inheritDoc}
      *
      * load is calculated as follows
-     * weightedLoadOne = loadOneWeight * minimum of (nodeCapacity, ((loadOne/numOfCPUs) * nodeCapacity))
+     * weightedLoadOne = loadOneWeight * minimum of (numOfCPUs, ((loadOne/numOfCPUs) * numOfCPUs))
      *
      * load = (weightedLoadOne + weightedLoadFive + weightedLoadFifteen) /
      *           (loadOneWeight + loadFiveWeight + loadFifteenWeight)
      */
     @Override
-    public float calculateLoad(float nodeCapacity, HashMap<String, String> nodeMetrics) {
-        int tn = Integer.valueOf(nodeMetrics.get(GangliaMetKeys.TN));
-        int tmax = Integer.valueOf(nodeMetrics.get(GangliaMetKeys.TMAX));
+    public double calculateLoad(Map<String, String> nodeMetrics) {
+        double tn = Double.valueOf(nodeMetrics.get(TN));
+        double tmax = Double.valueOf(nodeMetrics.get(TMAX));
+        double numCpus = Double.valueOf(nodeMetrics.get(CPU_NUM));
 
         if(tn > (4 * tmax)){
-           return nodeCapacity; //if the node is offline assign the node's capacity as the load
+           return numCpus; //if the node is offline assign the node's capacity as the load
         }
         else {
-            float weightedLoadOne = loadOneWeight * Math.min(nodeCapacity,
-                    ((Float.valueOf(nodeMetrics.get(LOAD_ONE)) /
-                            Float.valueOf(nodeMetrics.get(CPU_NUM))) * nodeCapacity));
-            float weightedLoadFive = loadFiveWeight * Math.min(nodeCapacity,
-                    ((Float.valueOf(nodeMetrics.get(LOAD_FIVE)) /
-                            Float.valueOf(nodeMetrics.get(CPU_NUM)))* nodeCapacity));
-            float weightedLoadFifteen = loadFifteenWeight * Math.min(nodeCapacity,
-                    ((Float.valueOf(nodeMetrics.get(LOAD_FIFTEEN)) /
-                            Float.valueOf(nodeMetrics.get(CPU_NUM)))* nodeCapacity));
+            double weightedLoadOne = loadOneWeight * Math.min(numCpus,
+                    ((Double.valueOf(nodeMetrics.get(LOAD_ONE)) /
+                            Double.valueOf(nodeMetrics.get(CPU_NUM))) * numCpus));
+            double weightedLoadFive = loadFiveWeight * Math.min(numCpus,
+                    ((Double.valueOf(nodeMetrics.get(LOAD_FIVE)) /
+                            Double.valueOf(nodeMetrics.get(CPU_NUM)))* numCpus));
+            double weightedLoadFifteen = loadFifteenWeight * Math.min(numCpus,
+                    ((Double.valueOf(nodeMetrics.get(LOAD_FIFTEEN)) /
+                            Double.valueOf(nodeMetrics.get(CPU_NUM)))* numCpus));
 
-            float weightedLoadAverage = (weightedLoadOne + weightedLoadFive + weightedLoadFifteen) /
+            double weightedLoadAverage = (weightedLoadOne + weightedLoadFive + weightedLoadFifteen) /
                     (loadOneWeight + loadFiveWeight + loadFifteenWeight);
-
-            return Float.valueOf(numberFormat.format(weightedLoadAverage));
+            
+            System.out.println("Weighted load one: ["+weightedLoadOne+"]: weighted load five: ["+weightedLoadFive+"] weighted load fifteen: ["+weightedLoadFifteen+"]");
+            return Double.valueOf(numberFormat.format(weightedLoadAverage));
         }
     }
 }

@@ -1,8 +1,277 @@
 Apache OODT Change Log
 ======================
+Release 0.11 - Current Development
 
-Release 0.7 - Current Development
----------------------------------
+* OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
+  they both delete the cas.xxxx.pid file when stopped using the 'stop'
+  command. (mallder)
+
+* OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (lewismc, mattmann)
+
+Release 0.10 - 08/30/2015
+
+* OODT-871 Issues with OODT 0.10 RC#1 (lewismc, mattmann)
+
+* OODT-246 Give user the ability to print a detailed report on what jobs in 
+  the Resource Manager are running on what nodes (Gabe Resneck, mattmann)
+
+* OODT-245 List results from the Resource Manager client should be sorted 
+  alphabetically (Gabe Resneck via mattmann)
+
+* OODT-248 Give user the ability to print a detailed report on the load, capacity 
+  and queues of all nodes in the Resource Manager (Gabe Resneck, mattmann)
+
+* OODT-247 Resource Manager client should allow users to see what jobs are 
+  currently in the queue (Gabe Resneck, mattmann)
+
+* OODT-244 Allow the Resource Manager scheduler to cycle on a non-integer 
+  number of seconds (Gabe Resneck via mattmann)
+
+* OODT-864 Upgrade to Tika 1.10 (mattmann,tpalsulich)
+
+* OODT-686 AddProductTypeCliAction should prompt for ProductTypeId (rverma, mattmann)
+
+* OODT-302 Add support in the xmlquery package to handle HTTP Redirection (Michael Cayanan via mattmann)
+
+* OODT-303 Add support in the Grid Package to throw an HTTP Servlet Response (Michael Cayanan via mattmann)
+
+* OODT-480 Balance: default view not found (Nesbert Hidalgo via mattmann)
+
+* OODT-598 XMLQuery DIS-style query parser needs to treat "#" as a word character (kelly via mattmann)
+
+* OODT-870 Integrate Curator into OPSUI (mattmann)
+
+* OODT-842 create restful version of cas curator services (mattmann)
+
+* OODT-838 Separate RESTful Servers and Clients (Michael Starch, mattmann)
+
+* OODT-824 Port the Curator to Apache Wicket (mattmann)
+
+* OODT-861 Workflow Manager client will print the list of task ids for a given workflow, if requested (luca)
+
+* OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
+
+
+Release 0.9 - 05/31/2015
+
+* OODT-841 Update Maven instructions in README to include clean command (Ethan Wang via mattmann)
+
+* OODT-844 Scala maven plugin for streaming only (Jane Wyngaard via mattmann)
+
+* OODT-829 Implement an Apache Tika based Server Side Extractor (Radu Manole via mattmann)
+
+* OODT-826 Add the capability to check external preconditions before ingesting a file.
+
+* OODT-832 Move streaming items to seperate top-level component (starchmd)
+
+* OODT-831 CAS PGE adapter framework build failed (Aditya Dhulipala via mattmann)
+
+* OODT-830 Queue Assertion failure of XmlQueueRepository under CAS Resource Manager (Aditya Dhulipala via mattmann)
+
+* OODT-823 OODT JDK8 Maven3 build errors (Aditya Dhulipala via mattmann)
+
+* OODT-715 SolrIndexer fails to index when numProducts == pageSize (pramirez, mdstarch via mattmann)
+
+* OODT-821 OODT-821 FMProd RDF conf shouldn't use EDRN as a default namespace for keys and for types (mattmann)
+
+* OODT-818 CmdLineIngester should log there was an exception and move on during ingest (mattmann)
+
+* OODT-817 TikaCmdLineExtractor needs to add Filename and FileLocation fields (mattmann)
+
+* OODT-813 CAS-PGE incorrectly passes varargs to DynamicConfigFile implementations (mattmann)
+
+* OODT-812 RADIX ingest script (mattmann)
+
+* OODT-811 RADIX incorrectly sets up PCS REST services app config (mattmann)
+
+* OODT-810 Metadata PreCondition Comparators based on FileName and LastModified time (Luca Cinquini via mattmann)
+
+* OODT-809 A CrawlerAction that indexes to Solr (Luca Cinquini via mattmann)
+
+
+Release 0.8.1 - 01/28/2015
+-------------------------------------------
+* OODT-804 Broken trunk build on Jenkins
+
+* OODT-699 Mesos cluster manager backend to resource manager
+
+* OODT-780 Spark backend to resource manager
+
+* OODT-802 Create Dockerfile for OODT Radix.
+
+* OODT-761 Update PGE version in Radix.
+
+* OODT-749 Remove old XercesImpl jar from grid pom.
+
+* OODT-771 Fix push_pull_framework.properties path reference for config.external.properties.files in incorrect with a patch from Lewis
+
+* OODT-770 Fix the RADIX Issues with a patch from Lewis McGibbney
+
+Release 0.8 - 12/19/2014
+--------------------------------------------
+
+* OODT-751 OPSUI pages constantly expire (Tom Barber, mattmann)
+
+* OODT-748 Fix Description in agility/setup.py
+
+* OODT-787 PGE_ROOT env variable does not work in PGEConfig.xml and tasks.xml (Yi Sun, Sneha Deshmukh via mattmann)
+
+* OODT-562 Exposing parent-child & element addition/deletion functionality for product types using cas-curator (varunr)
+
+* OODT-563 Modifying Workflow Manager to allow adding new workflows (varunr)
+
+* OODT-786 Change shebang to bash for proper color output (Poojit Sharma via mattmann)
+
+* OODT-785 Update batch stub with legacyMode set to true (meghamsh4 via mattmann)
+
+* OODT-783 RADiX Crawler action bean config refers to WORKFLOWMGR_URL (Angela Wang via mattmann)
+
+* OODT-782 Resource manager port number must be compatible with the one used in workflow.properties (Imran Mammaldi via mattmann)
+
+* OODT-769 The wiki page command installs 0.6 version of the oodt radix installer (lewismc, Santosh SHankar)
+
+* OODT-777 Update fileconcatenator-pge.tar for building fileconcatenator-pge (threeears via mattmann)
+
+* OODT-776 Test fix: log messages can be different for different locales (Tom Tung via mattmann)
+
+* OODT-701 Adding in stream product structure for filemanager. Add in check for valid product structures, and fixed tests breaking from that check.
+
+* OODT-699 Adding in cluster managment scripts for mesos.
+
+* OODT-764 Adding in multiplexing resource manager backend.
+
+* OODT-763 Correcting path to OODT_HOME and FILEMGR_HOME (vishalhemnani via mattmann)
+
+* OODT-385, OODT-630, OODT-631, OODT-632. Upgraded Tika to version 1.6.
+
+* OODT-757 Fixed PGETaskInstance bug that prevented instantiation of AutoDetectProductCrawler (luca)
+
+* OODT-756 HttpClient NoClassDefFoundError For the url-downloader Script (Mengying Wang via mattmann)
+
+* OODT-754 Contribute ProdTypePatternMetExtractor (rickdn)
+
+* OODT-750 Issue with running mvn site:site due to old findbugs plugin (mattmann)
+
+
+Release 0.7 - 09/15/2014
+-------------------------------------------- 
+
+* OODT-669 Make Resource Manager work without Ganglia (mattmann, rajith)
+
+* OODT-644 Fix to FTP protocol tests, abstracting some of the logic to make the code better suited to mocking(magicaltrout)
+
+* OODT-644 Fix to stub FTP client protocol so it doesn't fail when the port is in use
+
+* OODT-644 Partial fix to stub SSH client so it doesn't fail when SSHD is running locally
+
+* OODT-745 Removed trailing spaces in the radix wmgr filex
+
+* OODT-473 Rremove "Deleted" Metadata Flag from Solr Indexer (magicaltrout)
+
+* OODT-736 Clean up test data left by TestTypeHandler test (rlaidlaw)
+
+* OODT-667 CAS-PGE no longer respects writers and file tags from 
+  earlier pgeConfig.xml files (mattmann)
+
+* OODT-741 Remove static modifier from elementMap, subToSuperMap and
+  productTypeElementMap fields in XMLValidationLayer (rlaidlaw)
+
+* OODT-737 Copied over latest cmd-line-options.xml with typeName (rlaidlaw)
+
+* OODT-739 Fix File Manager unit tests (step 12) - fix test classes in
+  'metadata' and 'versioning' packages (rlaidlaw)
+
+* OODT-738 Contribute workflow scripts to kill all by status or kill by instance ID (mattmann)
+
+* OODT-737 Fix File Manager unit tests (step 11) - fix test classes in 'cli'
+  package (rlaidlaw)
+
+* OODT-736 Fix File Manager unit tests (step 10) - fix test classes in 'structs'
+  package (rlaidlaw)
+
+* OODT-735 Fix File Manager unit tests (step 9) - fix test classes in 'tools'
+  package (rlaidlaw)
+
+* OODT-734 Fix File Manager unit tests (step 8) - fix test classes in 'system'
+  package (rlaidlaw)
+
+* OODT-733 Fix File Manager unit tests (step 7) - fix test classes in 'ingest'
+  package (rlaidlaw)
+
+* OODT-732 Fix File Manager unit tests (step 6) - fix test classes in
+  'datatransfer' package (rlaidlaw)
+
+* OODT-731 Fix File Manager unit tests (step 5) - fix test classes in 'catalog'
+  package (rlaidlaw)
+
+* OODT-728 Figure out why certain metadata fields get set twice during pipeline processing (mattmann)
+
+* OODT-729 Fix File Manager unit tests (step 4) - fix test classes in 'util'
+  package (rlaidlaw)
+
+* OODT-690 RADiX example policy for GenericFile missing "<metadata/>" node (rverma via mattmann)
+
+* OODT-718 RADiX Build Failure (tpalsulich, goodale via mattmann)
+
+* OODT-726 Create MetFilter Task Example (mattmann)
+
+* OODT-724 Crawler action bean config refers to WORKFLOWMGR_URL (mattmann)
+
+* OODT-723 Fix File Manager unit tests (step 3) - fix test class in 'validation'
+  package (rlaidlaw)
+
+* OODT-722 Fix File Manager unit tests (step 2) - fix test class in 'repository'
+  package (rlaidlaw)
+
+* OODT-672 OODT Start script does not notify user of status (asumarlidason via mattmann)
+
+* OODT-721 Fix File Manager unit tests (step 1) - remove duplicate XML from test
+  resources (rlaidlaw)
+  
+* OODT-719 Prevent httpclient from spawning closewait tcp connections (Konstantinos Mavrommatis via lewismc)
+
+* OODT-685 ix OODT 0.7-SNAPSHOT Jenkins nightly build on Ubuntu 1st Pass (lewismc)
+
+* OODT-716 Vagrant user on VM unable to start/stop oodt services (sherylj)
+
+* OODT-708 Add PGE RADiX Archetype (skhudiky)
+
+* OODT-593 Dyn workflows in Workflow Manager cause NPEs on restart (mattmann)
+
+* OODT-705 RADIX one step script (mattmann)
+
+* OODT-703 DataUtil.createProductZipFile throws exception when creating a zipfile of a hierarchical product (thomas)
+
+* OODT-674 MoveDatafileToFailureDir fails to move files off an NFS mounted directory (thomas)
+
+* OODT-662 Upgrade cog-jglobus dependency in protocol-ftp (lewismc)
+
+* OODT-668 ProductQueryServlet will now rename zip attachments with proper ".zip" extension,
+  and the conventions used can be overridden by subclasses (luca)
+
+* OODT-217 CAS-PGE User Manual (rverma, bfoster, mattmann)
+
+* OODT-665 CAS RDF and RSS product service doesn't allow product type met to have keys 
+  with spaces (mattmann)
+
+* OODT-664 RADIX deployment of opsui incorrectly uses /pcs-opsui as the web.xml context 
+  and omits 2 key PCS properties from context.xml (mattmann, pramirez, ahart)
+
+* OODT-663 Sample CAS-PGE workflow task should be included in cas-pge (mattmann)
+
+* OODT-661 Enabled case-insensitive specification of "OFSN" and "RT" parameter names
+  (not values!) when issuing a request to the Product Server (luca)
+
+* OODT-656 Provide alternative implementation of QueryServlet that is able 
+  to construct queries from non DIS-style parameters (luca)
+
+* OODT-613 CAS Product web application - configurable content writers for RDF
+  and RSS (rlaidlaw)
+
+* OODT-612 CAS Product web application - add content writers for XML, JSON, RDF,
+  RSS (rlaidlaw)
+
+* OODT-652 New TikaCmdLineMetExtractor (riverma)
 
 * OODT-651 Improve parameter initialization, validation and logging for
   CAS-Product web application (rlaidlaw)

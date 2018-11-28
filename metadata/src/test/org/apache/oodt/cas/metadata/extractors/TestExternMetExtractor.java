@@ -24,7 +24,6 @@ import org.apache.oodt.cas.metadata.MetadataTestCase;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.exec.ExecHelper;
-import org.apache.oodt.commons.exec.ExecUtils;
 
 //JDK imports
 import java.io.File;
@@ -45,7 +44,7 @@ public class TestExternMetExtractor extends MetadataTestCase {
 
   private static final String PRODUCT_TYPE = "ProductType";
 
-  private static final String expectedFilename = "testfile.txt";
+  private static final String expectedFilename = "/testfile.txt";
 
   private static final String expectedProductType = "GenericFile";
   
@@ -77,7 +76,7 @@ public class TestExternMetExtractor extends MetadataTestCase {
     assertTrue(met.containsKey(FILE_LOCATION));
     assertTrue(met.containsKey(PRODUCT_TYPE));
 
-    assertEquals(expectedFilename, met.getMetadata(FILENAME));
+    assertEquals(expectedFilename.substring(1), met.getMetadata(FILENAME));
     assertEquals("Expected: ["+this.expectedFileLocation+"]; Actual: ["+met.getMetadata(FILE_LOCATION)+"]", this.expectedFileLocation, met.getMetadata(FILE_LOCATION));
     assertEquals(expectedProductType, met.getMetadata(PRODUCT_TYPE));
 
@@ -107,10 +106,10 @@ public class TestExternMetExtractor extends MetadataTestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    String configFilename = "extern-config.xml";
-    String extractFilename = "testfile.txt";
-    String extractorFilename = "testExtractor";
-    String sampleMetFilename = "samplemet.xml";
+    String configFilename = "/extern-config.xml";
+    String extractFilename = "/testfile.txt";
+    String extractorFilename = "/testExtractor";
+    String sampleMetFilename = "/samplemet.xml";
     
     this.confFile = super.getTestDataFile(configFilename);
     this.extractFile = super.getTestDataFile(extractFilename);

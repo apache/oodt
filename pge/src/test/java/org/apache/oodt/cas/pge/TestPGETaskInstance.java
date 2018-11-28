@@ -42,14 +42,25 @@ import static org.easymock.EasyMock.verify;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.net.URL;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -80,6 +91,7 @@ import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 
 /**
  * Test class for {@link PGETaskInstance}.
@@ -202,9 +214,9 @@ public class TestPGETaskInstance extends TestCase {
                return pathname.getName().endsWith(".log");
             }
          })[0], "UTF-8");
-      assertEquals("INFO: pge1 message1", messages.get(1));
-      assertEquals("INFO: pge1 message2", messages.get(3));
-      assertEquals("INFO: pge1 message3", messages.get(5));
+      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message1", messages.get(1));
+      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message2", messages.get(3));
+      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message3", messages.get(5));
       logDir = new File(pgeTask2.pgeConfig.getExeDir() + "/logs");
       assertTrue(logDir.exists());
       messages = FileUtils.readLines(logDir.listFiles(
@@ -214,7 +226,7 @@ public class TestPGETaskInstance extends TestCase {
                return pathname.getName().endsWith(".log");
             }
          })[0], "UTF-8");
-      assertEquals("SEVERE: pge2 message1", messages.get(1));
+      assertEquals(Level.SEVERE.getLocalizedName() + ": pge2 message1", messages.get(1));
    }
 
    public void testUpdateStatus() throws Exception {
@@ -325,6 +337,21 @@ public class TestPGETaskInstance extends TestCase {
       assertTrue(dynamicConfigFile.exists());
    }
 
+   private static Document parseXmlFile(File file) throws Exception{
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      Document dom = null;
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      dom = db.parse(file);
+      return dom;
+   }
+
+   public static Document parseXmlString(String xml) throws Exception  {
+	 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	 DocumentBuilder builder = factory.newDocumentBuilder();
+	 InputSource is = new InputSource(new StringReader(xml));
+	 return builder.parse(is);
+    }
+    
    public void testDumpMetadataIfRequested() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
       File dumpMetFile = new File(pgeTask.getDumpMetadataPath());
@@ -334,24 +361,59 @@ public class TestPGETaskInstance extends TestCase {
       pgeTask.dumpMetadataIfRequested();
       assertTrue(dumpMetFile.exists());
       @SuppressWarnings("unchecked")
-      List<String> dumpedMet = FileUtils.readLines(dumpMetFile, "UTF-8");
-      assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-            dumpedMet.get(0));
-      assertEquals(
-            "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">",
-            dumpedMet.get(1));
-      assertEquals("   <keyval type=\"vector\">", dumpedMet.get(2));
-      assertEquals("      <key>PGETask%2FName</key>", dumpedMet.get(3));
-      assertEquals("      <val>" + pgeTask.pgeMetadata.getMetadata(NAME)
-            + "</val>", dumpedMet.get(4));
-      assertEquals("   </keyval>", dumpedMet.get(5));
-      assertEquals("   <keyval type=\"vector\">", dumpedMet.get(6));
-      assertEquals("      <key>PGETask%2FDumpMetadata</key>", dumpedMet.get(7));
-      assertEquals(
-            "      <val>" + pgeTask.pgeMetadata.getMetadata(DUMP_METADATA)
-                  + "</val>", dumpedMet.get(8));
-      assertEquals("   </keyval>", dumpedMet.get(9));
-      assertEquals("</cas:metadata>", dumpedMet.get(10));
+      String expectedMetString =    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    		+ "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">"
+      		+ "<keyval type=\"vector\">"
+    		+ "<key>PGETask%2FName</key>"
+      		+ "<val>"
+    		+ pgeTask.pgeMetadata.getMetadata(NAME)
+    		+ "</val>"
+    		+ "</keyval>"
+    		+ "<keyval type=\"vector\">"
+    		+ "<key>PGETask%2FDumpMetadata</key>"
+    		+ "<val>"
+    		+ pgeTask.pgeMetadata.getMetadata(DUMP_METADATA)
+    		+ "</val>"
+    		+ "</keyval>"
+    		+ "</cas:metadata>";
+       
+       Document dumpMetDoc = parseXmlFile(dumpMetFile);
+       Document expectedMetDoc = parseXmlString(expectedMetString);
+       
+       
+       Element dumpMetRoot, expectedMetRoot;
+       dumpMetRoot = dumpMetDoc.getDocumentElement();
+       expectedMetRoot = expectedMetDoc.getDocumentElement();
+       
+       
+       NodeList dumpKeyList = dumpMetRoot.getElementsByTagName("key");
+       NodeList expectedKeyList = expectedMetRoot.getElementsByTagName("key");
+       
+       NodeList dumpValList = dumpMetRoot.getElementsByTagName("val");
+       NodeList expectedValList = expectedMetRoot.getElementsByTagName("val");
+       
+       assertEquals(dumpKeyList.getLength(), expectedKeyList.getLength());
+       assertEquals(dumpValList.getLength(), expectedValList.getLength());
+       
+       
+       Map<String, String> dumpKeyValMap = new HashMap<String, String>();
+       Map<String, String> expectedKeyValMap = new HashMap<String, String>();
+       
+       for (int i = 0; i < dumpKeyList.getLength(); i++) {
+           
+           Node k1 = dumpKeyList.item(i);
+           Node k2 = expectedKeyList.item(i);
+           
+           Node v1 = dumpValList.item(i);
+           Node v2 = expectedValList.item(i);
+           
+           dumpKeyValMap.put(k1.getFirstChild().getNodeValue(), v1.getFirstChild().getNodeValue());
+           expectedKeyValMap.put(k2.getFirstChild().getNodeValue(), v2.getFirstChild().getNodeValue());
+           
+       }
+       
+       assertTrue(dumpKeyValMap.equals(expectedKeyValMap));
+       
    }
 
    public void testCreateProductCrawler() throws Exception {

@@ -48,5 +48,6 @@ attribute.
         </configuration>
       </extractor>
     </metExtractors>
+    <metadata/>
   </type>
 </cas:producttypes>

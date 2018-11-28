@@ -194,10 +194,17 @@ public class JschSftpProtocol implements Protocol {
 
   public void delete(ProtocolFile file) throws ProtocolException {
     try {
-      sftpChannel.rm(file.getPath());
+      if (file.isDir()) {
+        sftpChannel.rmdir(file.getPath());
+      } else {
+        sftpChannel.rm(file.getPath());
+      }
     } catch (Exception e) {
       throw new ProtocolException("Failed to download file '" + file + "' : " + e.getMessage(), e);
     }
   }
 
+ public JschSftpProtocol createJschSftpProtocol(int port){
+        return new JschSftpProtocol(port);
+ }
 }

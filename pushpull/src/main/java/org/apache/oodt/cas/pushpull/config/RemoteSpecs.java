@@ -223,6 +223,10 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                                 .replaceEnvVariables(afterUse
                                         .getAttribute(MOVEON_TO_FAIL_ATTR)));
                         pfi.setAfterUseEffects(onSuccessDir, onFailDir);
+                        boolean deleteOnSuccess = Boolean.parseBoolean(PathUtils
+                            .replaceEnvVariables(afterUse
+                                    .getAttribute(DELETE_ON_SUCCESS_ATTR)));
+                        pfi.setDeleteOnSuccess(deleteOnSuccess);
                     }
 
                 } else
@@ -338,7 +342,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
             }
         } catch (Exception e) {
             throw new ConfigException("Failed to load external source info : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
 

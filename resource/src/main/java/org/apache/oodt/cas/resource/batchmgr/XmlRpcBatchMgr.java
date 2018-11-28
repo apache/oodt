@@ -30,8 +30,12 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 //JDK imports
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -138,6 +142,23 @@ public class XmlRpcBatchMgr implements Batchmgr {
 
         XmlRpcBatchMgrProxy proxy = new XmlRpcBatchMgrProxy(spec, node, this);
         return proxy.killJob();
+    }
+    
+    public List getJobsOnNode(String nodeId){
+    	Vector<String> jobIds = new Vector();
+    	
+    	if(this.nodeToJobMap.size() > 0){
+    		for(Iterator i = this.nodeToJobMap.keySet().iterator(); i.hasNext(); ){
+    			String jobId = (String)i.next();
+    			if(nodeId.equals(this.nodeToJobMap.get(jobId))){
+    				jobIds.add(jobId);
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(jobIds); // sort the list to return as a courtesy to the user
+    	
+    	return jobIds;
     }
 
     protected void notifyMonitor(ResourceNode node, JobSpec jobSpec) {

@@ -102,9 +102,9 @@ public class TestCopyAndRewriteExtractor extends MetadataTestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    String confFilename = "copyandrewrite.test.conf";
-    String sampleMetFilename = "samplemet.xml";
-    String extractFilename = "testfile.txt";
+    String confFilename = "/copyandrewrite.test.conf";
+    String sampleMetFilename = "/samplemet.xml";
+    String extractFilename = "/testfile.txt";
     String origMetFilePath = "orig.met.file.path";
     
     // get all the needed files staged

@@ -20,6 +20,7 @@ package org.apache.oodt.cas.pushpull.retrievalmethod;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pushpull.config.DataFilesInfo;
 import org.apache.oodt.cas.pushpull.config.DownloadInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
@@ -32,6 +33,7 @@ import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 import org.apache.oodt.cas.pushpull.retrievalsystem.DataFileToPropFileLinker;
 import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
+
 
 //JDK imports
 import java.io.File;
@@ -61,8 +63,9 @@ public class ListRetriever implements RetrievalMethod {
         RemoteSite remoteSite = null;
 
         // parse property file
+        Metadata fileMetadata = new Metadata();
         VirtualFileStructure vfs = propFileParser.parse(new FileInputStream(
-                propFile));
+                propFile), fileMetadata);
         DownloadInfo di = dfi.getDownloadInfo();
         if (!di.isAllowAliasOverride()
                 || (remoteSite = vfs.getRemoteSite()) == null)
@@ -76,7 +79,7 @@ public class ListRetriever implements RetrievalMethod {
                 linker.addPropFileToDataFileLink(propFile, file);
                 if (!frs.addToDownloadQueue(remoteSite, file, di
                         .getRenamingConv(), di.getStagingArea(), dfi
-                        .getQueryMetadataElementName(), di.deleteFromServer()))
+                        .getQueryMetadataElementName(), di.deleteFromServer(), fileMetadata))
                     linker.eraseLinks(propFile);
             } catch (ToManyFailedDownloadsException e) {
                 throw new RetrievalMethodException(

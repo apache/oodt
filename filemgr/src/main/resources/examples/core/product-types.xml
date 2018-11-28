@@ -89,6 +89,14 @@
         </extractor>
       
        -->
+
+     <!--
+       The below enables the TikaAutoDetectExtractor. It does not take any configuration parameters
+       and simple runs Apache Tika on the reference for the Product and assumes it's a single file 
+       product (Product.STRUCTURE_FLAT).
+
+       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.TikaAutoDetectExtractor"/>
+      -->     
     </metExtractors>
   </type>
 </cas:producttypes>

@@ -17,44 +17,52 @@
 
 package org.apache.oodt.cas.resource.monitor.ganglia;
 
-import org.apache.oodt.cas.resource.monitor.ResourceMonitor;
-import org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory;
-import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
-import org.apache.oodt.cas.resource.structs.ResourceNode;
-import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
-
+//JDK imports
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+
+
+//OODT imports
+import org.apache.oodt.cas.resource.monitor.Monitor;
+import org.apache.oodt.cas.resource.monitor.MonitorFactory;
+import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
+import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 
 /**
  * @author rajith
  * @version $Revision$
  */
-public class GangliaResourceMonitorFactory implements ResourceMonitorFactory {
+public class GangliaResourceMonitorFactory implements MonitorFactory {
 
-    private static final Logger LOG = Logger.getLogger(GangliaResourceMonitorFactory.class.getName());
+	private static final Logger LOG = Logger
+			.getLogger(GangliaResourceMonitorFactory.class.getName());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResourceMonitor createResourceMonitor() {
-        try {
-            String loadCalculatorFactoryStr =  System
-                    .getProperty("org.apache.oodt.cas.resource.monitor.loadcalc.factory");
-            String nodeRepoFactoryStr = System
-                    .getProperty("org.apache.oodt.cas.resource.nodes.repo.factory");
+	@Override
+	public Monitor createMonitor() {
+		try {
+			String loadCalculatorFactoryStr = System
+					.getProperty("org.apache.oodt.cas.resource.monitor.loadcalc.factory");
+			String nodeRepoFactoryStr = System
+					.getProperty("org.apache.oodt.cas.resource.nodes.repo.factory");
+			
+			String gmetadHost = System
+                     .getProperty("org.apache.oodt.cas.resource.monitor.ganglia.gemtad.host.address");
+			
+			int gmetadPort = Integer.valueOf(System
+		                .getProperty("org.apache.oodt.cas.resource.monitor.ganglia.gemtad.host.port"));
 
-            List<ResourceNode> resourceNodes = GenericResourceManagerObjectFactory
-                    .getNodeRepositoryFromFactory(nodeRepoFactoryStr).loadNodes();
-            LoadCalculator loadCalculator = GenericResourceManagerObjectFactory
-                    .getLoadCalculatorFromServiceFactory(loadCalculatorFactoryStr);
+			LoadCalculator loadCalculator = GenericResourceManagerObjectFactory
+					.getLoadCalculatorFromServiceFactory(loadCalculatorFactoryStr);
 
-            return new GangliaResourceMonitor(loadCalculator, resourceNodes);
-        } catch (Exception e){
-            LOG.log(Level.SEVERE, "Failed to create Resource Monitor : " + e.getMessage(), e);
-            return null;
-        }
-    }
+			return new GangliaResourceMonitor(loadCalculator, gmetadHost, gmetadPort);
+		} catch (Exception e) {
+			LOG.log(Level.SEVERE,
+					"Failed to create Resource Monitor : " + e.getMessage(), e);
+			return null;
+		}
+	}
+
 }

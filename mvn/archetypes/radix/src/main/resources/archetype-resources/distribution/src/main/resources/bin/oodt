@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -100,6 +100,59 @@ if [ "$1" = "start" ]; then
   exec "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
   exec "$RESMGR_HOME"/bin/"$RESMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &  
   exec "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" start "$@" >> "$OODT_OUT" 2>&1 &
+  sleep 0.2s
+# Print confirmation messages to the end user
+# FileManager
+# check if the PID file exists:
+  if [ ! -e "../filemgr/run/cas.filemgr.pid" ] 
+  then
+    # no pid file was created by the process, it must have failed.
+    echo -e 'Starting OODT File Manager [' $'\e[31m' 'Failed' $'\e[00m' ']'
+
+  else
+    # pid file exists, check if the associated process is running.
+    if kill -0 `cat ../filemgr/run/cas.filemgr.pid` > /dev/null 2>&1;
+    then
+        echo -e 'Starting OODT File Manager [' $'\e[32m' 'Successful' $'\e[00m' ']'
+    else
+        echo -e 'Starting OODT File Manager [' $'\e[31m' 'Failed' $'\e[00m' ']'
+    fi
+  fi
+
+# ResourceManager
+# check if the PID file exists:
+  if [ ! -e "../resmgr/run/cas.resmgr.pid" ]
+  then
+    # no pid file was created by the process, it must have failed.
+    echo -e 'Starting OODT Resource Manager [' $'\e[31m' 'Failed' $'\e[00m' ']'
+
+  else
+    # pid file exists, check if the associated process is running.
+    if kill -0 `cat ../resmgr/run/cas.resmgr.pid` > /dev/null 2>&1;
+    then
+        echo -e 'Starting OODT Resource Manager [' $'\e[32m' 'Successful' $'\e[00m' ']'
+    else
+        echo -e 'Starting OODT Resource Manager [' $'\e[31m' 'Failed' $'\e[00m' ']'
+    fi
+  fi
+
+
+# WorkflowManager
+# check if the PID file exists:
+  if [ ! -e "../workflow/run/cas.workflow.pid" ]
+  then
+    # no pid file was created by the process, it must have failed.
+    echo -e 'Starting OODT Workflow Manager [' $'\e[31m' 'Failed' $'\e[00m' ']'
+
+  else
+    # pid file exists, check if the associated process is running.
+    if kill -0 `cat ../workflow/run/cas.workflow.pid` > /dev/null 2>&1;
+    then
+        echo -e 'Starting OODT Workflow Manager [' $'\e[32m' 'Successful' $'\e[00m' ']'
+    else
+        echo -e 'Starting OODT Workflow Manager [' $'\e[31m' 'Failed' $'\e[00m' ']'
+    fi
+  fi
 elif [ "$1" = "stop" ]; then
   exec "$FILEMGR_HOME"/bin/"$FILEMGR_EXEC" stop "$@" >> "$OODT_OUT" 2>&1  &
   exec "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" stop "$@" >> "$OODT_OUT" 2>&1 &

@@ -31,6 +31,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
+import org.apache.oodt.cas.resource.util.ResourceNodeComparator;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 
 //APACHE imports
@@ -41,8 +42,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -336,6 +339,93 @@ public class XmlRpcResourceManager {
     	int capacity = node.getCapacity();
     	int load = (this.scheduler.getMonitor().getLoad(node)) * -1 + capacity;
     	return load + "/" + capacity;
+    }
+    
+    public List getQueuedJobs() throws JobQueueException{
+    	Vector jobs = new Vector();
+    	List jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
+    	
+    	if(jobSpecs != null && jobSpecs.size() > 0){
+    		for(Iterator i = jobSpecs.iterator(); i.hasNext();){
+    			Job job = ((JobSpec)i.next()).getJob();
+    			jobs.add(job);
+    		}
+    	}
+    	
+    	return XmlRpcStructFactory.getXmlRpcJobList(jobs);
+    }
+    
+    public String getNodeReport() throws MonitorException{
+    	String report = new String();
+    	
+    	try{
+    		
+    		// get a sorted list of nodes
+    		List nodes = scheduler.getMonitor().getNodes();
+    		Collections.sort(nodes, new ResourceNodeComparator());
+    		
+    		// formulate the report string
+    		for(Iterator i = nodes.iterator(); i.hasNext(); ){
+    			ResourceNode node = (ResourceNode)i.next();
+    			String nodeId = node.getNodeId();
+    			report += nodeId;
+    			report += " (" + getNodeLoad(nodeId) + "/" + node.getCapacity() + ")";
+    			List<String> nodeQueues = getQueuesWithNode(nodeId);
+    			if(nodeQueues != null && nodeQueues.size() > 0){
+    				report += " -- " + nodeQueues.get(0);
+    				for(int j = 1; j < nodeQueues.size(); j++){
+    					report += ", " + nodeQueues.get(j);
+    				}
+    			}
+    			report += "\n";
+    		}
+    	
+    	}catch(Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
+    	
+    	return report;
+    }
+    
+    public String getExecutionReport() throws JobRepositoryException{
+    	String report = new String();
+    	
+    	try{
+    	
+	    	// get a sorted list of all nodes, since the report should be
+	    	// alphabetically sorted by node
+	    	List resNodes = scheduler.getMonitor().getNodes();
+	    	if(resNodes.size() == 0){
+	    		throw new MonitorException(
+	    				"No jobs can be executing, as there are no nodes in the Monitor");
+	    	}
+	    	Vector<String> nodeIds = new Vector<String>();
+	    	for(Iterator i = resNodes.iterator(); i.hasNext(); ){
+	    		nodeIds.add(((ResourceNode)i.next()).getNodeId());
+	    	}
+	    	Collections.sort(nodeIds);
+	    	
+	    	// generate the report string
+	    	for(String nodeId: nodeIds){
+	    		List execJobIds = this.scheduler.getBatchmgr().getJobsOnNode(nodeId);
+	    		if(execJobIds != null && execJobIds.size() > 0){
+	    			for(Iterator i = execJobIds.iterator(); i.hasNext(); ){
+	    				String jobId = (String)i.next();
+	    				Job job = scheduler.getJobQueue().getJobRepository()
+	    						.getJobById(jobId).getJob();
+	    				report += "job id=" + jobId;
+	    				report += ", load=" + job.getLoadValue();
+	    				report += ", node=" + nodeId;
+	    				report += ", queue=" + job.getQueueName() + "\n";
+	    			}
+	    		}
+	    	}
+    	
+    	}catch(Exception e){
+    		throw new JobRepositoryException(e.getMessage(), e);
+    	}
+    	
+    	return report;
     }
     
     public static void main(String[] args) throws Exception {

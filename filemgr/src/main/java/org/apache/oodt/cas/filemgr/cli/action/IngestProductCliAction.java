@@ -18,6 +18,7 @@ package org.apache.oodt.cas.filemgr.cli.action;
 
 //OODT static imports
 import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_HIERARCHICAL;
+import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_STREAM;
 import static org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory.getDataTransferServiceFromFactory;
 import static org.apache.oodt.cas.filemgr.versioning.VersioningUtils.addRefsFromUris;
 import static org.apache.oodt.cas.filemgr.versioning.VersioningUtils.getURIsFromDir;
@@ -88,6 +89,15 @@ public class IngestProductCliAction extends FileManagerCliAction {
             uriRefs.add(hierRefUri.toString());
             uriRefs.addAll(getURIsFromDir(new File(hierRefUri.getPath())));
             references = uriRefs;
+         } else if (product.getProductStructure().equals(STRUCTURE_STREAM)) {
+            List<String> uriRefs = Lists.newArrayList();
+            for (String ref : references) {
+               URI uri = URI.create(ref);
+               if (!uri.getScheme().equals("stream"))
+                  throw new IllegalArgumentException("Streaming data must use 'stream' scheme not "+uri.getScheme());
+               uriRefs.add(uri.toString());
+            }
+            references = uriRefs;
          } else {
             List<String> uriRefs = Lists.newArrayList();
             for (String reference : references) {
@@ -104,6 +114,7 @@ public class IngestProductCliAction extends FileManagerCliAction {
                      new SerializableMetadata(getUri(metadataFile).toURL()
                            .openStream()), dataTransferer != null));
       } catch (Exception e) {
+         e.printStackTrace();
          throw new CmdLineActionException("Failed to ingest product '"
                + productName + "' : " + e.getMessage(), e);
       }

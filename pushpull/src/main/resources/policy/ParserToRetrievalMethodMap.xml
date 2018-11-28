@@ -24,6 +24,7 @@
     <rtvlMethod class="org.apache.oodt.cas.pushpull.retrievalmethod.ListRetriever">
         <parser class="org.apache.oodt.cas.pushpull.filerestrictions.parsers.FileListParser"/>
         <parser class="org.apache.oodt.cas.pushpull.filerestrictions.parsers.ClassNoaaEmailParser"/>
+        <parser class="org.apache.oodt.cas.pushpull.filerestrictions.parsers.GenericEmailParser"/>
     </rtvlMethod>
     
 </rtvlMethods>

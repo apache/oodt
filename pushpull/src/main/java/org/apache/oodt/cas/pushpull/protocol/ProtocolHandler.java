@@ -28,8 +28,10 @@ import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
 
+
 //JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -112,14 +114,14 @@ public class ProtocolHandler {
       if (protocol != null && navigateToPathLoc) {
         if (pFile.isDir())
           this.cd(protocol, pFile);
-        else
+        else if (pFile.getParent() != null)
           this.cd(protocol, new RemoteSiteFile(pFile.getParent(), pFile.getSite()));
       }
       return protocol;
     } catch (Exception e) {
       throw new RemoteConnectionException(
           "Failed to get appropriate protocol for " + pFile + " : "
-              + e.getMessage());
+              + e.getMessage(), e);
     }
   }
 
@@ -244,14 +246,20 @@ public class ProtocolHandler {
       boolean delete) throws RemoteConnectionException {
 
     // rename file for download
-    File downloadFile = new File(toFile.getParent() + "/Downloading_"
-        + toFile.getName());
+    File downloadFile = new File(
+        String.format("%s/Downloading_%s", toFile.getParent(), toFile.getName()));
     toFile.renameTo(downloadFile);
 
     LOG.log(Level.INFO, "Starting to download " + fromFile);
     try {
       // try to download the file
       protocol.get(fromFile, downloadFile);
+
+      // rename file back to original name
+      if (!downloadFile.renameTo(toFile)) {
+        throw new IOException(
+            String.format("Failed to rename file %s to %s", downloadFile, toFile));
+      }
 
       // delete file is specified
       if (delete) {
@@ -264,9 +272,6 @@ public class ProtocolHandler {
       }
 
       LOG.log(Level.INFO, "Finished downloading " + fromFile + " to " + toFile);
-
-      // rename file back to original name
-      downloadFile.renameTo(toFile);
 
     } catch (Exception e) {
       downloadFile.delete();
@@ -333,7 +338,7 @@ public class ProtocolHandler {
 
       } catch (Exception e) {
         LOG.log(Level.WARNING, "Error occurred while connecting to "
-            + remoteSite + " : " + e.getMessage());
+            + remoteSite + " : " + e.getMessage(), e);
       }
 
     }
@@ -355,12 +360,12 @@ public class ProtocolHandler {
       else
         this.cdToROOT(protocol);
       this.cdToHOME(protocol);
-      if (home == null || !home.equals(protocol.pwd()))
+      if (home == null || !home.equals(this.pwd(remoteSite, protocol)))
         throw new ProtocolException("Home directory not the same after cd");
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Protocol "
           + protocol.getClass().getCanonicalName()
-          + " failed compatibility test : " + e.getMessage());
+          + " failed compatibility test : " + e.getMessage(), e);
       return false;
     }
     return true;
@@ -410,7 +415,7 @@ public class ProtocolHandler {
         return false;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, "Failed to delete file", e);
       return false;
     }
   }

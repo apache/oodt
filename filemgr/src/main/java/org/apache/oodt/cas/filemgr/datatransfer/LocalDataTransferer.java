@@ -123,6 +123,8 @@ public class LocalDataTransferer implements DataTransfer {
                         + e.getMessage());
             throw new DataTransferException(e);
          }
+      } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
+            LOG.log(Level.INFO,"Streaming products are not moved.");
       } else {
          throw new DataTransferException(
                "Cannot transfer product on unknown ProductStructure: "
@@ -163,6 +165,8 @@ public class LocalDataTransferer implements DataTransfer {
                         + e.getMessage());
             throw new DataTransferException(e);
          }
+      } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
+         LOG.log(Level.INFO,"Streaming products are not transfered.");
       } else {
          throw new DataTransferException(
                "Cannot transfer product on unknown ProductStructure: "
@@ -170,6 +174,17 @@ public class LocalDataTransferer implements DataTransfer {
       }
    }
 
+   @Override
+   public void deleteProduct(Product product) throws DataTransferException, IOException {
+     for (Reference ref : product.getProductReferences()) {
+       File dataFile = new File(URI.create(ref.getDataStoreReference()).toURL().getPath());
+       if (!dataFile.delete()) {
+        throw new IOException(String.format("Failed to delete file %s - delete returned false",
+            dataFile));
+       }
+     }
+   }
+   
    /**
     * @param args
     */
@@ -236,7 +251,7 @@ public class LocalDataTransferer implements DataTransfer {
       if (transferType.equals("dir")) {
          p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
          dirReference.setDataStoreReference(new File(new URI(productRepo))
-               .toURL().toExternalForm()
+               .toURI().toURL().toExternalForm()
                + URLEncoder.encode(p.getProductName(), "UTF-8") + "/");
          p.getProductReferences().add(dirReference);
          /* we'll do a simple versioning scheme ourselves: no versioning! */
@@ -427,5 +442,4 @@ public class LocalDataTransferer implements DataTransfer {
          return;
       }
    }
-
 }

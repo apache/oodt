@@ -122,6 +122,9 @@ public class BasicVersioner implements Versioner {
             // just use the VersioningUtils
             VersioningUtils.createBasicDataStoreRefsFlat(productName,
                     productRepoPath, product.getProductReferences());
+        } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
+            VersioningUtils.createBasicDataStoreRefsStream(productName,
+                    productRepoPath, product.getProductReferences(),"");
         } else {
             throw new VersioningException("Unsupported product structure: "
                     + product.getProductStructure());

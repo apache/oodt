@@ -39,7 +39,6 @@ import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 
 //EasyMock imports
-import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
 
 //Google imports
@@ -155,4 +154,5 @@ public class TestFileStager extends TestCase {
          return null;
       }
    }
+   
 }

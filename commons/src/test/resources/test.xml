@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<!DOCTYPE log [
+<!ELEMENT log (stream*)>
+<!ELEMENT stream (streamID, analyst, message*)>
+<!ELEMENT streamID (#PCDATA)>
+<!ELEMENT analyst (#PCDATA)>
+<!ELEMENT message (server, host, time, code, text)>
+<!ELEMENT server (#PCDATA)>
+<!ELEMENT host (#PCDATA)>
+<!ELEMENT time (#PCDATA)>
+<!ELEMENT code (#PCDATA)>
+<!ELEMENT text (#PCDATA)>
+]>
+<log>
+  <stream>
+    <streamID>3</streamID>
+    <analyst>hyon</analyst>
+
+    <message>
+      <server>TDS</server>
+      <host>latte</host>
+      <time>1352</time>
+      <code>121</code>
+      <text>Geeba, geeba.  Geeba geeba geeba!  Geeba, geeba, blooor?
+        Bloorien bloreinda!
+      </text>
+    </message>
+
+    <message>
+      <server>Instrument</server>
+      <host>sorrento</host>
+      <time>1353</time>
+      <code>211</code>
+      <text>Geeba, bloor.</text>
+    </message>
+
+  </stream>
+
+
+  <stream>
+    <streamID>4</streamID>
+    <analyst>kelly</analyst>
+
+    <message>
+      <server>Analyst</server>
+      <host>killamanjaro</host>
+      <time>1354</time>
+      <code>212</code>
+      <text>Wahoo</text>
+    </message>
+  </stream>
+</log>

@@ -84,6 +84,8 @@ if [ "$1" = "start" ]; then
     -Djava.util.logging.config.file="$WORKFLOW_HOME"/etc/logging.properties \
     -Dorg.apache.oodt.cas.workflow.properties="$WORKFLOW_HOME"/etc/workflow.properties \
     -Djava.io.tmpdir="$OODT_TMPDIR" \
+    -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
+    -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
     org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager \
     --portNum "$WORKFLOW_PORT" 2>&1 &
 

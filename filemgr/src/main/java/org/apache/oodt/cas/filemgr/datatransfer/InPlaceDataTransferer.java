@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.filemgr.datatransfer;
 
 //OODT imports
@@ -30,68 +29,44 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.net.URL;
 
-/**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
- * An implementation of the {@link DataTransfer} interface that leaves products
- * in the same place (i.e., "in place") and doesn't transfer them at all.
- * </p>
- * 
+/** 
+ * An implementation of the {@link DataTransfer} interface that leaves
+ * products in the same place (i.e., "in place") and doesn't transfer
+ * them at all.
+ *
+ * @author mattmann@apache.org (Chris Mattmann)
  */
 public class InPlaceDataTransferer implements DataTransfer {
 
-    /* our log stream */
-    private static final Logger LOG = Logger.getLogger(InPlaceDataTransferer.class
-            .getName());
+  private static final Logger LOG = Logger.getLogger(InPlaceDataTransferer.class.getName());
 
-    /* file manager client */
-    private XmlRpcFileManagerClient client = null;
+  private XmlRpcFileManagerClient client = null;
 
-    /**
-     * <p>
-     * Default Constructor
-     * </p>
-     */
-    public InPlaceDataTransferer() {
+  public InPlaceDataTransferer() {}
+
+  public void setFileManagerUrl(URL url) {
+    try {
+      client = new XmlRpcFileManagerClient(url);
+      LOG.log(Level.INFO, "In Place Data Transfer to: [" + client.getFileManagerUrl().toString()
+          + "] enabled");
+    } catch (ConnectionException e) {
+      LOG.log(Level.WARNING, "Connection exception for filemgr: [" + url + "]");
     }
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.oodt.cas.filemgr.datatransfer.DataTransfer#setFileManagerUrl(java.net.URL)
-     */
-    public void setFileManagerUrl(URL url) {
-        try {
-            client = new XmlRpcFileManagerClient(url);
-            LOG.log(Level.INFO, "In Place Data Transfer to: ["
-                    + client.getFileManagerUrl().toString() + "] enabled");
-        } catch (ConnectionException e) {
-            LOG.log(Level.WARNING, "Connection exception for filemgr: [" + url
-                    + "]");
-        }
-    }
+  @Override
+  public void transferProduct(Product product) throws DataTransferException, IOException {
+    // do nothing
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.oodt.cas.datatransfer.DataTransfer#transferProduct(org.apache.oodt.cas.data.structs.Product)
-     */
-    public void transferProduct(Product product) throws DataTransferException,
-            IOException {
-        // do nothing
-    }
+  @Override
+  public void retrieveProduct(Product product, File directory) throws DataTransferException,
+      IOException {
+    // do nothing
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.oodt.cas.filemgr.datatransfer.DataTransfer#retrieveProduct(org.
-     * apache.oodt.cas.filemgr.structs.Product, java.io.File)
-     */
-    public void retrieveProduct(Product product, File directory)
-          throws DataTransferException, IOException {
-       // do nothing
-    }
+  @Override
+  public void deleteProduct(Product product) throws DataTransferException, IOException {
+    // do nothing
+  }
 }

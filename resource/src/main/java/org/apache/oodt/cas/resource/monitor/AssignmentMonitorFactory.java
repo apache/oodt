@@ -19,24 +19,22 @@
 package org.apache.oodt.cas.resource.monitor;
 
 //OODT imports
-import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.noderepo.XmlNodeRepositoryFactory;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 
 //JDK imports
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author woollard
  * @author bfoster
- * @author rajith
  * @version $Revision$
- *
+ * 
  * <p>
  * Creates implementations of {@link AssignmentMonitor}s.
  * </p>
- *
+ * 
  */
 public class AssignmentMonitorFactory implements MonitorFactory {
 
@@ -52,16 +50,11 @@ public class AssignmentMonitorFactory implements MonitorFactory {
     public AssignmentMonitor createMonitor() {
         try {
             String nodeRepoFactoryStr = System.getProperty(
-                    "org.apache.oodt.cas.resource.nodes.repo.factory");
-            String resourceMonitorStr = System
-                    .getProperty("org.apache.oodt.cas.resource.monitor.factory");
-
-            List<ResourceNode> resourceNodes = GenericResourceManagerObjectFactory
-                    .getNodeRepositoryFromFactory(nodeRepoFactoryStr).loadNodes();
-            ResourceMonitor resourceMonitor = GenericResourceManagerObjectFactory
-                    .getResourceMonitorFromServiceFactory(resourceMonitorStr);
-
-            return new AssignmentMonitor(resourceNodes, resourceMonitor);
+                    "gov.nasa.jpl.oodt.cas.resource.nodes.repo.factory",
+                    XmlNodeRepositoryFactory.class.getCanonicalName());
+            return new AssignmentMonitor(GenericResourceManagerObjectFactory
+                    .getNodeRepositoryFromFactory(nodeRepoFactoryStr)
+                    .loadNodes());
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to create Assignment Monitor : "
                     + e.getMessage(), e);

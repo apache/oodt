@@ -59,6 +59,7 @@ case "$1" in
   stop)
         echo -n "Shutting down cas resource manager: "
         kill `cat ${RUN_HOME}/cas.resmgr.pid`
+        rm -f ${RUN_HOME}/cas.resmgr.pid
         echo "OK"
         ;;
   restart)

@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-profile</artifactId>
@@ -31,34 +31,80 @@
     Dublin Core and ISO-11179 metadata as well as URIs for locations.
     The Profile Service catalogs metadata descriptions and provides
     creating, updating, and querying capabilities.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
-  </scm>
+  <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
+     Once the dependency is in the core pom, it can then be used in other modules without the version tags.
+     For example, within core/pom.xml:
+
+      <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+     Elsewhere in the platform:
+     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+    </dependency>
+
+     Where possible the same dependency version should be used across the whole platform but if required the version
+     can be overridden in a specific pom and should have a comment explaing why the version has been overridden
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>3.4.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.0-alpha1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>apache-jena-libs</artifactId>
+      <version>${jena.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-filemgr</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-xmlquery</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+  </dependencies>
   <build>
     <resources>
       <resource>
         <directory>${basedir}/src/main/dtd</directory>
       </resource>
     </resources>
-    <testResources>
-      <testResource>
-        <targetPath>org/apache/oodt/profile</targetPath>
-        <directory>${basedir}/src/testdata</directory>
-        <includes>
-          <include>test.rdf</include>
-          <include>test.xml</include>
-        </includes>
-      </testResource>
-      <testResource>
-        <targetPath>org/apache/oodt/profile/handlers/lightweight</targetPath>
-        <directory>${basedir}/src/testdata</directory>
-        <includes>
-          <include>lightweightTest.xml</include>
-        </includes>
-      </testResource>
-    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -71,6 +117,11 @@
       </plugin>
     </plugins>
   </build>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
+  </scm>
   <profiles>
     <profile>
       <id>audit</id>
@@ -90,10 +141,10 @@
             </configuration>
             <executions>
               <execution>
-                <phase>verify</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
@@ -101,52 +152,4 @@
       </build>
     </profile>
   </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-xmlquery</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-filemgr</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <version>2.6.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-      <version>3.4.4</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <version>3.0-alpha1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

@@ -23,6 +23,7 @@ package org.apache.oodt.cas.resource.monitor.ganglia;
  */
 public interface GangliaMetKeys {
 
+	/* XML specific keys */
     public static final String CLUSTER = "CLUSTER";
     public static final String HOST = "HOST";
     public static final String METRIC = "METRIC";
@@ -54,6 +55,16 @@ public interface GangliaMetKeys {
     public static final String OWNER = "OWNER";
     public static final String LATLONG = "LATLONG";
     public static final String URL = "URL";
+    
+    /*Ganglia metric keys*/
+    public static String LOAD_ONE = "load_one";
+    public static String LOAD_FIVE = "load_five";
+    public static String LOAD_FIFTEEN = "load_fifteen";
+    public static String CPU_NUM = "cpu_num";
+
+    /* Various needed keys */
+    public static int MAXIMUM_FRACTION_DIGITS = 3;
+
 
 
 }

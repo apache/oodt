@@ -17,11 +17,11 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../../../core</relativePath>
   </parent>
   <artifactId>radix-archetype</artifactId>
@@ -30,13 +30,6 @@
   <name>OODT :: Archetypes :: RADiX</name>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.archetype</groupId>
-        <artifactId>archetype-packaging</artifactId>
-        <version>2.0-alpha-5</version>
-      </extension>
-    </extensions>
 
     <pluginManagement>
       <plugins>
@@ -47,5 +40,12 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.archetype</groupId>
+        <artifactId>archetype-packaging</artifactId>
+        <version>2.0-alpha-5</version>
+      </extension>
+    </extensions>
   </build>
 </project>

@@ -30,7 +30,7 @@ the License.
             <props>
                 <prop key="crawler.failure.dir">[FAILURE_DIR]</prop>
                 <prop key="crawler.backup.dir">[BACKUP_DIR]</prop>
-                <prop key="crawler.workflowmgr.url">[WORKFLOWMGR_URL]</prop>
+                <prop key="crawler.workflowmgr.url">[WORKFLOW_URL]</prop>
                 <prop key="crawler.filemgr.url">[FILEMGR_URL]</prop>
                 <prop key="crawler.client.transferer">org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory</prop>
                 <prop key="crawler.met.file.ext">met</prop>

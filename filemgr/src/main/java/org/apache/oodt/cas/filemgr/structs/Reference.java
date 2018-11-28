@@ -20,11 +20,13 @@ package org.apache.oodt.cas.filemgr.structs;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
@@ -57,6 +59,8 @@ public class Reference {
     private MimeType mimeType = null;
 
     private static MimeTypes mimeTypeRepository;
+
+    public static String STREAM_REFERENCE_DELIMITER = "-";
 
     /* the static reference to the Mime-Type repository */
     static {
@@ -112,9 +116,8 @@ public class Reference {
         // ourselves to determine the which MimeType class to associate
         // with this reference.
         try {
-            this.mimeType = mimeTypeRepository
-                    .getMimeType(new URL(origRef));
-        } catch (MalformedURLException e) {
+            this.mimeType = mimeTypeRepository.forName(new Tika().detect(origRef));
+        } catch (MimeTypeException e) {
             e.printStackTrace();
         }
 

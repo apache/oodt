@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.resource.monitor;
 
 //JDK imports
@@ -23,19 +22,18 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 /**
- *
+ * 
  * @author woollard
  * @author bfoster
- * @author rajith
+ * @author mattmann
  * @version $Revision$
- *
+ * 
  * <p>
  * An implementation of the {@link Monitor} interface that loads its information
  * about the underlying nodes from an XML file called <code>nodes.xml</code>.
@@ -44,23 +42,20 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
  * </p>
  */
 public class AssignmentMonitor implements Monitor {
-
-    /* our log stream */
-    private static Logger LOG = Logger.getLogger(AssignmentMonitor.class
-            .getName());
-
+	
     /* our nodes map */
     private static HashMap<String, ResourceNode> nodesMap;
 
-    /* resource monitor */
-    private ResourceMonitor resourceMonitor;
+    /* our load map */
+    private static HashMap<String, Integer> loadMap;
 
-    public AssignmentMonitor(List<ResourceNode> nodes, ResourceMonitor resourceMonitor) {
+    public AssignmentMonitor(List<ResourceNode> nodes) {
         nodesMap = new HashMap<String, ResourceNode>();
-        this.resourceMonitor = resourceMonitor;
-
+        loadMap = new HashMap<String, Integer>();
+        
         for (ResourceNode node : nodes) {
             nodesMap.put(node.getNodeId(), node);
+            loadMap.put(node.getNodeId(), new Integer(0));
         }
     }
 
@@ -70,27 +65,30 @@ public class AssignmentMonitor implements Monitor {
      * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#assignLoad(
      *      gov.nasa.jpl.oodt.cas.resource.structs.ResourceNode, int)
      */
+    @Override
     public boolean assignLoad(ResourceNode node, int loadValue)
             throws MonitorException {
-        float loadVal = (float) loadValue;
-        float loadCap = (float) node.getCapacity();
-        float curLoad = resourceMonitor.getLoad(node);
+        int loadCap = node.getCapacity();
+        int curLoad = loadMap.get(node.getNodeId());
 
-        if (loadVal <= (loadCap - curLoad)) {
-            resourceMonitor.updateLoad(node.getNodeId(), curLoad + loadVal);
+        if (loadValue <= (loadCap - curLoad)) {
+            loadMap.remove(node.getNodeId());
+            loadMap.put(node.getNodeId(), new Integer(curLoad + loadValue));
             return true;
         } else {
             return false;
         }
     }
 
+    @Override
     public boolean reduceLoad(ResourceNode node, int loadValue)
             throws MonitorException {
-        float load = resourceMonitor.getLoad(node);
-        float newVal = load - (float)loadValue;
+        int load = loadMap.get(node.getNodeId());
+        int newVal = load - loadValue;
         if (newVal < 0)
             newVal = 0; // should not happen but just in case
-        resourceMonitor.updateLoad(node.getNodeId(), newVal);
+        loadMap.remove(node.getNodeId());
+        loadMap.put(node.getNodeId(), new Integer(newVal));
         return true;
     }
 
@@ -101,9 +99,8 @@ public class AssignmentMonitor implements Monitor {
      */
     public int getLoad(ResourceNode node) throws MonitorException {
         ResourceNode resource = (ResourceNode) nodesMap.get(node.getNodeId());
-//        Integer i = (Integer) loadMap.get(node.getNodeId());
-        float load = resourceMonitor.getLoad(node);
-        return (int) ((float) resource.getCapacity() - load);
+        int i = loadMap.get(node.getNodeId());
+        return (resource.getCapacity() - i);
     }
 
     /*
@@ -143,12 +140,12 @@ public class AssignmentMonitor implements Monitor {
 
     public void addNode(ResourceNode node) throws MonitorException {
         nodesMap.put(node.getNodeId(), node);
-        resourceMonitor.addNode(node.getNodeId(), node.getCapacity());
+        if (!loadMap.containsKey(node.getNodeId()))
+            loadMap.put(node.getNodeId(), new Integer(0));
     }
 
     public void removeNodeById(String nodeId) throws MonitorException {
-        nodesMap.remove(nodeId);
-        resourceMonitor.removeNodeById(nodeId);
+        nodesMap.remove(nodeId);    
+        loadMap.remove(nodeId);
     }
-
 }

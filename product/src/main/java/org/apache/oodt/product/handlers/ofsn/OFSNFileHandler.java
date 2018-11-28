@@ -147,7 +147,11 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     	  }
     	  mimeType = mediaType.toString();
       } else { // use default mimetype of product on disk
-    	  mimeType = MimeTypesFactory.create().getMimeType(new File(realPath)).getName();
+          try {
+              mimeType = MimeTypesFactory.create().getMimeType(new File(realPath)).getName();
+          } catch (Exception e) {
+              mimeType = null;
+          }
       }
       
       xmlQuery.getResults().add(
@@ -187,6 +191,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
 
     OFSNGetHandler handler = getGetHandler(rtType, this.conf
         .getHandlerClass(rtType));
+    
     return handler.retrieveChunk(filepath, offset, length);
   }
 
@@ -201,6 +206,8 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     if (ofsn == null || cmd == null || (ofsn != null && ofsn.equals(""))
         || (cmd != null && cmd.equals(""))) {
       throw new ProductException("must specify OFSN and RT parameters!");
+    } else if (!OFSNUtils.validateOFSN(ofsn)) {
+      throw new ProductException("OFSN is invalid");
     }
   }
 

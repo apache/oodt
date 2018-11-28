@@ -22,11 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.Vector;
+
 //Apache imports
 import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+
 
 //Google imports
 import com.google.common.annotations.VisibleForTesting;
@@ -43,14 +46,18 @@ import com.google.common.collect.Sets;
  * key as dynamic and commit it.
  * 
  * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
 public class PgeMetadata {
 
    public enum Type {
       STATIC, DYNAMIC, LOCAL;
    }
-   public static final List<Type> DEFAULT_PRECENDENCE_HIERARCHY = Lists
-         .newArrayList(Type.DYNAMIC, Type.LOCAL, Type.STATIC);
+   public static final List<Type> DEFAULT_COMBINE_ORDER = Lists
+         .newArrayList(Type.LOCAL, Type.DYNAMIC, Type.STATIC);
+   
+   public static final List<Type> DEFAULT_QUERY_ORDER = Lists
+		   .newArrayList(Type.STATIC, Type.DYNAMIC, Type.LOCAL);
 
    private final Metadata staticMetadata;
    private final Metadata dynamicMetadata;
@@ -382,22 +389,21 @@ public class PgeMetadata {
     * following: pgeMetadata.asMetadata(LOCAL, STATIC) then only LOCAL and
     * STATIC metadata will be combined and LOCAL metadata will trump STATIC
     * metadata if they both contain the same key. If no arguments are specified
-    * then DEFAULT_PRECENDENCE_HIERARCHY is used.
+    * then DEFAULT_COMBINE_ORDER is used.
     * 
     * @param types
     *           The Type hierarchy you which to use when metadata is combined,
-    *           if no args then DEFAULT_PRECENDENCE_HIERARCHY is used.
+    *           if no args then DEFAULT_COMBINE_ORDER is used.
     * @return Combined metadata.
     */
    public Metadata asMetadata(Type... types) {
-      List<Type> conbineOrder = Lists.newArrayList(types);
-      if (conbineOrder.isEmpty()) {
-         conbineOrder.addAll(DEFAULT_PRECENDENCE_HIERARCHY);
+      List<Type> combineOrder = Lists.newArrayList(types);
+      if (combineOrder.isEmpty()) {
+         combineOrder.addAll(DEFAULT_COMBINE_ORDER);
       }
-      Collections.reverse(conbineOrder);
 
       Metadata combinedMetadata = new Metadata();
-      for (Type type : conbineOrder) {
+      for (Type type : combineOrder) {
          switch (type) {
             case DYNAMIC:
                combinedMetadata.replaceMetadata(dynamicMetadata);
@@ -426,7 +432,7 @@ public class PgeMetadata {
    /**
     * Get metadata values for given key. If Types are specified then it provides
     * the precedence order in which to search for the key. If no Type args are
-    * specified then DEFAULT_PRECENDENCE_HIERARCHY will be used. For example if
+    * specified then DEFAULT_QUERY_ORDER will be used. For example if
     * you pass in Type args: STATIC, LOCAL then STATIC metadata will first be
     * checked for the key and if it contains it, then it will return the found
     * value, otherwise it will then check LOCAL metadata for the key and if it
@@ -436,13 +442,13 @@ public class PgeMetadata {
     *           The key for whose metadata values should be returned.
     * @param types
     *           The type hierarchy which should be used, if no Types specified
-    *           DEFAULT_PRECENDENCE_HIERARCHY will be used.
+    *           DEFAULT_QUERY_ORDER will be used.
     * @return Metadata values for given key.
     */
    public List<String> getAllMetadata(String key, Type... types) {
       List<Type> queryOrder = Lists.newArrayList(types);
       if (queryOrder.isEmpty()) {
-         queryOrder.addAll(DEFAULT_PRECENDENCE_HIERARCHY);
+         queryOrder.addAll(DEFAULT_QUERY_ORDER);
       }
 
       String useKey = resolveKey(key);
@@ -465,7 +471,7 @@ public class PgeMetadata {
                break;
          }
       }
-      return null;
+      return new Vector<String>();
    }
 
    public String getMetadata(PgeTaskMetKeys key, Type... types) {
@@ -478,6 +484,6 @@ public class PgeMetadata {
     */
    public String getMetadata(String key, Type... types) {
       List<String> values = getAllMetadata(key, types);
-      return values != null ? values.get(0) : null;
+      return values != null && values.size() > 0 ? values.get(0) : null;
    }
 }

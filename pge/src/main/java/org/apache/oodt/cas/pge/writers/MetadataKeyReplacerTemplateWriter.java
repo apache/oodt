@@ -41,7 +41,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  * template file to use as a basis.
  * 
  */
-public class MetadataKeyReplacerTemplateWriter implements
+public class MetadataKeyReplacerTemplateWriter extends
     DynamicConfigFileWriter {
 
   private static final String DEFAULT_SEPARATOR = ",";

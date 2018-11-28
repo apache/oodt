@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
@@ -29,12 +30,14 @@ import org.apache.oodt.cas.pushpull.expressions.Method;
 import org.apache.oodt.cas.pushpull.expressions.Variable;
 import org.apache.oodt.commons.xml.XMLUtils;
 
+
 //JDK imports
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.DOMException;
@@ -61,7 +64,7 @@ public class DirStructXmlParser implements Parser {
 
     public DirStructXmlParser() {}
 
-    public VirtualFileStructure parse(FileInputStream xmlFile)
+    public VirtualFileStructure parse(FileInputStream xmlFile, Metadata metadata)
             throws ParserException {
         try {
             String initialCdDir = "/";

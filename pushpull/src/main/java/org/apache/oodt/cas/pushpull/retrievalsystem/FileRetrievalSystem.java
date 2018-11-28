@@ -37,7 +37,9 @@ import org.apache.oodt.cas.pushpull.protocol.ProtocolHandler;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
+
 
 //JDK imports
 import java.io.File;
@@ -351,7 +353,7 @@ public class FileRetrievalSystem {
     // returns true if download was added to queue. . .false otherwise
     public boolean addToDownloadQueue(RemoteSite remoteSite, String file,
             String renamingString, File downloadToDir,
-            String uniqueMetadataElement, boolean deleteAfterDownload)
+            String uniqueMetadataElement, boolean deleteAfterDownload, Metadata fileMetadata)
             throws ToManyFailedDownloadsException, RemoteConnectionException,
             ProtocolFileException, ProtocolException,
             AlreadyInDatabaseException, UndefinedTypeException,
@@ -362,7 +364,7 @@ public class FileRetrievalSystem {
             return addToDownloadQueue(protocolHandler.getProtocolFileFor(remoteSite,
                     protocolHandler.getAppropriateProtocolBySite(remoteSite,
                             true), file, false), renamingString, downloadToDir,
-                    uniqueMetadataElement, deleteAfterDownload);
+                    uniqueMetadataElement, deleteAfterDownload, fileMetadata);
         } else
             throw new ProtocolException("Not a valid remote site " + remoteSite);
     }
@@ -398,11 +400,17 @@ public class FileRetrievalSystem {
         }
     }
 
-    public boolean addToDownloadQueue(RemoteSiteFile file, String renamingString,
-            File downloadToDir, String uniqueMetadataElement,
-            boolean deleteAfterDownload) throws ToManyFailedDownloadsException,
-            RemoteConnectionException, AlreadyInDatabaseException,
-            UndefinedTypeException, CatalogException, IOException {
+  public boolean addToDownloadQueue(RemoteSiteFile file,
+                                    String renamingString,
+                                    File downloadToDir,
+                                    String uniqueMetadataElement,
+                                    boolean deleteAfterDownload,
+                                    Metadata fileMetadata) throws ToManyFailedDownloadsException,
+                                                                  RemoteConnectionException,
+                                                                  AlreadyInDatabaseException,
+                                                                  UndefinedTypeException,
+                                                                  CatalogException,
+                                                                  IOException {
         if (this.failedDownloadList.size() > max_allowed_failed_downloads)
             throw new ToManyFailedDownloadsException(
                     "Number of failed downloads exceeds "
@@ -416,6 +424,7 @@ public class FileRetrievalSystem {
         }
 
         RemoteFile remoteFile = new RemoteFile(file);
+        remoteFile.addMetadata(fileMetadata);
         remoteFile.addMetadata(RemoteFile.RENAMING_STRING, renamingString);
         remoteFile.addMetadata(RemoteFile.DELETE_AFTER_DOWNLOAD,
                 deleteAfterDownload + "");
@@ -458,7 +467,7 @@ public class FileRetrievalSystem {
         remoteFile.addMetadata(RemoteFile.DOWNLOAD_TO_DIR, downloadToDir.getAbsolutePath());
 
     	if (remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR) != null) {
-    		remoteFile.addMetadata(RemoteFile.PRODUCT_NAME, RenamingConvention.rename(remoteFile.getProtocolFile(), remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR)));
+    		remoteFile.addMetadata(RemoteFile.PRODUCT_NAME, RenamingConvention.rename(remoteFile, remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR)));
     	}else {
     		remoteFile.setUniqueMetadataElement(uniqueMetadataElement == null ? RemoteFile.FILENAME : uniqueMetadataElement);
     	}
@@ -491,7 +500,7 @@ public class FileRetrievalSystem {
                             this.failedDownloadList.add(file);
                             throw new RemoteConnectionException(
                                     "Failed to get session to download " + file
-                                            + " : " + e.getMessage());
+                                            + " : " + e.getMessage(), e);
                         }
                     }
                 }
@@ -559,8 +568,7 @@ public class FileRetrievalSystem {
             File newFile = new File(remoteFile
                     .getMetadata(RemoteFile.DOWNLOAD_TO_DIR)
                     + "/"
-                    + RenamingConvention.rename(remoteFile.getProtocolFile(),
-                            renamingString));
+                    + RenamingConvention.rename(remoteFile, renamingString));
             if (!newFile.getParentFile().equals(
                     remoteFile.getMetadata(RemoteFile.DOWNLOAD_TO_DIR)))
                 newFile.getParentFile().mkdirs();
@@ -636,7 +644,7 @@ public class FileRetrievalSystem {
             return session;
         } catch (Exception e) {
             throw new CrawlerException("Failed to get new session : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
 

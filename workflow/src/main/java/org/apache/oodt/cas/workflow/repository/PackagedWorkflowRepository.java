@@ -31,6 +31,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
 import org.apache.oodt.commons.xml.XMLUtils;
 
+
 //JDK imports
 import java.io.File;
 import java.util.Arrays;
@@ -42,8 +43,10 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -324,15 +327,26 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
 
     // recast it as a parent/child workflow
-    String workflowId = UUID.randomUUID().toString();
-    workflow.setId(workflowId);
-
-    Graph graph = new Graph();
-    graph.setExecutionType("sequential");
-    ParentChildWorkflow pcw = new ParentChildWorkflow(graph);
-    pcw.setName(workflow.getName());
-    pcw.setTasks(workflow.getTasks());
-    pcw.setId(workflow.getId());
+    String workflowId = workflow.getId();
+	if (workflowId == null
+			|| (workflowId != null && workflowId.equals(""))) {
+		// generate its ID
+		workflowId = UUID.randomUUID().toString();
+		workflow.setId(workflowId);
+	}
+      
+    ParentChildWorkflow pcw = null;
+    if(workflow instanceof ParentChildWorkflow) {
+        pcw = (ParentChildWorkflow) workflow;
+    }
+    else {
+        Graph graph = new Graph();
+        graph.setExecutionType("sequential");
+        pcw = new ParentChildWorkflow(graph);
+        pcw.setName(workflow.getName());
+        pcw.setTasks(workflow.getTasks());
+        pcw.setId(workflow.getId());
+    }
     this.workflows.put(pcw.getId(), pcw);
     this.eventWorkflowMap.put(workflowId, Collections.singletonList(pcw));
 
@@ -631,7 +645,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       graph.setCond(cond);
       if (graph.getParent() != null) {
         if (graph.getParent().getWorkflow() != null) {
-          System.out.println("Adding condition: [" + cond.getConditionName()
+          LOG.log(Level.FINEST, "Adding condition: [" + cond.getConditionName()
               + "] to parent workflow: ["
               + graph.getParent().getWorkflow().getName() + "]");
           graph.getParent().getWorkflow().getConditions().add(cond);

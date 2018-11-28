@@ -61,13 +61,13 @@ public class XMLValidationLayer implements ValidationLayer {
             .getName());
 
     /* product type ID to element map */
-    private static HashMap<String, List<Element>> productTypeElementMap = new HashMap<String, List<Element>>();
+    private HashMap<String, List<Element>> productTypeElementMap = new HashMap<String, List<Element>>();
 
     /* sub-type to super-type map */
-    private static HashMap<String, String> subToSuperMap = new HashMap<String, String>();
+    private HashMap<String, String> subToSuperMap = new HashMap<String, String>();
 
     /* element map */
-    private static HashMap<String, Element> elementMap = new HashMap<String, Element>();
+    private HashMap<String, Element> elementMap = new HashMap<String, Element>();
 
     /*
      * URIs pointing to directories with product-type-element-map.xml and
@@ -171,20 +171,7 @@ public class XMLValidationLayer implements ValidationLayer {
      */
     public List<Element> getElements(ProductType type)
             throws ValidationLayerException {
-        List<Element> elems = new Vector<Element>();
-        String currType = type.getProductTypeId();
-        if (productTypeElementMap.containsKey(currType)) {
-            elems.addAll(productTypeElementMap.get(currType));
-        }
-
-        while (subToSuperMap.containsKey(currType)) {
-            currType = subToSuperMap.get(currType);
-            if (productTypeElementMap.containsKey(currType)) {
-                elems.addAll(productTypeElementMap.get(currType));
-            }
-        }
-
-        return elems;
+    	return this.getElements(type, false);
     }
 
     /*
@@ -225,6 +212,69 @@ public class XMLValidationLayer implements ValidationLayer {
         return null;
 
     }
+    
+    /**
+     * Returns the declared elements for a {@link ProductType}
+     * @param type The {@link ProductType} to get the elements for
+     * @param direct If false, return elements of the parent product types as well
+     * @return A list of all {@link Element} of the Product type
+     * @throws ValidationLayerException
+     * 				If any error occurs
+     */
+    public List<Element> getElements(ProductType type, boolean direct)
+            throws ValidationLayerException {
+        List<Element> elems = new Vector<Element>();
+        String currType = type.getProductTypeId();
+        if (productTypeElementMap.containsKey(currType)) {
+            elems.addAll(productTypeElementMap.get(currType));
+        }
+
+        if(!direct) {
+	        while (subToSuperMap.containsKey(currType)) {
+	            currType = subToSuperMap.get(currType);
+	            if (productTypeElementMap.containsKey(currType)) {
+	                elems.addAll(productTypeElementMap.get(currType));
+	            }
+	        }
+        }
+
+        return elems;
+    }
+    
+    /**
+     * Gets the parent-child relationship between product types
+     * 
+     * @return HashMap of {@link ProductType} ids mapped to their parent id
+     */
+    public HashMap<String, String> getSubToSuperMap() {
+    	return subToSuperMap;
+    }
+    
+    /**
+     * Sets a parentId for an existing {@link ProductType}
+     * @param type The {@link ProductType} to add a parent for
+     * @param parentId The id of the parent {@link ProductType}
+     * @throws ValidationLayerException
+     * 				If any error occurs
+     */
+    public void addParentForProductType(ProductType type, String parentId)
+            throws ValidationLayerException {
+        subToSuperMap.put(type.getProductTypeId(), parentId);
+        saveElementsAndMappings();
+    }
+
+    /**
+     * Removes the parent for a {@link ProductType}
+     * @param type The {@link ProductType} to remove the parent from
+     * @throws ValidationLayerException
+     * 				If any error occurs
+     */
+    public void removeParentForProductType(ProductType type)
+            throws ValidationLayerException {
+        subToSuperMap.remove(type.getProductTypeId());
+        saveElementsAndMappings();
+    }
+    
 
     private void saveElementsAndMappings() {
         for (Iterator<String> i = xmlFileDirUris.iterator(); i.hasNext();) {

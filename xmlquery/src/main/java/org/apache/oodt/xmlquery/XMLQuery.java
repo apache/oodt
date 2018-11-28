@@ -404,6 +404,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
             tokens = new java.io.StreamTokenizer(new StringReader(kwdQueryString));
             tokens.resetSyntax();
             tokens.ordinaryChar('/');
+            tokens.wordChars('#', '#');
             tokens.wordChars(':', ':');
             tokens.wordChars('0', '9');
             tokens.wordChars('.', '.');

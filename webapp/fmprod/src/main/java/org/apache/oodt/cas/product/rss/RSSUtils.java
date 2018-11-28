@@ -20,6 +20,10 @@ package org.apache.oodt.cas.product.rss;
 
 //OODT imports
 import static org.apache.oodt.cas.product.rss.RSSConfigMetKeys.RSS_CONTEXT_CONF_KEY;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -54,12 +58,17 @@ public class RSSUtils {
 
   public static Element emitRSSTag(RSSTag tag, Metadata prodMet, Document doc,
       Element item) {
-    Element rssMetElem = XMLUtils.addNode(doc, item, tag.getName());
+    String outputTag = tag.getName();
+    if (outputTag.indexOf(" ") != -1) {
+      outputTag = StringUtils.join(WordUtils.capitalizeFully(outputTag).split(
+          " "));
+    }
+    Element rssMetElem = XMLUtils.addNode(doc, item, outputTag);
 
     // first check if there is a source defined, if so, use that as the value
     if (tag.getSource() != null) {
-      rssMetElem.appendChild(doc.createTextNode(PathUtils.replaceEnvVariables(
-          tag.getSource(), prodMet)));
+      rssMetElem.appendChild(doc.createTextNode(StringEscapeUtils.escapeXml(PathUtils.replaceEnvVariables(
+          tag.getSource(), prodMet))));
     }
 
     // check if there are attributes defined, and if so, add to the attributes

@@ -18,8 +18,11 @@ package org.apache.oodt.cas.protocol.ftp;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
+
+
 
 //Globus imports
 import org.apache.oodt.cas.protocol.Protocol;
@@ -29,6 +32,9 @@ import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 import org.globus.ftp.FTPClient;
 import org.globus.ftp.FileInfo;
+import org.globus.ftp.HostPort;
+import org.globus.ftp.exception.ClientException;
+import org.globus.ftp.exception.ServerException;
 
 /**
  * FTP implementation of a {@link Protocol}
@@ -114,11 +120,44 @@ public class CogJGlobusFtpProtocol implements Protocol {
 		  throw new ProtocolException("Failed to put file '" + fromFile + "' : " + e.getMessage(), e);
 	  }
   }
-  
-  public List<ProtocolFile> ls() throws ProtocolException {
+
+    /**
+     * SetActive
+     * Sets the FTP Active Protocol
+     * Package protected so we can test the non FTP server parts of the codebase.
+     * @throws ProtocolException
+     */
+  protected void setActive() throws ProtocolException {
       try {
           ftp.setActive(ftp.setLocalPassive());
-          Vector<FileInfo> fileList = (Vector<FileInfo>) ftp.list("*", null);
+      } catch (Exception e) {
+          throw new ProtocolException("Failed to set ftp active : "
+                  + e.getMessage());
+      }
+  }
+
+    /**
+     * ftpList
+     * Gets a file list from the FTP Server
+     * Package protected so we can test the non server portion of the code.
+     * @param filter
+     * @param modifier
+     * @return
+     */
+  protected Vector ftpList(String filter, String modifier) throws ProtocolException {
+      try {
+          return ftp.list(filter, modifier);
+      } catch (Exception e) {
+          throw new ProtocolException("Failed to get list of files : "
+                  + e.getMessage());
+      }
+
+  }
+  public List<ProtocolFile> ls() throws ProtocolException {
+      try {
+          setActive();
+          @SuppressWarnings("unchecked")
+          Vector<FileInfo> fileList = (Vector<FileInfo>) ftpList("*", null);
           Vector<ProtocolFile> returnList = new Vector<ProtocolFile>();
           for (FileInfo file : fileList) {
               returnList.add(new ProtocolFile(this.pwd(), file.getName(), file.isDirectory()));
@@ -133,6 +172,7 @@ public class CogJGlobusFtpProtocol implements Protocol {
 	public List<ProtocolFile> ls(ProtocolFileFilter filter) throws ProtocolException {
     try {
       ftp.setActive(ftp.setLocalPassive());
+      @SuppressWarnings("unchecked")
       Vector<FileInfo> fileList = (Vector<FileInfo>) ftp.list("*", null);
       Vector<ProtocolFile> returnList = new Vector<ProtocolFile>();
       for (FileInfo file : fileList) {
@@ -147,10 +187,27 @@ public class CogJGlobusFtpProtocol implements Protocol {
 	              + e.getMessage());
 	  }
   }
+
+    /**
+     * Returns the current Directory.
+     * Package protected so we can test the non ftp parts of the codebase.
+     * @return
+     * @throws ProtocolException
+     */
+  protected String getCurentDir() throws ProtocolException {
+      try {
+          return ftp.getCurrentDir();
+      } catch (Exception e) {
+          throw new ProtocolException("Failed to get current directory : "
+                  + e.getMessage());
+      }
+
+
+  }
 	
   public ProtocolFile pwd() throws ProtocolException {
       try {
-          return new ProtocolFile(ftp.getCurrentDir(), true);
+          return new ProtocolFile(getCurentDir(), true);
       } catch (Exception e) {
           throw new ProtocolException("Failed to pwd : " + e.getMessage());
       }

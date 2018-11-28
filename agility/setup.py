@@ -16,7 +16,7 @@
 # under the License.    
 
 import os.path
-from distribute_setup import use_setuptools
+from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import find_packages, setup
 
@@ -25,8 +25,8 @@ from setuptools import find_packages, setup
 # ------------
 
 _name         = 'oodt'
-_version      = '0.6'
-_description  = 'Agile OODT'
+_version      = '0.11'
+_description  = 'Apache OODT'
 _url          = 'http://oodt.apache.org/'
 _downloadURL  = 'http://pypi.python.org/pypi/oodt/'
 _author       = 'Sean Kelly'
@@ -90,7 +90,7 @@ setup(
     long_description=_longDescription,
     name=_name,
     namespace_packages=_namespaces,
-    packages=find_packages(),
+    packages=find_packages(exclude=['ez_setup']),
     test_suite=_testSuite,
     url=_url,
     version=_version,

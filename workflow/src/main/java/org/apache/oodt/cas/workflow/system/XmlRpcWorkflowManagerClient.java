@@ -76,6 +76,20 @@ public class XmlRpcWorkflowManagerClient {
         workflowManagerUrl = url;
     }
     
+    public boolean refreshRepository()
+        throws Exception {
+        try {
+            return ((Boolean) client.execute(
+                    "workflowmgr.refreshRepository", new Vector()))
+                    .booleanValue();
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+            throw new Exception(e.getMessage());
+        } catch (IOException e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
   public String executeDynamicWorkflow(List<String> taskIds, Metadata metadata)
       throws Exception {
     Vector argList = new Vector();

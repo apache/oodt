@@ -24,6 +24,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 
+
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
@@ -195,6 +196,17 @@ public class RemoteDataTransferer implements DataTransfer {
       }
    }
 
+   @Override
+   public void deleteProduct(Product product) throws DataTransferException, IOException {
+     for (Reference ref : product.getProductReferences()) {
+       File dataFile = new File(URI.create(ref.getDataStoreReference()).toURL().getPath());
+       if (!dataFile.delete()) {
+        throw new IOException(String.format("Failed to delete file %s - delete returned false",
+            dataFile));
+       }
+     }
+   }
+   
    private void remoteTransfer(Reference reference, Product product)
          throws URISyntaxException {
       // get the file path

@@ -59,6 +59,10 @@ public class RemoteFile implements RemoteFileMetKeys {
         this.metadata.addMetadata(key, value);
     }
 
+    public void addMetadata(Metadata metadata) {
+        this.metadata.addMetadata(metadata);
+    }
+
     public String getMetadata(String key) {
         return this.metadata.getMetadata(key);
     }

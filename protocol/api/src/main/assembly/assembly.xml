@@ -63,7 +63,15 @@ the License.
       <directory>${basedir}/src/main/resources/policy</directory>
       <outputDirectory>policy</outputDirectory>
       <includes>
-        <include>*.xml</include>
+        <include>cmd-line-actions.xml</include>
+        <include>cmd-line-options.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+    <directory>${basedir}/src/main/java/org/apache/oodt/cas/protocol</directory>
+      <outputDirectory>policy</outputDirectory>
+      <includes>
+        <include>protocol-config.xml</include>
       </includes>
     </fileSet>
     <fileSet>
@@ -83,3 +91,4 @@ the License.
     </dependencySet>
   </dependencySets>
 </assembly>
+

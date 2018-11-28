@@ -51,6 +51,8 @@ case "$1" in
         $JAVA_HOME/bin/java -Djava.ext.dirs=${CAS_WORKFLOW_HOME}/lib \
         -Djava.util.logging.config.file=${CAS_WORKFLOW_HOME}/etc/logging.properties \
         -Dorg.apache.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \
+        -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
+        -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
         org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager --portNum $SERVER_PORT &       
         echo $! >${RUN_HOME}/cas.workflow.pid 
         echo "OK"
@@ -59,6 +61,7 @@ case "$1" in
   stop)
         echo -n "Shutting down cas workflow manager: "
         kill `cat ${RUN_HOME}/cas.workflow.pid`
+        rm -f ${RUN_HOME}/cas.workflow.pid
         echo "OK"
         ;;
   restart)
