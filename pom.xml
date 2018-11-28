@@ -20,11 +20,10 @@ the License.
     <parent>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
-        <version>0.9</version>
+        <version>0.11-SNAPSHOT</version>
         <relativePath>core/pom.xml</relativePath>
     </parent>
 
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt</artifactId>
     <name>Apache OODT</name>
     <packaging>pom</packaging>
@@ -33,9 +32,9 @@ the License.
     </description>
 
     <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-rc1</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-rc1</developerConnection>
-        <url>http://svn.apache.org/viewvc/oodt/tags/0.9-rc1</url>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10</developerConnection>
+        <url>http://svn.apache.org/viewvc/oodt/trunk</url>
     </scm>
 
     <modules>
@@ -56,7 +55,8 @@ the License.
         <module>workflow</module>
         <module>crawler</module>
         <module>resource</module>
-        <!-- <module>curator</module> -->
+        <module>curator/services</module>
+        <module>curator/webapp</module>
         <module>pge</module>
         <module>mvn/plugins/cas-install</module>
         <module>mvn/archetypes</module>

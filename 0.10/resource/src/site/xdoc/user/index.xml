@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS Resource Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+   </properties>
+
+   <body>
+      <section name="User Guide">
+        <p>
+          This is the user guide for the OODT Catalog and Archive Service (CAS) Resource Manager 
+          component, or Resource Manager for short. This guide explains the Resource Manager architecture 
+          including its extension points. The guide also discusses available services provided 
+          by the Resource Manager, how to utilize them, and the different APIs that exist. The guide 
+          concludes with a description of Resource Manager use cases.
+        </p>     
+      </section>
+      <section name="Architecture">
+        <p>The Resource Manager component is responsible for execution, monitoring and tracking of jobs,
+        storage and networking resources for an underlying set of hardware resources. The Resource Manager is an 
+        extensible software component that provides an XML-RPC external interface, and a fully 
+        tailorable Java-based API for resource management. The critical objects managed by the Resource 
+        Manager include:</p>
+        
+        <ul>
+         <li>Job - an abstract representation of an execution unit, that stores information about an 
+         underlying program, or execution that must be run on some hardware node, including information about the 
+         Job Input that the Job requires, information about the job load, and the queue that the job should
+         be submitted to.</li>
+         <li>Job Input - an abstract representation of the input that a Job requires.</li>
+         <li>Job Spec - a complete specification of a Job, including its Job Input, and the Job definition
+         itself.</li>
+         <li>Job Instance - the physical code that performs the underlying job execution.</li>
+         <li>Resource Node - an available execution node that a Job is sent to by the Resource Manager.</li>
+        </ul>
+
+        <p>Each Job Spec contains exactly 1 Job, and Job Input. Each Job Input is provided to a single Job.
+        Each Job describes a single Job Instance. And finally, each Job is sent to exactly one Resource Node.
+        These relationships are shown in the below figure.</p>
+        
+        <img src="../images/rm_object_model.png" alt="Resource Manager Object Model"/> 
+      
+        <subsection name="Extension Points">
+          <p>
+          There are several extension points for the Resource Manager. An extension point is an interface 
+          within the Resource Manager that can have many implementations. This is particularly useful when 
+          it comes to software component configuration because it allows different implementations of an 
+          existing interface to be selected at deployment time. So, the Resource Manager component may 
+          submit Jobs to a custom XML-RPC batch submission system, or it may use an available off-the-shelf 
+          batch submission system, such as LSF or Load-Share. The selection  of the actual component implementations 
+          is handled entirely by the extension point mechanism. Using extension points, it is fairly simple to support 
+          many different types of what are typically referred to as "plug-in architectures" Each of the core extension 
+          points for the Resource Manager is described below:</p>
+          
+          <table>
+            <tr>
+              <td>Batch Manager</td>
+              <td>The Batch Manager extension point is responsible for sending Jobs to the actual nodes
+              that the Resource Manager determines that it is appropriate that they execute on. A Batch Manager
+              typically includes a client service, to communicate with remote "stubs", which run on the local
+              compute nodes, and actual handle the physical execution of the provided Jobs.
+              </td>
+            </tr>
+            <tr>
+              <td>Job Queue</td>
+              <td>The Job Queue extension point is responsible for queueing up Jobs when the Resource Manager
+              determines that there are no Resource Nodes available to execute the Job on. Capabilities such as
+              persistence, and queueing policy (e.g., LRU, FIFO) are all dealt with by this extension point.</td>
+            </tr>
+            <tr>
+              <td>Job Repository</td>
+              <td>The Job Repository is responsible for actual persistance of a Job, throughout its lifecycle in
+              the Resource Manager. A Job Repository would handle the ability to retrieve Job and Job Spec information
+              whether the Job is queued, or executing, or finished.</td>
+            </tr>
+            <tr>
+              <td>Monitor</td>
+              <td>The Monitor extension point is responsible for monitoring the execution of a Job once it has been sent to a
+              Resource Node by the Batch Manager extension point.</td>
+            </tr>
+            <tr>
+              <td>Job Scheduler</td>
+              <td>The Job Scheduler extension point is responsible for determining the availability of underlying Resource Nodes
+              managed by the Resource Manager, and determining the policy for pulling Jobs off of the Job Queue to schedule
+              for execution, interacting with the Job Repository, the Batch Manager, the Monitor, and nearly all of the
+              underlying extension points in the Resource Manager. </td>
+            </tr>
+             <tr>
+              <td>System</td>
+              <td>The extension point that provides the external interface to the Resource Manager 
+              services. This includes the Resource Manager server interface, as well as the associated 
+              Resource Manager client interface, that communicates with the server.
+              </td>
+            </tr>          
+          
+          </table>
+          
+          <p>The relationships between the extension points for the Resource Manager are shown in the below
+          Figure.
+          </p>
+          
+          <img src="../images/rm_extension_points.png" alt="Resource Manager Extension Points"/>
+        
+        </subsection>
+        <subsection name="Key Capabilities">
+        <p>The Resource Manager is responsible for providing the necessary key capabilities for managing 
+        job execution and underlying hardware resources. Each high level capability provided by the Resource 
+        Manager is detailed below:</p>
+        
+        <ol>
+          <li>Easy execution - of compute jobs to heterogeneous computing resources, with very different underlying
+          specifications: large and small disks, network file storage, storage area networks, and exotic processor
+          architectures.</li>
+          <li>Cluster Management Pluggability - the ability to plug into existing batch submission systems (e.g., Torque, LSF), and 
+          resource monitoring (e.g., Ganglia).</li>
+          <li>Scalability – The Resource Manager uses the popular client-server paradigm, allowing new Resource Manager 
+          servers to be instantiated, as needed, without affecting the Resource Manager clients, and vice-versa. </li>
+          <li>Communication over lightweight, standard protocols – The Resource Manager uses XML-RPC, as its main 
+          external interface, between Resource Manager client and server. XML-RPC, the little brother of SOAP, is 
+          fast, extensible, and uses the underlying HTTP protocol for data transfer.</li>
+          <li>Wrapping - the use of wrappers to insulate the internal code of Job Instances from their external interfaces
+          allows a variety of different popular programming languages (e.g., shell scripting, Java, Python, Perl, Ruby) to be
+          used to implement the actual job.</li>
+          <li>Scheduler Pluggability - the ability to define the underlying job scheduling policy.</li>
+          <li>XML-based job description - allows for existing XML-based editing tools to visualize the different job
+          properties, and for standard job definitions, and interchange.</li>
+         </ol>
+          
+          <p>This capability set is not exhaustive, and is meant to give the user a "feel" for what 
+          general features are provided by the Resource Manager. Most likely the user will find that the 
+          Resource Manager provides many other capabilities besides those described here.</p>
+          
+        </subsection>
+        <subsection name="Current Extension Point Implementations">
+        
+         <p>There is at least one implementation of all of the aforementioned extension points for 
+         the Resource Manager. Each extension point implementation is detailed below:</p>
+            
+         <ul>
+           <li><b>Batch Manager</b><br/>
+            <ol>
+             <li>XML-RPC based Batch Manager – an implementation of the Batch Manager extension point that uses
+             a custom, light-weight XML-RPC Batch Submission system, and batch stubs deployed on each of the Resource
+             Nodes.</li>
+           </ol>
+           </li>
+           <li><b>Job Queue</b><br/>
+             <ol>
+               <li>Stack based Job Queue - an implementation of the Job Queue extension point that uses a common
+               Stack data structure to queue up Jobs in memory.
+               </li>
+             </ol>
+           </li>
+           <li><b>Job Repository</b><br/>
+             <ol>
+               <li>Memory based Job Repository - an implementation of the Job Repository extension point that uses
+               an in memory persistance layer to record Job and Job Spec information.
+               </li>
+             </ol>
+           </li>
+           <li><b>Monitor</b><br/>
+             <ol>
+               <li>Assignment Job Monitor - an implementation of the Monitor extension point that uses internal profiling
+               to keep track of Job status, and Resource Node load.
+               </li>
+             </ol>
+           </li>           
+           <li><b>Job Scheduler</b><br/>
+             <ol>
+               <li>LRU based Scheduler - an implementation of the Scheduler extension point that uses a 
+               <a href="http://en.wikipedia.org/wiki/Cache_algorithms">Least Recently Used (LRU)</a> approach
+               to selecting Jobs for submission to the Batch Manager.
+               </li>
+             </ol>
+           </li> 
+           <li><b>System (Resource Manager client and Resource Manager server)</b><br/>
+             <ol>
+               <li>XML-RPC based Resource Manager server – an implementation of the external server interface
+               for the Resource Manager that uses XML-RPC as the transportation medium.
+               </li>
+               <li>XML-RPC based Resource Manager client – an implementation of the client interface for the 
+               XML-RPC Resource Manager server that uses XML-RPC as the transportation medium.
+               </li>
+             </ol>
+           </li>            	
+           </ul>  
+        
+        </subsection>
+      
+      </section>
+      <section name="Configuration and Installation">
+       <p>
+       To install the Resource Manager, you need to download a <a href="../../">release</a>
+       of the Resource Manager, available from its home web site. For bleeding-edge features, you can
+       also check out the resource trunk project from the OODT subversion repository. You can browse 
+       the repository using ViewCVS, located at:</p>
+       
+       <screen>http://svn.apache.org/viewvc/oodt/</screen>
+       
+       <p>The actual web url for the repository is located at:</p>
+       
+       <screen>https://svn.apache.org/repos/asf/oodt/trunk/resource</screen>
+
+       <p>To check out the Resource Manager, use your favorite Subversion client.</p>   
+      
+      <subsection name="Project Organization">
+        <p>
+       The cas-resource project follows the traditional Subversion-style <code>trunk</code>, <code>tag</code>
+       and <code>branches</code> format. Trunk corresponds to the latest and greatest development on the
+       cas-resource. Tags are official release versions of the project. Branches correspond to deviations 
+       from the trunk large enough to warrant a separate development tree. </p>
+
+       <p>For the purposes of this the User Guide, we'll assume you already have downloaded a built release
+       of the Resource Manager, from its web site. If you were building cas-resource from the trunk, a tagged release 
+       (or branch) the process would be quite similar. To build cas-resource, you would need the Apache Maven 
+       software. Maven is an XML-based, project management system similar to Apache Ant, but with many extra 
+       bells and whistles. Maven makes cross-platform project development a snap. You can download Maven from:
+
+      <a href="http://maven.apache.org">http://maven.apache.org</a>
+
+       All cas-resource releases post 1.0.1 are now <b>Maven 2 compatible</b>. This is <b>very</b> important. 
+       That means that if you have any cas-resource release > 1.0.1, you will need Maven 2 to compile the software, 
+       and Maven 1 will no longer work.</p>
+       
+       <p>Follow the procedures in the below Sections to build a fresh copy of the Resource Manager. These procedures
+       are specifically targeted on using Maven 2 to build the software: 
+        </p>        
+     
+      </subsection>
+      
+      <subsection name="Building the Resource Manager">
+        <p>
+          <ol>
+            <li>cd to cas-resource, and then type:
+           <source># mvn package</source>
+           This will perform several tasks, including compiling the source code, downloading 
+           required jar files, running unit tests, and so on. When the command completes, cd 
+           to the <code>target</code> directory within cas-resource. This will 
+           contain the build of the Resource Manager component, of the following form:
+           
+           <source>
+            cas-resource-${version}-dist.tar.gz
+           </source>
+           
+           This is a distribution tar ball, that you would copy to a deployment directory, such as
+           <code>/usr/local/</code>, and then unpack using <code># tar xvzf </code>. The resultant directory 
+           layout from the unpacked tarball is as follows:
+           
+           <source>
+            bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
+           </source>
+            <ul>
+              <li>bin - contains the "resmgr" server script, and the "resmgr-client" client script.</li>
+              <li>etc - contains the logging.properties file for the Resource Manager, and the resource.properties 
+              file used to configure the server options.</li>
+              <li>logs - the default directory for log files to be written to.</li>
+              <li>doc - contains Javadoc documentation, and user guides for using the particular CAS component.</li>
+              <li>lib - the required Java jar files to run the Resource Manager.</li>
+              <li>policy – the default XML-based element and product type policy in 
+              case the user is using the XML Repository Manager and/or the XML Validation 
+              Layer.</li>
+              <li>CHANGES.txt - contains the CHANGES present in this released version of the CAS component.</li>
+              <li>LICENSE.txt - the LICENSE for the Resource Manager project.</li>
+            </ul>
+          </li>
+         </ol>        
+        </p>
+      
+      </subsection>
+      <subsection name="Deploying the Resource Manager">
+      <p>To deploy the Resource Manager, you'll need to create an installation directory. Typically this 
+      would be somewhere in /usr/local (on *nix style systems), or C:\Program Files\ (on windows 
+      style systems). We'll assume that you're installing on a *nix style system though the Windows 
+      instructions are quite similar.</p>
+
+      <p>Follow the process below to deploy the Resource Manager:</p>
+
+        <ol>
+         <li>Copy the binary distribution to the deployment directory
+         <source># cp -R cas-resource/trunk/target/cas-resource-${version}-dist.tar.gz /usr/local/</source>
+         </li>
+         <li>Untar the distribution
+         <source># cd /usr/local ; tar xvzf cas-resource-${version}-dist.tar.gz</source>
+         </li>
+         <li>Set up a symlink
+         <source># ln -s /usr/local/cas-resource-${version} /usr/local/resmgr</source>
+         </li>
+         <li>edit /usr/local/resmgr/bin/resmgr
+          <ul>
+           <li>Set the <code>SERVER_PORT</code> variable to the desired port you'd like to run the 
+           Resource Manager server on.
+           </li>
+           <li>Set the <code>JAVA_HOME</code> variable to point to the location of your installed 
+           JRE runtime.
+           </li>
+           <li>Set the <code>RUN_HOME</code> variable to point to the location you'd like the Resource 
+           Manager PID file written to. Typically this should default to <code>/var/run</code>, but not all 
+           system administrators allow users to write to <code>/var/run</code>.
+           </li>
+          </ul>
+          </li>
+           <li>edit <code>/usr/local/resmgr/bin/resmgr-client</code>
+             <ul>
+               <li>Set the <code>JAVA_HOME</code> variable to point to the location of your installed JRE runtime.
+               </li>
+             </ul>
+           </li>
+           <li>(optional) edit <code>/usr/local/resmgr/etc/logging.properties</code>
+            <ul>
+             <li>Set the logging levels for each subsystem to the desired level. The system 
+             defaults are fairly considerate and prevent much of the logging at levels below <code>INFO</code>
+             to the console. </li>
+            </ul>
+           </li>
+           <li>edit <code>/usr/local/resmgr/etc/resource.properties</code>
+            <ul>
+             <li>This java properties file contains all of the default information properties to 
+             configure the Resource Manager. By default, the Resource Manager is built to use the XML-based 
+             Assignment Monitor, the MemoryJobRepository, the LRUScheduler, and the JobStackJobQueue
+             extension points.. These defaults can be changed quite easily by changing the factory classes 
+             that are pointed to for each extension point. For example, to use your own own home Scheduler 
+             extension point, you would change the following property, <code>resmgr.scheduler.factory</code> to 
+             <code>org.apache.oodt.cas.resmgr.scheduler.YourNewSchedulerFactory</code>
+            </li>
+            <li>You need to configure the properties for each of the extension points that you are 
+            using. By default, you would at least need to configure:
+              <ul>
+                <li>The paths to the directories where the XML policy files are stored for the 
+                XML Assignment Monitor. A good default location is to 
+                place these files within /usr/local/resmgr/policy.</li>
+              </ul>
+            </li>
+           </ul>
+          </li>
+          <li>Make sure that  <code>/usr/local/resmgr/policy/nodes.xml</code> and <code>node-to-queue-mapping.xml</code>  
+          correctly point at the batch stub considered to start for execution (by default, localhost:2001). 
+          </li>
+       </ol>
+   
+     <p>Other configuration options are possible: check the <a href="../../apidocs/org/apache/oodt/cas/resource">API documentation</a>, 
+     as well as the comments within the resource.properties file to find out the rest of the configurable 
+     properties for the extension points you choose. A full listing of all the extension point factory 
+     class names are provided in the Appendix. After step 7, you are officially done configuring the Resource 
+     Manager for deployment.</p>   
+      
+      </subsection>
+      <subsection name="Running the Resource Manager">
+      <p>To run the resmgr, cd to <code>/usr/local/resmgr/bin</code> and type:</p>
+
+      <source># ./resmgr start</source>
+
+      <p>This will startup the Resource Manager XML-RPC server interface. Your Resource Manager 
+      is now ready to run! You can test out the Resource Manager by submitting the following example
+      Job, defined in the XML file below (save the file to a location on your system, such as
+      <code>/usr/local/resmgr/examples/exJob.xml</code>):</p>
+      
+      <!-- FIXME: Change namespace URI? -->
+      <source>
+      &lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+      &lt;cas:job xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" id="abcd"
+	      name="TestJob"&gt;
+	      &lt;instanceClass
+		name="org.apache.oodt.cas.resource.examples.HelloWorldJob" /&gt;
+	  &lt;inputClass
+		name="org.apache.oodt.cas.resource.structs.NameValueJobInput"&gt;
+		&lt;properties&gt;
+			&lt;property name="user.name" value="Homer!" /&gt;
+		&lt;/properties&gt;
+	    &lt;/inputClass&gt;
+	  &lt;queue&gt;quick&lt;/queue&gt;
+	  &lt;load&gt;1&lt;/load&gt;
+     &lt;/cas:job&gt;
+    </source>
+    
+      <p>The above job definition tells the resource manager to execute the <code>org.apache.oodt.cas.resource.examples.HelloWorldJob</code>,
+      which is one of the example Jobs that is shipped with the Resource Manager. The job simply echoes the name provided in the <code>user.name</code>
+      property back to the screen, saying <code>Hello ${user.name}!</code>.
+      </p>
+
+      <p>To run the job, first you must start an XML-RPC batch stub, to execute the job on the local node. Let's assume a default port of port <code>2001</code>:</p>
+
+      <source># ./batch_stub 2001
+      </source>
+      
+      <p>The command to run the job, assuming that you started the Resource Manager on the default port of <code>9002</code>:</p>
+
+      <source>
+      java -Djava.ext.dirs=../lib org.apache.oodt.cas.resource.tools.JobSubmitter \
+                       --rUrl http://localhost:9002 \
+                       --file /usr/local/resmgr/examples/exJob.xml
+      </source>
+
+      <p>You should see a response message at the end similar to:</p>
+
+      <source>
+      Mar 5, 2008 10:45:26 AM org.apache.oodt.cas.resource.jobqueue.JobStack addJob<br/>
+      INFO: Added Job: [2008-03-05T10:45:26.148-08:00] to queue<br/>
+      Mar 5, 2008 10:45:26 AM org.apache.oodt.cas.resource.tools.JobSubmitter main<br/>
+      INFO: Job Submitted: id: [2008-03-05T10:45:26.148-08:00]<br/>
+      Mar 5, 2008 10:45:27 AM org.apache.oodt.cas.resource.scheduler.LRUScheduler run<br/>
+      INFO: Obtained Job: [2008-03-05T10:45:26.148-08:00] from Queue: Scheduling for execution<br/>
+      Mar 5, 2008 10:45:27 AM org.apache.oodt.cas.resource.scheduler.LRUScheduler schedule<br/>
+      INFO: Assigning job: [TestJob] to node: [node001] <br/>
+      Mar 5, 2008 10:45:27 AM org.apache.oodt.cas.resource.system.extern.XmlRpcBatchStub genericExecuteJob<br/>
+      INFO: stub attempting to execute class: [org.apache.oodt.cas.resource.examples.HelloWorldJob]<br/>
+      Hello world! How are you Homer!!
+      </source>
+
+    <p>which means that everything installed okay!</p>
+    
+      </subsection>
+      
+      </section>
+      <section name="Use Cases">
+        <p>
+          The Resource Manager was built to support several of the above capabilities outlined above. 
+          In particular there were several use cases that we wanted to support, some 
+          of which are described below.        
+        </p>
+      
+         <img src="../images/rm_use_case1.jpg" alt="Resource Manager Job Execution Use Case"/>
+         
+          <p>The black numbers in the above Figure correspond to a sequence of steps that occurs and a 
+         series of interactions between the different Resource Manager extension points in order to 
+         perform the job execution activity. The Job provided to the Resource Manager (labeled <code>Process Manager</code>
+         in the above diagram) is sent by the Workflow Manager, another CAS component responsible for modeling task
+         control flow and data flow. In Step 7, the job is provided to the Resource Manager, which uses its
+         Scheduler extension point in Step 8, along with the Monitor extension point, to determine the appropriate
+         Resource Node to execute the provided Job on (in steps 9-11). The information returned in Step 11 to the
+         Scheduler is then used to determine Job execution ability. Once the Job is determined "ready to run", in 
+         Step 12, the Scheduler extension point uses the Batch Manager extension point (not shown) to submit the
+         Job to the underlying compute cluster nodes, monitoring the Job execution using the Monitor extension point
+         shown in Step 13.</p>
+         
+      </section>
+      <section name="Appendix">
+       <p>
+         Full list of Resource Manager extension point classes and their associated property names from the 
+         resource.properties file:       
+       </p>
+       <table>
+         <thead>
+            <tr>
+                <th>Property Name</th>
+                <th>Extension Point Class</th>
+            </tr>
+         </thead>
+         <tbody>
+         <tr>
+           <td>resource.batchmgr.factory</td>
+           <td>org.apache.oodt.cas.resource.batchmgr.XmlRpcBatchMgrFactory
+           </td>
+         </tr>
+         <tr>
+           <td>resource.monitor.factory</td>
+           <td>org.apache.oodt.cas.resource.monitor.XMLAssignmentMonitorFactory
+           </td>
+         </tr>
+         <tr>
+           <td>resource.scheduler.factory</td>
+           <td>org.apache.oodt.cas.resource.scheduler.LRUSchedulerFactory
+           </td>
+         </tr>
+         <tr>
+           <td>resource.jobqueue.factory</td>
+           <td>org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory
+           </td>
+         </tr>
+         <tr>
+           <td>resource.jobrepo.factory</td>
+           <td>org.apache.oodt.cas.resource.jobrepo.MemoryJobRepositoryFactory</td>
+         </tr>
+         </tbody>
+       </table>
+      
+      </section>
+   </body>
+   
+</document>

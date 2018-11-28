@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<document>
+  <properties>
+    <title>Your First Product Service</title>
+    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+  </properties>
+
+  <body>
+    <section name="Your First Product Service">
+      <p>This tutorial introduces starting a basic product server.
+	This product server will be capable of accepting queries, but
+	will not actually respond with any data.  By completing this
+	tutorial, you'll have a working product server in which you
+	can install more complex logic to actually handle product
+	requests.
+      </p>
+    </section>
+
+    <section name="The Product Service">
+      <p>The OODT Product Service is a remotely accessible software
+	component that enables you to retrieve products, which can be
+	any kind of data.  In OODT, a <em>product client</em> passes a
+	<em>query</em> into a known product server.  The product
+	server delegates that query to its installed <em>query
+	handlers</em>; each one gets a chance at satisfying the query
+	with requested data.  Query handlers are the interfaces between
+	the generic OODT framework and your system-specific data
+	stores.  They have the job of understanding the passed in
+	query, finding or even synthesizing the matching product,
+	applying conversions to Internet-standard formats, and
+	returning results.  The product service then collects all the
+	matching products from the query handlers and returns them to
+	the product client.
+      </p>
+
+      <p>To deploy a product server, you need to come up with query
+	handlers that interface to your site- or discipline-specific
+	data stores.  Then, start a product server and inform it of
+	what query handlers to use.
+      </p>
+
+      <subsection name="Delegation Model">
+	<p>The OODT product service <em>delegates</em> incoming
+	  queries to zero or more query handlers.  In the case of zero
+	  query handlers, the product service always replies to every
+	  query with "zero matches."  Otherwise, the query handlers
+	  get a chance to satisfy the query, and may or may not add
+	  matching products to the result.
+	</p>
+
+	<p>The following class diagram demonstrates this delegation model:</p>
+
+	<img src="../../images/delegation.png" alt="Delegation Class Diagram" />
+
+	<p>Here, a product client calls a server to process a query
+	  for products. The server delegates to query handlers, which
+	  are Java objects that implement the
+	  <code>QueryHandler</code> interface.  Two query handlers in
+	  this diagram, <code>MyHandler</code> and
+	  <code>MyOtherHandler</code> can both try to satisfy the
+	  query by adding matching products to the total result.  They
+	  can each add more than one matching product, just one, or
+	  none at all.  The server then returns the matches, if any,
+	  to the client.
+	</p>
+      </subsection>
+
+      <subsection name="Large Products">
+	<p>In OODT, a query contains its matching products.  When a
+	  client passes a query to a product server, the query object
+	  returns to the client <em>with matching products embedded in
+	    it</em>.  This can, however, make query objects too large to
+	  be comfortably passed around a network of OODT services (query
+	  objects must reside completely in memory).  In this case, a
+	  special extension of a <code>QueryHandler</code>, a
+	  <code>LargeProductQueryHandler</code>, can instead place a
+	  <em>reference</em> to the product data in the query.
+	</p>
+	<p>To product clients, the difference is invisible: the
+	  product data is still accessed from the query object the
+	  same way.  As a developer of product services, though, you
+	  may need to decide which kind of query handler to make:
+	  regular or large.
+	</p>
+      </subsection>
+
+      <subsection name="Communicating with a Product Service">
+	<p>The product service is a remotely accessible object.
+	  Therefore, product clients access it with a remote object
+	  access protocol.  Currently, OODT supports RMI and CORBA.  You
+	  can also access product services with HTTP; in this case, a
+	  proxy object provides the HTTP interface while internally it
+	  accesses a product service with RMI or CORBA.
+	</p>
+
+	<p>For this tutorial, we'll use RMI because it's enormously
+	  less complex than CORBA.
+	</p>
+      </subsection>
+    </section>
+
+    <section name="Making the Staging Area">
+      <p>To start a product service, we'll create a directory
+	structure that will hold software components (jar files) as
+	well as scripts that will simplify the usually over-long Java
+	command lines.  (Note that these examples are for Mac OS X,
+	Linux, or other Unix-like systems.  Windows users will have to
+	adapt.)
+      </p>
+
+      <p>Let's start by making a directory hierarchy for our product
+	service called <code>ps</code> (this example uses a C-style
+	shell <code>csh</code>, if you're using <code>bash</code> or
+	another style shell, substitute the appropriate commands).
+      </p>
+
+      <source>% <b>mkdir ps</b>
+% <b>cd ps</b>
+% <b>setenv PS_HOME `pwd`</b>
+% <b>mkdir bin lib</b>
+% <b>ls -RF $PS_HOME</b>
+bin/    lib/
+
+/Users/kelly/tmp/ps/bin:
+
+/Users/kelly/tmp/ps/lib:</source>
+
+      <p>Note that we're using an environment variable
+	<code>PS_HOME</code> to contain the path of the directory
+	we're using to hold everything.  We'll use this environment
+	variable as we develop the scripts to launch the product service.
+      </p>
+    </section>
+
+    <section name="The RMI Registry">
+      <p>Since we're using Remote Method Invocation (RMI) for this
+	tutorial, we'll need to start an RMI Registry.  An RMI
+	Registry serves as a catalog that maps between named objects,
+	such as your product server, to the appropriate network
+	address and port where the object can be located.  Your
+	product client will use the RMI registry to locate the product
+	server so it can connect to the product server and communicate with it.
+      </p>
+
+      <subsection name="Collecting the RMI Registry Components">
+	<p>To start an RMI Registry, you'll need the following components:</p>
+
+	<ul>
+	  <li><a href="/edm-commons/">EDM Common Components</a>.
+	    These are common utilities used by every OODT
+	    service.</li> <li><a href="/grid-product/">Grid Product
+	    Service</a>.  This is the product service, product client,
+	    query handler interface, and related classes.</li> <li><a
+	    href="/rmi-registry/">OODT RMI Registry</a>.  This is the
+	    actual RMI registry.</li>
+	</ul>
+
+	<p>Download each component's binary distribution, unpack each
+	  one, and take collect the jar files into the
+	  <code>lib</code> directory.  For example:
+	</p>
+
+	<source>% <b>cp /tmp/edm-commons-2.2.5/*.jar $PS_HOME/lib</b>
+% <b>cp /tmp/grid-product-3.0.3/*.jar $PS_HOME/lib</b>
+% <b>cp /tmp/rmi-registry-1.0.0/*.jar $PS_HOME/lib</b>
+% <b>ls -l $PS_HOME/lib</b>
+total 312
+-rw-r--r--  1 kelly  kelly  149503 24 Feb 14:06 edm-commons-2.2.5.jar
+-rw-r--r--  1 kelly  kelly  120844 24 Feb 14:07 grid-product-3.0.3.jar
+-rw-r--r--  1 kelly  kelly    8055 24 Feb 14:07 rmi-registry-1.0.0.jar</source>
+      </subsection>
+
+      <subsection name="Writing the RMI Script">
+	<p>To keep from having to type long Java command lines, we'll
+	  create a simple shell script that will start the RMI
+	  registry.  We'll call it <code>rmi-reg</code> and stick it
+	  in the <code>bin</code> directory.
+	</p>
+
+	<p>Here's the <code>rmi-reg</code> script:</p>
+	<source>#!/bin/sh
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+    gov.nasa.jpl.oodt.rmi.RMIRegistry</source>
+
+	<p>This script tells the Java virtual machine to find
+	  extension jars in the directory <code>$PS_HOME/lib</code>.  It
+	  then says that the main class to execute is
+	  <code>gov.nasa.jpl.oodt.rmi.RMIRegistry</code>.
+	</p>
+
+	<p>Go ahead and make this script executable and start the RMI
+	  Registry. In another window (with the appropriate setting of
+	  <code>PS_HOME</code>), run
+	  <code>$PS_HOME/bin/rmi-reg</code>.  You should see output
+	  similar to the following:
+	</p>
+
+	<source>% <b>chmod 755 $PS_HOME/bin/rmi-reg</b>
+% <b>$PS_HOME/bin/rmi-reg</b>
+Thu Feb 24 14:10:25 CST 2005: no objects registered</source>
+
+	<p>The RMI Registry is now running.  Every two minutes it will
+	  display an update of all registered objects.  Naturally, we
+	  don't have any product service running right now, so it will
+	  say <code>no objects registered</code>.  Go ahead and ignore
+	  this window for now.  It's time to start our product server.
+	</p>
+      </subsection>
+    </section>
+
+    <section name="The Product Server">
+      <p>With an RMI Registry in place, we're ready to start our
+	product server.  As with the RMI Registry, we'll need the
+	software components and to make a script to launch it.
+      </p>
+
+      <subsection name="Collecting the Product Server Components">
+	<p>We already have two of the components needed to start the
+	  product server, <code>edm-commons</code> and
+	  <code>grid-product</code>.  We need two more:
+	</p>
+
+	<ul>
+	  <li><a href="/edm-query/">EDM Query Expression</a>.  This
+	  component encapsulates the implementation of an OODT query
+	  and also contains some product retrieval utilities.</li>
+	  <li><a href="http://ws.apache.org/xmlrpc">Apache
+	  XML-RPC</a>.  This is used internally by OODT services.
+	  Download version 1.1, not a later version!  If you prefer,
+	  you can <a
+	  href="http://ibiblio.org/maven/xmlrpc/jars/xmlrpc-1.1.jar">fetch
+	  the jar file directly</a>.</li>
+	</ul>
+
+	<p>As before, put these jars into the
+	  <code>$PS_HOME/lib</code> directory:
+	</p>
+
+	<source>% <b>ls -l $PS_HOME/lib</b>
+total 376
+-rw-r--r--  1 kelly  kelly  149503 24 Feb 14:06 edm-commons-2.2.5.jar
+-rw-r--r--  1 kelly  kelly   43879 24 Feb 14:35 edm-query-2.0.2.jar
+-rw-r--r--  1 kelly  kelly  120844 24 Feb 14:07 grid-product-3.0.3.jar
+-rw-r--r--  1 kelly  kelly    8055 24 Feb 14:07 rmi-registry-1.0.0.jar
+-rw-r--r--  1 kelly  kelly   53978 24 Feb 14:35 xmlrpc-1.1.jar</source>
+      </subsection>
+
+      <subsection name="Writing the Product Server Script">
+	<p>To launch the product server, we'll create a script called
+	  <code>ps</code> in the <code>$PS_HOME/bin</code> directory.
+	  Here's its contents:
+	</p>
+
+	<source>#!/bin/sh
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+    jpl.eda.ExecServer \
+    jpl.eda.product.rmi.ProductServiceImpl \
+    urn:eda:rmi:MyProductService</source>
+
+	<p>Like with the RMI server, this tells Java where to find
+	  extension jars (<code>$PS_HOME/lib</code>).  The main class
+	  is <code>jpl.eda.ExecServer</code>, this is a framework
+	  class from <code>edm-commons</code> that provides basic
+	  start-up functions for a variety of services.  In this case,
+	  the service is
+	  <code>jpl.eda.product.rmi.ProductServiceImpl</code>; this is
+	  the name of the class that provides the RMI version of the
+	  OODT product service.  We then pass in one final
+	  command-line argument,
+	  <code>urn:eda:rmi:MyProductService</code>.  This names the product service.
+	</p>
+      </subsection>
+
+      <subsection name="What's in a Name?">
+	<p>The product service registers itself using a name provided
+	  on the command-line, in this case,
+	  <code>urn:eda:rmi:MyProductService</code>.  Let's take apart
+	  the name and see how it works.
+	</p>
+
+	<p>If you're familiar with web standards, you can see that the
+	  name is a Uniform Resource Name (URN), since it starts with
+	  <code>urn:</code>.  The OODT Framework uses URNs to identify
+	  services and other objects.  The <code>eda:</code> tells
+	  that the name is part of the Enterprise Data Architecture
+	  (EDA) namespace.  (EDA was the name of a project related to
+	  OODT that was merged with OODT.  For now, just always use
+	  <code>eda:</code> in your URNs.)
+	</p>
+	
+	<p>Next comes <code>rmi:</code>.  This is a special flag for
+	  the OODT services that tells that we're using a name of an
+	  RMI-accessible object.  The OODT framework will know to use
+	  an RMI Registry to register the server. 
+	</p>
+
+	<p>Finally is <code>MyProductService</code>.  This is the
+	  actual name used in the RMI Registry.  You can call your
+	  product service anything you want.  For example, suppose you
+	  have three product servers; one in the US, one in Canada,
+	  and one in Australia.  You might name them:
+	</p>
+
+	<ul>
+	  <li><code>urn:eda:rmi:US</code></li>
+	  <li><code>urn:eda:rmi:Canada</code></li>
+	  <li><code>urn:eda:rmi:Australia</code></li>
+	</ul>
+
+	<p>Or you might prefer to use ISO country codes.  Or you might
+	  name them according to the kinds of products they serve,
+	  such as <code>urn:eda:rmi:Biomarkers</code> or
+	  <code>urn:eda:rmi:BusniessForecasts</code>.
+	</p>
+
+	<p>The RMI Registry will happily re-assign a name if one's
+	  already in use, so when deploying your own product servers,
+	  be sure to give each one a unique name.
+	</p>
+      </subsection>
+
+      <subsection name="Launching the Product Server">
+	<p>Make the <code>ps</code> script executable and start the
+	  product server at this time.  Do this in a separate window
+	  with the appropriate setting of <code>PS_HOME</code>:
+	</p>
+
+	<source>% <b>chmod 755 $PS_HOME/bin/ps</b>
+% <b>$PS_HOME/bin/ps</b>
+Object context ready; delegating to: [jpl.eda.object.jndi.RMIContext@94257f]</source>
+
+	<p>The product service is now running and ready to accept
+	  product queries.  Since we didn't tell it what query
+	  handlers to use, it will always respond with zero matching
+	  products.  That may not be interesting, but it's a good test
+	  to see if we can at least launch a product server.  Now,
+	  let's launch a product client and query it.
+	</p>
+      </subsection>
+    </section>
+
+    <section name="Querying the Product Server">
+      <p>To query the product server, we use a product client.  The
+	Java class <code>jpl.eda.product.ProductClient</code> provides
+	the API for your own programs to query for and retrieve
+	products.  But it's also an executable class, so we can run it
+	from the command-line in order to test our product server.
+	However, let's again make a script to make invoking it a bit
+	easier.
+      </p>
+
+      <p>We'll call the script <code>pc</code> for "product client,"
+	and it will take a single command line argument, which will be
+	the <em>query expression</em> to pass into the product server.
+	Query expressions define the constraints on the kinds of
+	products we want to achieve.  Since the product server we've
+	set up will always respond with zero products, though, we can
+	pass in any syntactically valid query expression.
+      </p>
+
+      <p>Here's the script:</p>
+
+      <source>#!/bin/sh
+if [ $# -ne 1 ]; then
+   echo "Usage: `basename $0` &lt;query-expression&gt;" 1>&amp;2
+   exit 1
+fi
+
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+     jpl.eda.product.ProductClient \
+     -out \
+     urn:eda:rmi:MyProductService \
+     "$1"</source>
+
+
+      <p>This script checks to make sure there's exactly one
+	command-line argument, the query expression.  If there isn't,
+	it prints a helpful usage message to the standard error
+	stream, as is Unix tradition.  Otherwise, it will execute the
+	<code>jpl.eda.product.ProductClient</code> class with Java.
+	When executed, this class expects three command-line arguments:
+      </p>
+
+      <ol>
+	<li><code>-out</code> or <code>-xml</code>.  OODT uses XML to
+	  represent the query that it passes to and receives back from
+	  a product server.  With <code>-out</code>, the product
+	  client will write to the standard output the raw product
+	  data.  With <code>-xml</code>, you'll instead see the XML
+	  representation of the query (with any embedded matching
+	  products) instead.
+	</li>
+
+	<li>The name of the product service to contact.  In this case,
+	  we're using the one we started earlier, registered under the
+	  name <code>urn:eda:rmi:MyProductService</code>.
+	</li>
+
+	<li>The query expression.</li>
+      </ol>
+
+      <p>Now we can make this script executable and run it:</p>
+
+      <source>% <b>chmod 755 $PS_HOME/bin/pc</b>
+<b>$PS_HOME/bin/pc "x = 3"</b>
+Object context ready; delegating to: [jpl.eda.object.jndi.RMIContext@c79809]
+No matching results</source>
+
+      <p>Although not terribly exciting, this is good news.  Here's
+	what happened:
+      </p>
+
+      <ol>
+	<li>The product client created a query object (of class
+	  <code>jpl.eda.xmlquery.XMLQuery</code> from the
+	  <code>edm-query</code> component) out of the string query
+	  <code>x = 3</code>.
+	</li>
+
+	<li>It asked the RMI Registry to tell it where (network
+	  address) it could find the product service named
+	  <code>MyProductService</code>.
+	</li>
+
+	<li>After getting the response back from the RMI Registry, it
+	  then contacted the product service over a network connection
+	  (even if to the same local system) and asked it to handle
+	  the query, passing the query object.
+	</li>
+
+	<li>The product service, having no query handlers to which to
+	  delegate, merely returned the query object unmodified over
+	  the network connection.
+	</li>
+
+	<li>The product client, having no product to write to the
+	  standard output (as indicated by the <code>-out</code>
+	  argument), wrote the diagnostic message <code>No matching
+	  results</code>.
+	</li>
+      </ol>
+
+      <p>You can make this example slightly more interesting by
+	changing the <code>-out</code> in the <code>pc</code> script
+	to <code>-xml</code>.  Now, when you run it, you'll see an XML
+	document describing the query.  One of the pertinent sections
+	to note is:
+      </p>
+
+      <source>...&lt;queryResultSet/&gt;...</source>
+
+      <p>This empty XML element means that there were no results.</p>
+    </section>
+
+    <section name="Conclusion">
+      <p>By following this tutorial, you've started both an RMI
+	Registry and a basic product server.  You've queried that
+	product server to insure that you can communicate with it.  In
+	later tutorials, you'll build on this product server by adding
+	a query handler to it and returning actual product data.
+      </p>
+    </section>
+
+  </body>
+</document>

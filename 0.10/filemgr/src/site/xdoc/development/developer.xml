@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS File Manager Developer Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+   
+      <section name="Introduction">
+        <p>
+          This is the developer guide for the Apache OODT Catalog and Archive Service (CAS) 
+          File Manager component, or File Manager for short. Primarily, this guide 
+          will explain the File Manager architecture and interfaces, including its 
+          tailorable extension points. For information on installation, configuration,
+          and examples, please see our <a href="../user/basic.html">User Guides.</a>
+          
+          <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Project Description</a></li>
+        <li><a href="#section2">Architecture</a></li>
+        <li><a href="#section3">Extension Points</a></li>
+        <li><a href="#section4">Current Extension Point Implementations</a></li>
+      </ul>
+          
+        </p>     
+      </section>
+      
+      <a name="section1"/>
+      <section name="Project Description">
+        <p>The File Manager component is responsible for tracking, ingesting and moving 
+        file data and metadata between a client system and a server system. The File 
+        Manager is an extensible software component that provides an XML-RPC external 
+        interface, and a fully tailorable Java-based API for file management.</p> 
+      </section>
+      
+      <a name="section2"/>
+      <section name="Architecture">
+      
+        <p>In this section, we will describe the architecture of the File Manager,
+        including its constituent components, object model, and key capabilities.</p>
+      
+        <subsection name="Components">
+        
+        <p>The major components of the File Manager are the Client and Server, the 
+        Repository Manager, the Catalog, the Validation Layer, the Versioner, and 
+        the Transferer. The relationship between all of these components are shown in
+        the diagram below:</p>
+        
+        <p><img src="../images/fm_extension_points.png" alt="File Manager Architecture"/></p>
+        
+        <p>The File Manager Server contains both a Repository that manages products 
+        (and the products' location in the archive as specified by Versioner), and a
+        Catalog that validates metadata via the Validation Layer. Transfer of data 
+        products from the Client to the Server is the domain of the Transfer and can 
+        be initiated at either the Client or the Server.</p> 
+        
+        </subsection>
+        <subsection name="Object Model">
+        <p>The critical objects managed by the File Manager include:</p>
+        
+        <ul>
+          <li><strong>Products</strong> - Collections of one or more files, and their 
+          associated Metadata.</li>
+          
+          <li><strong>Metadata</strong> - A map of key->multiple values of descriptive 
+          information about a Product. See 
+          <a href="../../metadata/">CAS-Metadata</a> for more 
+          information on Metadata.</li>
+          
+          <li><strong>Reference</strong> - A pointer to a Product file's (or files') 
+          original location, and to its final resting location within the archive 
+          constructed by the File Manager.</li>
+          
+          <li><strong>Product Type</strong> - Descriptive information about a Product 
+          that includes what type of file URI generation scheme to use, the root 
+          repository location for a particular Product, and a description of the 
+          Product.</li>
+          
+          <li><strong>Element</strong> - A singular Metadata element, such as "Author", 
+          or "Creator". Elements may have additional metadata, in the form of the 
+          associated definition and even a corresponding 
+          <a href="http://dublincore.org/">Dublin Core</a> attribute. See 
+          <a href="../../metadata/">CAS-Metadata</a> for more 
+          information on Metadata Elements.</li>
+          
+          <li><strong>Versioner</strong> - A URI generation scheme for Product Types 
+          that defines the location within the archive (built by the File Manager) 
+          where a file belonging to a Product (that belongs to the associated Product 
+          Type) should be placed.</li>
+        </ul>
+
+        <p>Each Product contains 1 or more References, and one Metadata object. Each 
+        Product is a member of a single Product Type. The Metadata collected for each 
+        Product is defined by a mapping of Product Type->1...* Elements. Each Product 
+        Type has an associated Versioner. These relationships are shown in the below 
+        figure.</p>
+        
+        <img src="../images/fm_object_model.png" alt="File Manager Object Model"/> 
+        </subsection> 
+      
+        <subsection name="Key Capabilities">
+        <p>The File manager has been designed with a new of key capabilities in mind.
+        These capabilities include:</p>
+        
+        <p><strong>Easy management of different types of Products.</strong> The 
+        Repository Manager extension point is responsible for managing Product Types, 
+        and their associated information. Management of Product Types includes adding 
+        new types, deleting and updating existing types, and retrieving Product Type 
+        Objects, by their ID or by their name.</p>
+          
+        <p><strong>Support for different kinds of back end catalogs.</strong> The 
+        Catalog extension point allows Product instance metadata and file location 
+        information to be stored in different types of back end data stores quite 
+        easily. Existing implementations of the Catalog interface include a JDBC based 
+        back end database, along with a flat-file index powered by 
+        <a href="http://lucene.apache.org/">Lucene.</a></p>
+          
+        <p><strong>Management of Product instance information.</strong> Management 
+        includes adding, deleting and updating product instance information, including 
+        file locations (References), along with Product Metadata. It also includes 
+        retrieving Metadata and References associated with existing Products as well 
+        as obtaining the Products themselves.</p>
+          
+        <p><strong>Element management for Metadata.</strong> The File Manager's 
+        Validation Layer extension point allows for the management of Element policy 
+        information in different types of back end stores. For instance, Element policy 
+        could be stored in XML files, a Database, or a Metadata Registry.</p>
+          
+        <p><strong>Data transfer mechanism interface.</strong> By having 
+        an extension point for Data Transfer, the File Manager can support different 
+        Data Transfer protocols, both local and remote.</p>
+          
+        <p><strong>Advanced support for File Repository layouts.</strong> 
+        The Versioner extension point allows for different File Repository layouts 
+        based on Product Types.</p>
+          
+        <p><strong>Support for multiple Product structures.</strong> The File Manager 
+        Client allows for Products to be Flat, or Hierarchical-based. Flat products 
+        are collections of singular files that are aggregated together to make a 
+        Product. Hierarchical Products are Products that contain collections of 
+        directories, and sub-directories, and files.</p>
+          
+        <p><strong>Design for scalability.</strong> The File Manager uses the popular 
+        client-server paradigm, allowing new File Manager servers to be instantiated, 
+        as needed, without affecting the File Manager clients, and vice-versa.</p>
+          
+        <p><strong>Standard communication protocols.</strong> The File Manager uses 
+        XML-RPC as its main external interface between the File Manager client and 
+        server. XML-RPC, the little brother of SOAP, is fast, extensible, and uses 
+        the underlying HTTP protocol for data transfer.</p>
+          
+        <p><strong>RSS-based Product syndication.</strong> The File Manager web 
+        interface allows for the RSS-based syndication of Product feeds based on 
+        Product Type.</p>
+          
+        <p><strong>Data transfer status tracking.</strong> The File Manager tracks 
+        all current Product and File transfers and even publishes an RSS-feed of 
+        existing transfers.</p>
+         
+        <p>This capability set is not exhaustive, and is meant to give the user a 
+        <i>feel</i> for what general features are provided by the File Manager. Most 
+        likely the user will find that the File Manager provides many other 
+        capabilities besides those described here.</p>
+          
+        </subsection>
+      </section>
+      
+      <a name="section3"/>
+      <section name="Extension Points">
+          <p>We have constructed the File Manager making use of the <i>factory 
+          method pattern</i> to provide multiple extension points for the File Manager. An 
+          extension point is an interface within the File Manager that can have many 
+          implementations. This is particularly useful when it comes to software 
+          component configuration because it allows different implementations of 
+          an existing interface to be selected at deployment time.</p> 
+          
+          <div class="info">The factory method pattern is a creational pattern common to
+          object oriented design. Each File Manager extension point involves the 
+          implementation of two interfaces: an <i>extension factory</i> and an 
+          <i>extension</i> implementation. At run-time, the File Manager loads a 
+          properties file specifies a factory class to use during extension point
+          instantiation. For example, the File Manager may communicate with a 
+          database-based Catalog and an XML-based Element Store (called a Validation 
+          Layer), or it may use a Lucene-based Catalog and a database-based Validation 
+          Layer.</div> 
+          
+          <p>Using extension points, it is fairly simple to support many different types 
+          of what are typically referred to as "plug-in architectures." Each of the core 
+          extension points for the File Manager is described below:</p>
+          
+          <table>
+            <tr>
+              <td>Catalog</td>
+              <td>The Catalog extension point is responsible for storing all the 
+              instance data for Products, Metadata, and for file References. 
+              Additionally, the Catalog provides a query capability for Products.
+              </td>
+            </tr>
+            <tr>
+              <td>Data Transfer</td>
+              <td>The Data Transfer extension point allows for the movement of a 
+              Product to and from the archive managed by the File Manager component. 
+              Different protocols for Data Transfer may include local (disk-based) 
+              copy, or remote XML-RPC based transfer across networked machines.
+              </td>
+            </tr>
+            <tr>
+              <td>Repository Manager</td>
+              <td>The Repository Manager extension point provides a means for 
+              managing all of the policy information (i.e., the Product Types and 
+              their associated information) for Products managed by the File Manager. 
+              </td>
+            </tr>
+            <tr>
+              <td>Validation Layer</td>
+              <td>The Validation Layer extension point allows for the querying of 
+              element definitions associated with a particular Product Type. The 
+              extension point also maps Product Type to Elements.
+              </td>
+            </tr>
+             <tr>
+              <td>Versioning</td>
+              <td>The Versioning extension point allows for the definition of 
+              different URI generation schemes that define the final resting location 
+              of files for a particular Product.
+              </td>
+            </tr>
+             <tr>
+              <td>System</td>
+              <td>The extension point that provides the external interface to the 
+              File Manager services. This includes the File Manager server interface, 
+              as well as the associated File Manager client interface, that 
+              communicates with the server.
+              </td>
+            </tr>          
+          
+          </table>
+       </section>
+       
+       <a name="section4"/>   
+       <section name="Current Extension Point Implementations">
+        
+         <p>There are at least two implementations of all of the aforementioned 
+         extension points for the File Manager. Each extension point implementation 
+         is detailed in this section.</p>
+
+         <subsection name="Catalog">
+            <ul>
+             <li><strong>Data Source based Catalog.</strong> An implementation of 
+             the Catalog extension point interface that uses a JDBC accessible database 
+             backend.</li>
+             
+             <li><strong>Lucene based Catalog.</strong> An implementation of the 
+             Catalog extension point interface that uses the 
+             <a href="http://lucene.apache.org/">Lucene</a> free text index system to 
+             store Product instance information.</li>
+           </ul>
+         </subsection> 
+         
+         <subsection name="Data Transfer">
+             <ul>   
+               <li><strong>Local Data Transfer.</strong> An implementation of the Data 
+               Transfer interface that uses Apache's 
+               <a href="http://jakarta.apache.org/commons-io/">commons-io</a> to perform 
+               local, disk based filesystem data transfer. This implementation also 
+               supports locally accessible Network File System (NFS) disks.</li>
+               
+               <li><strong>Remote Data Transfer.</strong> An implementation of the Data 
+               Transfer interface that uses the XML-RPC File Manager client to transfer 
+               files to a remote XML-RPC File Manager server.</li>
+               
+               <li><strong>InPlace Data Transfer.</strong> An implementation of the Data 
+               Transfer interface that avoids transfering any products -- this can be used 
+               in the situation where metadata about a particular product should be 
+               recorded, but no physical transfer needs to occur.</li>
+             </ul>     
+         </subsection>
+         
+         <subsection name="Repository Manager">
+             <ul>
+               <li><strong>Data Source based Repository Manager.</strong> An 
+               implementation of the Repository Manager extension point that stores 
+               Product Type policy information in a JDBC accessible database.</li>
+               
+               <li><strong>XML based Repository Manager.</strong> An implementation of 
+               the Repository Manager extension point that stores Product Type policy 
+               information in an XML file called <code>product-types.xml</code></li>
+             </ul>
+         </subsection>
+         
+         <subsection name="Validation Layer">
+             <ul>
+               <li><strong>Data Source based Validation Layer.</strong> An 
+               implementation of the Validation Layer extension point that stores 
+               Element policy information in a JDBC accessible database.</li>
+               
+               <li><strong>XML based Validation Layer.</strong> An implementation of 
+               the Validation Layer extension point that stores Element policy 
+               information in 2 XML files called <code>elements.xml</code> and 
+               <code>product-type-element-map.xml</code></li>
+             </ul>
+         </subsection>
+         
+         <subsection name="System (File Manager client and File Manager server)">        
+             <ul>
+               <li><strong>XML-RPC based File Manager server.</strong> An 
+               implementation of the external server interface for the File Manager that 
+               uses XML-RPC as the transportation medium.</li>
+               
+               <li><strong>XML-RPC based File Manager client.</strong> An 
+               implementation of the client interface for the XML-RPC File Manager 
+               server that uses XML-RPC as the transportation medium.</li>
+             </ul>
+         </subsection> 
+         
+      </section>
+      
+      <section name="Use Cases">
+        <p>
+          The File Manager was built to support several of the above capabilities outlined in 
+          Section 3. In particular there were several use cases that we wanted to support, some 
+          of which are described below.        
+        </p>
+      
+         <img src="../images/fm_use_case1.png" alt="File Manager Ingest Use Case"/>
+         
+         <p>The red numbers in the above Figure correspond to a sequence of steps that occurs and a 
+         series of interactions between the different File Manager extension points in order to 
+         perform the file ingestion activity. In Step 1, a File Manager client is invoked for the 
+         ingest operation, which sends Metadata and References for a particular Product to ingest 
+         to the File Manager server’s System Interface extension point. The System Interface uses 
+         the information about Product Type policy made available by the Repository Manager in order 
+         to understand whether or not the product should be transferred, where it’s root repository 
+         path should be, and so on. The System Interface then catalogs the file References and Metadata 
+         using the Catalog extension point. During this catalog process, the Catalog extension point 
+         uses the Validation Layer to determine which Elements should be extracted for the particular 
+         Product, based upon its Product Type. After that, Data Transfer is initiated either at the 
+         client or server end, and the first step to Data Transfer is using the Product’s associated 
+         Versioner to generate final file References. After final file References have been determined, 
+         the file data is transferred by the server or by the client, using the Data Transfer extension 
+         point.</p>
+      </section>      
+      
+      <section name="Conclusion">
+      <p>The aim of this document is to provide information relevant to developers
+      about the CAS File Manager. Specifically, this document has described the File 
+      Manager's architecture, including its constituent components, object model and
+      key capabilities. Additionally, the this document provides an overview of the 
+      current implementations of the File Manager's extension points.</p> 
+      
+      <p>In the <a href="../user/basic.html">Basic User Guide</a> and 
+      <a href="../user/advanced.html">Advanced User Guide</a>, we will cover topics
+      like installation, configuration, and example uses as well as advanced topics
+      like scaling and other tips and tricks.</p> 
+      
+      </section>
+
+   </body>
+</document>

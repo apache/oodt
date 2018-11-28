@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>CAS-Metadata Advanced User Guide</title>
+    <author email="woollard@jpl.nasa.gov">David Woollard</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+    
+    <p>The purpose of this guide is to instruct the user in some advanced concepts 
+    within the CAS-Metadata project, including the ramifications of metadata
+    extraction with regard to repository search, type, checking, etc, and the use 
+    of mime-type detection. For basic topics, including the basics of metadata, how 
+    to write metadata extractors, and explanations of existing metadata extractors, 
+    see our <a href="../user/basic.html">Basic Guide.</a> In the rest of this guide, 
+    we will cover the following topics:</p>
+
+    <ul>
+      <li><a href="#search">Planning Metadata for Search</a></li>
+      <li><a href="#provenance">Planning Metadata for Provenance</a></li>
+      <li><a href="#mime">MIME-type Detection</a></li>
+    </ul>
+    
+    </section>
+  
+    <a name="search"/>
+    <section name="Planning Metadata for Search">
+    
+    <p>As discussed in the <a href="../user/basic.html">Basic Guide,</a> one of the
+    primary uses of metadata is search. When you consider search, remember that
+    neither the CAS-Metadata container nor the CAS-Filemgr are cognizant over
+    how people will search your data - you are.</p>
+    
+    <p>We recommend developing a data dictionary as a "best practice." The 
+    <a href="http://portal.acm.org/citation.cfm?id=541721">IBM Dictionary of 
+    Computing</a> describes a data dictionary as a "centralized repository of 
+    information about data such as meaning, relationships to other data, origin, 
+    usage, and format." This is a highly-related concept to ontology.</p>
+    
+    <p>The attributes of and relationships between products in your system will
+    not only help you to develop appropriate product types but also the metadata
+    you will need to extract from products to establish both these attributes and
+    relationships.</p> 
+    
+    <p>In the next subsections, we will discuss specific aspects of metadata 
+    extraction that impact downstream search.</p>
+    
+    <subsection name="Missing Elements">
+    
+    <p>Because metadata extraction is a separate activity from extraction (as 
+    discussed in the <a href="../user/basic.html">Basic Guide</a>), it is possible
+    that there is a miss-match between the metadata elements extracted by an 
+    extractor and the metadata elements that the CAS-Filemgr associated with 
+    a product type. CAS-Filemgr, therefore, only ingests the <i>intersection</i>
+    of the metadata extracted from the product and the metadata associated with
+    the product in CAS-Filemgr configuration. This means that missing elements
+    are possible.</p>
+    
+    </subsection>
+    
+    <subsection name="String-based Comparison">
+    <p>Metadata values are stored as strings in CAS-Metadata. While there are a 
+    number of good reasons for this, it is a design point that has a number of 
+    important ramifications for search. Specifically, all metadata elements should
+    be comparable. Of course strings are comparable, but without some forethought, a
+    string-based comparison can act differently than would a type-based comparison.</p>
+    
+    <p>This is where standards come into play. For various types, there are standard
+    string-based representations that ensure comparisons that behave identically to how
+    a type-based comparison would work. There is currently no plan to enforce these 
+    standards (and, depending on the particular type, the application domain, etc., 
+    there might be multiple competing standards - e.g., TAI vs. UTC formatted Time 
+    strings).</p>
+    
+    <p>Some example string representation standards by type:</p>
+    
+    <p><strong>Date-Time</strong></p>
+    
+    <p>With time, consistency is key. There are multiple formats, such as 
+    <a href="http://tycho.usno.navy.mil/mjd.html">Julian Day Numbers</a>, or UTC. 
+    Additionally, there are different time standards such as 
+    <a href="http://www.w3.org/TR/NOTE-datetime">UTC</a>, local time, and 
+    <a href="http://www.bipm.org/en/scientific/tai/">TAI</a>. One also needs to be 
+    aware of leap second observance and local time conventions such as daylight savings 
+    time, depending on representation and standard selection.</p>
+    
+    <p>Additionally, it is important to remember that inter-product consistency can be 
+    just as important as intra-product consistency because there are many downstream 
+    use cases of the search features of CAS-Filemgr and other CAS components that 
+    involve cross-product comparisons.</p>
+    
+    <p><strong>Integers</strong></p>
+    
+    <p>Integers can be easily represented as comparable strings, but you must remember
+    to pad correctly. The string "1" is greater than "01234", but "0001" is less than 
+    "01234."</p>
+    
+    <p>Like Date-Time, appropriate numerical representation is the responsibility
+    of the metadata extractor, though we have built some additionally support for 
+    representational transformations during the ingest process of the CAS-Filemgr.</p>
+        
+    <p>More on Padding..</p>    
+        
+    <p><strong>Floating Point Numbers</strong></p>    
+    
+    <p>The most prevalent of Floating point representations is 
+    <a href="http://ieeexplore.ieee.org/servlet/opac?punumber=4610933">IEEE 754-2008.</a>
+    This is a convenient representation because, amongst other reasons, it is the 
+    representation that Java uses so if you use Java to develop an extractor, you can 
+    use the <code>floatToIntBits(float value)</code> method of the <code>Float</code> 
+    class. Remember that, like Integers, you will need padding.</p>  
+    
+    <p><strong>Blobs, URLs, and Character Sets</strong></p>    
+    
+    <p>Remember that text encoding is important. Depending on the catalog extension 
+    point used by the CAS-Filemgr, metadata values might not be formatting correctly
+    for storage. For example, if a metadata object containing a blob of text is ingested
+    into a CAS-Filemgr instance that is configured to run with a DataStore extension 
+    backed by an Oracle DBMS, then UTF8 encoding is important.</p>
+        
+        
+    </subsection>
+    </section>
+    
+    <a name="provenance"/>
+    <section name="Planning Metadata for Provenance">
+    <p>Coming Soon...</p>
+    </section>
+    
+    <a name="mime"/>
+    <section name="MIME-type Detection">
+    
+    <p>Coming Soon...</p>
+    
+    </section>
+    <section name="Conclusion">
+      <p>This is intended to a living document discussing advanced topics within the 
+      CAS-Metadata project, though it is not comprehensive. In our 
+      <a href="../user/basic.html">Basic Guide,</a> we cover more topics regarding 
+      basic topics within CAS-Metadata.</p>
+    </section>
+    
+  </body>
+</document>

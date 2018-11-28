@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.9</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-xmlquery</artifactId>
@@ -35,9 +35,9 @@
     pass a query and its results between servers, clients, nodes, and
     other components.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-rc1/xmlquery</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-rc1/xmlquery</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-rc1/xmlquery</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/xmlquery</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/xmlquery</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
   </scm>
   <build>
     <resources>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS Workflow Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+   
+      <div class="warning">This document is in the process of being reorganized as
+      part of our ongoing documentation effort. Please check back for updates.</div>
+      
+      <section name="Introduction">
+      
+      <p>This document serves as a basic user's guide for the CAS Workflow Manager 
+      project. The goal of the document is to allow users to check out, build, and 
+      install a base version of the CAS Workflow Manager, as well as perform basic 
+      configuration tasks. For advanced topics, such as configuring the Workflow 
+      Manager to Scale and other tips and tricks, please see our 
+      <a href="../user/advanced.html">Advanced Guide.</a></p>
+      
+      <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Download and Build</a></li>
+        <li><a href="#section2">Configuration in 2 Minutes or Less</a></li>
+        <li><a href="#section3">Learn By Example</a></li>
+      </ul>  
+      </section> 
+     
+      <a name="section1"/>
+      <section name="Download and Build">
+        <p>The most recent CAS-Workflow Manager project can be downloaded from the Apache OODT
+        <a href="/">website</a> or it can be checked out 
+        from the OODT repository using Subversion. The CAS-Workflow Manager project is 
+        located at <code>../../workflow/</code>. We recommend checking
+        out the latest released version (v1.5.1 at the time of writing).</p>
+      
+        <p>Maven is the build management system used for OODT projects. We currently 
+        support Maven 2.0 and later. For more information on Maven, see our 
+        <a href="../development/maven.html">Maven Guide.</a></p>
+      
+        <p>Assuming a *nix-like environment, with both Maven and Subversion 
+        clients installed and on your path, an example of the checkout and 
+        build process is presented below:</p>
+        
+         <source>
+> mkdir /usr/local/src
+> cd /usr/local/src
+> svn checkout https://svn.apache.org/repos/asf/oodt/trunk/workflow workflow
+      </source>
+        
+      <p>After the Subversion command completes, you will have the source
+      for the CAS-Workflow project in the <code>/usr/local/src/workflow</code>
+      directory.</p>
+      
+      <p>In order to build the project from this source, issue the following 
+      commands:</p>
+      
+      <source>
+> cd /usr/local/src/workflow
+> mvn package    
+      </source>   
+      
+      <p>Note that this command performs a number of tasks, including performing
+      unit tests which can take a long time depending on your system. At the end of 
+      the process, you will see a Maven success banner.</p>
+      
+      <p>Once the Maven command completes successfully, you should have a 
+      <code>target</code> directory under <code>-workflow</code>. 
+      The project has been built in this directory as a distribution tar ball.
+      In order to move the built project out of the source directory and unpack the
+      tar ball, issue the following commands:</p>
+      
+      <source>
+> cd /usr/local
+> mv src/workflow/trunk/cas-workflow-vX.Y.Z-dist.tar.gz ./
+> tar -xvzf cas-workflow-vX.Y.Z-dist.tar.gz
+> export WORKFLOW_HOME=/usr/local/cas-workflow-vX.Y.Z
+      </source>       
+      
+      <p>The resultant directory layout from the unpacked tarball is as follows:</p>
+           
+      <source>
+bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
+      </source>
+      
+      <p>A basic description of the files and subdirectories of the deployment is 
+      presented below:</p>
+      <ul>
+         <li><strong>bin</strong> - contains scripts for running the Workflow Manager, 
+         including the "wmgr" server script, and the "wmgr-client" client script.</li>
+         
+         <li><strong>etc</strong> - contains the logging.properties file for the 
+         Workflow Manager, and the workflow.properties file used to configure the server 
+         options.</li>
+         
+         <li><strong>logs</strong> - the default directory into which log files are 
+         written.</li>
+              
+         <li><strong>doc</strong> - contains Javadoc documentation, and user guides 
+         for using the Workflow Manager.</li>
+         
+         <li><strong>lib</strong> - the required Java jar files to run the Workflow 
+         Manager.</li>
+         
+         <li><strong>policy</strong> - the default XML-based element and product type 
+         policy in case the user is using the Lucene Workflow Instance Repository and/or 
+         the XML Workflow Repository, along with the ThreadPoolWorkflowEngine.</li>
+         
+         <li><strong>CHANGES.txt</strong> - contains the CHANGES present in this 
+         released version of the Workflow Manager.</li>
+         
+         <li><strong>LICENSE.txt</strong> - the LICENSE for the Workflow Manager 
+         project.</li>
+       </ul>
+      
+      <p>Now you have a built Workflow Manager at <code>/usr/local/cas-workflow-vX.Y.Z</code>.
+      In the next section, we will discuss how you can configure the Workflow Manager for
+      basic operations.</p>
+      </section>
+      
+      <a name="section2"/>
+      <section name="Configuration in 2 Minutes or Less">
+      
+      <p>The reason for entitling this section "in 2 Minutes or Less" is to show that
+      in it's base deployment, with very minimal configuration, we can have the Workflow
+      Manager in a usable state, capable of managing workflow tasks to completion. For 
+      the record, I haven't timed it, but its pretty fast...</p>
+      
+      <p>We are going to set up the Workflow Manager to use the XML-based Workflow 
+      Repository, the ThreadPoolWorkflowEngine, and Lucene Workflow Instance Repository 
+      extension points. The first step is to edit the wmgr script in 
+      <code>$WORKFLOW_HOME/bin</code>. Make the following 
+      changes:</p>
+     
+       <ul>
+         <li>Set the <code>SERVER_PORT</code> variable to the desired port on which 
+         you'd like to run the Workflow Manager. Our default port is 9001.</li>
+         
+         <li>Set the <code>JAVA_HOME</code> variable to point to the location of your 
+         installed JRE runtime. If you do not know where this is, type <code>&gt; which 
+         java</code> and use that path.</li>
+         
+         <li>Set the <code>RUN_HOME</code> variable to point to the location to which
+         you'd like the Workflow Manager PID file written. Typically this should default to 
+         <code>/var/run</code>, but not all system administrators allow users to write 
+         to <code>/var/run</code>.</li>
+       </ul>
+       
+       <p>The second step in configuration is to edit 
+       <code>$WORKFLOW_HOME/bin/wmgr-client</code> script, making the following 
+       change:</p>
+       
+       <ul>
+          <li>Set the <code>JAVA_HOME</code> variable to point to the location of 
+          your installed JRE runtime.</li>
+       </ul>
+       
+       <p>In the third step of this configuration, you will set the Workflow Manager's
+       various extension points. For more information about the functionality of
+       these extension points, see our 
+       <a href="../development/developer.html">Developer Guide.</a> By default, 
+       the Workflow Manager is built to use the XML-based Workflow Repository, the 
+       ThreadPoolWorkflowEngine, and <a href="http://lucene.apache.org/">Lucene</a> 
+       Workflow Instance Repository extension points.</p> 
+       
+       <p>Make the following changes to 
+       <code>$WORKFLOW_HOME/etc/workflow.properties</code>:</p>
+       
+       <ul>     
+         <li>Specify the path to the directory where the Workflow Manager will create the
+         Lucene index and associated files by setting the 
+         <code>org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath</code> property
+         to <code>$WORKFLOW_HOME/repo</code>. Make sure that this directory does
+         NOT exist the time you run the Workflow Manager. If the Workflow Manager does 
+         not find a directory at thie specified location, it will create all of the 
+         necessary directory structure and ancillary files.</li>
+         
+         <li>Specify the path to the directory where the XML policy files are stored 
+         for the the XML Workflow Repository. This path is set by 
+         <code>org.apache.oodt.cas.workflow.repo.dirs</code>. The 
+         default location (and default policy files) are located at 
+         <code>$WORKFLOW_HOME/policy</code> in the vanilla deployment of the Workflow Manager.
+         Note that these properties need to be fully specified URLs (e.g., they should 
+         start with <code>file://</code>).</li>
+       </ul>
+
+       <div class="info">Optionally, you can change the default logging properties for
+       the CAS Workflow Manager. This is done by editing 
+       <code>$WORKFLOW_HOME/etc/logging.properties</code>. We have tried to select sensible
+       defaults for the average user, but if you would like more or less information 
+       generated in the Workflow Manager logs, you can edit the levels of different catagories
+       of information in this proporties file. The following logging levels are available:
+       <code>INFO</code>, <code>WARNING</code>, <code>FINE</code>, <code>FINER</code>,
+       <code>FINEST</code>, and <code>ALL</code>.</div>
+   
+      <p>With this last step, you have configured the Workflow Manager. In order to test your 
+      configuration, cd to <code>$WORKFLOW_HOME/bin</code> and type:</p>
+       
+      <source>
+> ./wmgr start
+      </source> 
+       
+      <p>This will startup the workflow manager XML-RPC server interface. Your Workflow Manager 
+      is now ready to run! You can test out the workflow manager by running a command that 
+      will execute our preconfigured hello world workflow.</p>
+
+      <p>Run the below command, assuming that you started the Workflow Manager on the default 
+      port of 9001:</p>
+      
+      <source>
+> ./wmgr-client --url http://localhost:9001 --operation \
+                              --sendEvent \
+                              --eventName test 
+      </source> 
+      
+      <p>You should see a variety of info messages, in including the following:</p>
+      
+      <source>
+INFO: WorkflowManager: Received event: test
+INFO: WorkflowManager: Workflow testWorkflow retrieved for event test
+INFO: Task: [Hello World] has no required metadata fields
+INFO: Executing task: [Hello World] locally
+Hello World: Chris
+INFO: Task: [Goodbye World] has no required metadata fields
+INFO: Executing task: [Goodbye World] locally
+ Goodbye World: Chris            
+      </source>
+      
+      <p>Note that we have elided some of the timestamp information for the purposes of 
+      clarity. If you see the cannonical Hello World statement, you have succeeded in 
+      configuring the CAS Workflow Manager, hopefully in 2 minutes or less (and even if 
+      it took a little more time, you have to admit it was by and large painless).</p>
+      
+      </section>
+      
+      <a name="section3"/>
+      <section name="Learn By Example">
+      <p>Coming Soon...</p>
+      </section>
+      
+      <section name="Conclusion">
+      
+      <p>In this Basic User Guide, we have covered a number of topics, including Workflow 
+      Manager installation, configuration, and a basic example of use. For more advanced 
+      topics, including the use of alternative queuing strategies and best practices for 
+      addressinbg scaling issues, see our 
+      <a href="../user/advanced.html">Advanced Guide.</a></p>
+      
+      </section>
+   </body>
+   
+</document>

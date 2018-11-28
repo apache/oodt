@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<!--  this dyn metadata should come from the workflow/process manager -->
+ <keyval>
+   <key>TaskId</key>
+   <val>1</val>
+ </keyval>
+ <keyval>
+   <key>JobId</key>
+   <val>1929</val>
+ </keyval>
+ <keyval>
+   <key>ProcessingNode</key>
+   <val>compute-0-13</val>
+ </keyval>
+ 
+ <!--  this dynamic metadata is the actual input to the task -->
+ <keyval>
+   <key>SiteName</key>
+   <val>parkfalls</val>
+ </keyval>
+ <keyval>
+   <key>InstrumentId</key>
+   <val>ifs1</val>
+ </keyval>
+ <keyval>
+   <key>LocalDay</key>
+   <val>050506</val>
+ </keyval>
+ <keyval>
+   <key>ProductType</key>
+   <val>IASI_CalSub</val>
+ </keyval>
+  
+</cas:metadata>

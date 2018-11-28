@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<document>
+  <properties>
+    <title>Serving Large Products</title>
+    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+  </properties>
+
+  <body>
+    <section name="Serving Large Products">
+      <p>In the <a href="../qh/">last tutorial</a>, we created a query
+	handler and "installed" it in a product server.  We could
+	query it for products (mathematical constants) using the
+	XMLQuery's postfix boolean stacks.  The handler would return
+	results by embedding them in the returned XMLQuery.  Now we'll
+	return larger products that live outside of the XMLQuery.
+      </p>
+    </section>
+
+    <section name="What's Large?">
+      <p>There's a <a
+	  href="http://www.worldslargestthings.com/california/clam.htm">giant
+	  clam</a> at Pismo Beach, a <a
+	  href="http://www.worldslargestthings.com/kansas/cawkercity.htm">giant
+	  ball of twine</a> in Kansas, and for those who drive SUVs, a
+	  <a
+	  href="http://www.worldslargestthings.com/missouri/gaspump.htm">giant
+	  gas pump</a>.  For the OODT framework, large is similarly hard to define.
+      </p>
+
+      <p>One of the original architects of the OODT framework thought
+	that putting a products result in with the query meant that
+	you'd never lose the separation between product and the query
+	that generated it.  I'm not sure I see the value in that, but
+	regardless, it posed a practical challenge: an
+	<code>XMLQuery</code> object in memory with one or two large
+	results in it will exhaust the Java virtual machine's available
+	memory.
+      </p>
+
+      <p>It's even worse in when the XMLQuery is expressed as a
+	textual XML document.  In this case, a binary product must be
+	encoded in a text format (we use <a
+	href="ftp://ftp.rfc-editor.org/in-notes/rfc2045.txt">Base64</a>),
+	making the XMLQuery in XML format even larger than as a Java
+	object.  Moreover, those XML documents must be parsed at some
+	time to reconstitute them as Java objects.  We use a DOM-based
+	parser, which holds the entire document in memory.  Naturally,
+	things tend to explode at this rate.
+      </p>
+
+      <p>There is a way out of the quagmire, though.  Instead of
+	writing a <code>QueryHandler</code>, write a
+	<code>LargeProductQueryHandler</code>.  A
+	<code>QueryHandler</code> puts <code>Result</code> objects
+	into the <code>XMLQuery</code> which hold the entire product.
+	A <code>LargeProductQueryHandler</code> puts
+	<code>LargeResult</code> objects which hold <em>a reference to
+	the product</em>.
+      </p>
+    </section>
+
+    <section name="Large Handlers and Large Results">
+      <p>The OODT framework provides an extension to the
+	<code>QueryHandler</code> interface called
+	<code>jpl.eda.product.LargeProductQueryHandler</code>.  This
+	interface adds two methods that you must implement:
+      </p>
+
+      <ul>
+	<li><code>retrieveChunk</code>.  This method returns a byte
+	  array representing a chunk of the product.  The OODT
+	  framework calls this method repeatedly to gather chunks of
+	  the product for the product client.  It takes a <em>product
+	  ID</em> (a string) that identifies which product is being
+	  retrieved.  It also takes an byte offset into the product
+	  data and a size of the byte chunk to return.  You return the
+	  matching chunk.
+	</li>
+
+	<li><code>close</code>.  This method is called by the OODT
+	  framework to tell the query handler it's done getting a
+	  product.  It takes a <em>product ID</em> that tells which
+	  product is no longer being retrieved.  You use this method
+	  to perform any cleanup necessary.
+	</li>
+      </ul>
+	  
+      <p>Because it extends the <code>QueryHandler</code> interface,
+	you still have to implement the <code>query</code> method.
+	However, as a <code>LargeProductQueryHandler</code>, you can
+	add <code>LargeResult</code> objects to the
+	<code>XMLQuery</code> passed in.  <code>LargeResult</code>s
+	identify the <em>product ID</em> (string) that the OODT
+	framework will later use when it calls
+	<code>retrieveChunk</code> and <code>close</code>.
+      </p>
+
+      <p>For example, suppose you're serving large images by
+	generating them from various other data sources:
+      </p>
+
+      <ol>
+	<li>The <code>query</code> method would examine the user's
+	  query, consult the various data sources, and generate the
+	  image, storing it in a temporary file.  It would also assign
+	  a string <em>product ID</em> to this file, use that product
+	  ID in a <code>LargeResult</code> object, add the
+	  <code>LargeResult</code> to the <code>XMLQuery</code>, and
+	  return the modified <code>XMLQuery</code>.
+	</li>
+
+	<li>Shortly afterward, the OODT framework will repeatedly call
+	  the <code>retrieveChunk</code> method.  This method would
+	  check the <em>product ID</em> passed in and locate the
+	  corresponding temporary file generated earlier by the
+	  <code>query</code> method.  It would index into the file by
+	  the offset requested by the framework, read the number of
+	  bytes requested by the framework, package that up into a
+	  byte array, and return it.  Eventually, the OODT framework
+	  will have read the entire product this way.
+	</li>
+
+	<li>Lastly, the OODT framework will call the
+	  <code>close</code> method.  This method would check the
+	  <em>product ID</em> and locate and delete the temporary
+	  file.
+	</li>
+      </ol>
+
+      <p>To put this into practice, let's create a
+	<code>LargeProductQueryHandler</code> that serves files out of
+	the product server's filesystem.
+      </p>
+    </section>
+
+    <section name="Writing the Handler">
+      <p>We'll develop a <code>FileHandler</code> that will serve
+	files out of the product server's filesystem.  Providing
+	filesystem access through the OODT framework in this way is
+	probably not a very good idea (after all, product clients
+	could request copies of sensitive files), but for a
+	demonstration it'll do.
+      </p>
+
+      <p>Because files can be quite large, we'll use a
+	<code>LargeProductQueryHandler</code>.  It will serve queries
+	of the form
+      </p>
+
+      <p><code>file = <var>path</var></code></p>
+
+      <p>where <var>path</var> is the full path of the file the user
+	wants.  The handler will add <code>LargeResult</code>s to the
+	XMLQuery, and the <em>product ID</em> will just simply be the
+	<var>path</var> of the requested file.  The
+	<code>retrieveChunk</code> method will open the file with the
+	given product ID (which is just the path to the file) and
+	return a block of data out of it.  The <code>close</code>
+	method won't need to do anything, since we're not creating
+	temporary files or making network conncetions or anything;
+	there's just nothing to clean up.
+      </p>
+
+      <subsection name="Getting the Path">
+	<p>First, let's create a utility method that takes the
+	  <code>XMLQuery</code> and returns a <code>java.io.File</code>
+	  that matches the requested file.  Because the query takes the form
+	</p>
+
+	<p><code>file = <var>path</var></code></p>
+
+	<p>there should be three <code>QueryElement</code>s on the "where" stack:</p>
+
+	<ol>
+	  <li>The zeroth (topmost) has role = <code>elemName</code>
+	    and value = <code>file</code>.
+	  </li>
+	  <li>The first (middle) has role = <code>LITERAL</code> and
+	    value = the <var>path</var> of the file the user wants.
+	  </li>
+	  <li>The last (bottom) has role = <code>RELOP</code> and
+	    value = <code>EQ</code>.
+	  </li>
+	</ol>
+
+	<p>We'll reject any other query by returning <code>null</code>
+	  from this method.  Further, if the file named by the
+	  <var>path</var> doesn't exist, or if it's not a file (for
+	  example, it's a directory or a socket), we'll return <code>null</code>.
+	</p>
+
+	<p>Here's the start of our <code>FileHandler.java</code>:</p>
+
+	<source>import java.io.File;
+import java.util.List;
+import jpl.eda.product.LargeProductQueryHandler;
+import jpl.eda.xmlquery.QueryElement;
+import jpl.eda.xmlquery.XMLQuery;
+public class FileHandler
+  implements LargeProductQueryHandler {
+  private static File getFile(XMLQuery q) {
+    List stack = q.getWhereElementSet();
+    if (stack.size() != 3) return null;
+    QueryElement e = (QueryElement) stack.get(0);
+    if (!"elemName".equals(e.getRole())
+      || !"file".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(2);
+    if (!"RELOP".equals(e.getRole())
+      || !"EQ".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(1);   	    
+    if (!"LITERAL".equals(e.getRole()))
+      return null;
+    File file = new File(e.getValue());
+    if (!file.isFile()) return null;
+    return file;
+  }
+}</source>
+      </subsection>
+      <subsection name="Checking the MIME Type">
+	<p>Recall that the user can say what MIME types of products
+	  are acceptable by specifying the preference list in the
+	  XMLQuery.  This lets a product server that serves, say,
+	  video clips, convert them to <code>video/mpeg</code>
+	  (MPEG-2), <code>video/mpeg4-generic</code> (MPEG-4),
+	  <code>video/quicktime</code> (Apple Quicktime), or some
+	  other format, in order to better serve its clients.
+	</p>
+
+	<p>Since our product server just serves <em>files of any
+	    format</em>, we won't really bother with the list of
+	    acceptable MIME types.  After all, the
+	    <code>/etc/passwd</code> file <em>could</em> be a JPEG
+	    image on some systems.  (Yes, we could go through the
+	    extra step of determining the MIME type of a file by
+	    looking at its extension or its contents, but this is an
+	    OODT tutorial, not a something-else-tutorial!)
+	</p>
+
+	<p>However, we will honor the user's wishes by labeling the
+	  result's MIME type based on what the user specifies in the
+	  acceptable MIME type list.  So, if the product client says
+	  that <code>image/jpeg</code> is acceptable and the file is
+	  <code>/etc/passwd</code>, we'll call
+	  <code>/etc/passwd</code> a JPEG image.  However, we won't
+	  try to read the client's mind: if the user wants
+	  <code>image/*</code>, then we'll just say it's a binary
+	  file, <code>application/octet-stream</code>.
+	</p>
+
+	<p>Here's the code:</p>
+
+	<source>import java.util.Iterator;
+...
+public class FileHandler
+  implements LargeProductQueryHandler {
+  ...
+  private static String getMimeType(XMLQuery q) {
+    for (Iterator i = q.getMimeAccept().iterator();
+      i.hasNext();) {
+      String t = (String) i.next();
+      if (t.indexOf('*') == -1) return t;
+    }
+    return "application/octet-stream";
+  }
+}</source>
+      </subsection>
+
+      <subsection name="Inserting the Result">
+	<p>Once we've got the file that the user wants and the MIME
+	  type to call it, all we have to do is insert the
+	  <code>LargeResult</code>.  Remember that it's the
+	  <code>LargeResult</code> that tells the OODT framework what
+	  the <em>product ID</em> is for later
+	  <code>retrieveChunk</code> and <code>close</code> calls.
+	  The <em>product ID</em> is passed as the first argument to
+	  the <code>LargeResult</code> constructor.
+	</p>
+
+	<p>We'll write a utility method to insert the <code>LargeResult</code>:</p>
+
+	<source>import java.io.IOException;
+import java.util.Collections;
+import jpl.eda.xmlquery.LargeResult;
+...
+public class FileHandler
+  implements LargeProductQueryHandler {
+  ...
+  private static void insert(File file, String type,
+    XMLQuery q) throws IOException {
+    String id = file.getCanonicalPath();
+    long size = file.length();
+    LargeResult lr = new LargeResult(id, type,
+      /*profileID*/null, /*resourceID*/null,
+      /*headers*/Collections.EMPTY_LIST, size);
+    q.getResults().add(lr);
+  }
+}</source>
+
+      </subsection>
+
+      <subsection name='Handling the Query'>
+	<p>With our three utility methods in hand, writing the
+	  required <code>query</code> method is a piece of cake.  Here
+	  it is:
+	</p>
+
+	<source>import jpl.eda.product.ProductException;
+...
+public class FileHandler
+  implements LargeProductQueryHandler {
+  ...
+  public XMLQuery query(XMLQuery q)
+    throws ProductException {
+    try {
+      File file = getFile(q);
+      if (file == null) return q;
+      String type = getMimeType(q);
+      insert(file, type, q);
+      return q;
+    } catch (IOException ex) {
+      throw new ProductException(ex);
+    }
+  }
+}</source>
+
+	<p>The <code>query</code> method as defined by the
+	  <code>QueryHandler</code> interface (and extended into the
+	  <code>LargeProductQueryHandler</code> interface) is allowed
+	  to throw only one kind of checked exception:
+	  <code>ProductException</code>.  So, in case the
+	  <code>insert</code> method throws an
+	  <code>IOException</code>, we transform it into a
+	  <code>ProductException</code>.
+	</p>
+
+	<p>Now there are just two more required methods to implement,
+	  <code>retrieveChunk</code> and <code>close</code>.
+	</p>
+      </subsection>
+
+      <subsection name='Blowing Chunks'>
+	<p>The OODT framework repeatedly calls handler's
+	  <code>retrieveChunk</code> method to get chunks of the
+	  product, evenutally getting the entire product (unless the
+	  product client decides to abort the transfer).  For our file
+	  handler, retrieve chunk just has to
+	</p>
+	<ol>
+	  <li>Make sure the file specified by the <em>product ID</em>
+	    still exists (after all, it could be deleted at any time,
+	    even before the first <code>retrieveChunk</code> got
+	    called).
+	  </li>
+	  <li>Open the file.</li>
+	  <li>Skip into the file by the requested offset.</li>
+	  <li>Read the requested number of bytes out of the file.</li>
+	  <li>Return those bytes.</li>
+	  <li>Close the file.</li>
+	</ol>
+
+	<p>We'll write a quick little <code>skip</code> method to skip
+	  into a file's input stream:
+	</p>
+
+	<source>private static void skip(long offset,
+  InputStream in) throws IOException {
+  while (offset > 0)
+    offset -= in.skip(offset);
+}</source>
+
+	<p>And here's another little utility method to read a
+	  specified number of bytes out of a file's input stream:
+	</p>
+
+	<source>private static byte[] read(int length,
+  InputStream in) throws IOException {
+  byte[] buf = new byte[length];
+  int numRead;
+  int index = 0;
+  int toRead = length;
+  while (toRead > 0) {
+    numRead = in.read(buf, index, toRead);
+    index += numRead;
+    toRead -= numRead;
+  }
+  return buf;
+}</source>
+
+	<p>(By now, you're probably wondering why we just didn't use
+	  <code>java.io.RandomAccessFile</code>; I'm wondering that
+	  too!)</p>
+
+	<p>Finally, we can implement the required
+	  <code>retrieveChunk</code> method:
+	</p>
+
+	<source>import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+...
+public class FileHandler
+  implements LargeProductQueryHandler {
+  ...
+  public byte[] retrieveChunk(String id, long offset,
+    int length) throws ProductException {
+    BufferedInputStream in = null;
+    try {
+      File f = new File(id);
+      if (!f.isFile()) throw new ProductException(id
+        + " isn't a file (anymore?)");
+      in = new BufferedInputStream(new FileInputStream(f));
+      skip(offset, in);
+      byte[] buf = read(length, in);
+      return buf;
+    } catch (IOException ex) {
+      throw new ProductException(ex);
+    } finally {
+      if (in != null) try {
+        in.close();
+      } catch (IOException ignore) {}
+    }
+  }
+}</source>
+
+      </subsection>
+
+      <subsection name='Closing Up'>
+	<p>Because the OODT framework has no idea what data sources a
+	  <code>LargeProductQueryHandler</code> will eventually
+	  consult, what temporary files it may need to clean up, what
+	  network sockets it might need to shut down, and so forth, it
+	  needs some way to indicate to a query handler that's it's
+	  done calling <code>retrieveChunk</code> for a certain
+	  <em>product ID</em>.  The <code>close</code> method does this.
+	</p>
+
+	<p>In our example, <code>close</code> doesn't need to do
+	  anything, but we are obligated to implement it:
+	</p>
+
+	<source>...
+public class FileHandler
+  implements LargeProductQueryHandler {
+  ...
+  public void close(String id) {}
+}</source>
+      </subsection>
+
+      <subsection name='Complete Source Code'>
+	<p>Here's the complete source file, <code>FileHandler.java</code>:</p>
+	<source>import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import jpl.eda.product.LargeProductQueryHandler;
+import jpl.eda.product.ProductException;
+import jpl.eda.xmlquery.LargeResult;
+import jpl.eda.xmlquery.QueryElement;
+import jpl.eda.xmlquery.XMLQuery;
+
+public class FileHandler
+  implements LargeProductQueryHandler {
+  private static File getFile(XMLQuery q) {
+    List stack = q.getWhereElementSet();
+    if (stack.size() != 3) return null;
+    QueryElement e = (QueryElement) stack.get(0);
+    if (!"elemName".equals(e.getRole())
+      || !"file".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(2);
+    if (!"RELOP".equals(e.getRole())
+      || !"EQ".equals(e.getValue()))
+      return null;
+    e = (QueryElement) stack.get(1);   	    
+    if (!"LITERAL".equals(e.getRole()))
+      return null;
+    File file = new File(e.getValue());
+    if (!file.isFile()) return null;
+    return file;
+  }
+  private static String getMimeType(XMLQuery q) {
+    for (Iterator i = q.getMimeAccept().iterator();
+      i.hasNext();) {
+      String t = (String) i.next();
+      if (t.indexOf('*') == -1) return t;
+    }
+    return "application/octet-stream";
+  }
+  private static void insert(File file, String type,
+    XMLQuery q) throws IOException {
+    String id = file.getCanonicalPath();
+    long size = file.length();
+    LargeResult lr = new LargeResult(id, type,
+      /*profileID*/null, /*resourceID*/null,
+      /*headers*/Collections.EMPTY_LIST, size);
+    q.getResults().add(lr);
+  }
+  public XMLQuery query(XMLQuery q)
+    throws ProductException {
+    try {
+      File file = getFile(q);
+      if (file == null) return q;
+      String type = getMimeType(q);
+      insert(file, type, q);
+      return q;
+    } catch (IOException ex) {
+      throw new ProductException(ex);
+    }
+  }
+  private static void skip(long offset,
+    InputStream in) throws IOException {
+    while (offset > 0)
+      offset -= in.skip(offset);
+  }
+  private static byte[] read(int length,
+    InputStream in) throws IOException {
+    byte[] buf = new byte[length];
+    int numRead;
+    int index = 0;
+    int toRead = length;
+    while (toRead > 0) {
+      numRead = in.read(buf, index, toRead);
+      index += numRead;
+      toRead -= numRead;
+    }
+    return buf;
+  }
+  public byte[] retrieveChunk(String id, long offset,
+    int length) throws ProductException {
+    BufferedInputStream in = null;
+    try {
+      File f = new File(id);
+      if (!f.isFile()) throw new ProductException(id
+        + " isn't a file (anymore?)");
+      in = new BufferedInputStream(new FileInputStream(f));
+      skip(offset, in);
+      byte[] buf = read(length, in);
+      return buf;
+    } catch (IOException ex) {
+      throw new ProductException(ex);
+    } finally {
+      if (in != null) try {
+        in.close();
+      } catch (IOException ignore) {}
+    }
+  }
+  public void close(String id) {}
+}</source>
+      </subsection>
+    </section>
+
+    <section name='Compiling the Code'>
+      <p>We'll compile this code using the J2SDK command-line tools,
+	but if you're more comfortable with some kind of Integrated
+	Development Environment (IDE), adjust as necessary.
+      </p>
+
+      <p>Let's go back again to the <code>$PS_HOME</code> directory we
+	made earlier; create the file
+	<code>$PS_HOME/src/FileHandler.java</code> with the contents
+	shown above.  Then, compile and update the jar file as follows:
+      </p>
+
+      <source>% <b>javac -extdirs lib \
+  -d classes src/FileHandler.java</b>
+% <b>ls -l classes</b>
+total 8
+-rw-r--r--  1 kelly  kelly  2524 25 Feb 15:46 ConstantHandler.class
+-rw-r--r--  1 kelly  kelly  3163 26 Feb 16:15 FileHandler.class
+% <b>jar -uf lib/my-handlers.jar \
+  -C classes FileHandler.class</b>
+% <b>jar -tf lib/my-handlers.jar</b>
+META-INF/
+META-INF/MANIFEST.MF
+ConstantHandler.class
+FileHandler.class</source>
+
+      <p>We've now got a jar with the <code>ConstantHandler</code>
+	from the <a href="../qh/">last tutorial</a> and our new
+	<code>FileHandler</code>.
+      </p>
+    </section>
+
+    <section name='Specifying and Running the New Query Handler'>
+      <p>The <code>$PS_HOME/bin/ps</code> script already has a system
+	property specifying the <code>ConstantHandler</code>, so we
+	just need to add the <code>FileHandler</code> to that list.
+      </p>
+
+      <p>First, stop the product server by hitting CTRL+C (or your
+	interrupt key) in the window in which it's currently running.
+	Then, modify the <code>$PS_HOME/bin/ps</code> script to read
+	as follows:
+      </p>
+
+      <source>#!/bin/sh
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+    -Dhandlers=ConstantHandler,FileHandler \
+    jpl.eda.ExecServer \
+    jpl.eda.product.rmi.ProductServiceImpl \
+    urn:eda:rmi:MyProductService</source>
+
+      <p>Then start the server by running
+	<code>$PS_HOME/bin/ps</code>.  If all goes well, the product
+	server will be ready to answer queries again, this time
+	passing each incoming <code>XMLQuery</code> to <em>two</em>
+	different query handlers.
+      </p>
+
+      <p>Edit the <code>$PS_HOME/bin/pc</code> script once more to
+	make sure the <code>-out</code> and not the <code>-xml</code>
+	command-line argument is being used.  Let's try querying for a
+	file:
+      </p>
+
+      <source>% <b>$PS_HOME/bin/pc "file = /etc/passwd"</b>
+nobody:*:-2:-2:Unprivileged User:/:/usr/bin/false
+root:*:0:0:System Administrator:/var/root:/bin/sh
+daemon:*:1:1:System Services:/var/root:/usr/bin/false
+...</source>
+
+      <p>If you like, you can change the <code>-out</code> to
+	<code>-xml</code> again and examine the XML version.  This
+	time, the product data isn't in the XMLQuery object.
+      </p>
+    </section>
+
+    <section name="What's the Difference?">
+      <p>On the client side, the interface to get product results in
+	<code>LargeResult</code>s versus regular <code>Result</code>s
+	is identical.  The client calls <code>getInputStream</code> to
+	get a binary stream to read the product data.
+      </p>
+
+      <p>There is a speed penalty for large results.  What
+	<code>Result.getInputStream</code> returns is an input stream
+	to product data already contained in the XMLQuery.  It's a
+	stream to a buffer already in the client's address space, so
+	it's nice and fast.
+      </p>
+
+      <p><code>LargeResult</code> overrides the
+	<code>getInputStream</code> method to instead return an input
+	stream that repeatedly makes calls back to the product
+	server's <code>retrieveChunk</code> method.  Since the product
+	is <em>not</em> already in the local address space of the
+	client, getting large products is a bit slower.  To
+	compensate, the input stream actually starts a background
+	thread to start retrieving chunks of the product ahead of the
+	product client, up to a certain point (we don't want to run
+	out of memory again).
+      </p>
+
+      <p>On the server side, the difference is in programming
+	complexity.  Creating a <code>LargeProductQueryHandler</code>
+	requires implementing three methods instead of just one.  You
+	may have to clean up temporary files, close network ports, or
+	do other cleanup.  You may even have to guard against clients
+	that present specially-crafted product IDs that try to
+	circumvent access controls to products.
+      </p>
+
+      <p><code>LargeResult</code>s are more general, and will work for
+	any size product, from zero bytes on up.  And you can even mix
+	and match: a <code>LargeProductQueryHandler</code> can add
+	regular <code>Result</code>s to an XMLQuery as well as
+	<code>LargeResult</code>s.  You might program some logic that,
+	under a certain threshold, to return regular
+	<code>Result</code>s for small sized products, and
+	<code>LargeResult</code>s for anything bigger than small.
+      </p>
+    </section>
+
+    <section name='Conclusion'>
+      <p>In this tutorial, we implemented a
+	<code>LargeProductQueryHandler</code> that served large
+	products.  In this case, large could mean zero bytes (empty
+	products) up to gargantuan numbers of bytes.  This handler
+	queried for files in the product server's filesystem, which is
+	a bit insecure so you might want to terminate the product
+	server as soon as possible.  We also learned that what the
+	advantages and disadvantages were between regular product
+	results and large product results, and that
+	<code>LargeProductQueryHandler</code>s can use
+	<code>LargeResult</code> objects in addition to regular
+	<code>Result</code> objects.
+      </p>
+
+      <p>If you've also completed the <a href="../ps">Your First
+	  Product Service</a> tutorial and the <a
+	  href="../qh/">Developing a Query Handler</a> tutorial, you
+	are now a master of the OODT Product Service.
+	Congratulations!
+      </p>
+    </section>
+  </body>
+</document>

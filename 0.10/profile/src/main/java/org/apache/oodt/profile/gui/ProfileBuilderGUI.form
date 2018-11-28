@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<Form style="Swing" ide="eclipse" builder="jigloo" laf="com.sun.java.swing.plaf.windows.WindowsLookAndFeel" version="2.7.2">
+<ExtraComponents>
+		<Component class="javax.swing.JMenuBar" name="jMenuBar1">
+			<Constraints>
+				<LayoutConstraint/>
+			</Constraints>
+			<Layout class="Box">
+				<Property name="axis" value="null"/>
+			</Layout>
+			<Events>
+			</Events>
+			<Properties>
+				<Property name="bounds" type="Rectangle">
+					<Rectangle value="[0, 0, 675, 21]"/>
+				</Property>
+			</Properties>
+			<SubComponents>
+				<Component class="javax.swing.JMenu" name="jMenu3">
+					<Constraints>
+						<LayoutConstraint/>
+					</Constraints>
+					<Layout class="Absolute">
+					</Layout>
+					<Events>
+					</Events>
+					<Properties>
+						<Property name="text" type="String" value="File"/>
+						<Property name="visible" type="boolean" value="true"/>
+					</Properties>
+					<SubComponents>
+						<Component class="javax.swing.JMenuItem" name="newFileMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+								<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" handler="newFileMenuItemActionPerformed"/>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="New Profile"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="preferredSize" type="Dimension">
+									<Dimension value="[28, 16]"/>
+								</Property>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 28, 16]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JMenuItem" name="openFileMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+								<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" handler="openFileMenuItemActionPerformed"/>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Open Profile"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JMenuItem" name="saveMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+								<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" handler="saveMenuItemActionPerformed"/>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Save Profile"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="verifyInputWhenFocusTarget" type="boolean" value="false"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JMenuItem" name="closeFileMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Close"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JSeparator" name="jSeparator2">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JMenuItem" name="exitMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+								<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" handler="exitMenuItemActionPerformed"/>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Exit"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+					</SubComponents>
+				</Component>
+				<Component class="javax.swing.JMenu" name="jMenu4">
+					<Constraints>
+						<LayoutConstraint/>
+					</Constraints>
+					<Layout class="Absolute">
+					</Layout>
+					<Events>
+					</Events>
+					<Properties>
+						<Property name="text" type="String" value="Edit"/>
+						<Property name="visible" type="boolean" value="true"/>
+					</Properties>
+					<SubComponents>
+						<Component class="javax.swing.JMenuItem" name="cutMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Cut"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="preferredSize" type="Dimension">
+									<Dimension value="[27, 16]"/>
+								</Property>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 27, 16]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JMenuItem" name="copyMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Copy"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JMenuItem" name="pasteMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Paste"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JSeparator" name="jSeparator1">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+						<Component class="javax.swing.JMenuItem" name="deleteMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Delete"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 60, 30]"/>
+								</Property>
+							</Properties>
+						</Component>
+					</SubComponents>
+				</Component>
+				<Component class="javax.swing.JMenu" name="jMenu5">
+					<Constraints>
+						<LayoutConstraint/>
+					</Constraints>
+					<Layout class="Absolute">
+					</Layout>
+					<Events>
+					</Events>
+					<Properties>
+						<Property name="text" type="String" value="Help"/>
+						<Property name="visible" type="boolean" value="true"/>
+					</Properties>
+					<SubComponents>
+						<Component class="javax.swing.JMenuItem" name="helpMenuItem">
+							<Constraints>
+								<LayoutConstraint/>
+							</Constraints>
+							<Layout class="Absolute">
+							</Layout>
+							<Events>
+							</Events>
+							<Properties>
+								<Property name="text" type="String" value="Help"/>
+								<Property name="visible" type="boolean" value="true"/>
+								<Property name="preferredSize" type="Dimension">
+									<Dimension value="[31, 16]"/>
+								</Property>
+								<Property name="bounds" type="Rectangle">
+									<Rectangle value="[5, 5, 31, 16]"/>
+								</Property>
+							</Properties>
+						</Component>
+					</SubComponents>
+				</Component>
+			</SubComponents>
+		</Component></ExtraComponents>
+<NonVisualComponents>
+		<Component class="java.lang.Object" name="object1">
+			<Constraints>
+				<LayoutConstraint/>
+			</Constraints>
+			<Properties>
+			</Properties>
+		</Component></NonVisualComponents>
+	<Component class="javax.swing.JFrame" name="ProfileBuilderGUI">
+		<Constraints>
+			<LayoutConstraint/>
+		</Constraints>
+		<Layout class="Border">
+			<Property name="hgap" type="int" value="0"/>
+			<Property name="vgap" type="int" value="0"/>
+		</Layout>
+		<Events>
+		</Events>
+		<Properties>
+			<Property name="title" type="String" value="OODT Profile Builder"/>
+			<Property name="size" type="Dimension">
+				<Dimension value="[675, 360]"/>
+			</Property>
+			<Property name="bounds" type="Rectangle">
+				<Rectangle value="[0, 0, 675, 360]"/>
+			</Property>
+		</Properties>
+		<SubComponents>
+			<Component class="javax.swing.JPanel" name="jPanel1">
+				<Constraints>
+					<Constraint direction="Center"/>
+					<LayoutConstraint>
+						<Property name="direction" type="String" value="Center"/>
+					</LayoutConstraint>
+				</Constraints>
+				<Layout class="Border">
+					<Property name="hgap" type="int" value="0"/>
+					<Property name="vgap" type="int" value="0"/>
+				</Layout>
+				<Events>
+				</Events>
+				<Properties>
+					<Property name="bounds" type="Rectangle">
+						<Rectangle value="[0, 0, 675, 316]"/>
+					</Property>
+				</Properties>
+				<SubComponents>
+					<Component class="javax.swing.JScrollPane" name="jPanel2">
+						<Constraints>
+							<Constraint direction="West"/>
+							<LayoutConstraint>
+								<Property name="direction" type="String" value="West"/>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="preferredSize" type="Dimension">
+								<Dimension value="[231, 339]"/>
+							</Property>
+							<Property name="autoscrolls" type="boolean" value="true"/>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[0, 0, 231, 316]"/>
+							</Property>
+						</Properties>
+						<SubComponents>
+							<Component class="jpl.eda.profile.gui.profileTree" name="jTree1">
+								<Constraints>
+									<LayoutConstraint/>
+								</Constraints>
+								<Events>
+								</Events>
+								<Properties>
+									<Property name="editable" type="boolean" value="true"/>
+									<Property name="preferredSize" type="Dimension">
+										<Dimension value="[426, 800]"/>
+									</Property>
+									<Property name="autoscrolls" type="boolean" value="true"/>
+									<Property name="maximumSize" type="Dimension">
+										<Dimension value="[426, 800]"/>
+									</Property>
+									<Property name="opaque" type="boolean" value="true"/>
+									<Property name="size" type="Dimension">
+										<Dimension value="[426, 800]"/>
+									</Property>
+									<Property name="bounds" type="Rectangle">
+										<Rectangle value="[0, 0, 426, 800]"/>
+									</Property>
+								</Properties>
+							</Component>
+						</SubComponents>
+					</Component>
+					<Component class="javax.swing.JScrollPane" name="jPanel3">
+						<Constraints>
+							<Constraint direction="East"/>
+							<LayoutConstraint>
+								<Property name="direction" type="String" value="East"/>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="preferredSize" type="Dimension">
+								<Dimension value="[444, 339]"/>
+							</Property>
+							<Property name="autoscrolls" type="boolean" value="true"/>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[231, 0, 444, 316]"/>
+							</Property>
+						</Properties>
+						<SubComponents>
+							<Component class="javax.swing.JEditorPane" name="jEditorPane1">
+								<Constraints>
+									<LayoutConstraint/>
+								</Constraints>
+								<Events>
+								</Events>
+								<Properties>
+									<Property name="text" type="String" value=""/>
+									<Property name="editable" type="boolean" value="false"/>
+									<Property name="preferredSize" type="Dimension">
+										<Dimension value="[414, 320]"/>
+									</Property>
+									<Property name="autoscrolls" type="boolean" value="true"/>
+									<Property name="bounds" type="Rectangle">
+										<Rectangle value="[0, 0, 442, 314]"/>
+									</Property>
+								</Properties>
+							</Component>
+						</SubComponents>
+					</Component>
+				</SubComponents>
+			</Component>
+			<Component class="javax.swing.JButton" name="jButton1">
+				<Constraints>
+					<Constraint direction="South"/>
+					<LayoutConstraint>
+						<Property name="direction" type="String" value="South"/>
+					</LayoutConstraint>
+				</Constraints>
+				<Events>
+					<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" handler="jButton1ActionPerformed"/>
+				</Events>
+				<Properties>
+					<Property name="text" type="String" value="Show XML"/>
+				</Properties>
+			</Component>
+		</SubComponents>
+	</Component>
+</Form>

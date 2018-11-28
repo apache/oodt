@@ -1,0 +1,48 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<wicket:panel>
+<wicket:link>
+ <link rel="stylesheet" type="text/css" href="WorkflowViewer.css"/>
+</wicket:link>
+<table>
+  <tr>
+    <td>Workflow ID</td>
+    <td><span wicket:id="workflow_id">urn:oodt:backwardsTestWorkflow</span></td>
+  </tr>
+  <tr>       	    	          
+    <td>Name</td>
+    <td><span wicket:id="workflow_name">backwardsTestWorkflow</span></td>
+  </tr>
+  <tr>
+  	 
+	 <td colspan="2">
+	   <table id="workflow_model_tbl" wicket:id="workflow_model_tbl" width="279" height="100">
+  	      <tr>
+  	       <wicket:container wicket:id="tasks">
+  	    	 <td class="task_bubble"><a wicket:id="task_link" href="#"><span wicket:id="task_name">IntensWaite</span></a></td>
+  	    	 <td class="arrow" wicket:id="task_arrow"><wicket:link><img src="task_arrow.png"></wicket:link></td>
+  	       </wicket:container>
+             <wicket:remove>
+  	    	 <td class="task_bubble"><a href="#">LongTask1</a></td>
+  	    	 </wicket:remove>
+  	      </tr>  	      
+       </table>      	    	          
+   </td>
+    
+  </tr>
+</table>
+</wicket:panel>

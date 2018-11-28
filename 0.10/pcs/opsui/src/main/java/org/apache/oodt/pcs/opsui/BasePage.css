@@ -1,0 +1,76 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#header {
+    width:100%;
+    height:80px;
+    border-bottom: solid 1px #2e3e4e;
+}
+
+#project_logo {
+    float:left;
+}
+
+#user_status {
+    float:right;
+    padding:10px;
+}
+
+#nav {
+    margin-top:10px;
+}
+
+#nav a {
+    color:#c0c0c0;
+    text-decoration:none;
+    border-right:solid 1px #456;
+    padding: 3px 20px;
+}
+#nav a.first {
+}
+#nav a.last {
+    border-right:none;
+}
+
+#footer{
+  position:fixed;
+  bottom:0px;
+  width:100%;
+  height:80px;
+  padding:5px 0px;
+  border-spacing:0px;
+  border-top:solid 1px #2e3e4e;
+  font-size:90%;
+  z-index:10000;
+}
+#footer p {
+  width:100%;
+  padding:5px 15px;
+  text-align:center;
+}
+
+#feedback {
+    margin:0px;
+    margin-top:-20px;
+    font-size:90%;
+}
+
+#powered,#feedback {
+  margin-left:-30px;
+}
+
+
+

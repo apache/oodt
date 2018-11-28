@@ -22,7 +22,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.9</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <name>Process Control System Input Data Package</name>

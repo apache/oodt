@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>oodt-core</artifactId>
+        <version>0.10</version>
+        <relativePath>../../core/pom.xml</relativePath>
+    </parent>
+	<artifactId>oodt-webapp-components</artifactId>
+	<packaging>jar</packaging>
+	<name>OODT Wicket Web Components</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket</artifactId>
+			<version>1.4.16</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.oodt</groupId>
+		  <artifactId>cas-filemgr</artifactId>
+		  <version>0.10</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.oodt</groupId>
+		  <artifactId>cas-workflow</artifactId>
+		  <version>0.10</version>
+		</dependency>
+		<dependency>	
+		  <groupId>org.apache.oodt</groupId>
+		  <artifactId>pcs-core</artifactId>
+		  <version>${project.parent.version}</version>
+		</dependency>			
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.8</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <version>2.4</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	   <dependency>
+	      <groupId>org.reflections</groupId>
+	      <artifactId>reflections</artifactId>
+	      <version>0.9.9-RC1</version>
+	   </dependency>		
+	</dependencies>
+        <profiles>
+            <profile>
+                <id>audit</id>
+                <activation>
+                    <activeByDefault>false</activeByDefault>
+                </activation>
+                <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>rat-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>check</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <numUnapprovedLicenses>2</numUnapprovedLicenses>
+                                <excludes>
+                                    <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/prototype.js</exclude>
+                                    <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/progress.js</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/src/jquery*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/demo/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/lib/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-ui/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-ui/css/smoothness/jquery-ui-1.7.2.custom.css</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/src/MIT-License.txt</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/media/Bach-SuiteNo2.mp3</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </build>
+            </profile>
+       </profiles>
+	<build>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<filtering>false</filtering>
+				<directory>src/test/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<optimize>true</optimize>
+					<debug>true</debug>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	</project>
