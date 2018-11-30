@@ -18,7 +18,7 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -195,14 +195,14 @@ public class TestLuceneCatalog extends TestCase {
        myCat.addProduct(product);
        myCat.addProductReferences(product);
        Metadata m = new Metadata();
-       m.addMetadata(CoreMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
+       m.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
        myCat.addMetadata(m, product);
        Metadata rndTripMet = myCat.getMetadata(product);
 
        assertNotNull(rndTripMet);
-       assertEquals(2, rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
-       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/1"));
-       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
+       assertEquals(2, rndTripMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).size());
+       assertTrue(rndTripMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).contains("/loc/1"));
+       assertTrue(rndTripMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).contains("/loc/2"));
     }
     
     public void testGetReducedMetadata() throws CatalogException {
@@ -210,15 +210,15 @@ public class TestLuceneCatalog extends TestCase {
        myCat.addProduct(product);
        myCat.addProductReferences(product);
        Metadata m = new Metadata();
-       m.addMetadata(CoreMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
+       m.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
        myCat.addMetadata(m, product);
        Metadata rndTripMet = myCat.getReducedMetadata(product,
-             Lists.newArrayList(CoreMetKeys.FILE_LOCATION));
+             Lists.newArrayList(CoreFilemgrMetKeys.FILE_LOCATION));
 
        assertNotNull(rndTripMet);
-       assertEquals(2, rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
-       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/1"));
-       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
+       assertEquals(2, rndTripMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).size());
+       assertTrue(rndTripMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).contains("/loc/1"));
+       assertTrue(rndTripMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).contains("/loc/2"));
     }
 
     public void testGetReducedMetadataNull() throws CatalogException {
@@ -228,11 +228,11 @@ public class TestLuceneCatalog extends TestCase {
 	      myCat.addMetadata(new Metadata(), p);
 
 	      // should not throw NPE here
-	      Metadata rndTripMet = myCat.getReducedMetadata(p, Lists.newArrayList(CoreMetKeys.FILENAME));
+	      Metadata rndTripMet = myCat.getReducedMetadata(p, Lists.newArrayList(CoreFilemgrMetKeys.FILENAME));
 
 	      assertNotNull(rndTripMet);
 	      // should return null if met key has no value
-	      assertNull(rndTripMet.getAllMetadata(CoreMetKeys.FILENAME));
+	      assertNull(rndTripMet.getAllMetadata(CoreFilemgrMetKeys.FILENAME));
     }
 
     public void testRemoveProduct() {
@@ -891,9 +891,9 @@ public class TestLuceneCatalog extends TestCase {
         try {
             Metadata retMet = myCat.getMetadata(testProduct);
             assertNotNull(retMet);
-            assertTrue(retMet.containsKey(CoreMetKeys.PRODUCT_STRUCTURE));
+            assertTrue(retMet.containsKey(CoreFilemgrMetKeys.PRODUCT_STRUCTURE));
             assertEquals(Product.STRUCTURE_FLAT, retMet
-                    .getMetadata(CoreMetKeys.PRODUCT_STRUCTURE));
+                    .getMetadata(CoreFilemgrMetKeys.PRODUCT_STRUCTURE));
         } catch (CatalogException e) {
             fail(e.getMessage());
         }

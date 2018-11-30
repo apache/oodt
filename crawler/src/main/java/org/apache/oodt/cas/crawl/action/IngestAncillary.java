@@ -26,7 +26,7 @@ import java.util.Map;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
@@ -81,19 +81,19 @@ public class IngestAncillary extends FileBasedAction {
       }
     }
 
-    if (ingestMetadata.getMetadata(CoreMetKeys.FILE_LOCATION) == null) {
-      ingestMetadata.addMetadata(CoreMetKeys.FILE_LOCATION,
+    if (ingestMetadata.getMetadata(CoreFilemgrMetKeys.FILE_LOCATION) == null) {
+      ingestMetadata.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION,
           actionFile.getParent());
     }
-    if (ingestMetadata.getMetadata(CoreMetKeys.FILENAME) == null) {
-      ingestMetadata.addMetadata(CoreMetKeys.FILENAME, actionFile.getName());
+    if (ingestMetadata.getMetadata(CoreFilemgrMetKeys.FILENAME) == null) {
+      ingestMetadata.addMetadata(CoreFilemgrMetKeys.FILENAME, actionFile.getName());
     }
-    if (ingestMetadata.getMetadata(CoreMetKeys.PRODUCT_NAME) == null) {
-      ingestMetadata.addMetadata(CoreMetKeys.PRODUCT_NAME, actionFile.getName()
+    if (ingestMetadata.getMetadata(CoreFilemgrMetKeys.PRODUCT_NAME) == null) {
+      ingestMetadata.addMetadata(CoreFilemgrMetKeys.PRODUCT_NAME, actionFile.getName()
           .substring(0, actionFile.getName().indexOf(".")));
     }
-    if (ingestMetadata.getMetadata(CoreMetKeys.PRODUCT_TYPE) == null) {
-      ingestMetadata.addMetadata(CoreMetKeys.PRODUCT_TYPE, productType);
+    if (ingestMetadata.getMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE) == null) {
+      ingestMetadata.addMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, productType);
     }
 
     try {
@@ -117,7 +117,7 @@ public class IngestAncillary extends FileBasedAction {
         if (writeBackKeyPrefix == null) {
           writeBackKeyPrefix = "";
         }
-        ingestMetadata.addMetadata(writeBackKeyPrefix + CoreMetKeys.PRODUCT_ID,
+        ingestMetadata.addMetadata(writeBackKeyPrefix + CoreFilemgrMetKeys.PRODUCT_ID,
             identifier);
         for (String writeBackKey : writeBackKeys) {
           metadata.addMetadata(writeBackKeyPrefix + writeBackKey,

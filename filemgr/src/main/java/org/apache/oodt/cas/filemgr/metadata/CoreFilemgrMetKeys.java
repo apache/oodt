@@ -24,7 +24,7 @@ package org.apache.oodt.cas.filemgr.metadata;
  *
  * <p>Describe your class here</p>.
  */
-public interface CoreMetKeys {
+public interface CoreFilemgrMetKeys {
   
   String PRODUCT_NAME = "ProductName";
   

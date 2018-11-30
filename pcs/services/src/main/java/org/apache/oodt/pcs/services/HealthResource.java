@@ -36,7 +36,7 @@ import javax.ws.rs.Produces;
 import net.sf.json.JSONObject;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.pcs.health.CrawlerHealth;
@@ -227,8 +227,8 @@ public class HealthResource extends PCSService {
     Map<String, Object> fileOutput = new ConcurrentHashMap<String, Object>();
     fileOutput.put("filepath", fm.getFilePath(p));
     fileOutput.put("receivedTime", prodMet.getMetadata("CAS."
-        + CoreMetKeys.PRODUCT_RECEVIED_TIME) != null ? prodMet
-        .getMetadata("CAS." + CoreMetKeys.PRODUCT_RECEVIED_TIME) : "UNKNOWN");
+        + CoreFilemgrMetKeys.PRODUCT_RECEVIED_TIME) != null ? prodMet
+        .getMetadata("CAS." + CoreFilemgrMetKeys.PRODUCT_RECEVIED_TIME) : "UNKNOWN");
     latestFilesOutput.add(fileOutput);
   }
 

@@ -20,7 +20,7 @@ package org.apache.oodt.cas.filemgr.system;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
@@ -79,9 +79,9 @@ public class TestRpcFileManagerClient extends TestCase {
         List vectorElemList = new Vector();
         List linkedListElemList = new LinkedList();
 
-        arrayListElems.add(CoreMetKeys.FILENAME);
-        vectorElemList.add(CoreMetKeys.FILENAME);
-        linkedListElemList.add(CoreMetKeys.FILENAME);
+        arrayListElems.add(CoreFilemgrMetKeys.FILENAME);
+        vectorElemList.add(CoreFilemgrMetKeys.FILENAME);
+        linkedListElemList.add(CoreFilemgrMetKeys.FILENAME);
 
         try {
             FileManagerClient fmc = RpcCommunicationFactory.createClient(new URL(
@@ -101,17 +101,17 @@ public class TestRpcFileManagerClient extends TestCase {
 
             reducedMet = fmc.getReducedMetadata(product, arrayListElems);
             assertNotNull(reducedMet);
-            assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
+            assertTrue(reducedMet.containsKey(CoreFilemgrMetKeys.FILENAME));
             assertEquals(reducedMet.getHashTable().keySet().size(), 1);
 
             reducedMet = fmc.getReducedMetadata(product, vectorElemList);
             assertNotNull(reducedMet);
-            assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
+            assertTrue(reducedMet.containsKey(CoreFilemgrMetKeys.FILENAME));
             assertEquals(reducedMet.getHashTable().keySet().size(), 1);
 
             reducedMet = fmc.getReducedMetadata(product, linkedListElemList);
             assertNotNull(reducedMet);
-            assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
+            assertTrue(reducedMet.containsKey(CoreFilemgrMetKeys.FILENAME));
             assertEquals(reducedMet.getHashTable().keySet().size(), 1);
             
         } catch (Exception e) {
@@ -129,11 +129,11 @@ public class TestRpcFileManagerClient extends TestCase {
         URL refUrl = this.getClass().getResource("/ingest/test.txt");
 
         Metadata prodMet = new Metadata();
-        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+        prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(
           ingestUrl.getFile()).getCanonicalPath());
-        prodMet.addMetadata(CoreMetKeys.FILENAME, "test.txt");
-        prodMet.addMetadata(CoreMetKeys.PRODUCT_NAME, "TestFile");
-        prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+        prodMet.addMetadata(CoreFilemgrMetKeys.FILENAME, "test.txt");
+        prodMet.addMetadata(CoreFilemgrMetKeys.PRODUCT_NAME, "TestFile");
+        prodMet.addMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, "GenericFile");
 
         StdIngester ingester = new StdIngester(transferServiceFacClass);
         String productId = ingester.ingest(
@@ -160,7 +160,7 @@ public class TestRpcFileManagerClient extends TestCase {
         prodMet = new SerializableMetadata(new FileInputStream(
             metUrl.getFile()));
         // now add the right file location
-        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+        prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(
             ingestUrl.getFile()).getCanonicalPath());
         String productId = ingester.ingest(
             new URL("http://localhost:" + FM_PORT),
@@ -182,30 +182,30 @@ public class TestRpcFileManagerClient extends TestCase {
 
         //ingest first file
         Metadata prodMet = new Metadata();
-        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+        prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(
             ingestUrl.getFile()).getCanonicalPath());
-        prodMet.addMetadata(CoreMetKeys.FILENAME, "test-file-1.txt");
-        prodMet.addMetadata(CoreMetKeys.PRODUCT_NAME, "TestFile1");
-        prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+        prodMet.addMetadata(CoreFilemgrMetKeys.FILENAME, "test-file-1.txt");
+        prodMet.addMetadata(CoreFilemgrMetKeys.PRODUCT_NAME, "TestFile1");
+        prodMet.addMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, "GenericFile");
         ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
             refUrl1.getFile()), prodMet);           
         
         //ingest second file
-        prodMet.replaceMetadata(CoreMetKeys.FILENAME, "test-file-2.txt");
-        prodMet.replaceMetadata(CoreMetKeys.PRODUCT_NAME, "TestFile2");
+        prodMet.replaceMetadata(CoreFilemgrMetKeys.FILENAME, "test-file-2.txt");
+        prodMet.replaceMetadata(CoreFilemgrMetKeys.PRODUCT_NAME, "TestFile2");
         ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
             refUrl2.getFile()), prodMet);   
         
         //perform complex query
         ComplexQuery complexQuery = new ComplexQuery();
         List<String> reducedMetadata = new Vector<String>();
-        reducedMetadata.add(CoreMetKeys.FILENAME);
+        reducedMetadata.add(CoreFilemgrMetKeys.FILENAME);
         complexQuery.setReducedMetadata(reducedMetadata);
         List<String> productTypeNames = new Vector<String>();
         productTypeNames.add("GenericFile");
         complexQuery.setReducedProductTypeNames(productTypeNames);
-        complexQuery.setSortByMetKey(CoreMetKeys.FILENAME);
-        complexQuery.setToStringResultFormat("$" + CoreMetKeys.FILENAME);
+        complexQuery.setSortByMetKey(CoreFilemgrMetKeys.FILENAME);
+        complexQuery.setToStringResultFormat("$" + CoreFilemgrMetKeys.FILENAME);
         complexQuery.addCriterion(SqlParser.parseSqlWhereClause("Filename != 'test.txt'"));
         FileManagerClient fmc = RpcCommunicationFactory.createClient(new URL(
                 "http://localhost:" + FM_PORT));
@@ -270,10 +270,10 @@ public class TestRpcFileManagerClient extends TestCase {
                 new File(metUrl.getFile())));
 
             // now add the right file location
-            prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+            prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(
                 ingestUrl.getFile()).getCanonicalPath());
-            prodMet.addMetadata(CoreMetKeys.FILENAME, "test.txt");
-            prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+            prodMet.addMetadata(CoreFilemgrMetKeys.FILENAME, "test.txt");
+            prodMet.addMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, "GenericFile");
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);
         } catch (Exception e) {

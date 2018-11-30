@@ -22,7 +22,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Properties;
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
  * @since OODT-58
  * 
  */
-public class TestMimeTypeExtractor extends TestCase implements CoreMetKeys {
+public class TestMimeTypeExtractor extends TestCase implements CoreFilemgrMetKeys {
 
   private Properties initialProperties = new Properties(System.getProperties());
 

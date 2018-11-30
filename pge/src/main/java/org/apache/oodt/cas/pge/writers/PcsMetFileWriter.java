@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.pge.writers;
 
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
@@ -52,13 +52,13 @@ public abstract class PcsMetFileWriter {
         FileNotFoundException, CasMetadataException, ParseException {
       Metadata inputMetadata = pgeMetadata.asMetadata();
 
-      inputMetadata.replaceMetadata(CoreMetKeys.FILENAME,
+      inputMetadata.replaceMetadata(CoreFilemgrMetKeys.FILENAME,
               sciPgeCreatedDataFile.getName());
-      inputMetadata.replaceMetadata(CoreMetKeys.FILE_LOCATION,
+      inputMetadata.replaceMetadata(CoreFilemgrMetKeys.FILE_LOCATION,
               sciPgeCreatedDataFile.getParentFile().getAbsolutePath());
       inputMetadata.replaceMetadata(FILE_SIZE, Long.toString(new File(
-              inputMetadata.getMetadata(CoreMetKeys.FILE_LOCATION),
-              inputMetadata.getMetadata(CoreMetKeys.FILENAME)).length()));
+              inputMetadata.getMetadata(CoreFilemgrMetKeys.FILE_LOCATION),
+              inputMetadata.getMetadata(CoreFilemgrMetKeys.FILENAME)).length()));
 
       return this.getSciPgeSpecificMetadata(
               sciPgeCreatedDataFile, inputMetadata, customArgs);

@@ -19,7 +19,7 @@ package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -70,7 +70,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     Reference r = new Reference("file:///tmp/dir1/file1.txt", null, 4L);
     p.getProductReferences().add(r);
     Metadata met = new Metadata();
-    met.addMetadata(CoreMetKeys.FILENAME, "file1.txt");
+    met.addMetadata(CoreFilemgrMetKeys.FILENAME, "file1.txt");
     SimpleDateFormat acqDateFormatter = new SimpleDateFormat(
         AcquisitionDateVersioner.ACQ_DATE_FORMAT);
     acqDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -97,7 +97,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     Reference r = new Reference("file:///tmp/dir1/file1.txt", null, 4L);
     p.getProductReferences().add(r);
     Metadata met = new Metadata();
-    met.addMetadata(CoreMetKeys.FILENAME, "file1.txt");
+    met.addMetadata(CoreFilemgrMetKeys.FILENAME, "file1.txt");
     met.addMetadata("AcquisitionDate", "090910");
     String expectedPath = "file:/home/files/"
         + met.getMetadata("AcquisitionDate") + "/file1.txt";
@@ -121,7 +121,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     Reference r = new Reference("file:///tmp/dir1/file1.txt", null, 4L);
     p.getProductReferences().add(r);
     Metadata met = new Metadata();
-    met.addMetadata(CoreMetKeys.FILENAME, "file1.txt");
+    met.addMetadata(CoreFilemgrMetKeys.FILENAME, "file1.txt");
     met.addMetadata("StartDateTime", "2006-09-10T00:00:01.000Z");
     String expectedPath = "file:/home/files/060910/file1.txt";
     try {

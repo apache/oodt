@@ -22,7 +22,7 @@ import org.apache.oodt.pcs.listing.ListingConf;
 import org.apache.oodt.pcs.metadata.PCSMetadata;
 import org.apache.oodt.pcs.query.InputFilesQuery;
 import org.apache.oodt.pcs.util.FileManagerUtils;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -45,7 +45,7 @@ import java.util.Vector;
  * @version $Revision$
  * 
  */
-public class PCSLongLister implements PCSMetadata, CoreMetKeys {
+public class PCSLongLister implements PCSMetadata, CoreFilemgrMetKeys {
 
   private FileManagerUtils fm;
 

@@ -25,7 +25,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 //OODT static imports
-import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.*;
+import static org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys.*;
 
 /**
  * @author mattmann

@@ -26,7 +26,7 @@ package org.apache.oodt.cas.workflow.metadata;
  * Core metadata key names for the Workflow Manager
  * </p>.
  */
-public interface CoreMetKeys {
+public interface CoreWorkflowMetKeys {
 
     String TASK_ID = "TaskId";
 

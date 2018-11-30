@@ -24,7 +24,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * Test suite for the {@link CoreMetExtractor}.
  * </p>.
  */
-public class TestCoreMetExtractor extends TestCase implements CoreMetKeys {
+public class TestCoreMetExtractor extends TestCase implements CoreFilemgrMetKeys {
 
     private CoreMetExtractor extractor = new CoreMetExtractor();
     

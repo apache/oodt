@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.metadata.CoreWorkflowMetKeys;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
@@ -37,14 +37,14 @@ public abstract class RollbackableWorkflowTaskInstance implements WorkflowTaskIn
   }
 
   private String getWorkflowInstanceId(Metadata metadata) {
-    return metadata.getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
+    return metadata.getMetadata(CoreWorkflowMetKeys.WORKFLOW_INST_ID);
 
   }
 
   private WorkflowManagerClient createWorkflowMangerClient(Metadata metadata) {
     URL url;
     try {
-      url = new URL(metadata.getMetadata(CoreMetKeys.WORKFLOW_MANAGER_URL));
+      url = new URL(metadata.getMetadata(CoreWorkflowMetKeys.WORKFLOW_MANAGER_URL));
       return RpcCommunicationFactory.createClient(url);
     } catch (MalformedURLException e) {
       e.printStackTrace();

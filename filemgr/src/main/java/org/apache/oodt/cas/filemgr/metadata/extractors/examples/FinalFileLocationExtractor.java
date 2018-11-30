@@ -21,7 +21,7 @@ package org.apache.oodt.cas.filemgr.metadata.extractors.examples;
 import java.io.File;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.extractors.AbstractFilemgrMetExtractor;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
@@ -40,7 +40,7 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
  * 
  */
 public class FinalFileLocationExtractor extends AbstractFilemgrMetExtractor
-    implements CoreMetKeys {
+    implements CoreFilemgrMetKeys {
 
   private boolean replaceLocation;
 

@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Properties;
 //OODT imports
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -221,9 +221,9 @@ public class TestRpcFileManager extends TestCase {
       prodMet = new SerializableMetadata(new FileInputStream(
         new File(metUrl.getFile())));
       // now add the right file location
-      prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(ingestUrl.getFile()).getCanonicalPath());
-      prodMet.addMetadata(CoreMetKeys.FILENAME, "test.txt");
-      prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+      prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(ingestUrl.getFile()).getCanonicalPath());
+      prodMet.addMetadata(CoreFilemgrMetKeys.FILENAME, "test.txt");
+      prodMet.addMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, "GenericFile");
       ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(refUrl.getFile()), prodMet);
     } catch (Exception e) {
       e.printStackTrace();

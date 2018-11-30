@@ -21,7 +21,7 @@ import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.crawl.typedetection.MetExtractorSpec;
 import org.apache.oodt.cas.crawl.typedetection.MimeExtractorConfigReader;
 import org.apache.oodt.cas.crawl.typedetection.MimeExtractorRepo;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.exceptions.NamingConventionException;
@@ -67,7 +67,7 @@ import java.util.logging.Level;
  * @author bfoster (Brian Foster)
  */
 public class AutoDetectProductCrawler extends ProductCrawler implements
-      CoreMetKeys {
+      CoreFilemgrMetKeys {
 
    public static final String MIME_TYPES_HIERARCHY = "MimeTypesHierarchy"; 
 

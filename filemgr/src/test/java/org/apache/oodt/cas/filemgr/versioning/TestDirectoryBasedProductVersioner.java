@@ -19,7 +19,7 @@ package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -70,7 +70,7 @@ public class TestDirectoryBasedProductVersioner extends TestCase {
     p.getProductReferences().add(r);
     p.getProductReferences().add(r2);
     Metadata met = new Metadata();
-    met.addMetadata(CoreMetKeys.FILENAME, "dir1");
+    met.addMetadata(CoreFilemgrMetKeys.FILENAME, "dir1");
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {

@@ -36,7 +36,7 @@ import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -365,10 +365,10 @@ public class TestProductCrawler extends TestCase {
    public void testContainsRequiredMetadata() {
       ProductCrawler pc = createDummyCrawler();
       Metadata m = new Metadata();
-      m.replaceMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
-      m.replaceMetadata(CoreMetKeys.FILENAME, "TestFile.txt");
-      m.replaceMetadata(CoreMetKeys.FILE_LOCATION, "/tmp/dir");
-      m.replaceMetadata(CoreMetKeys.FILE_SIZE, "0");
+      m.replaceMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, "GenericFile");
+      m.replaceMetadata(CoreFilemgrMetKeys.FILENAME, "TestFile.txt");
+      m.replaceMetadata(CoreFilemgrMetKeys.FILE_LOCATION, "/tmp/dir");
+      m.replaceMetadata(CoreFilemgrMetKeys.FILE_SIZE, "0");
       assertTrue(pc.containsRequiredMetadata(m));
       assertFalse(pc.containsRequiredMetadata(new Metadata()));
    }
@@ -379,11 +379,11 @@ public class TestProductCrawler extends TestCase {
       ProductCrawler pc = createDummyCrawler();
       pc.addKnownMetadata(p, m);
       assertEquals(4, m.getAllKeys().size());
-      assertEquals(p.getName(), m.getMetadata(CoreMetKeys.PRODUCT_NAME));
-      assertEquals(p.getName(), m.getMetadata(CoreMetKeys.FILENAME));
+      assertEquals(p.getName(), m.getMetadata(CoreFilemgrMetKeys.PRODUCT_NAME));
+      assertEquals(p.getName(), m.getMetadata(CoreFilemgrMetKeys.FILENAME));
       assertEquals(p.getParentFile().getAbsolutePath(),
-            m.getMetadata(CoreMetKeys.FILE_LOCATION));
-      assertEquals(String.valueOf(p.length()), m.getMetadata(CoreMetKeys.FILE_SIZE));
+            m.getMetadata(CoreFilemgrMetKeys.FILE_LOCATION));
+      assertEquals(String.valueOf(p.length()), m.getMetadata(CoreFilemgrMetKeys.FILE_SIZE));
    }
 
    public void testCreateIngestStatus() {

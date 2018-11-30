@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.filemgr.metadata.extractors;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
@@ -36,12 +36,12 @@ import java.util.UUID;
  * @version $Revision$
  * 
  * <p>
- * The core {@link FilemgrMetExtractor} providing the {@link CoreMetKeys}
+ * The core {@link FilemgrMetExtractor} providing the {@link CoreFilemgrMetKeys}
  * for this {@link Product}.
  * </p>.
  */
 public class CoreMetExtractor extends AbstractFilemgrMetExtractor implements
-        CoreMetKeys {
+        CoreFilemgrMetKeys {
 
     private boolean namespaceAware = false;
 

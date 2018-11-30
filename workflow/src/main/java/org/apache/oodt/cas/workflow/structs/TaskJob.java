@@ -36,7 +36,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobInstance;
 import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.metadata.CoreWorkflowMetKeys;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
@@ -48,7 +48,7 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
  * A Resource Manager {@link Job} that runs an underlying {@link WorkflowTask}.
  * </p>.
  */
-public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
+public class TaskJob implements JobInstance, WorkflowStatus, CoreWorkflowMetKeys{
 
     /* our log stream */
     private static Logger LOG = Logger.getLogger(TaskJob.class.getName());

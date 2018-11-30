@@ -48,7 +48,7 @@ import org.apache.oodt.cas.pge.staging.FileStager;
 import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
 import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
 import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.metadata.CoreWorkflowMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
@@ -264,9 +264,9 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected String getWorkflowInstanceId() {
-      String instanceId = pgeMetadata.getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
+      String instanceId = pgeMetadata.getMetadata(CoreWorkflowMetKeys.WORKFLOW_INST_ID);
       logger.debug("Workflow instanceId is [{}]", instanceId);
-      Validate.notNull(instanceId, "Must specify " + CoreMetKeys.WORKFLOW_INST_ID);
+      Validate.notNull(instanceId, "Must specify " + CoreWorkflowMetKeys.WORKFLOW_INST_ID);
       return instanceId;
    }
 

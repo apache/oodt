@@ -21,7 +21,7 @@ package org.apache.oodt.pcs.webcomponents.health;
 import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.pcs.health.CrawlerHealth;
@@ -191,7 +191,7 @@ public class HealthMonitor extends Panel {
         link.add(new Label("file_path", filePath));
         item.add(link);
         item.add(new Label("file_ingest_datetime", prodMet.getMetadata("CAS."
-            + CoreMetKeys.PRODUCT_RECEVIED_TIME)));
+            + CoreFilemgrMetKeys.PRODUCT_RECEVIED_TIME)));
 
       }
     });

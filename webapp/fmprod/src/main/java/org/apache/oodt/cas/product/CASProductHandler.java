@@ -44,7 +44,7 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.PRODUCT_ID;
+import static org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys.PRODUCT_ID;
 import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.CAS_PROFILE_ID;
 import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.FILE_HEADER;
 

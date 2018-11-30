@@ -23,7 +23,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.metadata.CoreWorkflowMetKeys;
 import org.apache.oodt.cas.workflow.structs.TaskJobInput;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * @version $Revision$
  * 
  */
-public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetKeys,
+public class ResourceRunner extends AbstractEngineRunnerBase implements CoreWorkflowMetKeys,
     WorkflowStatus {
 
   private static final Logger LOG = Logger.getLogger(ResourceRunner.class

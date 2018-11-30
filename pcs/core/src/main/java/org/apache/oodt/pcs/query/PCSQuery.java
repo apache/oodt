@@ -19,7 +19,7 @@ package org.apache.oodt.pcs.query;
 
 //OODT imports
 import org.apache.oodt.pcs.metadata.PCSMetadata;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Query;
 
 /**
@@ -31,7 +31,7 @@ import org.apache.oodt.cas.filemgr.structs.Query;
  * @version $Revision$
  * 
  */
-public interface PCSQuery extends PCSMetadata, CoreMetKeys {
+public interface PCSQuery extends PCSMetadata, CoreFilemgrMetKeys {
 
   /**
    * Builds a filemgr compliant {@link Query} object from a concrete instance of

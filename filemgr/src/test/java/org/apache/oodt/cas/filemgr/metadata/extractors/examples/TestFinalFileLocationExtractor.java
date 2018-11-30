@@ -21,7 +21,7 @@ package org.apache.oodt.cas.filemgr.metadata.extractors.examples;
 import java.util.Properties;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -51,7 +51,7 @@ public class TestFinalFileLocationExtractor extends TestCase {
     Properties config = new Properties();
     config.setProperty("replace", "false");
     Metadata met = new Metadata();
-    met.addMetadata(CoreMetKeys.FILE_LOCATION, "/tmp");
+    met.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, "/tmp");
     FinalFileLocationExtractor extractor = new FinalFileLocationExtractor();
     extractor.configure(config);
     Metadata extractMet = new Metadata();
@@ -63,14 +63,14 @@ public class TestFinalFileLocationExtractor extends TestCase {
     }
 
     assertNotNull(extractMet);
-    assertTrue(extractMet.containsKey(CoreMetKeys.FILE_LOCATION));
-    assertEquals(2, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
-    assertEquals("/tmp", extractMet.getMetadata(CoreMetKeys.FILE_LOCATION));
+    assertTrue(extractMet.containsKey(CoreFilemgrMetKeys.FILE_LOCATION));
+    assertEquals(2, extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).size());
+    assertEquals("/tmp", extractMet.getMetadata(CoreFilemgrMetKeys.FILE_LOCATION));
     assertEquals("expected final location: [" + expectedFinalLocation
         + "] is not equal to generated location: ["
-        + extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1) + "]",
+        + extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).get(1) + "]",
         expectedFinalLocation,
-        extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1));
+        extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).get(1));
 
     // ensure that the data store ref is blank
     assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
@@ -86,10 +86,10 @@ public class TestFinalFileLocationExtractor extends TestCase {
     }
 
     assertNotNull(extractMet);
-    assertTrue(extractMet.containsKey(CoreMetKeys.FILE_LOCATION));
-    assertEquals(1, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+    assertTrue(extractMet.containsKey(CoreFilemgrMetKeys.FILE_LOCATION));
+    assertEquals(1, extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).size());
     assertEquals(expectedFinalLocation,
-        extractMet.getMetadata(CoreMetKeys.FILE_LOCATION));
+        extractMet.getMetadata(CoreFilemgrMetKeys.FILE_LOCATION));
 
     // ensure that the data store ref is blank
     assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
@@ -116,7 +116,7 @@ public class TestFinalFileLocationExtractor extends TestCase {
     Properties config = new Properties();
     config.setProperty("replace", "false");
     Metadata met = new Metadata();
-    met.addMetadata(CoreMetKeys.FILE_LOCATION, "/tmp");
+    met.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, "/tmp");
     FinalFileLocationExtractor extractor = new FinalFileLocationExtractor();
     extractor.configure(config);
     Metadata extractMet = new Metadata();
@@ -128,14 +128,14 @@ public class TestFinalFileLocationExtractor extends TestCase {
     }
 
     assertNotNull(extractMet);
-    assertTrue(extractMet.containsKey(CoreMetKeys.FILE_LOCATION));
-    assertEquals(2, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
-    assertEquals("/tmp", extractMet.getMetadata(CoreMetKeys.FILE_LOCATION));
+    assertTrue(extractMet.containsKey(CoreFilemgrMetKeys.FILE_LOCATION));
+    assertEquals(2, extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).size());
+    assertEquals("/tmp", extractMet.getMetadata(CoreFilemgrMetKeys.FILE_LOCATION));
     assertEquals("expected final location: [" + expectedFinalLocation
         + "] is not equal to generated location: ["
-        + extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1) + "]",
+        + extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).get(1) + "]",
         expectedFinalLocation,
-        extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1));
+        extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).get(1));
 
     // ensure that the data store ref is blank
     assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
@@ -151,10 +151,10 @@ public class TestFinalFileLocationExtractor extends TestCase {
     }
 
     assertNotNull(extractMet);
-    assertTrue(extractMet.containsKey(CoreMetKeys.FILE_LOCATION));
-    assertEquals(1, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+    assertTrue(extractMet.containsKey(CoreFilemgrMetKeys.FILE_LOCATION));
+    assertEquals(1, extractMet.getAllMetadata(CoreFilemgrMetKeys.FILE_LOCATION).size());
     assertEquals(expectedFinalLocation,
-        extractMet.getMetadata(CoreMetKeys.FILE_LOCATION));
+        extractMet.getMetadata(CoreFilemgrMetKeys.FILE_LOCATION));
 
     // ensure that the data store ref is blank
     assertEquals("", p.getProductReferences().get(0).getDataStoreReference());

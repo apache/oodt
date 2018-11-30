@@ -20,7 +20,7 @@ package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -364,9 +364,9 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             Metadata retMet = myCat.getMetadata(testProduct);
             assertNotNull(retMet);
-            assertTrue(retMet.containsKey(CoreMetKeys.PRODUCT_STRUCTURE));
+            assertTrue(retMet.containsKey(CoreFilemgrMetKeys.PRODUCT_STRUCTURE));
             assertEquals(Product.STRUCTURE_FLAT, retMet
-                    .getMetadata(CoreMetKeys.PRODUCT_STRUCTURE));
+                    .getMetadata(CoreFilemgrMetKeys.PRODUCT_STRUCTURE));
         } catch (CatalogException e) {
             fail(e.getMessage());
         }
@@ -441,24 +441,24 @@ public class TestDataSourceCatalog extends TestCase {
         Metadata prodMet = new Metadata();
         URL ingestUrl = this.getClass().getResource(
             "/ingest");
-        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+        prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(
             ingestUrl.getFile()).getCanonicalPath());
-        prodMet.addMetadata(CoreMetKeys.FILENAME, "test-file-1.txt");
+        prodMet.addMetadata(CoreFilemgrMetKeys.FILENAME, "test-file-1.txt");
         prodMet.addMetadata("CAS.ProductName", "TestFile1");
-        prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+        prodMet.addMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, "GenericFile");
         prodMet.addMetadata("NominalDate", "2008-01-20");
         prodMet.addMetadata("DataVersion", "3.6");
         myCat.addMetadata(prodMet, testProduct);
 
         // ingest second file
         testProduct.setProductId("24");
-        prodMet.replaceMetadata(CoreMetKeys.FILENAME, "test-file-2.txt");
+        prodMet.replaceMetadata(CoreFilemgrMetKeys.FILENAME, "test-file-2.txt");
         prodMet.replaceMetadata("CAS.ProductName", "TestFile2");
         myCat.addMetadata(prodMet, testProduct);
 
         // ingest thrid file
         testProduct.setProductId("25");
-        prodMet.replaceMetadata(CoreMetKeys.FILENAME, "test-file-2.txt");
+        prodMet.replaceMetadata(CoreFilemgrMetKeys.FILENAME, "test-file-2.txt");
         prodMet.replaceMetadata("CAS.ProductName", "TestFile3");
         prodMet.replaceMetadata("DataVersion", "4.6");
         myCat.addMetadata(prodMet, testProduct);

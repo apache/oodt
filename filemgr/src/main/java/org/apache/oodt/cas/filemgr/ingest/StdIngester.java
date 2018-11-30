@@ -19,7 +19,7 @@ package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -75,7 +75,7 @@ import java.util.logging.Logger;
  * </ul>
  * </p>.
  */
-public class StdIngester implements Ingester, CoreMetKeys {
+public class StdIngester implements Ingester, CoreFilemgrMetKeys {
 
     /* our log stream */
     private final static Logger LOG = Logger.getLogger(StdIngester.class

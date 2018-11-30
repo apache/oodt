@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.filemgr.cli.action;
 
 //OODT static imports
-import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.FILENAME;
+import static org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys.FILENAME;
 
 //JDK imports
 import java.io.File;

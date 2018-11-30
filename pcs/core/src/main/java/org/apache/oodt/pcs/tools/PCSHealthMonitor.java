@@ -34,7 +34,7 @@ import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.apache.oodt.cas.resource.system.extern.AvroRpcBatchStub;
 import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
@@ -72,7 +72,7 @@ import java.util.logging.Logger;
  * @author mattmann
  * @version $Revision$
  */
-public final class PCSHealthMonitor implements CoreMetKeys,
+public final class PCSHealthMonitor implements CoreFilemgrMetKeys,
     PCSHealthMonitorMetKeys {
   public static final double DOUBLE = 1000.0;
   public static final double DOUBLE1 = 1000.0;

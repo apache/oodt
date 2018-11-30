@@ -36,7 +36,7 @@ import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 import org.apache.oodt.cas.pge.metadata.PgeTaskStatus;
 import org.apache.oodt.cas.pge.writers.MockDynamicConfigFileWriter;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.metadata.CoreWorkflowMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.system.AvroRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
@@ -283,7 +283,7 @@ public class TestPGETaskInstance {
    public void testGetWorkflowInstanceId() throws Exception {
       String workflowInstId = "12345";
       PGETaskInstance pgeTask = createTestInstance();
-      pgeTask.pgeMetadata.replaceMetadata(CoreMetKeys.WORKFLOW_INST_ID,
+      pgeTask.pgeMetadata.replaceMetadata(CoreWorkflowMetKeys.WORKFLOW_INST_ID,
             workflowInstId);
       assertEquals(workflowInstId, pgeTask.getWorkflowInstanceId());
    }

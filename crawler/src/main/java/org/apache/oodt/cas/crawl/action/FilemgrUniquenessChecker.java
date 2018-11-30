@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.crawl.action;
 
 //OODT static imports
-import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.PRODUCT_NAME;
+import static org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys.PRODUCT_NAME;
 
 //JDK imports
 import java.io.File;

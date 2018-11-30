@@ -16,7 +16,7 @@
  */
 package org.apache.oodt.cas.filemgr.structs.query;
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -34,7 +34,7 @@ public class TestQueryResult extends TestCase {
     Product p = new Product();
     p.setProductId("TestProductId");
     Metadata m = new Metadata();
-    m.addMetadata(CoreMetKeys.FILENAME, "datafile.dat");
+    m.addMetadata(CoreFilemgrMetKeys.FILENAME, "datafile.dat");
     m.addMetadata("Owners", Arrays.asList("Bob", "Billy"));
     qr = new QueryResult(p, m);
   }

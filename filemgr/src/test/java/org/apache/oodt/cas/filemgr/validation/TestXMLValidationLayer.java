@@ -22,7 +22,7 @@ package org.apache.oodt.cas.filemgr.validation;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.*;
+import static org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys.*;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 
 //JDK imports

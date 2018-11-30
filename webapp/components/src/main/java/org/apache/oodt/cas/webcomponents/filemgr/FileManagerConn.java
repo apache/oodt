@@ -17,7 +17,7 @@
 
 package org.apache.oodt.cas.webcomponents.filemgr;
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -57,7 +57,7 @@ public class FileManagerConn {
   public String getProdReceivedTime(Product p) {
     Metadata met = getMetadata(p);
     String prodReceivedTime = met
-        .getMetadata("CAS." + CoreMetKeys.PRODUCT_RECEVIED_TIME);
+        .getMetadata("CAS." + CoreFilemgrMetKeys.PRODUCT_RECEVIED_TIME);
     return prodReceivedTime != null && !prodReceivedTime.equals("")
         ? prodReceivedTime : "UNKNOWN";
   }

@@ -22,7 +22,7 @@ import java.net.URL;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.metadata.CoreWorkflowMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
@@ -57,7 +57,7 @@ public class BranchRedirector implements WorkflowTaskInstance {
       throws WorkflowTaskInstanceException {
 
     try (WorkflowManagerClient wm = RpcCommunicationFactory
-            .createClient(new URL(metadata.getMetadata(CoreMetKeys.WORKFLOW_MANAGER_URL)))) {
+            .createClient(new URL(metadata.getMetadata(CoreWorkflowMetKeys.WORKFLOW_MANAGER_URL)))) {
       wm.sendEvent(config.getProperty("eventName"), metadata);
     } catch (Exception e) {
       throw new WorkflowTaskInstanceException(e.getMessage());

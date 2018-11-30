@@ -24,7 +24,7 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Properties;
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.system.FileManagerServer;
@@ -75,7 +75,7 @@ public class TestStdIngester extends TestCase {
                 new File(metUrl.getFile())));
 
             // now add the right file location
-            prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+            prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(
                 ingestUrl.getFile()).getCanonicalPath());
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);

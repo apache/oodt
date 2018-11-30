@@ -16,7 +16,7 @@
  */
 package org.apache.oodt.cas.filemgr.structs.query;
 
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -40,17 +40,17 @@ public class TestQueryResultComparator extends TestCase {
     Product p = new Product();
     p.setProductId("TestProductID");
     Metadata m = new Metadata();
-    m.addMetadata(CoreMetKeys.FILENAME, "datafile.dat");
+    m.addMetadata(CoreFilemgrMetKeys.FILENAME, "datafile.dat");
     m.addMetadata("Owners", Arrays.asList("Chad", "Cam"));
     qr1 = new QueryResult(p, m);
 
     Metadata m2 = new Metadata();
-    m2.addMetadata(CoreMetKeys.FILENAME, "textfile.dat");
+    m2.addMetadata(CoreFilemgrMetKeys.FILENAME, "textfile.dat");
     m2.addMetadata("Owners", Arrays.asList("Bob", "Billy"));
     qr2 = new QueryResult(p, m2);
 
     Metadata filename = new Metadata();
-    filename.addMetadata(CoreMetKeys.FILENAME, "foo.txt");
+    filename.addMetadata(CoreFilemgrMetKeys.FILENAME, "foo.txt");
     qrfilename = new QueryResult(p, filename);
 
     Metadata owners = new Metadata();
@@ -64,7 +64,7 @@ public class TestQueryResultComparator extends TestCase {
   public void testCompare() {
     List<QueryResult> list = Arrays.asList(qr1, qrowners, qrnull2, qr2, qrnull, qrfilename);
     QueryResultComparator c = new QueryResultComparator();
-    c.setSortByMetKey(CoreMetKeys.FILENAME);
+    c.setSortByMetKey(CoreFilemgrMetKeys.FILENAME);
 
     Collections.sort(list, c);
     assertEquals(qr1, list.get(0));

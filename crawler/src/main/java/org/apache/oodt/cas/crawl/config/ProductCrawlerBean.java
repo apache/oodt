@@ -24,7 +24,7 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Spring imports
@@ -37,7 +37,7 @@ import org.springframework.context.ApplicationContext;
  * @author bfoster (Brian Foster)
  */
 public abstract class ProductCrawlerBean implements
-      SpringSetIdInjectionType, CoreMetKeys {
+      SpringSetIdInjectionType, CoreFilemgrMetKeys {
 
     private HashSet<String> requiredMetadata;
 

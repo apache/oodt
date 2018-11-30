@@ -27,7 +27,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -216,17 +216,17 @@ public class SolrIndexer {
 			SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
 			metadata.loadMetadataFromXmlStream(new FileInputStream(file));
 			metadata.addMetadata("id", metadata.getMetadata("CAS."
-			    + CoreMetKeys.PRODUCT_ID));
+			    + CoreFilemgrMetKeys.PRODUCT_ID));
 			metadata.addMetadata(config.getProperty(ACCESS_KEY), config
 			    .getProperty(ACCESS_URL)
-			    + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+			    + metadata.getMetadata("CAS." + CoreFilemgrMetKeys.PRODUCT_ID));
 			if (delete) {
 				server
-				    .deleteById(metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+				    .deleteById(metadata.getMetadata("CAS." + CoreFilemgrMetKeys.PRODUCT_ID));
 			}
 			server.add(this.getSolrDocument(metadata));
 			LOG.info("Indexed product: "
-			    + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+			    + metadata.getMetadata("CAS." + CoreFilemgrMetKeys.PRODUCT_ID));
 		} catch (InstantiationException e) {
 			LOG.severe("Could not instantiate metadata object: " + e.getMessage());
 		} catch (FileNotFoundException e) {

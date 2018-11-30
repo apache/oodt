@@ -21,7 +21,7 @@ package org.apache.oodt.cas.filemgr.tools;
 //OODT imports
 
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.metadata.CoreFilemgrMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.system.FileManagerServer;
@@ -166,7 +166,7 @@ public class TestExpImpCatalog extends TestCase {
             assertNotNull(prod);
             Metadata met = fmClient.getMetadata(prod);
             assertNotNull(met);
-            assertTrue(met.containsKey(CoreMetKeys.PRODUCT_STRUCTURE));
+            assertTrue(met.containsKey(CoreFilemgrMetKeys.PRODUCT_STRUCTURE));
             prod.setProductReferences(fmClient.getProductReferences(prod));
             assertNotNull(prod.getProductReferences());
             assertEquals(1, prod.getProductReferences().size());
@@ -238,13 +238,13 @@ public class TestExpImpCatalog extends TestCase {
                 new File(metUrl.getFile())));
 
             // now add the right file location
-            prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+            prodMet.addMetadata(CoreFilemgrMetKeys.FILE_LOCATION, new File(
                 ingestUrl.getFile()).getCanonicalPath());
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);
             
-            prodMet.replaceMetadata(CoreMetKeys.PRODUCT_NAME, "TestTypeFile");
-            prodMet.replaceMetadata(CoreMetKeys.PRODUCT_TYPE, "TestType");
+            prodMet.replaceMetadata(CoreFilemgrMetKeys.PRODUCT_NAME, "TestTypeFile");
+            prodMet.replaceMetadata(CoreFilemgrMetKeys.PRODUCT_TYPE, "TestType");
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);
         } catch (Exception e) {

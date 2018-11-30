@@ -23,7 +23,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.ResourceManagerClient;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.metadata.CoreWorkflowMetKeys;
 import org.apache.oodt.cas.workflow.structs.TaskJobInput;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
@@ -62,7 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  */
 
-public class IterativeWorkflowProcessorThread implements WorkflowStatus, CoreMetKeys, Runnable {
+public class IterativeWorkflowProcessorThread implements WorkflowStatus, CoreWorkflowMetKeys, Runnable {
 
   private static final Logger logger = LoggerFactory.getLogger(IterativeWorkflowProcessorThread.class);
 
