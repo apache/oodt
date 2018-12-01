@@ -20,8 +20,8 @@ the License.
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>16</version>
-    <relativePath />
+    <version>21</version>
+    <relativePath/>
   </parent>
   <groupId>org.apache.oodt</groupId>
   <artifactId>oodt-core</artifactId>
@@ -40,6 +40,7 @@ the License.
     <wicket.version>1.4.17</wicket.version>
     <jetty.version>6.1.25</jetty.version>
     <sonar.language>java</sonar.language>
+    <lucene.version>6.6.5</lucene.version>
   </properties>
   <distributionManagement>
     <site>
@@ -324,33 +325,22 @@ the License.
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
-        <version>6.6.5</version>
+        <version>${lucene.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-queryparser</artifactId>
-        <version>6.6.5</version>
+        <version>${lucene.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-analyzers-common</artifactId>
-        <version>6.6.5</version>
+        <version>${lucene.version}</version>
       </dependency>
       <dependency>
          <groupId>org.apache.lucene</groupId>
-	 <artifactId>lucene-backward-codecs</artifactId>
-	 <version>6.6.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queryparser</artifactId>
-        <version>6.1.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers-common</artifactId>
-        <version>6.1.0</version>
+	       <artifactId>lucene-backward-codecs</artifactId>
+	       <version>${lucene.version}</version>
       </dependency>
 
       <dependency>
