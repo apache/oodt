@@ -158,7 +158,7 @@ public class Configuration {
 					 return getEmptyConfiguration();
 				 }
 			 }
-			 url = file.toURL();
+			 url = file.toURI().toURL();
 		 }
 
 		 return getConfiguration(url);
