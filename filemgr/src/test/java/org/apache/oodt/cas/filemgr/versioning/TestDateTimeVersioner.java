@@ -72,7 +72,7 @@ public class TestDateTimeVersioner extends TestCase {
 		Product product = new Product();
 		ProductType type = new ProductType();
 
-		type.setProductRepositoryPath("file:///foo/bar");
+		type.setProductRepositoryPath("file:///foo/space%20bar");
 		product.setProductName("test_product");
 		product.setProductStructure(Product.STRUCTURE_FLAT);
 		product.setProductType(type);
@@ -88,7 +88,7 @@ public class TestDateTimeVersioner extends TestCase {
 		List refs = new Vector();
 		try {
       URL url = this.getClass().getResource("/test.txt");
-      String refname = new File(url.getFile()).toURL().toExternalForm();
+      String refname = new File(url.getFile()).toURI().toURL().toExternalForm();
 			refs.add(refname);
 		} catch (MalformedURLException e) {
 			fail(e.getMessage());
@@ -107,9 +107,9 @@ public class TestDateTimeVersioner extends TestCase {
 		assertNotNull(generatedRef);
 		assertEquals(
 				"Generated ref does not equal expected ref: generatedRef=["
-						+ generatedRef + "], expected=[file:/foo/bar/test_product" +
+						+ generatedRef + "], expected=[file:/foo/space%20bar/test_product" +
 								"/test.txt."+prodDateTimeNonIso+"]", 
-								"file:/foo/bar/test_product/test.txt."
+								"file:/foo/space%20bar/test_product/test.txt."
 						+ prodDateTimeNonIso, generatedRef);
 
 	}

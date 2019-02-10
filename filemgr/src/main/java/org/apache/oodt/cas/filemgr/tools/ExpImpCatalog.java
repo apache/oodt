@@ -110,7 +110,7 @@ public class ExpImpCatalog {
         // first load the source prop file
         try {
             System.getProperties().load(
-                    new File(sPropFilePath).toURL().openStream());
+                    new File(sPropFilePath).toURI().toURL().openStream());
         } catch (Exception e) {
             throw new InstantiationException(e.getMessage());
         }
@@ -125,7 +125,7 @@ public class ExpImpCatalog {
         // first load the dest prop file
         try {
             System.getProperties().load(
-                    new File(dPropFilePath).toURL().openStream());
+                    new File(dPropFilePath).toURI().toURL().openStream());
         } catch (Exception e) {
             throw new InstantiationException(e.getMessage());
         }

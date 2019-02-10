@@ -69,13 +69,13 @@ public class TestBasicVersioner extends TestCase {
 		p.setProductName("test_product");
 		p.setProductStructure(Product.STRUCTURE_FLAT);
 		ProductType type = new ProductType();
-		type.setProductRepositoryPath("file:///foo/bar");
+		type.setProductRepositoryPath("file:///foo/space%20bar");
 		p.setProductType(type);
 
 		List refs = new Vector();
 		try {
       URL url = this.getClass().getResource("/test.txt");
-      String refname = new File(url.getFile()).toURL().toExternalForm();
+      String refname = new File(url.getFile()).toURI().toURL().toExternalForm();
 			refs.add(refname);
 		} catch (MalformedURLException e) {
 			fail(e.getMessage());
@@ -94,16 +94,16 @@ public class TestBasicVersioner extends TestCase {
 		assertNotNull(generatedRef);
 
 		assertEquals("Versioned refs not equal: ref=[" + generatedRef + "]",
-				"file:/foo/bar/test_product/test.txt", generatedRef);
+				"file:/foo/space%20bar/test_product/test.txt", generatedRef);
 
 	}
 
   public void testVersionHierarchical() {
-    String expected = "file:/archive/testdir/";
+    String expected = "file:/space%20archive/testdir/";
     Product p = Product
         .getDefaultFlatProduct("testdir", "urn:oodt:GenericFile");
     p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
-    p.getProductType().setProductRepositoryPath("file:///archive");
+    p.getProductType().setProductRepositoryPath("file:///space%20archive");
 
     p.getProductReferences().add(
         new Reference("file:///tmp/somedir/", null, 4L));

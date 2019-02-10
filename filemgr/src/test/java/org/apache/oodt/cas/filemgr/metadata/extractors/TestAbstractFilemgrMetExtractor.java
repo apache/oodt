@@ -92,11 +92,11 @@ public class TestAbstractFilemgrMetExtractor extends TestCase {
                 "urn:oodt:GenericFile");
         String refUri = null;
         try {
-            refUri = new File(tmpDirFullPath).toURL().toExternalForm();
+            refUri = new File(tmpDirFullPath).toURI().toURL().toExternalForm();
             prod.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
             prod.getProductType()
                     .setProductRepositoryPath(
-                            new File(tmpDirFullPath).getParentFile().toURL()
+                            new File(tmpDirFullPath).getParentFile().toURI().toURL()
                                     .toString());
         } catch (Exception e) {
             fail(e.getMessage());
