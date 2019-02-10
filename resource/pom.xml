@@ -139,7 +139,7 @@ the License.
             <phase>package</phase>
           </execution>
         </executions>
-      </plugin>  
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -201,6 +201,11 @@ the License.
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
+    </dependency>
+    <!-- Logging - JUL to SLF4J -->
+    <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>jul-to-slf4j</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

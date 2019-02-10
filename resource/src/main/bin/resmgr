@@ -50,6 +50,7 @@ case "$1" in
         echo -n "Starting cas resource manager: "
         $JAVA_HOME/bin/java -Djava.ext.dirs=${CAS_RESMGR_HOME}/lib \
         -Djava.util.logging.config.file=${CAS_RESMGR_HOME}/etc/logging.properties \
+        -Dlog4j.configurationFile=${CAS_RESMGR_HOME}/etc/log4j2.xml \
         -Dorg.apache.oodt.cas.resource.properties=${CAS_RESMGR_PROPS} \
         org.apache.oodt.cas.resource.system.ResourceManagerMain --portNum $SERVER_PORT &
         echo $! >${RUN_HOME}/cas.resmgr.pid 
