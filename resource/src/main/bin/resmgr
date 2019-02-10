@@ -36,9 +36,9 @@ fi
 export JAVA_HOME
 CAS_RESMGR_HOME=..
 export CAS_RESMGR_HOME
-RUN_HOME=${CAS_RESMGR_HOME}/../run
+RUN_HOME=${CAS_RESMGR_HOME}/run
 export RUN_HOME
-CAS_RESMGR_PROPS=../etc/resource.properties
+CAS_RESMGR_PROPS=${CAS_RESMGR_HOME}/etc/resource.properties
 export CAS_RESMGR_PROPS
 
 PATH=${JAVA_HOME}/bin:${CAS_RESMGR_HOME}/bin:/usr/bin:/bin:/usr/sbin:/sbin
