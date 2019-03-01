@@ -100,8 +100,6 @@ cd oodt
 4.Checkout out a new local branch based on your master and update it to the latest.The convention is to name the branch after the current JIRA issue, e.g. OODT-xxx where xxx is the issue ID.
 ```
 git checkout -b OODT-xxx
-git clean -df
-git pull --rebase upstream master
 ```
 5.Do the changes to the relavant files and keep your code clean. If you find another bug, you want to fix while being in a new branch, please fix it in a separated branch instead.
 
