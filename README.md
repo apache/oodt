@@ -103,33 +103,29 @@ git checkout -b OODT-xxx
 ```
 5.Do the changes to the relavant files and keep your code clean. If you find another bug, you want to fix while being in a new branch, please fix it in a separated branch instead.
 
-6.Verify the changes did to files are there as expected. 
-```
-git status
-```
-7.Add relavant files to the staging  area.
+6.Add relevant files to the staging  area.
 ```
 git add <files>
 ```
-8.For every commit please write a short (max 72 characters) summary of the change. Use markdown syntax for simple styling. Please include any JIRA issue numbers in your summary.
+7.For every commit please write a short (max 72 characters) summary of the change. Use markdown syntax for simple styling. Please include any JIRA issue numbers in your summary.
 ```
 git commit -m “[OODT-xxx] Put change summary here ”
 ```
 **NEVER leave the commit message blank!** Provide a detailed, clear, and complete description of your commit!
 
-9.Before submitting a pull request, update your branch to the latest code.
+8.Before submitting a pull request, update your branch to the latest code.
 ```
 git checkout master
 git pull --rebase upstream master
 git checkout OODT-xxx
 git rebase -i master
 ```
-10.Push the code to your forked repository
+9.Push the code to your forked repository
 ```
 git push origin OODT-xxx
 ```
 
-11.In order to make a pull request,
+10.In order to make a pull request,
   * Navigate to the OODT repository you just pushed to (e.g. https://github.com/your-user-name/oodt)
   * Click "Pull Request".
   * Write your branch name in the branch field (this is filled with "master" by default)
