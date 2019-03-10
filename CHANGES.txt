@@ -4,6 +4,8 @@ Apache OODT Change Log
 =======
 Release 1.9 - In Progress
 
+* OODT-1006 Add Dockerfile for OODT deployment
+
 * OODT-973 Update mvn/archetypes/radix module script templates to remove ghost PID files (ThejanW via mattmann)
 
 * OODT-969 Tests for Avro File Manager client and server (imesha via mattmann)
