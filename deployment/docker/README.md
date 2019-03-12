@@ -1,4 +1,3 @@
-# oodt-docker
 # OODT-docker
 
 Automatic RADIX build for Apache OODT
