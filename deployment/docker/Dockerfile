@@ -4,7 +4,6 @@ MAINTAINER Tom Barber
 #Setting the Work Directory for OODT in Docker Container
 WORKDIR /usr/src
 
-#RUN curl -o radix https://raw.githubusercontent.com/apache/oodt/trunk/mvn/archetypes/radix/src/main/resources/bin/radix | bash
 RUN mvn archetype:generate -DarchetypeGroupId=org.apache.oodt -DarchetypeArtifactId=radix-archetype -DarchetypeVersion=0.9 -Doodt=1.2.3 -DgroupId=com.mycompany -DartifactId=oodt -Dversion=0.1 && mv oodt oodt-src; cd oodt-src; mvn package && mkdir /usr/src/oodt; tar -xvf /usr/src/oodt-src/distribution/target/oodt-distribution-0.1-bin.tar.gz -C /usr/src/oodt && cd /usr/src/oodt-src && mvn clean && rm -rf ~/.m2
 # Maven archetype generation command to make an oodt project.
 # Fix Below Parameters before build the docker image

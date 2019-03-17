@@ -1,10 +1,10 @@
-# OODT-docker
+# OODT Docker
 
-Automatic RADIX build for Apache OODT
+Automated RADIX build on Docker for Apache OODT
 
 ## Usage
 
-You should edit docker file replacing the parameters below with whatever you want before build the image.
+You should edit docker file replacing the parameters below with values you desire before building this image.
 
 1. The groupId is a place to specify your company's namespace. 
     ```dockerfile
@@ -24,7 +24,7 @@ You should edit docker file replacing the parameters below with whatever you wan
     ```
 
 ### Building OODT Docker Image
-Execute below command in a prompt which is opened where the Docker file placed. Replace any thing with `oodt_docker` as it is the name of your docker image.
+Execute below command in a prompt which is opened where the Docker file placed. Replace  `oodt_docker` with any name as it will be the name of your docker image.
 ```dockerfile
 sudo docker build -t oodt_docker . 
 ```    
