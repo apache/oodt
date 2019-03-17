@@ -32,7 +32,7 @@ sudo docker build -t oodt_docker .
 ### Running OODT Docker Image
 After your docker image successfully built, execute below prompt command.`oodt_docker` is the oodt docker image name.
 ```dockerfile
-sudo docker run -p 8080:8080 -name my_first_oodt -i -t oodt_docker
+sudo docker run -p 8080:8080 -p 9000:9000 -p 9001:9001 -p 9002:9002 -p 2001:2001 -p 9200:9200  --name my_first_oodt -i -t oodt_docker
 ```
 The -p command forwards 8080 to localhost so you can login to opsui by visiting http://localhost:8080/opsui
 
