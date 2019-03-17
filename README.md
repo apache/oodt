@@ -80,52 +80,48 @@ Navigate to http://localhost:8080/opsui, you should see the default OPSUI system
 
 # Contributing
 
-To contribute a patch, follow these instructions (note that installing
-[Hub](http://hub.github.com) is not strictly required, but is recommended).
-```
-Download and install hub.github.com
-```
-1.File JIRA issue for your fix at https://issues.apache.org/jira/browse/OODT.
+To contribute a patch, follow these instructions.
+
+1. File JIRA issue for your fix at https://issues.apache.org/jira/browse/OODT.
 you will get issue id OODT-xxx where xxx is the issue ID.
 
-2.[Fork the repo](http://help.github.com/fork-a-repo) on which you're working, clone your forked repo to your local computer, and set up the upstream remote:
-```
-git clone https://github.com/YourGitHubUserName/oodt.giy
-git remote add upstream https://github.com/apache/oodt.git
-```
-3.Go into oodt directory
-```
-cd oodt
-```
-4.Checkout out a new local branch based on your master and update it to the latest.The convention is to name the branch after the current JIRA issue, e.g. OODT-xxx where xxx is the issue ID.
-```
-git checkout -b OODT-xxx
-```
-5.Do the changes to the relavant files and keep your code clean. If you find another bug, you want to fix while being in a new branch, please fix it in a separated branch instead.
+2. [Fork the repo](http://help.github.com/fork-a-repo) on which you're working, clone your forked repo to your local computer, and set up the upstream remote:
+    ```
+    git clone https://github.com/<YourGitHubUserName>/oodt.git
+    git remote add upstream https://github.com/apache/oodt.git
+    ```
+3. Go into oodt directory
+    ```
+    cd oodt
+    ```
+4. Checkout out a new local branch based on your master and update it to the latest.The convention is to name the branch after the current JIRA issue, e.g. OODT-xxx where xxx is the issue ID.
+    ```
+    git checkout -b OODT-xxx
+    ```
+5. Do the changes to the relavant files and keep your code clean. If you find another bug, you want to fix while being in a new branch, please fix it in a separated branch instead.
 
-6.Add relevant files to the staging  area.
-```
-git add <files>
-```
-7.For every commit please write a short (max 72 characters) summary of the change. Use markdown syntax for simple styling. Please include any JIRA issue numbers in your summary.
-```
-git commit -m “[OODT-xxx] Put change summary here ”
-```
-**NEVER leave the commit message blank!** Provide a detailed, clear, and complete description of your commit!
+6. Add relevant files to the staging  area.
+    ```
+    git add <files>
+    ```
+7. For every commit please write a short (max 72 characters) summary of the change. Use markdown syntax for simple styling. Please include any JIRA issue numbers in your summary.
+    ```
+    git commit -m “[OODT-xxx] Put change summary here ”
+    ```
+    **NEVER leave the commit message blank!** Provide a detailed, clear, and complete description of your commit!
 
-8.Before submitting a pull request, update your branch to the latest code.
-```
-git checkout master
-git pull --rebase upstream master
-git checkout OODT-xxx
-git rebase -i master
-```
-9.Push the code to your forked repository
-```
-git push origin OODT-xxx
-```
-
-10.In order to make a pull request,
+8. Before submitting a pull request, update your branch to the latest code.
+    ```
+    git checkout master
+    git pull --rebase upstream master
+    git checkout OODT-xxx
+    git rebase -i master
+    ```
+9. Push the code to your forked repository
+    ```
+    git push origin OODT-xxx
+    ```
+10. In order to make a pull request,
   * Navigate to the OODT repository you just pushed to (e.g. https://github.com/your-user-name/oodt)
   * Click "Pull Request".
   * Write your branch name in the branch field (this is filled with "master" by default)
