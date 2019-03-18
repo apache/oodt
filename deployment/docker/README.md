@@ -34,6 +34,3 @@ After your docker image successfully built, execute below prompt command.`oodt_d
 ```dockerfile
 sudo docker run -p 8080:8080 -p 9000:9000 -p 9001:9001 -p 9002:9002 -p 2001:2001 -p 9200:9200  --name my_first_oodt -i -t oodt_docker
 ```
-The -p command forwards 8080 to localhost so you can login to opsui by visiting http://localhost:8080/opsui
-
-If you want access to the other services on the system you will also have to forward those ports locally.
