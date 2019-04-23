@@ -1,0 +1,13 @@
+# dependencies
+/node_modules
+
+# Production
+/dist
+
+# IDE Temp files
+.idea
+
+package-lock.json
+
+# Development Tarball of the plugin
+oodt_fm_plugin_sample-1.0.0.tgz
