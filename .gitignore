@@ -122,13 +122,10 @@ local.properties
 .DS_Store
 
 # node_modules
-/node_modules
+/react-components/oodt_fm_plugin/node_modules
 
-# npm build ignores
-/dist
+# npm build/Tarball ignores
+/react-components/oodt_fm_plugin/dist
 
 # Runtime package.json ignores
-package-lock.json
-
-# Development Tarball of the plugin
-oodt_fm_plugin_sample-1.0.0.tgz
+/react-components/oodt_fm_plugin/package-lock.json
