@@ -16,76 +16,87 @@
  */
 package org.apache.oodt.cas.resource.mux.mocks;
 
-import java.net.URL;
-import java.util.List;
-
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class MockMonitor implements Monitor {
 
-    public int load = -1;
-    List<ResourceNode> nodes;
-    ResourceNode id;
-    ResourceNode url;
-    ResourceNode add;
-    ResourceNode reduce;
+    private Map<ResourceNode, Integer> loads;
+    private List<ResourceNode> nodes;
 
-    public MockMonitor(int load,List<ResourceNode> nodes, ResourceNode id, ResourceNode url, ResourceNode reduce) {
-        this.load = load;
+    public MockMonitor(List<ResourceNode> nodes) {
         this.nodes = nodes;
-        this.id = id;
-        this.url = url;
-        this.reduce = reduce;
+        loads = new HashMap<>();
+        for (ResourceNode node : nodes) {
+            loads.put(node, 0);
+        }
     }
 
     @Override
-    public int getLoad(ResourceNode node) throws MonitorException {     
-        return load;
-    }
-    @Override
-    public List getNodes() throws MonitorException {
-        return nodes;
+    public int getLoad(ResourceNode node) {
+        return loads.get(node);
     }
 
     @Override
-    public ResourceNode getNodeById(String nodeId) throws MonitorException {
-        return id.getNodeId().equals(nodeId)?id:null;
+    public List getNodes() {
+        return this.nodes;
     }
 
     @Override
-    public ResourceNode getNodeByURL(URL ipAddr) throws MonitorException {
-        return url.getIpAddr().equals(ipAddr)?url:null;
+    public ResourceNode getNodeById(String nodeId) {
+        for (ResourceNode n : nodes) {
+            if (n.getNodeId().equals(nodeId)) return n;
+        }
+        return null;
     }
 
     @Override
-    public boolean reduceLoad(ResourceNode node, int loadValue)
-            throws MonitorException {
-        reduce.setCapacity(reduce.getCapacity() - loadValue);
-        return true;
+    public ResourceNode getNodeByURL(URL ipAddr) {
+        for (ResourceNode n : nodes) {
+            if (n.getIpAddr().toString().equals(ipAddr.toString())) {
+                return n;
+            }
+        }
+        return null;
     }
 
     @Override
-    public boolean assignLoad(ResourceNode node, int loadValue)
-            throws MonitorException {
-        reduce.setCapacity(loadValue);
-        return true;
+    public boolean reduceLoad(ResourceNode node, int loadValue) throws MonitorException {
+        if (nodes.contains(node)) {
+            node.setCapacity(node.getCapacity() + loadValue);
+            loads.put(node, loads.get(node) - loadValue);
+            return true;
+        }
+        throw new MonitorException("Node Not Found");
     }
 
     @Override
-    public void addNode(ResourceNode node) throws MonitorException {
-        this.add = node;
-
+    public boolean assignLoad(ResourceNode node, int loadValue) throws MonitorException {
+        if (nodes.contains(node)) {
+            int c = node.getCapacity() - loadValue;
+            if (c > 0) {
+                node.setCapacity(c);
+                loads.put(node, loads.get(node) + loadValue);
+                return true;
+            }
+            return false;
+        }
+        throw new MonitorException("Node Not Found");
     }
 
     @Override
-    public void removeNodeById(String nodeId) throws MonitorException {
-        if (this.add.getNodeId().equals(nodeId))
-            this.add = null;
+    public void addNode(ResourceNode node) {
+        nodes.add(node);
     }
 
-    public ResourceNode getAdded() {
-        return this.add;
+    @Override
+    public void removeNodeById(String nodeId) {
+        nodes.remove(getNodeById(nodeId));
     }
 }
