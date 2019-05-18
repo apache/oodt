@@ -24,6 +24,7 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
+import org.apache.oodt.cas.product.jaxrs.enums.ErrorTypes;
 import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
 import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.jaxrs.resources.DatasetResource;
@@ -40,10 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 
 /**
@@ -80,13 +78,11 @@ public class CasProductJaxrsService
     "application/zip"})
   public ReferenceResource getReference(
     @QueryParam("productId") String productId,
-    @QueryParam("refIndex") int refIndex)
+    @QueryParam("refIndex") int refIndex) throws WebApplicationException
   {
     if (productId == null || productId.trim().equals(""))
     {
-      throw new BadRequestException("This URL requires a productId query "
-        + "parameter with a product ID value, "
-        + "e.g. /reference?productId=1787a257-df87-11e2-8a2d-e3f6264e86c5");
+      throw new BadRequestException(ErrorTypes.BAD_REQUEST_EXCEPTION_REFERENCE_RESOURCE.getErrorType());
     }
 
     try
@@ -100,9 +96,11 @@ public class CasProductJaxrsService
     }
     catch (Exception e)
     {
+      //Just for Logging Purposes
       String message = "Unable to find the requested resource.";
       LOGGER.log(Level.FINE, message, e);
-      throw new NotFoundException(message + " " + e.getMessage());
+
+      throw new NotFoundException(e.getMessage());
     }
   }
 
@@ -119,13 +117,11 @@ public class CasProductJaxrsService
   @Path("product")
   @Produces({"application/xml", "application/json", "application/atom+xml",
     "application/rdf+xml", "application/rss+xml", "application/zip"})
-  public ProductResource getProduct(@QueryParam("productId") String productId)
+  public ProductResource getProduct(@QueryParam("productId") String productId) throws WebApplicationException
   {
     if (productId == null || productId.trim().equals(""))
     {
-      throw new BadRequestException("This URL requires a productId query "
-        + "parameter with a product ID value, "
-        + "e.g. /product?productId=1787a257-df87-11e2-8a2d-e3f6264e86c5");
+      throw new BadRequestException(ErrorTypes.BAD_REQUEST_EXCEPTION_PRODUCT_RESOURCE.getErrorType());
     }
 
     try
@@ -143,9 +139,11 @@ public class CasProductJaxrsService
     }
     catch (Exception e)
     {
+      // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
       LOGGER.log(Level.FINE, message, e);
-      throw new NotFoundException(message + " " + e.getMessage());
+
+      throw new NotFoundException(e.getMessage());
     }
   }
 
@@ -164,13 +162,11 @@ public class CasProductJaxrsService
   @Produces({"application/xml", "application/json", "application/atom+xml",
    "application/rdf+xml", "application/rss+xml", "application/zip"})
   public DatasetResource getDataset(
-    @QueryParam("productTypeId") String productTypeId)
+    @QueryParam("productTypeId") String productTypeId) throws WebApplicationException
   {
     if (productTypeId == null || productTypeId.trim().equals(""))
     {
-      throw new BadRequestException("This URL requires a productTypeId query "
-        + "parameter and either a product type ID value or 'ALL' for all "
-        + "product types.");
+      throw new BadRequestException(ErrorTypes.BAD_REQUEST_EXCEPTION_DATASET_RESOURCE.getErrorType());
     }
 
     try
@@ -220,9 +216,11 @@ public class CasProductJaxrsService
     }
     catch (Exception e)
     {
+      // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
       LOGGER.log(Level.FINE, message, e);
-      throw new NotFoundException(message + " " + e.getMessage());
+
+      throw new NotFoundException(e.getMessage());
     }
   }
 
@@ -240,13 +238,11 @@ public class CasProductJaxrsService
   @Produces({"application/xml", "application/json", "application/atom+xml",
     "application/rdf+xml", "application/rss+xml"})
   public TransferResource getTransfer(
-    @QueryParam("dataStoreRef") String dataStoreRef)
+    @QueryParam("dataStoreRef") String dataStoreRef) throws WebApplicationException
   {
     if (dataStoreRef == null || dataStoreRef.trim().equals(""))
     {
-      throw new BadRequestException("This URL requires a dataStoreRef query "
-        + "parameter and a data store reference value, "
-        + "e.g. /transfer?dataStoreRef=file:/repository/test.txt/test.txt");
+      throw new BadRequestException(ErrorTypes.BAD_REQUEST_EXCEPTION_TRANSFER_RESOURCE.getErrorType());
     }
 
     try
@@ -263,14 +259,15 @@ public class CasProductJaxrsService
         }
       }
 
-      throw new Exception("Unable to find a current file transfer status for"
-        + "data store reference: " + dataStoreRef);
+      throw new NotFoundException( ErrorTypes.NOT_FOUND_EXCEPTION_TRANSFER_RESOURCE.getErrorType() + dataStoreRef);
     }
     catch (Exception e)
     {
+      // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
       LOGGER.log(Level.FINE, message, e);
-      throw new NotFoundException(message + " " + e.getMessage());
+
+      throw new NotFoundException(e.getMessage());
     }
   }
 
@@ -288,13 +285,11 @@ public class CasProductJaxrsService
   @Produces({"application/xml", "application/json", "application/atom+xml",
     "application/rdf+xml", "application/rss+xml"})
   public TransfersResource getTransfers(
-    @QueryParam("productId") String productId)
+    @QueryParam("productId") String productId) throws WebApplicationException
   {
     if (productId == null || productId.trim().equals(""))
     {
-      throw new BadRequestException("This URL requires a productId query "
-        + "parameter and either a valid product ID value or 'ALL' for all "
-        + "products.");
+      throw new BadRequestException(ErrorTypes.BAD_REQUEST_EXCEPTION_DATASET_RESOURCE.getErrorType());
     }
 
     try
@@ -316,9 +311,11 @@ public class CasProductJaxrsService
     }
     catch (Exception e)
     {
+      // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
       LOGGER.log(Level.FINE, message, e);
-      throw new NotFoundException(message + " " + e.getMessage());
+
+      throw new NotFoundException(e.getMessage());
     }
   }
 
@@ -337,8 +334,7 @@ public class CasProductJaxrsService
       return (File) workingDirObject;
     }
 
-    String message = "Unable to get the file manager's working "
-      + "directory from the servlet context.";
+    String message = ErrorTypes.CAS_PRODUCT_EXCEPTION_FILEMGR_WORKING_DIR_UNAVILABLE.getErrorType();
     LOGGER.log(Level.WARNING, message);
     throw new CasProductException(message);
   }
@@ -361,9 +357,11 @@ public class CasProductJaxrsService
       return (FileManagerClient) clientObject;
     }
 
-    String message = "Unable to get the file manager client from the "
-      + "servlet context.";
+    String message = ErrorTypes.CAS_PRODUCT_EXCEPTION_FILEMGR_CLIENT_UNAVILABLE.getErrorType();
     LOGGER.log(Level.WARNING, message);
     throw new CasProductException(message);
   }
+
+
+
 }

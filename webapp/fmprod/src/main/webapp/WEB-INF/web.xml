@@ -87,7 +87,11 @@
         org.apache.oodt.cas.product.jaxrs.writers.DatasetZipWriter,
         org.apache.oodt.cas.product.jaxrs.writers.DatasetRdfWriter,
         org.apache.oodt.cas.product.jaxrs.writers.DatasetRssWriter,
-        org.apache.oodt.cas.product.jaxrs.writers.TransfersRssWriter
+        org.apache.oodt.cas.product.jaxrs.writers.TransfersRssWriter,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.NotFoundExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.BadRequestExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.InternalServerErrorExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.CasProductExceptionMapper,
       </param-value>
     </init-param>
     <init-param>
