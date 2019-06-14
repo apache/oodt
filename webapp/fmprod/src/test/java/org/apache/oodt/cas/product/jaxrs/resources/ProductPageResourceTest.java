@@ -22,6 +22,10 @@ import java.util.*;
 
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Implements tests for methods in the {@link ProductPageResource} class.
+ * @author ngimhana (Nadeeshan Gimhana)
+ */
 public class ProductPageResourceTest {
 
     @Test
@@ -29,7 +33,7 @@ public class ProductPageResourceTest {
 
         // Create a ProductResource using ProductType, Reference, Metadata and
         // Product instances.
-        HashMap<String, Object> metadataEntries = new HashMap<String, Object>();
+        HashMap<String, Object> metadataEntries = new HashMap<>();
         metadataEntries.put("CAS.Test", "test value");
         Metadata metadata = new Metadata();
         metadata.addMetadata(metadataEntries);
@@ -39,7 +43,7 @@ public class ProductPageResourceTest {
 
         Reference reference = new Reference("original", "dataStore", 1000,
                 new MimeTypes().forName("text/plain"));
-        List<Reference> references = new ArrayList<Reference>();
+        List<Reference> references = new ArrayList<>();
         references.add(reference);
 
         List<List<Reference>> productReferencesList = new Vector<>();

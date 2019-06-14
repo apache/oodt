@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class ProductResourceTest
   {
     // Create a ProductResource using ProductType, Reference, Metadata and
     // Product instances.
-    Hashtable metadataEntries = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries = new HashMap<>();
     metadataEntries.put("CAS.Test", "test value");
     Metadata metadata = new Metadata();
     metadata.addMetadata(metadataEntries);

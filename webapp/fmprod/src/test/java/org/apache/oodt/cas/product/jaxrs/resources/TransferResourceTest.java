@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import javax.xml.bind.JAXBContext;
@@ -60,7 +61,7 @@ public class TransferResourceTest
   {
     // Create a TransferResource using ProductType, Product, Metadata, Reference
     // and FileTransferStatus instances.
-    Hashtable metadataEntries = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries = new HashMap<>();
     metadataEntries.put("CAS.ProductReceivedTime", "2013-09-12T16:25:50.662Z");
     Metadata metadata = new Metadata();
     metadata.addMetadata(metadataEntries);

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class MetadataResourceTest
       + "</metadata>";
 
     // Create a MetadataResource using a Metadata instance.
-    Hashtable metadataEntries = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries = new HashMap<>();
     metadataEntries.put("1", "one");
     metadataEntries.put("2", "two");
     metadataEntries.put("3", "three");
