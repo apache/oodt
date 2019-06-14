@@ -117,7 +117,6 @@
     </init-param>
   </servlet>
 
-
   <servlet-mapping>
     <servlet-name>RSSServlet</servlet-name>
     <url-pattern>/viewRecent</url-pattern>
@@ -152,4 +151,17 @@
     <servlet-name>CasProductJaxrsServlet</servlet-name>
     <url-pattern>/jaxrs/*</url-pattern>
   </servlet-mapping>
+
+  <!-- CORS Header Filtering -->
+  <filter>
+    <filter-name>CorsFilter</filter-name>
+    <filter-class>org.apache.oodt.cas.product.jaxrs.filters.CORSFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>CorsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
 </web-app>
