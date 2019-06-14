@@ -72,7 +72,7 @@
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
-        org.apache.oodt.cas.product.jaxrs.services.CasProductJaxrsService
+        org.apache.oodt.cas.product.jaxrs.services.FileManagerJaxrsServiceV2
       </param-value>
     </init-param>
     <init-param>
