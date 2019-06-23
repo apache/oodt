@@ -55,127 +55,164 @@ class Product extends Component {
 
     constructor(props) {
         super(props);
+        this.loadProduct = this.loadProduct.bind(this);
     }
 
     state = {
         productData: [],
-        productMetaDataFileLocation:[],
-        productMetaDataFileType:[],
-        productMetaDataMimeType:[],
+        productMetaDataFileLocation: [],
+        productMetaDataFileType: [],
+        productMetaDataMimeType: [],
         productReferencesData: [],
-        productId : this.props.productId,
+        productId: this.props.productId,
     };
+
+    componentWillReceiveProps(productId) {
+        // check this.props vs nextProps and setState!
+        // do whatever you want.
+        this.setState({productId: productId.productId});
+        this.loadProduct();
+    }
 
     render() {
 
-        const { classes } = this.props;
-        return(
+        const {classes} = this.props;
+        return (
             <div className={classes.root}>
-            <Card className={classes.card}>
+                <Card className={classes.card}>
 
-            <Grid>
-            <Grid container spacing={24}>
-            <Grid item xs={3}>
-            <CardContent>
-            <Typography variant="h4" color="textPrimary" gutterBottom>
-        FILE INFO
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        FILE NAME : <strong>{this.state.productData["name"]}</strong>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        PRODUCT ID : <strong>{this.state.productData["id"]}</strong>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        STRUCTURE : <strong>{this.state.productData["structure"]}</strong>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        TRANSFER STATUS : <strong>{this.state.productData["transferStatus"]}</strong>
-        </Typography>
-        </CardContent>
-        </Grid>
+                    <Grid>
+                        <Grid container spacing={24}>
+                            <Grid item xs={3}>
+                                <CardContent>
+                                    <Typography variant="h6" color="textPrimary" gutterBottom>
+                                        <strong>FILE INFO</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        FILE NAME : <strong>{this.state.productData["name"]}</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        PRODUCT ID : <strong>{this.state.productData["id"]}</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        STRUCTURE : <strong>{this.state.productData["structure"]}</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        TRANSFER STATUS : <strong>{this.state.productData["transferStatus"]}</strong>
+                                    </Typography>
+                                </CardContent>
+                            </Grid>
 
-        <Grid item xs={3}>
-            <CardContent>
-            <Typography variant="h4" color="textPrimary" gutterBottom>
-        <span style={{color:"black"}}>METADATA INFO</span>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        <span style={{color:"black"}}>FILE LOCATION</span> : <strong>{this.state.productMetaDataFileLocation["val"]}</strong>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        PRODUCT TYPE : <strong>{this.state.productMetaDataFileType["val"]}</strong>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        MIME TYPE : <strong>{this.state.productMetaDataMimeType[0]}</strong>
-        </Typography>
-        </CardContent>
-        <Button style={{background:"green"}}><span style={{color:"white"}}>View All Metadata</span></Button>
-        </Grid>
+                            <Grid item xs={3}>
+                                <CardContent>
+                                    <Typography variant="h6" color="textPrimary" gutterBottom>
+                                        <strong>METADATA INFO</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        <span style={{color: "black"}}>FILE LOCATION</span> : <strong
+                                        style={{fontSize: 12}}>{this.state.productMetaDataFileLocation["val"]}</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        PRODUCT TYPE : <strong>{this.state.productMetaDataFileType["val"]}</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        MIME TYPE : <strong>{this.state.productMetaDataMimeType[0]}</strong>
+                                    </Typography>
+                                </CardContent>
+                                <Button style={{background: "green"}}><span
+                                    style={{color: "white"}}>View All Metadata</span></Button>
+                            </Grid>
 
-        <Grid item xs={3}>
-            <CardContent>
-            <Typography variant="h4" color="textPrimary" gutterBottom>
-        REFERENCE INFO
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        DATA STORE REF LOCATION : <strong>{this.state.productReferencesData["dataStoreReference"]}</strong>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        FILE SIZE : <strong>{this.state.productReferencesData["fileSize"]}</strong>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        ORIGINAL REFERENCE : <strong>{this.state.productReferencesData["originalReference"]}</strong>
-        </Typography>
-        </CardContent>
-        <Button style={{background:"green"}}><span style={{color:"white"}}>View All References</span></Button>
-        </Grid>
+                            <Grid item xs={3}>
+                                <CardContent>
+                                    <Typography variant="h6" color="textPrimary" gutterBottom>
+                                        <strong>REFERENCE INFO</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        DATA STORE REF LOCATION
+                                        : <strong>{this.state.productReferencesData["dataStoreReference"]}</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        FILE SIZE : <strong>{this.state.productReferencesData["fileSize"]}</strong>
+                                    </Typography>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        ORIGINAL REFERENCE
+                                        : <strong>{this.state.productReferencesData["originalReference"]}</strong>
+                                    </Typography>
+                                </CardContent>
+                                <Button style={{background: "green"}}><span
+                                    style={{color: "white"}}>View All References</span></Button>
+                            </Grid>
 
-        <Grid item xs={3}>
-            <CardContent>
-            <Typography variant="h6" color="textPrimary" gutterBottom>
-        <Fab  variant="extended" color="primary" style={{fontSize:20}}>Download File</Fab>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        <Fab variant="extended" color="primary" style={{fontSize:20 ,background:"green"}}>View in File Manager</Fab>
-        </Typography>
-        <Typography variant="h6" color="textPrimary" gutterBottom>
-        <Fab variant="extended" color="secondary" style={{fontSize:20}}>Remove Record</Fab>
-        </Typography>
-        </CardContent>
-        </Grid>
-        </Grid>
-        </Grid>
+                            <Grid item xs={3}>
+                                <CardContent>
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        <Fab variant="extended" color="primary" style={{fontSize: 20}}>Download
+                                            File</Fab>
+                                    </Typography>
+
+                                    <Typography variant="h6" style={{fontSize: 15}} color="textPrimary" gutterBottom>
+                                        <Fab variant="extended" color="secondary" style={{fontSize: 20}}>Remove
+                                            Record</Fab>
+                                    </Typography>
+                                </CardContent>
+                            </Grid>
+                        </Grid>
+                    </Grid>
 
 
-        </Card>
-        </div>
-    );
+                </Card>
+            </div>
+        );
     }
+
+    loadProduct() {
+        fmconnection.get("/product?productId=" + this.state.productId)
+
+            .then(res => {
+                this.setState({
+                    productData: res.data.product,
+                    productMetaDataFileLocation: Object.values(res.data.product.metadata)[0][0],
+                    productMetaDataFileType: Object.values(res.data.product.metadata)[0][1],
+                    productMetaDataMimeType: Object.values(res.data.product.metadata)[0][7]["val"],
+                    productReferencesData: res.data.product.references.reference,
+                });
+                console.log(this.state.productMetaDataFileLocation["val"]);
+                console.log(this.state.productMetaDataFileType["val"]);
+                console.log(this.state.productMetaDastaMimeType[0]);
+
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+    }
+
 
     componentDidMount() {
         console.log(this.state.productId);
         // Make a request for a product with a given ID
-        fmconnection.get("/product?productId=" +this.state.productId)
+        fmconnection.get("/product?productId=" + this.state.productId)
 
             .then(res => {
                 this.setState({
-                    productData:res.data.product,
-                    productMetaDataFileLocation:Object.values(res.data.product.metadata)[0][0],
-                    productMetaDataFileType:Object.values(res.data.product.metadata)[0][1],
-                    productMetaDataMimeType:Object.values(res.data.product.metadata)[0][7]["val"],
-                    productReferencesData:res.data.product.references.reference,
+                    productData: res.data.product,
+                    productMetaDataFileLocation: Object.values(res.data.product.metadata)[0][0],
+                    productMetaDataFileType: Object.values(res.data.product.metadata)[0][1],
+                    productMetaDataMimeType: Object.values(res.data.product.metadata)[0][7]["val"],
+                    productReferencesData: res.data.product.references.reference,
                 });
                 console.log(this.state.productMetaDataFileLocation["val"]);
                 console.log(this.state.productMetaDataFileType["val"]);
-                console.log(this.state.productMetaDataMimeType[0]);
+                console.log(this.state.productMetaDastaMimeType[0]);
 
             })
-            .catch(err=>{
+            .catch(err => {
                 console.log(err);
             })
     }
 }
+
 
 Product.propTypes = {
     classes: PropTypes.object.isRequired,

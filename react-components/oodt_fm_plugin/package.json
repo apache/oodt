@@ -31,7 +31,9 @@
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^4.2.0",
     "axios": "^0.18.0",
+    "clsx": "^1.0.4",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "prop-types": "latest"
