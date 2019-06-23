@@ -26,8 +26,10 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
 import org.apache.oodt.cas.product.jaxrs.enums.ErrorTypes;
+import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
 import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductPageResource;
+import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -94,7 +96,7 @@ public class FileManagerJaxrsServiceV2 {
     @Path("products")
     @Produces({"application/xml", "application/json", "application/atom+xml",
             "application/rdf+xml", "application/rss+xml"})
-    public ProductPageResource getFirstPage(
+    public ProductPageResource getNextPage(
             @QueryParam("productTypeName")  String productTypeName ,
             @QueryParam("currentProductPage") int currentProductPage
 
@@ -190,5 +192,44 @@ public class FileManagerJaxrsServiceV2 {
         LOGGER.log(Level.WARNING, message);
         throw new CasProductException(message);
     }
+
+
+
+
+
+    @GET
+    @Path("product")
+    @Produces({"application/xml", "application/json", "application/atom+xml",
+            "application/rdf+xml", "application/rss+xml", "application/zip"})
+    public ProductResource getProduct(@QueryParam("productId") String productId) throws WebApplicationException
+    {
+        if (productId == null || productId.trim().equals(""))
+        {
+            throw new BadRequestException(ErrorTypes.BAD_REQUEST_EXCEPTION_PRODUCT_RESOURCE.getErrorType());
+        }
+
+        try
+        {
+            FileManagerClient client = getContextClient();
+
+            // Find the product.
+            Product product = client.getProductById(productId);
+            product.setProductReferences(client.getProductReferences(product));
+
+            // Create the product resource, add the product data and return the
+            // resource as the HTTP response.
+            return new ProductResource(product, client.getMetadata(product),
+                    product.getProductReferences(), getContextWorkingDir());
+        }
+        catch (Exception e)
+        {
+            // Just for Logging Purposes
+            String message = "Unable to find the requested resource.";
+            LOGGER.log(Level.FINE, message, e);
+
+            throw new NotFoundException(e.getMessage());
+        }
+    }
+
 
 }
