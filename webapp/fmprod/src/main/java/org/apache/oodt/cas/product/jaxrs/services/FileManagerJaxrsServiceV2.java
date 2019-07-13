@@ -231,5 +231,15 @@ public class FileManagerJaxrsServiceV2 {
         }
     }
 
+//    @POST
+//    @Path("product")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces({"application/xml", "application/json"})
+//    public Response ingestProduct(customer customer){
+//        customer cus= new customer("1","hu");
+//        LOGGER.log(Level.FINE, customer.getName());
+//        return Response.ok(cus).build();
+//    }
+
 
 }
