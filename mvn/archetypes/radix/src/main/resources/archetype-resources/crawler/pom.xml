@@ -53,6 +53,42 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>dockerfile-maven-plugin</artifactId>
+            <version>${dockerfile-maven-version}</version>
+            <executions>
+              <execution>
+                <id>build-and-tag</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                  <goal>tag</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <repository>${project.artifactId}</repository>
+              <dockerfile>Dockerfile</dockerfile>
+              <tag>${project.version}</tag>
+              <buildArgs>
+                <SRC_FILE>${project.build.finalName}-bin.tar.gz</SRC_FILE>
+              </buildArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <dependencies>
     <dependency>
       <groupId>${groupId}</groupId>

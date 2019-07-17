@@ -17,7 +17,7 @@ limitations under the License.
 -->
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
   <type id="urn:oodt:GenericFile" name="GenericFile">
-    <repository path="file://[OODT_HOME]/data/archive"/>
+    <repository path="file:[OODT_HOME]/data/archive"/>
     <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
     <!--
 You can optionally specify a 'trim' tag to identify whether
