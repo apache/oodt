@@ -17,12 +17,17 @@
 
 package org.apache.oodt.cas.product.jaxrs.services;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.oodt.cas.filemgr.ingest.StdIngester;
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
 import org.apache.oodt.cas.product.jaxrs.enums.ErrorTypes;
@@ -35,6 +40,19 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.File;
+
+import org.apache.oodt.cas.metadata.MetExtractor;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.metadata.extractors.MetReaderExtractor;
+import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException;
+import org.apache.oodt.cas.product.jaxrs.resources.FMStatusResource;
+
+import javax.activation.DataHandler;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.*;
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -130,7 +148,9 @@ public class FileManagerJaxrsServiceV2 {
 
 
     /**
+
      * This method is for creating a ProductPageResource Response and return it
+     * This method is for creating a ProductPageResource {@link ProductPage} Response and return it
      * @param client FileManager client
      * @param genericFile First/next/prev ProductPage
      */
@@ -197,6 +217,16 @@ public class FileManagerJaxrsServiceV2 {
 
 
 
+
+
+    /**
+     * Gets an HTTP response that represents a {@link Product} from the file
+     * manager.
+     * @param productId the ID of the product
+     * @return an HTTP response that represents a {@link Product} from the file
+     * manager
+     */
+
     @GET
     @Path("product")
     @Produces({"application/xml", "application/json", "application/atom+xml",
@@ -231,15 +261,179 @@ public class FileManagerJaxrsServiceV2 {
         }
     }
 
-//    @POST
-//    @Path("product")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces({"application/xml", "application/json"})
-//    public Response ingestProduct(customer customer){
-//        customer cus= new customer("1","hu");
-//        LOGGER.log(Level.FINE, customer.getName());
-//        return Response.ok(cus).build();
-//    }
+
+
+
+    /**
+     * Gets an HTTP response that represents a {@link Product} from the file
+     * manager.
+     * @param productFile the Product File to ingest
+     * @param productType ProductType of the ingesting Product - eg.GenericFile
+     * @param productStructure - Product Structure of the ingesting product - eg. Flat for Files/Hierarchy for Directory
+     * @return an HTTP response that represents the Ingesting Id if success
+     */
+    @POST
+    @Path("productWithFile")
+    @Produces({"application/json" , "application/xml"})
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response ingestProduct(@Multipart("productFile") Attachment productFile,
+                                  @QueryParam("productType") String productType,
+                                  @QueryParam("productStructure") String productStructure)
+                                  {
+        try {
+            String transferServiceFacClass = "org.apache.oodt.cas."
+                    + "filemgr.datatransfer.LocalDataTransferFactory";
+
+            // Take Data Handlers for Product and Metadata Files
+            DataHandler productFileDataHandler = productFile.getDataHandler();
+
+            // Get the input Streams of the CXF Attachments
+            InputStream productFileInputStream = productFileDataHandler.getInputStream();
+
+            // Write the Product File and MetaFiles to a temporary Files in server before ingest.
+            File inputProductFile = writeToFileServer(productFileInputStream,
+                    productFile.getContentDisposition().getParameter("filename"));
+
+            // Get File Manager and Its URL
+            FileManagerClient client = getContextClient();
+            URL fmURL = client.getFileManagerUrl();
+
+            // Use StdIngester for Simple File Ingesting
+            StdIngester ingester = new StdIngester(transferServiceFacClass);
+
+            /*
+            * Use MetaReaderExtracter to extract File Metadata from Product File
+            *  * A Met Extractor that assumes that the .met file has already been generated.
+            */
+            MetExtractor metExtractor = new MetReaderExtractor();
+            Metadata prodMeta = metExtractor.extractMetadata(inputProductFile);
+
+            // Add Several Metadata to Metadata File
+            prodMeta.addMetadata(CoreMetKeys.FILENAME,inputProductFile.getName());
+            prodMeta.addMetadata(CoreMetKeys.PRODUCT_TYPE,productType);
+            prodMeta.addMetadata(CoreMetKeys.PRODUCT_STRUCTURE,productStructure);
+            prodMeta.addMetadata(CoreMetKeys.PRODUCT_NAME,inputProductFile.getName());
+
+            // Product File Location. should Only provide File Path without FileName
+            prodMeta.addMetadata(CoreMetKeys.FILE_LOCATION,
+                    (inputProductFile.getAbsolutePath()
+                            .substring(0,inputProductFile.getAbsolutePath().lastIndexOf("/"))));
+
+            String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
+            return Response.ok(ingest).build();
+        }
+        catch (Exception e){
+            throw new InternalServerErrorException(e.getMessage());
+        }
+
+    }
+
+    /**
+     * Gets an HTTP response that represents a {@link Product} from the file
+     * manager.
+     * @param productFile the Product File to ingest
+     * @param metadataFile the Metadata File to ingest
+     * @return an HTTP response that represents the Ingesting Id if success
+     */
+    @POST
+    @Path("productWithMeta")
+    @Produces({"application/json" , "application/xml"})
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response ingestProduct(@Multipart("productFile") Attachment productFile,
+                                  @Multipart("metadataFile") Attachment metadataFile)
+    {
+        try {
+            String transferServiceFacClass = "org.apache.oodt.cas."
+                    + "filemgr.datatransfer.LocalDataTransferFactory";
+
+            // Take Data Handlers for Product and Metadata Files
+            DataHandler productFileDataHandler = productFile.getDataHandler();
+            DataHandler metadataFileDataHandler = metadataFile.getDataHandler();
+
+            // Get the input Streams of the CXF Attachments
+            InputStream productFileInputStream = productFileDataHandler.getInputStream();
+            InputStream metadataFileInputStream = metadataFileDataHandler.getInputStream();
+
+            // Write the Product File and MetaFiles to a temporary Files in server before ingest.
+            File inputProductFile = writeToFileServer(productFileInputStream,
+                    productFile.getContentDisposition().getParameter("filename"));
+
+            // Get File Manager and Its URL
+            FileManagerClient client = getContextClient();
+            URL fmURL = client.getFileManagerUrl();
+
+            // Use StdIngester for Simple File Ingesting
+            StdIngester ingester = new StdIngester(transferServiceFacClass);
+
+            Metadata prodMeta = new SerializableMetadata(metadataFileInputStream);
+
+            // Add Several Metadata to Metadata File
+            prodMeta.addMetadata(CoreMetKeys.FILENAME,inputProductFile.getName());
+            prodMeta.addMetadata(CoreMetKeys.PRODUCT_NAME,inputProductFile.getName());
+
+            // Product File Location. should Only provide File Path without FileName
+            prodMeta.addMetadata(CoreMetKeys.FILE_LOCATION,
+                    (inputProductFile.getAbsolutePath()
+                            .substring(0,inputProductFile.getAbsolutePath().lastIndexOf("/"))));
+
+            String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
+            return Response.ok(ingest).build();
+        }
+        catch (Exception e){
+            throw new InternalServerErrorException(e.getMessage());
+        }
+
+    }
+
+
+
+    /**
+     * This method uses to Write an InputStream to File in the Server
+     * @param inputStream
+     * @param fileName
+     */
+    private File writeToFileServer(InputStream inputStream, String fileName) {
+
+        OutputStream outputStream = null;
+        File file = new File(fileName);
+        try {
+            outputStream = new FileOutputStream(file);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            outputStream.flush();
+            outputStream.close();
+        }
+        catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        finally{
+            return file;
+        }
+    }
+
+
+    /**
+     * This method is for getting the current status of FileManager component
+     * @return Response object with status and FMProb URL
+     */
+    @GET
+    @Path("fmprodstatus")
+    @Produces({"application/json" , "application/xml"})
+    public Response getFmProductStatus(){
+        try {
+            FileManagerClient client = getContextClient();
+            String URL = client.getFileManagerUrl().toString();
+            boolean fmStatus = client.isAlive();
+            FMStatusResource status = new FMStatusResource(URL,fmStatus);
+            return Response.ok(status).build();
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
+
+    }
 
 
 }
