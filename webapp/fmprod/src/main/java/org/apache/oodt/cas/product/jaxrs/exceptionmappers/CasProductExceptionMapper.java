@@ -17,30 +17,34 @@
 
 package org.apache.oodt.cas.product.jaxrs.exceptionmappers;
 
-import org.apache.oodt.cas.product.exceptions.CasProductException;
-import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import org.apache.oodt.cas.product.exceptions.CasProductException;
+import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
 
 /**
  * This is an exception mapper which maps "BadRequestException" to "ErrorMessage JSON payload"
+ *
  * @author ngimhana (Nadeeshan Gimhana)
  */
 @Provider
 public class CasProductExceptionMapper implements ExceptionMapper<CasProductException> {
 
-    // Maps CasProductException to HTTP Response
-    @Override
-    public Response toResponse(CasProductException exception) {
+  /** Maps CasProductException to HTTP Response **/
+  @Override
+  public Response toResponse(CasProductException exception) {
 
-        // Initialising ErrorMessage Entity for Mapping to Response
-        ErrorMessage errorMessageEntity = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                exception.getMessage());
+    /** Initialising ErrorMessage Entity for Mapping to Response **/
+    ErrorMessage errorMessageEntity =
+        new ErrorMessage(
+            Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), exception.getMessage());
 
-        // Maps Error Status 500 to Response
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorMessageEntity).type(MediaType.APPLICATION_JSON).build();
-    }
+    /** Maps Error Status 500 to Response **/
+    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        .entity(errorMessageEntity)
+        .type(MediaType.APPLICATION_JSON)
+        .build();
+  }
 }

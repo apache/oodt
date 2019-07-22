@@ -13,33 +13,29 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.apache.oodt.cas.product.jaxrs.exceptions;
 
-import javax.servlet.ServletException;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
- * This type of exception returns an HTTP 'internal server error' response
- * (status code 500) with an additional message.
+ * This type of exception returns an HTTP 'internal server error' response (status code 500) with an
+ * additional message.
+ *
  * @author rlaidlaw
  * @version $Revision$
  */
-public class InternalServerErrorException extends WebApplicationException
-{
-  // Auto-generated ID for serialization.
+public class InternalServerErrorException extends WebApplicationException {
+  /** Auto-generated ID for serialization. **/
   private static final long serialVersionUID = -6132240509391531373L;
 
   /**
-   * Constructor that adds a message to the 'internal server error' (status code
-   * 500) HTTP response.
+   * Constructor that adds a message to the 'internal server error' (status code 500) HTTP response.
+   *
    * @param message the message to add to the response
    */
-  public InternalServerErrorException(String message)
-  {
-      super(message);
+  public InternalServerErrorException(String message) {
+    super(message);
   }
 }

@@ -17,30 +17,35 @@
 
 package org.apache.oodt.cas.product.jaxrs.exceptionmappers;
 
-import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
-import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
+import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException;
 
 /**
  * This is an exception mapper which maps "InternalServerException" to "ErrorMessage JSON payload"
+ *
  * @author ngimhana (Nadeeshan Gimhana)
  */
 @Provider
-public class InternalServerErrorExceptionMapper implements ExceptionMapper<InternalServerErrorException> {
+public class InternalServerErrorExceptionMapper
+    implements ExceptionMapper<InternalServerErrorException> {
 
-    // Maps InternalServerException to HTTP Response
-    @Override
-    public Response toResponse(InternalServerErrorException exception) {
+  /** Maps InternalServerException to HTTP Response **/
+  @Override
+  public Response toResponse(InternalServerErrorException exception) {
 
-        // Initialising ErrorMessage Entity for Mapping to Response
-        ErrorMessage errorMessageEntity = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                exception.getMessage());
+    /** Initialising ErrorMessage Entity for Mapping to Response **/
+    ErrorMessage errorMessageEntity =
+        new ErrorMessage(
+            Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), exception.getMessage());
 
-        // Maps Error Status 500 to Response
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorMessageEntity).type(MediaType.APPLICATION_JSON).build();
-    }
+    /** Maps Error Status 500 to Response **/
+    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        .entity(errorMessageEntity)
+        .type(MediaType.APPLICATION_JSON)
+        .build();
+  }
 }
