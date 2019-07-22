@@ -15,19 +15,25 @@
   License for the specific language governing permissions and limitations under
   the License.
 -->
-<web-app version="2.5"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  version="2.5"
   xmlns="http://java.sun.com/xml/ns/javaee"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
   <display-name>CAS Workflow Manager Services</display-name>
-    
+
+  <filter>
+    <filter-class>org.apache.oodt.cas.wmservices.filters.CORSFilter</filter-class>
+    <filter-name>CorsFilter</filter-name>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>CorsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <servlet>
-    <servlet-name>WmServicesServlet</servlet-name>
-    <servlet-class>
-      org.apache.oodt.cas.wmservices.servlets.WmServicesServlet
-    </servlet-class>
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
@@ -39,10 +45,59 @@
       <param-value>prototype</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
+    <servlet-class>
+      org.apache.oodt.cas.wmservices.servlets.WmServicesServlet
+    </servlet-class>
+    <servlet-name>WmServicesServlet</servlet-name>
   </servlet>
+
+  <servlet>
+    <init-param>
+      <param-name>jaxrs.serviceClasses</param-name>
+      <param-value>
+        org.apache.oodt.cas.wmservices.services.WMJaxrsServiceV2
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jaxrs.providers</param-name>
+      <param-value>
+        org.apache.oodt.cas.wmservices.exceptionmappers.NotFoundExceptionMapper,
+        org.apache.oodt.cas.wmservices.exceptionmappers.BadRequestExceptionMapper,
+        org.apache.oodt.cas.wmservices.exceptionmappers.InternalServerErrorExceptionMapper,
+        org.apache.oodt.cas.wmservices.exceptionmappers.CasWorkflowExceptionMapper,
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jaxrs.extensions</param-name>
+      <param-value>
+        file=application/octet-stream
+        json=application/json
+        rdf=application/rdf+xml
+        rss=application/rss+xml
+        xml=application/xml
+        zip=application/zip
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jaxrs.scope</param-name>
+      <param-value>prototype</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+    <servlet-class>
+      org.apache.oodt.cas.wmservices.servlets.WmServicesServlet
+    </servlet-class>
+    <servlet-name>WmServicesServletV2</servlet-name>
+  </servlet>
+
+  <!-- CORS Header Filtering -->
+  <servlet-mapping>
+    <servlet-name>WmServicesServletV2</servlet-name>
+    <url-pattern>/jaxrs/v2/*</url-pattern>
+  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>WmServicesServlet</servlet-name>
     <url-pattern>/service/*</url-pattern>
   </servlet-mapping>
+
 </web-app>

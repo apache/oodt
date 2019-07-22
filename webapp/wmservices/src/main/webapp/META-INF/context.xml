@@ -10,12 +10,12 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 
-<Context path="/cas-wm-services" reloadable="true" crossContext="true">
+<Context crossContext="true" docBase="/path/to/cas-workflow-services.war" reloadable="true">
 
-	<Parameter name="workflow.url" value="[WORKFLOW_URL]"
-		override="false" />
+  <Parameter name="workflow.url" override="false"
+    value="[WORKFLOW_URL]"/>
 
-	<Parameter name="packagedRepo.dir.path" value="[WORKFLOW_HOME]/policy/wengine"
-		override="false" />
+  <Parameter name="packagedRepo.dir.path" override="false"
+    value="[WORKFLOW_HOME]/policy/wengine"/>
 
 </Context>
