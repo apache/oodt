@@ -27,6 +27,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CORS Filter class for Proposing Apache OODT-2.0 FileManager REST-APIs This is the CORS
@@ -36,6 +38,8 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 public class CORSFilter implements Filter {
+
+  private static Logger logger = LoggerFactory.getLogger(CORSFilter.class);
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {}
@@ -52,7 +56,7 @@ public class CORSFilter implements Filter {
       ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
       throws IOException, ServletException {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
-    System.out.println("CORSFilter HTTP Request: " + request.getMethod());
+    logger.debug("CORSFilter HTTP Request: ",request.getMethod());
 
     /** Authorize (allow) all domains to consume the content **/
     ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "*");

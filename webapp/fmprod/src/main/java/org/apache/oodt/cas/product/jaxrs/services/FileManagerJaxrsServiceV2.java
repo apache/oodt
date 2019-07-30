@@ -26,7 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
@@ -57,9 +56,12 @@ import org.apache.oodt.cas.product.jaxrs.enums.ErrorType;
 import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
 import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException;
 import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
+import org.apache.oodt.cas.product.jaxrs.filters.CORSFilter;
 import org.apache.oodt.cas.product.jaxrs.resources.FMStatusResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductPageResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class for Proposing Apache OODT-2.0 FileManager REST-APIs This handles HTTP requests and
@@ -69,7 +71,7 @@ import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
  */
 public class FileManagerJaxrsServiceV2 {
 
-  private static final Logger LOGGER = Logger.getLogger(FileManagerJaxrsServiceV2.class.getName());
+  private static Logger logger = LoggerFactory.getLogger(FileManagerJaxrsServiceV2.class);
 
   /* The servlet context, which is used to retrieve context parameters. */
   @Context private ServletContext context;
@@ -194,7 +196,7 @@ public class FileManagerJaxrsServiceV2 {
     }
 
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_FILEMGR_WORKING_DIR_UNAVILABLE.getErrorType();
-    LOGGER.log(Level.WARNING, message);
+    logger.debug("File Manager Exception : ", message);
     throw new CasProductException(message);
   }
 
@@ -212,7 +214,7 @@ public class FileManagerJaxrsServiceV2 {
     }
 
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_FILEMGR_CLIENT_UNAVILABLE.getErrorType();
-    LOGGER.log(Level.WARNING, message);
+    logger.debug("File Manager Exception: ", message);
     throw new CasProductException(message);
   }
 
