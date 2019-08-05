@@ -22,5 +22,5 @@ ADD target/${SRC_FILE} .
 # * /tmp (Temporary Files)
 
 # Start
-WORKDIR /oodt/crawler
-CMD java -Djava.ext.dirs="${PWD}/lib" -Djava.util.logging.config.file="${PWD}/etc/logging.properties" -Dorg.apache.oodt.cas.crawl.bean.repo="${PWD}/policy/crawler-config.xml" -Dorg.apache.oodt.cas.cli.action.spring.config="${PWD}/policy/cmd-line-actions.xml" -Dorg.apache.oodt.cas.cli.option.spring.config="${PWD}/policy/cmd-line-options.xml" org.apache.oodt.cas.crawl.CrawlerLauncher
+WORKDIR /oodt/crawler/bin
+CMD java -Djava.ext.dirs="../lib" -Djava.util.logging.config.file="../etc/logging.properties" -Dorg.apache.oodt.cas.crawl.bean.repo="../policy/crawler-config.xml" -Dorg.apache.oodt.cas.cli.action.spring.config="../policy/cmd-line-actions.xml" -Dorg.apache.oodt.cas.cli.option.spring.config="../policy/cmd-line-options.xml" org.apache.oodt.cas.crawl.CrawlerLauncher

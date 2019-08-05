@@ -17,6 +17,6 @@ ADD target/${SRC_FILE} .
 # * /tmp (Temporary Files)
 
 # Start
-WORKDIR /oodt/resmgr
+WORKDIR /oodt/resmgr/bin
 EXPOSE 9001
-CMD java -Djava.ext.dirs="${PWD}/lib" -Djava.util.logging.config.file="${PWD}/etc/logging.properties" -Dorg.apache.oodt.cas.resource.properties="${PWD}/etc/resource.properties" -Djava.io.tmpdir="/tmp" org.apache.oodt.cas.resource.system.XmlRpcResourceManager --portNum 9001
+CMD java -Djava.ext.dirs="../lib" -Djava.util.logging.config.file="../etc/logging.properties" -Dorg.apache.oodt.cas.resource.properties="../etc/resource.properties" -Djava.io.tmpdir="/tmp" org.apache.oodt.cas.resource.system.XmlRpcResourceManager --portNum 9001
