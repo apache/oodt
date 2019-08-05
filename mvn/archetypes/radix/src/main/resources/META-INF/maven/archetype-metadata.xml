@@ -24,10 +24,16 @@
     </requiredProperty>
   </requiredProperties>
   <fileSets>
-    <fileSet filtered="true" packaged="false">
+    <fileSet filtered="true">
       <directory></directory>
       <includes>
         <include>README.txt</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true">
+      <directory></directory>
+      <includes>
+        <include>docker-compose.yml</include>
       </includes>
     </fileSet>
   </fileSets>
