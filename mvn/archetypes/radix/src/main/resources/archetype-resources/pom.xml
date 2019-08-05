@@ -20,9 +20,8 @@
 
   <groupId>${groupId}</groupId>
   <artifactId>${artifactId}</artifactId>
-  <name>Data Management System</name>
+  <name>${artifactId}</name>
   <packaging>pom</packaging>
-  <description>Data Management System Powered by Apache OODT delivered via RADiX</description>
   <version>${version}</version>
 
   <properties>
