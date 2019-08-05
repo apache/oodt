@@ -19,4 +19,4 @@ ADD target/${SRC_FILE} .
 # Start
 WORKDIR /oodt/resmgr/bin
 EXPOSE 9001
-CMD java -Djava.ext.dirs="../lib" -Djava.util.logging.config.file="../etc/logging.properties" -Dorg.apache.oodt.cas.resource.properties="../etc/resource.properties" -Djava.io.tmpdir="/tmp" org.apache.oodt.cas.resource.system.XmlRpcResourceManager --portNum 9001
+CMD java -Djava.ext.dirs="${RESMGR_HOME}/lib" -Djava.util.logging.config.file="${RESMGR_HOME}/etc/logging.properties" -Dorg.apache.oodt.cas.resource.properties="${RESMGR_HOME}/etc/resource.properties" -Djava.io.tmpdir="/tmp" org.apache.oodt.cas.resource.system.XmlRpcResourceManager --portNum 9001

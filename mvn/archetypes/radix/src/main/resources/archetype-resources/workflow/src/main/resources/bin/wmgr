@@ -92,7 +92,7 @@ if [ "$1" = "start" ]; then
     -Djava.io.tmpdir="$OODT_TMPDIR" \
     -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
     -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
-    org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager \
+    org.apache.oodt.cas.workflow.system.WorkflowManagerStarter \
     --portNum "$WORKFLOW_PORT" 2>&1 &
 
   if [ ! -z "$WORKFLOW_PID" ]; then
@@ -126,7 +126,8 @@ elif [ "$1" = "stop" ]; then
     if [ -f "$WORKFLOW_PID" ]; then
       kill `cat $WORKFLOW_PID` >/dev/null 2>&1
       if [ $? -eq 1 ]; then
-        echo "PID file ($WORKFLOW_PID) found but no matching process was found. Stop aborted."
+        echo "PID file ${WORKFLOW_PID} found with PID `cat $WORKFLOW_PID` but no matching process was found. Removed ${WORKFLOW_PID}, now Workflow Manager can be started."
+        rm ${WORKFLOW_PID}
         exit 1
       fi
     else
