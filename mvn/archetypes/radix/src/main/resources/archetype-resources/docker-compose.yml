@@ -79,46 +79,46 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: crawler/src/main/resources/policy
+      device: $PWD/crawler/src/main/resources/policy
   ${artifactId}-filemgr-policy:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: filemgr/src/main/resources/policy
+      device: $PWD/filemgr/src/main/resources/policy
   ${artifactId}-resmgr-policy:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: resmgr/src/main/resources/policy
+      device: $PWD/resmgr/src/main/resources/policy
   ${artifactId}-workflow-policy:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: workflow/src/main/resources/policy
+      device: $PWD/workflow/src/main/resources/policy
   ${artifactId}-pcs-policy:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: pcs/src/main/resources/policy
+      device: $PWD/pcs/src/main/resources/policy
   ${artifactId}-logs:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: logs
+      device: $PWD/logs
   ${artifactId}-data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: data
+      device: $PWD/data
   ${artifactId}-temp:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: temp
+      device: $PWD/temp

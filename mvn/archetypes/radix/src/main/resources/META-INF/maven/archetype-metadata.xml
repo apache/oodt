@@ -28,13 +28,17 @@
       <directory></directory>
       <includes>
         <include>README.txt</include>
-      </includes>
-    </fileSet>
-    <fileSet filtered="true">
-      <directory></directory>
-      <includes>
         <include>docker-compose.yml</include>
       </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>temp</directory>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>logs</directory>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>data</directory>
     </fileSet>
   </fileSets>
   <modules>
