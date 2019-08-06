@@ -20,7 +20,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <requiredProperties>
     <requiredProperty key="oodt">
-      <defaultValue>1.2.5</defaultValue>
+      <defaultValue>1.9-SNAPSHOT</defaultValue>
     </requiredProperty>
   </requiredProperties>
   <fileSets>

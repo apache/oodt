@@ -74,11 +74,51 @@ services:
       - ${artifactId}-pcs-policy:/oodt/pcs/policy
 
 volumes:
-  ${artifactId}-crawler-policy:
-  ${artifactId}-filemgr-policy:
-  ${artifactId}-resmgr-policy:
-  ${artifactId}-workflow-policy:
-  ${artifactId}-pcs-policy:
-  ${artifactId}-logs:
-  ${artifactId}-data:
-  ${artifactId}-temp:
+  radix-test-crawler-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: crawler/src/main/resources/policy
+  radix-test-filemgr-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: filemgr/src/main/resources/policy
+  radix-test-resmgr-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: resmgr/src/main/resources/policy
+  radix-test-workflow-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: workflow/src/main/resources/policy
+  radix-test-pcs-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: pcs/src/main/resources/policy
+  radix-test-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: logs
+  radix-test-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: data
+  radix-test-temp:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: temp

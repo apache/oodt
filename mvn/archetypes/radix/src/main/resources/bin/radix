@@ -13,7 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mvn archetype:generate -DarchetypeGroupId=org.apache.oodt \
-    -DarchetypeArtifactId=radix-archetype -DarchetypeVersion=1.9-SNAPSHOT \
-    -Doodt=1.2.5 -DgroupId=com.mycompany \
-    -DartifactId=oodt -Dversion=0.1
+mvn archetype:generate \
+    -DarchetypeGroupId=org.apache.oodt \
+    -DarchetypeArtifactId=radix-archetype \
+    -DarchetypeVersion=1.9-SNAPSHOT \
+    -Doodt=1.9-SNAPSHOT \
+    -DgroupId=org.apache.oodt \
+    -DartifactId=radix-build \
+    -Dversion=1.0-SNAPSHOT
