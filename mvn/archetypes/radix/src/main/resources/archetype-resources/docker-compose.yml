@@ -4,7 +4,7 @@ services:
 
   crawler:
     image: ${artifactId}-crawler:${version}
-    restart: always
+#    restart: always
     environment:
       - FAILURE_DIR=/tmp
       - BACKUP_DIR=/tmp
