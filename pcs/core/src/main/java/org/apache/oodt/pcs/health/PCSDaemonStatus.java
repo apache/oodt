@@ -16,6 +16,8 @@
  */
 package org.apache.oodt.pcs.health;
 
+import java.io.Serializable;
+
 /**
  * @author mattmann
  * @version $Revision$
@@ -25,7 +27,7 @@ package org.apache.oodt.pcs.health;
  * File Manager, the Workflow Manager, or the Resource Manager)
  * </p>.
  */
-public class PCSDaemonStatus {
+public class PCSDaemonStatus implements Serializable {
 
     private String daemonName;
 

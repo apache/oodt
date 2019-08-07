@@ -21,6 +21,7 @@ package org.apache.oodt.pcs.health;
 import org.apache.oodt.commons.date.DateUtils;
 
 //JDK imports
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.List;
  * @author mattmann
  * @version $Revision$
  */
-public class PCSHealthMonitorReport {
+public class PCSHealthMonitorReport implements Serializable {
 
   private Date generationDate;
 
