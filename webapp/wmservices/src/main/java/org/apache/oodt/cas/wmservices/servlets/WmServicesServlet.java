@@ -128,7 +128,7 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
   private void initializeClient(ServletContext context) throws ServletException {
     try {
       URL url;
-      String urlParameter = context.getInitParameter(PARAM_NAME_URL);
+      String urlParameter = context.getInitParameter(DEFAULT_WM_URL);
       /* Get the workflow manager URL from the context parameter. */
       if (urlParameter != null) url = new URL(PathUtils.replaceEnvVariables(urlParameter));
       else {

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
 /**
@@ -31,15 +32,17 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
  */
 @XmlRootElement(name = "workflowInstance")
 @XmlType(
-    propOrder = {"workflowInstanceId", "currentTaskId", "startDate", "endDate", "timesBlocked"})
+    propOrder = {"workflowInstanceId", "currentTaskId", "startDate", "endDate", "timesBlocked","sharedContext","workflowState"})
 @XmlAccessorType(XmlAccessType.NONE)
 public class WorkflowInstanceResource {
-  private WorkflowInstance workflowInstance;
+
   private String workflowInstanceId;
   private String currentTaskId;
   private String startDate;
   private String endDate;
   private int timesBlocked;
+  private MetadataResource sharedContext;
+  private WorkflowStateResource workflowState;
 
   /** Default constructor required by JAXB. */
   public WorkflowInstanceResource() {}
@@ -50,12 +53,13 @@ public class WorkflowInstanceResource {
    * @param workflowInstance the workflowInstance associated with the resource
    */
   public WorkflowInstanceResource(WorkflowInstance workflowInstance) {
-    this.workflowInstance = workflowInstance;
     this.workflowInstanceId = workflowInstance.getId();
     this.currentTaskId = workflowInstance.getCurrentTaskId();
     this.startDate = workflowInstance.getStartDate().toString();
     this.endDate = workflowInstance.getEndDate().toString();
     this.timesBlocked = workflowInstance.getTimesBlocked();
+    this.sharedContext = new MetadataResource(workflowInstance.getSharedContext());
+    this.workflowState = new WorkflowStateResource(workflowInstance.getState());
   }
 
   @XmlElement(name = "workflowInstanceId")
@@ -81,5 +85,15 @@ public class WorkflowInstanceResource {
   @XmlElement(name = "timesBlocked")
   public int getTimesBlocked() {
     return timesBlocked;
+  }
+
+  @XmlElement(name = "sharedContext")
+  public MetadataResource getSharedContext(){
+    return sharedContext;
+  }
+
+  @XmlElement(name = "workflowState")
+  public WorkflowStateResource getWorkflowState() {
+    return workflowState;
   }
 }
