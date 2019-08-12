@@ -98,6 +98,13 @@ public class WMJaxrsServiceV2 {
     }
   }
 
+  /**
+   * This REST API stops a running {@link WorkflowInstance}.
+   *
+   * @param workflowInstanceId the ID of the workflow Instance
+   * @return {@link Response}
+   * @throws Exception if there occurred an error while executing the operation
+   */
   @POST
   @Path("stop/workflow")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -109,17 +116,23 @@ public class WMJaxrsServiceV2 {
       WMRequestStatusResource status =
           new WMRequestStatusResource(
               wmclient.getWorkflowManagerUrl().toString(),
-              "Sucessfully Stopped : " + workflowInstanceId + " "
+              "Sucessfully Stopped : "
+                  + workflowInstanceId
+                  + " "
                   + getWorkflowInstanceById(workflowInstanceId).getWorkflowState().getName());
-      return Response.status(Status.OK)
-          .entity(status)
-          .type(MediaType.APPLICATION_JSON)
-          .build();
+      return Response.status(Status.OK).entity(status).type(MediaType.APPLICATION_JSON).build();
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
     }
   }
 
+  /**
+   * This REST API pauses a running {@link WorkflowInstance}.
+   *
+   * @param workflowInstanceId the ID of the workflow Instance
+   * @return {@link Response}
+   * @throws Exception if there occurred an error while executing the operation
+   */
   @POST
   @Path("pause/workflow")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -131,17 +144,23 @@ public class WMJaxrsServiceV2 {
       WMRequestStatusResource status =
           new WMRequestStatusResource(
               wmclient.getWorkflowManagerUrl().toString(),
-              "Sucessfully Paused : " + workflowInstanceId + " "
+              "Sucessfully Paused : "
+                  + workflowInstanceId
+                  + " "
                   + getWorkflowInstanceById(workflowInstanceId).getWorkflowState().getName());
-      return Response.status(Status.OK)
-          .entity(status)
-          .type(MediaType.APPLICATION_JSON)
-          .build();
+      return Response.status(Status.OK).entity(status).type(MediaType.APPLICATION_JSON).build();
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
     }
   }
 
+  /**
+   * This REST API resumes a paused {@link WorkflowInstance}.
+   *
+   * @param workflowInstanceId the ID of the workflow Instance
+   * @return {@link Response}
+   * @throws Exception if there occurred an error while executing the operation
+   */
   @POST
   @Path("resume/workflow")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -154,12 +173,49 @@ public class WMJaxrsServiceV2 {
       WMRequestStatusResource status =
           new WMRequestStatusResource(
               wmclient.getWorkflowManagerUrl().toString(),
-              "Sucessfully resumed : " + workflowInstanceId + " "
+              "Sucessfully resumed : "
+                  + workflowInstanceId
+                  + " "
                   + getWorkflowInstanceById(workflowInstanceId).getWorkflowState().getName());
-      return Response.status(Status.OK)
-          .entity(status)
-          .type(MediaType.APPLICATION_JSON)
-          .build();
+      return Response.status(Status.OK).entity(status).type(MediaType.APPLICATION_JSON).build();
+
+    } catch (Exception e) {
+      throw new NotFoundException(e.getMessage());
+    }
+  }
+
+  /**
+   * This REST API updates the state of {@link WorkflowInstance}.
+   *
+   * @param workflowInstanceId the ID of the workflow Instance
+   * @param wmInstanceStatus state of the workflowState(etc.FINISHED,Running...)
+   * @return {@link Response}
+   * @throws Exception if there occurred an error while executing the operation
+   */
+  @POST
+  @Path("updatestatus/workflow")
+  @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+  public Response resumeWorkflowInstance(
+      @QueryParam("workflowInstanceId") String workflowInstanceId,
+      @QueryParam("status") String wmInstanceStatus)
+      throws WebApplicationException {
+    try {
+      WorkflowManagerClient wmclient = getContextClient();
+      String previousStatus =
+          wmclient.getWorkflowInstanceById(workflowInstanceId).getState().getName();
+      boolean workflowStatus =
+          wmclient.updateWorkflowInstanceStatus(workflowInstanceId, wmInstanceStatus);
+
+      WMRequestStatusResource status =
+          new WMRequestStatusResource(
+              wmclient.getWorkflowManagerUrl().toString(),
+              "Sucessfully Updated Status of workflow : "
+                  + workflowInstanceId
+                  + " from "
+                  + previousStatus
+                  + " to "
+                  + getWorkflowInstanceById(workflowInstanceId).getWorkflowState().getName());
+      return Response.status(Status.OK).entity(status).type(MediaType.APPLICATION_JSON).build();
 
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
