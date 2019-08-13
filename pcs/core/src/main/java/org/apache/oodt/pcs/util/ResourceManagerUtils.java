@@ -25,20 +25,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
+import org.apache.oodt.cas.resource.system.ResourceManagerClient;
+import org.apache.oodt.cas.resource.system.rpc.ResourceManagerFactory;
 
 /**
  * A set of utility methods that can be used by PCS that need to
  * communicate with the Resource Manager.
- * 
+ *
  * @author mattmann
  * @version $Revision$
- * 
+ *
  */
 public class ResourceManagerUtils {
 
   /* our resource manager client */
-  private XmlRpcResourceManagerClient client;
+  private ResourceManagerClient client;
 
   /* our log stream */
   private static final Logger LOG = Logger.getLogger(ResourceManagerUtils.class
@@ -51,19 +52,19 @@ public class ResourceManagerUtils {
   }
 
   public ResourceManagerUtils(URL url) {
-    this.client = new XmlRpcResourceManagerClient(url);
+    this.client = ResourceManagerFactory.getResourceManagerClient(url);
     this.rmUrl = url;
 
   }
 
-  public ResourceManagerUtils(XmlRpcResourceManagerClient client) {
+  public ResourceManagerUtils(ResourceManagerClient client) {
     this.client = client;
   }
 
   /**
    * @return the client
    */
-  public XmlRpcResourceManagerClient getClient() {
+  public ResourceManagerClient getClient() {
     return client;
   }
 
@@ -71,7 +72,7 @@ public class ResourceManagerUtils {
    * @param client
    *          the client to set
    */
-  public void setClient(XmlRpcResourceManagerClient client) {
+  public void setClient(ResourceManagerClient client) {
     this.client = client;
     if (this.client != null) {
       this.rmUrl = this.client.getResMgrUrl();
@@ -90,7 +91,7 @@ public class ResourceManagerUtils {
   }
 
   /**
-   * 
+   *
    * @return The {@link URL} for the Resource Manager that this
    *         ResourceManagerUtils communicates with.
    */
