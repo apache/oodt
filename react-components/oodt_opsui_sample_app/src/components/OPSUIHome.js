@@ -28,7 +28,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
-import {fmMenuListItems} from './listItems';
+import {fmMenuListItems,wmMenuListItems} from './listItems';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {Link} from "react-router-dom";
 
@@ -218,8 +218,8 @@ class OPSUIHome extends React.Component {
                     <List>{fmMenuListItems}</List>
                     <Divider/>
 
-                    {/*/!*Workflow Manager Menu List*!/*/}
-                    {/*<List>{wmMenuListItems}</List>*/}
+                    {/*Workflow Manager Menu List*/}
+                    <List>{wmMenuListItems}</List>
 
                 </Drawer>
                 <main className={classes.content}>

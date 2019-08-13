@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route} from "react-router-dom";
-import {ProductList,Product} from 'oodt_fm_plugin_sample';
+import {ProductList,Product,ProductIngest,ProductIngestWithMetaFile} from 'oodt_fm_plugin_sample';
 import OPSUIHome from "./components/OPSUIHome";
 import SearchBar from "./components/SearchBar";
+import {WorkflowList} from "oodt_wm_plugin_sample";
 
 
 class MyApp extends Component {
@@ -39,12 +40,27 @@ class MyApp extends Component {
 
               }/>
 
+              <Route path={"/productIngest"} render={() =>
+                  <div>
+                    <ProductIngest/>
+                    <br/>
+                    <ProductIngestWithMetaFile/>
+                  </div>
+              }/>
+
               <Route path={"/product"} render={() =>
                   <div>
                     <SearchBar setSelectedProductId={this.setSelectedProductId}/>
                     <br/>
                     <Product productId={this.state.selectedProductId}/>
                   </div>
+              }/>
+
+              <Route path={"/workflows"} render={() =>
+                  <div>
+                    <WorkflowList/>
+                  </div>
+
               }/>
 
             </Switch>

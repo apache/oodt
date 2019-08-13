@@ -51,7 +51,7 @@ export const fmMenuListItems = (
         <ListSubheader>File Manager</ListSubheader>
 
         {/*Product Ingesting*/}
-        <ListItem button>
+        <ListItem button component={Link} to={"/productIngest"}>
             <ListItemIcon>
                 <NoteAddIcon/>
             </ListItemIcon>
@@ -82,5 +82,13 @@ export const fmMenuListItems = (
 export const wmMenuListItems = (
     <div>
         <ListSubheader>WorkFlow Manager</ListSubheader>
+
+      {/*Workflow Browser*/}
+      <ListItem button component={Link} to={"/workflows"}>
+        <ListItemIcon>
+          <StorageIcon />
+        </ListItemIcon>
+        <ListItemText primary="Workflow Browser" />
+      </ListItem>
     </div>
 );
