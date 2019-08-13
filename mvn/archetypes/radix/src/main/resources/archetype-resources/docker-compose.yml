@@ -11,6 +11,7 @@ services:
       - PUSHPULL_MET_FILE_EXT=met
       - FILEMGR_URL=http://filemgr:9000
       - WORKFLOW_URL=http://workflow:9002
+      - RELATIVE_PRODUCT_PATH=
     volumes:
       - ${artifactId}-crawler-policy:/oodt/crawler/policy
       - ${artifactId}-logs:/oodt/crawler/logs
