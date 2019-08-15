@@ -25,6 +25,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 
 import java.io.Closeable;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
@@ -37,7 +38,7 @@ import java.util.Vector;
  * Base interface for client RPC implementation.
  * </p>
  */
-public interface WorkflowManagerClient extends Closeable {
+public interface WorkflowManagerClient extends Closeable, Serializable {
 
     boolean refreshRepository()
             throws Exception;
