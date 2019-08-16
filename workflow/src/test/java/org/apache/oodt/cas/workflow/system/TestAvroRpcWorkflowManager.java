@@ -17,10 +17,16 @@
 
 package org.apache.oodt.cas.workflow.system;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.util.AvroTypeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +37,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TestAvroRpcWorkflowManager extends TestCase {
+public class TestAvroRpcWorkflowManager {
 
     private static final int WM_PORT = 65527;
 
@@ -42,6 +48,7 @@ public class TestAvroRpcWorkflowManager extends TestCase {
     private static final Logger LOG = Logger
             .getLogger(TestXmlRpcWorkflowManager.class.getName());
 
+    @Test
     public void testGetWorkflowInstances() {
 
         Vector workflowInsts = null;
@@ -59,15 +66,17 @@ public class TestAvroRpcWorkflowManager extends TestCase {
 
         assertNotNull(workflowInsts);
 
-        assertEquals(2, workflowInsts.size());
+        assertEquals(1, workflowInsts.size());
     }
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         startAvroRpcWorkflowManager();
         startWorkflow();
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         wmgr.shutdown();
     }
 
@@ -117,11 +126,9 @@ public class TestAvroRpcWorkflowManager extends TestCase {
             }
         }
 
-        System
-                .setProperty("workflow.engine.instanceRep.factory",
+        System.setProperty("workflow.engine.instanceRep.factory",
                         "org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepositoryFactory");
-        System
-                .setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
+        System.setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
                         luceneCatLoc);
 
         try {

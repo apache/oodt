@@ -51,17 +51,13 @@ the License.
      can be overridden in a specific pom and should have a comment explaing why the version has been overridden
   -->
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
-      <version>1.8.1</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.avro/avro-ipc -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-ipc</artifactId>
-      <version>1.8.1</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -195,7 +191,7 @@ the License.
       <plugin>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro-maven-plugin</artifactId>
-        <version>1.7.7</version>
+        <version>1.8.2</version>
         <configuration>
           <stringType>String</stringType>
           <detail>true</detail>
