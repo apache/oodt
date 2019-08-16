@@ -64,7 +64,7 @@ public class ResourceManagerFactory {
         return manager;
     }
 
-    public static ResourceManagerClient getResourceManagerClient(URL url) throws Exception {
+    public static ResourceManagerClient getResourceManagerClient(URL url) throws IllegalStateException {
         loadProperties();
         String resMgrClientClass = System.getProperty("resmgr.manager.client",
                 "org.apache.oodt.cas.resource.system.AvroRpcResourceManagerClient");
@@ -77,7 +77,7 @@ public class ResourceManagerFactory {
             client = (ResourceManagerClient) constructor.newInstance(url);
         } catch (Exception e) {
             logger.error("Unable to create resource manager", e);
-            throw e;
+            throw new IllegalStateException("Unable to create client", e);
         }
 
         return client;
