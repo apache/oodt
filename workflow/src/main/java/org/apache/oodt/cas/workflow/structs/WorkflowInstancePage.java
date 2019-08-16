@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
+import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
@@ -30,7 +31,7 @@ import java.util.Vector;
  * Describe your class here
  * </p>.
  */
-public class WorkflowInstancePage {
+public class WorkflowInstancePage implements Serializable {
 
     /* the number of this page */
     private int pageNum = -1;

@@ -26,10 +26,11 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
 
-public interface ResourceManagerClient {
+public interface ResourceManagerClient extends Serializable {
 
     boolean isJobComplete(String jobId) throws JobRepositoryException;
 

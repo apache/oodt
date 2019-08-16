@@ -17,6 +17,8 @@
 
 package org.apache.oodt.pcs.health;
 
+import java.io.Serializable;
+
 /**
  * 
  * Met keys for the {@link WorkflowStatesFile}
@@ -24,7 +26,7 @@ package org.apache.oodt.pcs.health;
  * @author mattmann
  * @version $Revision$
  */
-public interface WorkflowStatesMetKeys {
+public interface WorkflowStatesMetKeys extends Serializable {
 
   String WORKFLOW_STATES_GROUP = "WorkflowStatesGroup";
 

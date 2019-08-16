@@ -18,6 +18,7 @@
 package org.apache.oodt.pcs.util;
 
 //JDK imports
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.apache.oodt.cas.resource.system.rpc.ResourceManagerFactory;
  * @version $Revision$
  *
  */
-public class ResourceManagerUtils {
+public class ResourceManagerUtils implements Serializable {
 
   /* our resource manager client */
   private ResourceManagerClient client;
