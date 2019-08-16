@@ -37,7 +37,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TestAvroRpcWorkflowManager {
+public class TestAvroRpcWorkflowManager extends TestCase{
 
     private static final int WM_PORT = 65527;
 
