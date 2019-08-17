@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.product.jaxrs.services;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
@@ -294,6 +295,12 @@ public class FileManagerJaxrsServiceV2 {
             File inputProductFile = writeToFileServer(productFileInputStream,
                     productFile.getContentDisposition().getParameter("filename"));
 
+            // Write Default Meta File
+            String defaultMetaFileContent = "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">\n"
+                + "</cas:metadata>";
+            writeToFileServer(new ByteArrayInputStream(defaultMetaFileContent.getBytes(
+                StandardCharsets.UTF_8)),productFile.getContentDisposition().getParameter("filename")+".met");
+
             // Get File Manager and Its URL
             FileManagerClient client = getContextClient();
             URL fmURL = client.getFileManagerUrl();
@@ -395,7 +402,7 @@ public class FileManagerJaxrsServiceV2 {
     private File writeToFileServer(InputStream inputStream, String fileName) {
 
         OutputStream outputStream = null;
-        File file = new File(fileName);
+        File file = new File("ingestedFiles/"+fileName);
         try {
             outputStream = new FileOutputStream(file);
             int read = 0;
