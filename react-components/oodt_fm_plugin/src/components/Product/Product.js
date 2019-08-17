@@ -52,6 +52,7 @@ class Product extends Component {
   constructor(props) {
     super(props);
     this.loadProduct = this.loadProduct.bind(this);
+    this.removeProduct = this.removeProduct.bind(this);
   }
 
   state = {
@@ -155,9 +156,9 @@ class Product extends Component {
                     <strong>{this.state.productMetaDataMimeType[0]}</strong>
                   </Typography>
                 </CardContent>
-                <Button style={{ background: "green" }}>
-                  <span style={{ color: "white" }}>View All Metadata</span>
-                </Button>
+                {/*<Button style={{ background: "green" }}>*/}
+                {/*  <span style={{ color: "white" }}>View All Metadata</span>*/}
+                {/*</Button>*/}
               </Grid>
 
               <Grid item xs={3}>
@@ -199,9 +200,9 @@ class Product extends Component {
                     </strong>
                   </Typography>
                 </CardContent>
-                <Button style={{ background: "green" }}>
-                  <span style={{ color: "white" }}>View All References</span>
-                </Button>
+                {/*<Button style={{ background: "green" }}>*/}
+                {/*  <span style={{ color: "white" }}>View All References</span>*/}
+                {/*</Button>*/}
               </Grid>
 
               <Grid item xs={3}>
@@ -231,6 +232,7 @@ class Product extends Component {
                       variant="extended"
                       color="secondary"
                       style={{ fontSize: 20 }}
+                      onClick={this.removeProduct}
                     >
                       Remove Record
                     </Fab>
@@ -242,6 +244,19 @@ class Product extends Component {
         </Card>
       </div>
     );
+  }
+
+
+  removeProduct(){
+
+    let result = confirm("Are you Sure to Remove the Product ?"+ this.state.productId);
+    if (result == true){
+      fmconnection.delete("/removeProduct?productId=" + this.state.productId).then(res=>{
+        alert("Product sucessfully removed productID: " + this.state.productId);
+        this.setState({productId:''})
+      })
+    }else{
+    }
   }
 
   loadProduct() {

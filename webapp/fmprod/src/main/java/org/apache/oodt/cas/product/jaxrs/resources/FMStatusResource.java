@@ -7,18 +7,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name="FMStatus")
-@XmlType(propOrder = {"url","serverUp"})
+@XmlType(propOrder = {"url","serverUp","message"})
 @XmlAccessorType(XmlAccessType.NONE)
 public class FMStatusResource {
 
   private String url;
   private boolean serverUp;
+  private String message;
 
   public FMStatusResource(){}
 
-  public FMStatusResource(String url, boolean serverUp){
+  public FMStatusResource(String url, boolean serverUp,String message){
     this.url = url;
     this.serverUp = serverUp;
+    this.message = message;
   }
 
   @XmlElement(name="url")
@@ -29,5 +31,10 @@ public class FMStatusResource {
   @XmlElement(name="serverUp")
   public boolean isServerUp() {
     return serverUp;
+  }
+
+  @XmlElement(name="message")
+  public String getMessage() {
+    return message;
   }
 }

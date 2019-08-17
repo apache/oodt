@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -434,10 +435,79 @@ public class FileManagerJaxrsServiceV2 {
       FileManagerClient client = getContextClient();
       String URL = client.getFileManagerUrl().toString();
       boolean fmStatus = client.isAlive();
-      FMStatusResource status = new FMStatusResource(URL, fmStatus);
+      FMStatusResource status = new FMStatusResource(URL, fmStatus,"Server Status");
       return Response.ok(status).build();
     } catch (Exception e) {
       throw new InternalServerErrorException(e.getMessage());
     }
   }
+
+  /**
+   * This method is for removing the ingested Products
+   *
+   * @return Response object with status and FMProb URL
+   */
+  @DELETE
+  @Path("removeProduct")
+  @Produces({"application/json", "application/xml"})
+  public Response removeIngestedProduct(@QueryParam("productId") String productId) {
+    try {
+      FileManagerClient client = getContextClient();
+
+      String URL = client.getFileManagerUrl().toString();
+      boolean fmStatus = client.isAlive();
+
+      boolean isRemoved = client.removeProduct(client.getProductById(productId));
+      FMStatusResource status = new FMStatusResource(URL, fmStatus,"Product Removal Status: "+isRemoved);
+      return Response.ok(status).build();
+    } catch (Exception e) {
+      throw new InternalServerErrorException(e.getMessage());
+    }
+  }
+
+//  /**
+//   * This method is for retrieve a ingested Products
+//   *
+//   * @return Response object with status and FMProb URL
+//   */
+//  @GET
+//  @Path("downloadProduct")
+//
+//  public Response downloadIngestedProduct(@QueryParam("productId") String productId) {
+//    try {
+//      FileManagerClient client = getContextClient();
+//
+//      String URL = client.getFileManagerUrl().toString();
+//      boolean fmStatus = client.isAlive();
+//
+////      String d = client.getProductById(productId).;//      byte[] bytes = client
+//          byte [] bytes = client.retrieveFile("/home/castle/Software_tools/apache-tomcat-9.0.20/bin/ingestedFiles/Hello_2", 0, 2000);
+//
+//
+//      //LOGGER.log(Level.INFO,"................."+d);
+//      // Path of a file
+//      String FILEPATH = "";
+//      File outputFile = new File(FILEPATH);
+//
+//      // Initialize a pointer
+//      // in file using OutputStream
+//      OutputStream os = new FileOutputStream(outputFile);
+//
+//      os.write(bytes);
+//
+//      // Starts writing the bytes in it
+//      os.write(bytes);
+//      System.out.println("Successfully"
+//          + " byte inserted");
+//
+//      // Close the file
+//      os.close();
+//      FMStatusResource status = new FMStatusResource(URL, fmStatus,"Product Retreval Status: " + bytes.length);
+//      return Response.ok(status).build();
+//
+//    } catch (Exception e) {
+//      throw new InternalServerErrorException(e.getMessage());
+//    }
+//  }
+
 }

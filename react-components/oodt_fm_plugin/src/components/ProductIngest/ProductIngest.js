@@ -112,6 +112,7 @@ class ProductIngest extends Component {
       .catch(error => {
         console.log(error);
         this.setState({ isIngested: false });
+        alert("Product Ingestion Failed : "+error)
       });
   }
 
