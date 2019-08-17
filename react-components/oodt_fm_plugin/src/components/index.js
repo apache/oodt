@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-export { default as Product } from './Product';
-export { default as ProductList} from './ProductList';
-export { default as ProductIngest} from './ProductIngest';
-export { default as ProductIngestWithMetaFile} from './ProductIngestWithMetaFile';
+export { default as Product } from "./Product";
+export { default as ProductList } from "./ProductList";
+export { default as ProductIngest } from "./ProductIngest";
+export {
+  default as ProductIngestWithMetaFile
+} from "./ProductIngestWithMetaFile";

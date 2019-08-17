@@ -15,88 +15,84 @@
  * limitations under the License.
  */
 
-import React, {Component} from 'react';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
-import {withStyles} from "@material-ui/core";
+import React, { Component } from "react";
+import Paper from "@material-ui/core/Paper";
+import InputBase from "@material-ui/core/InputBase";
+import IconButton from "@material-ui/core/IconButton";
+import SearchIcon from "@material-ui/icons/Search";
+import { withStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 
-
 const styles = theme => ({
-    root: {
-        padding: '2px 4px',
-        display: 'flex',
-        alignItems: 'center',
-        width: 400,
-    },
-    input: {
-        marginLeft: 8,
-        flex: 1,
-    },
-    iconButton: {
-        padding: 10,
-    },
-    divider: {
-        width: 1,
-        height: 28,
-        margin: 4,
-    },
+  root: {
+    padding: "2px 4px",
+    display: "flex",
+    alignItems: "center",
+    width: 400
+  },
+  input: {
+    marginLeft: 8,
+    flex: 1
+  },
+  iconButton: {
+    padding: 10
+  },
+  divider: {
+    width: 1,
+    height: 28,
+    margin: 4
+  }
 });
 
 class SearchBar extends Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.keyPress = this.keyPress.bind(this);
+    this.click = this.click.bind(this);
+  }
 
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-        this.keyPress = this.keyPress.bind(this);
-        this.click = this.click.bind(this);
+  state = {
+    productTypeName: ""
+  };
+
+  handleChange(e) {
+    this.setState({ productTypeName: e.target.value });
+  }
+
+  keyPress(e) {
+    if (e.keyCode === 13) {
+      console.log(e.target.value);
+      this.props.productTypeNameProp(this.state.productTypeName);
+      this.click();
     }
+  }
 
-    state = {
-        productTypeName: '',
-    };
+  click() {
+    this.props.loadProducts();
+  }
 
-    handleChange(e) {
-        this.setState({ productTypeName: e.target.value });
-    }
-
-    keyPress(e){
-        if(e.keyCode === 13){
-            console.log(e.target.value);
-            this.props.productTypeNameProp(this.state.productTypeName);
-            this.click();
-        }
-    }
-
-    click() {
-        this.props.loadProducts();
-    }
-
-    render(){
-        const { classes } = this.props;
-        return (
-            <Paper className={classes.root}>
-                <InputBase
-                    className={classes.input}
-                    placeholder="Search Products by Product Type Name"
-                    inputProps={{ 'aria-label': 'Search Products' }}
-                    onKeyDown={this.keyPress} onChange={this.handleChange}
-                />
-                <IconButton className={classes.iconButton} aria-label="Search" >
-                    <SearchIcon />
-                </IconButton>
-            </Paper>
-        );
-    }
-
-
+  render() {
+    const { classes } = this.props;
+    return (
+      <Paper className={classes.root}>
+        <InputBase
+          className={classes.input}
+          placeholder="Search Products by Product Type Name"
+          inputProps={{ "aria-label": "Search Products" }}
+          onKeyDown={this.keyPress}
+          onChange={this.handleChange}
+        />
+        <IconButton className={classes.iconButton} aria-label="Search">
+          <SearchIcon />
+        </IconButton>
+      </Paper>
+    );
+  }
 }
 
-
 SearchBar.propTypes = {
-    classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(SearchBar);

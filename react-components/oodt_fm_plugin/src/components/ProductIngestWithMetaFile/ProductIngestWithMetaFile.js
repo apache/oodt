@@ -15,41 +15,38 @@
  * limitations under the License.
  */
 
-import React, {Component} from "react";
-import {Paper, withStyles} from "@material-ui/core";
+import React, { Component } from "react";
+import { Paper, withStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import {fmconnection} from "../../constants/fmconnection";
-
+import { fmconnection } from "../../constants/fmconnection";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    padding:20
+    padding: 20
   },
-  button:{
-    padding:10,
-    margin:20
-
+  button: {
+    padding: 10,
+    margin: 20
   },
   textField: {
     marginLeft: 2,
-    marginRight: 2,
+    marginRight: 2
   },
-  layout :{
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 0,
+  layout: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 0
   }
 });
 
-
-class ProductIngestWithMetaFile extends Component{
-
-  constructor(props){
+class ProductIngestWithMetaFile extends Component {
+  constructor(props) {
     super(props);
     this.handleFile = this.handleFile.bind(this);
     this.handleMetaFile = this.handleMetaFile.bind(this);
@@ -57,77 +54,94 @@ class ProductIngestWithMetaFile extends Component{
   }
 
   state = {
-    ingestedFile:null,
-    metaFile:null
+    ingestedFile: null,
+    metaFile: null,
+    productId: "",
+    isIngested: false,
+    isIngestButtonClicked: false
   };
 
-  handleFile(e){
+  handleFile(e) {
     let file = e.target.files[0];
-    this.setState({ingestedFile: file});
+    this.setState({ ingestedFile: file });
   }
 
-  handleMetaFile(e){
+  handleMetaFile(e) {
     let metaFile = e.target.files[0];
-    this.setState({metaFile: metaFile});
+    this.setState({ metaFile: metaFile });
   }
 
-  ingestProduct(){
+  ingestProduct() {
+    this.setState({ isIngested: false });
+    this.setState({ isIngestButtonClicked: true });
+
     let product = this.state.ingestedFile;
     let metaProduct = this.state.metaFile;
     let formData = new FormData();
-    formData.append("productFile",product);
-    formData.append("metadataFile" , metaProduct);
-    fmconnection.post("productWithMeta",formData)
-    .then(result=>{
-      console.log(result);
-      alert("Sucessfully Ingested :ProductId " + result.data);
-
-    })
-    .catch(error=>{
-      console.log(error);
-      alert("Exception Thrown " + error);
-    })
+    formData.append("productFile", product);
+    formData.append("metadataFile", metaProduct);
+    fmconnection
+      .post("productWithMeta", formData)
+      .then(result => {
+        console.log(result);
+        this.setState({ productId: result.data });
+        this.setState({ isIngested: true });
+        alert("Sucessfully Ingested :ProductId " + result.data);
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({ isIngested: false });
+        alert("Exception Thrown " + error);
+      });
   }
 
   render() {
-    const {classes} = this.props;
+    const { classes } = this.props;
 
-    return(
-          <Paper className={classes.root}>
+    return (
+      <Paper className={classes.root}>
+        <Typography variant="h5" component="h3">
+          Product Ingest with Meta File
+        </Typography>
 
-            <Typography variant="h5" component="h3">
-              Product Ingest with Meta File
-            </Typography>
+        <div className={classes.layout}>
+          <input
+            className={classes.button}
+            type={"file"}
+            name={"fileToUpload"}
+            id={"fileToUpload"}
+            onChange={e => this.handleFile(e)}
+          />
 
+          <input
+            className={classes.button}
+            type={"file"}
+            name={"metaFileToUpload"}
+            id={"metaFileToUpload"}
+            onChange={e => this.handleMetaFile(e)}
+          />
 
-            <div className={classes.layout}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={this.ingestProduct}
+          >
+            Ingest Product
+          </Button>
 
-
-              <input className={classes.button} type={"file"}
-                     name={"fileToUpload"}
-                     id={"fileToUpload"}
-                     onChange={(e)=>this.handleFile(e)}/>
-
-
-              <input className={classes.button} type={"file"}
-                     name={"metaFileToUpload"}
-                     id={"metaFileToUpload"}
-                     onChange={(e)=>this.handleMetaFile(e)}/>
-
-              <Button variant="contained" color="primary" className={classes.button} onClick={this.ingestProduct}>
-                Ingest Product
-              </Button>
-
-            </div>
-
-
-          </Paper>
+          {this.state.isIngested === false &&
+            this.state.isIngestButtonClicked == true && <CircularProgress />}
+          {this.state.isIngested == true &&
+            alert("Sucessfully Ingested :ProductId  :" + this.state.productId)}
+        </div>
+      </Paper>
     );
   }
 }
 
 ProductIngestWithMetaFile.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(ProductIngestWithMetaFile);

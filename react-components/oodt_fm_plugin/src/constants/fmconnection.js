@@ -18,5 +18,5 @@
 import axios from "axios";
 
 export const fmconnection = axios.create({
-    baseURL: 'http://localhost:8080/cas_product_war/jaxrs/v2',
+  baseURL: "http://localhost:8080/cas_product_war/jaxrs/v2"
 });
