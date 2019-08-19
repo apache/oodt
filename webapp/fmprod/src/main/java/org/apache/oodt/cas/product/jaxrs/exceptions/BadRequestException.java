@@ -13,33 +13,29 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.apache.oodt.cas.product.jaxrs.exceptions;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
- * This type of exception returns an HTTP 'bad request' response (status code
- * 400) with an additional message.
+ * This type of exception returns an HTTP 'bad request' response (status code 400) with an
+ * additional message.
+ *
  * @author rlaidlaw
  * @version $Revision$
  */
-public class BadRequestException extends WebApplicationException
-{
-  // Auto-generated ID for serialization.
+public class BadRequestException extends WebApplicationException {
+  /** Auto-generated ID for serialization. **/
   private static final long serialVersionUID = -705065311316100022L;
 
   /**
-   * Constructor that adds a message to the 'bad request' (status code 400)
-   * HTTP response.
+   * Constructor that adds a message to the 'bad request' (status code 400) HTTP response.
+   *
    * @param message the message to add to the response
    */
-  public BadRequestException(String message)
-  {
-    super(Response.status(Response.Status.BAD_REQUEST).entity(message)
-      .type(MediaType.TEXT_PLAIN).build());
+  public BadRequestException(String message) {
+    super(message);
   }
 }
