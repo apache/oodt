@@ -18,6 +18,8 @@
 package org.apache.oodt.pcs.health;
 
 
+import java.io.Serializable;
+
 /**
  * 
  * Health of a PCS Crawler in terms of the number of crawls performed, and
@@ -27,7 +29,7 @@ package org.apache.oodt.pcs.health;
  * @version $Revision$
  * 
  */
-public class CrawlerHealth {
+public class CrawlerHealth implements Serializable {
 
   private String crawlerName;
 

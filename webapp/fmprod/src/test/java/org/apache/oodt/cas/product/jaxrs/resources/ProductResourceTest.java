@@ -23,13 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
@@ -62,7 +60,7 @@ public class ProductResourceTest
   {
     // Create a ProductResource using ProductType, Reference, Metadata and
     // Product instances.
-    Hashtable metadataEntries = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries = new HashMap<>();
     metadataEntries.put("CAS.Test", "test value");
     Metadata metadata = new Metadata();
     metadata.addMetadata(metadataEntries);

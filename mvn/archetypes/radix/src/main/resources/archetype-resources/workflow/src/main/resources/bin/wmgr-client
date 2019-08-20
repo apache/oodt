@@ -55,6 +55,12 @@ if [ -z "$WORKFLOW_HOME" ]; then
   export WORKFLOW_HOME
 fi
 
+# Only set RESMGR_URL if not already set
+if [ -z "$RESMGR_URL" ]; then
+  RESMGR_URL=http://localhost:9002
+  export RESMGR_URL
+fi
+
 # For Cygwin, ensure paths are in UNIX format before anything is touched
 if $cygwin; then
   [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`

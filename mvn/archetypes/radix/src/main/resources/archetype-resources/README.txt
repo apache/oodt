@@ -21,7 +21,7 @@
 #       data system deployment. Configurable OODT deployments
 #       are possible using Maven profiles (see below).
 #       
-#       OODT version 0.7-SNAPSHOT 
+#       OODT version ${oodt}
 ######################################################################################
 
 REQUIREMENTS:

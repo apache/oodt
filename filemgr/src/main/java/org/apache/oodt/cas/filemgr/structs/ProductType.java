@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
+import java.io.Serializable;
 import java.util.Collections;
 //JDK imports
 import java.util.List;
@@ -39,7 +40,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  * </p>
  * 
  */
-public class ProductType {
+public class ProductType implements Serializable {
 
     /* the unique ID representing this product type */
     private String productTypeId = null;

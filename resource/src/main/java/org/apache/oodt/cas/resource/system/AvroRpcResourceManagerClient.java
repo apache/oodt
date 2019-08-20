@@ -46,7 +46,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
 
     /* our log stream */
     private static Logger LOG = Logger
-            .getLogger(XmlRpcResourceManagerClient.class.getName());
+            .getLogger(AvroRpcResourceManagerClient.class.getName());
 
     /* resource manager url */
     private URL resMgrUrl = null;

@@ -47,11 +47,7 @@ public abstract class ResourceCliAction extends CmdLineAction {
         if (client != null) {
             return client;
         } else {
-            try {
-                return ResourceManagerFactory.getResourceManagerClient(new URL(getUrl()));
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to create client", e);
-            }
+            return ResourceManagerFactory.getResourceManagerClient(new URL(getUrl()));
         }
     }
 

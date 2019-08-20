@@ -20,15 +20,25 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <requiredProperties>
     <requiredProperty key="oodt">
-      <defaultValue>0.7-SNAPSHOT</defaultValue>
+      <defaultValue>1.9-SNAPSHOT</defaultValue>
     </requiredProperty>
   </requiredProperties>
   <fileSets>
-    <fileSet filtered="true" packaged="false">
+    <fileSet filtered="true">
       <directory></directory>
       <includes>
         <include>README.txt</include>
+        <include>docker-compose.yml</include>
       </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>temp</directory>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>logs</directory>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>data</directory>
     </fileSet>
   </fileSets>
   <modules>

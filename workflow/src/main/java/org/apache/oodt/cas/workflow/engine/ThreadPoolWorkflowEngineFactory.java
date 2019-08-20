@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
@@ -67,12 +68,12 @@ public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
 
   protected URL getResmgrUrl() {
     try {
-      return new URL(System.getProperty(RESMGR_URL_PROPERTY));
+      return new URL(PathUtils.replaceEnvVariables(System.getProperty(RESMGR_URL_PROPERTY)));
     } catch (Exception e) {
       LOG.log(
           Level.INFO,
           "No Resource Manager URL provided or malformed URL: executing jobs " +
-          "locally. URL: ["+System.getProperty(RESMGR_URL_PROPERTY)+"]");
+          "locally. URL: ["+PathUtils.replaceEnvVariables(System.getProperty(RESMGR_URL_PROPERTY))+"]");
       return null;
     }
   }
