@@ -73,7 +73,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         }
 
         try {
-            this.client = new NettyTransceiver(new InetSocketAddress(url.getPort()));
+            this.client = new NettyTransceiver(new InetSocketAddress(url.getHost(), url.getPort()));
             proxy = (ResourceManager) SpecificRequestor.getClient(ResourceManager.class, client);
         } catch (IOException e) {
             e.printStackTrace();

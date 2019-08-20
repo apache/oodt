@@ -466,7 +466,7 @@ public class AvroRpcResourceManager implements org.apache.oodt.cas.resource.stru
         try {
             this.scheduler.getMonitor().getNodeById(nodeId).setCapacity(capacity);
         } catch (MonitorException e) {
-            logger.warn("Exception setting capacity on node {}: ", nodeId, e.getMessage());
+            logger.warn("Exception setting capacity on node {}: {}", nodeId, e.getMessage());
             return false;
         }
         return true;
