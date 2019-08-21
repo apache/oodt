@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose.yml
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ${artifactId}-solr
+  name: ${artifactId}-solr
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ${artifactId}-solr
+    spec:
+      containers:
+      - image: ${artifactId}-solr:1.0-SNAPSHOT
+        name: ${artifactId}-solr
+        ports:
+        - containerPort: 8983
+        resources: {}
+      restartPolicy: Always
+status: {}
