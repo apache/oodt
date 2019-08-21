@@ -44,7 +44,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
   private static final Logger LOG = Logger.getLogger(OpenSSOImpl.class
       .getName());
 
-  private SSOProxy ssoProxy;
+  private transient SSOProxy ssoProxy;
 
   /**
    * Default constructor.

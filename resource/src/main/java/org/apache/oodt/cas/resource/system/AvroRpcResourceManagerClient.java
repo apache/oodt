@@ -51,8 +51,8 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     /* resource manager url */
     private URL resMgrUrl = null;
 
-    Transceiver client;
-    ResourceManager proxy;
+    transient Transceiver client;
+    transient ResourceManager proxy;
 
     public AvroRpcResourceManagerClient(URL url) {
         // set up the configuration, if there is any
