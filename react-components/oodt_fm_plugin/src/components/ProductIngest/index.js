@@ -16,6 +16,6 @@
  */
 
 // Import the Product component from this folder and send it down to ./components/index.js
-import Product from "./Product";
+import ProductIngest from "./ProductIngest";
 
-export default Product;
+export default ProductIngest;
