@@ -57,7 +57,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
     public boolean nodeAlive() {
 
         try {
-            this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getPort()));
+            this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getHost(), remoteHost.getIpAddr().getPort()));
             this.proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
     public boolean killJob() {
 
         try {
-            this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getPort()));
+            this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getHost(), remoteHost.getIpAddr().getPort()));
             this.proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Failed connection with the server.", e);
@@ -104,7 +104,7 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
 
     public void run() {
         try {
-            this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getPort()));
+            this.client = new NettyTransceiver(new InetSocketAddress(remoteHost.getIpAddr().getHost(), remoteHost.getIpAddr().getPort()));
             this.proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Failed connection with the server.", e);

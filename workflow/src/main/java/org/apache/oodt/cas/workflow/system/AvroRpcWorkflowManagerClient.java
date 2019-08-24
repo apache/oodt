@@ -240,7 +240,7 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
     public void setWorkflowManagerUrl(URL workflowManagerUrl) {
         this.workflowManagerUrl = workflowManagerUrl;
         try {
-            client = new NettyTransceiver(new InetSocketAddress(workflowManagerUrl.getPort()));
+            client = new NettyTransceiver(new InetSocketAddress(workflowManagerUrl.getHost(), workflowManagerUrl.getPort()));
             proxy = SpecificRequestor.getClient(org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class, client);
         } catch (IOException e) {
             logger.error("Error occurred when setting workflow manager url: {}", workflowManagerUrl, e);
