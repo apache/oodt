@@ -47,8 +47,8 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AvroRpcWorkflowManagerClient.class);
 
-    private Transceiver client;
-    private org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager proxy;
+    private transient Transceiver client;
+    private transient org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager proxy;
     private URL workflowManagerUrl;
 
     public AvroRpcWorkflowManagerClient(URL url){

@@ -41,9 +41,9 @@ public class AvroRpcBatchMgrProxy extends Thread implements Runnable {
 
     private ResourceNode remoteHost;
 
-    private Transceiver client;
+    private transient Transceiver client;
 
-    private AvroRpcBatchStub proxy;
+    private transient AvroRpcBatchStub proxy;
 
     private AvroRpcBatchMgr parent;
 
