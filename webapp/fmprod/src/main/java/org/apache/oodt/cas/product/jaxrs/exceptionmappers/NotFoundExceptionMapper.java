@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import org.apache.oodt.cas.product.jaxrs.enums.ErrorType;
+import org.apache.oodt.cas.product.jaxrs.enums.ErrorTypes;
 import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
 import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 
@@ -41,7 +41,7 @@ public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundExceptio
     ErrorMessage errorMessageEntity =
         new ErrorMessage(
             Response.Status.NOT_FOUND.getStatusCode(),
-            ErrorType.NOT_FOUND_EXCEPTION.getErrorType(),
+            ErrorTypes.NOT_FOUND_EXCEPTION.getErrorType(),
             exception.getMessage());
 
     // Maps Error Status 404 to Response

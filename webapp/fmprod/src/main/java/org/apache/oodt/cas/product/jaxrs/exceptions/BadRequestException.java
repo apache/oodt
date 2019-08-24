@@ -27,7 +27,7 @@ import javax.ws.rs.WebApplicationException;
  * @version $Revision$
  */
 public class BadRequestException extends WebApplicationException {
-  /** Auto-generated ID for serialization. **/
+  // Auto-generated ID for serialization.
   private static final long serialVersionUID = -705065311316100022L;
 
   /**

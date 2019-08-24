@@ -23,7 +23,7 @@ package org.apache.oodt.cas.product.jaxrs.enums;
  *
  * @author ngimhana (Nadeeshan Gimhana)
  */
-public enum ErrorType {
+public enum ErrorTypes {
   BAD_REQUEST_EXCEPTION("Malformed message"),
   BAD_REQUEST_EXCEPTION_REFERENCE_RESOURCE(
       "This URL requires a productId query parameter with a product ID value,"
@@ -52,7 +52,7 @@ public enum ErrorType {
 
   private String errorType;
 
-  ErrorType(String errorType) {
+  ErrorTypes(String errorType) {
     this.errorType = errorType;
   }
 

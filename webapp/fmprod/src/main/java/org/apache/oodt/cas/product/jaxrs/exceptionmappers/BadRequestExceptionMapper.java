@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import org.apache.oodt.cas.product.jaxrs.enums.ErrorType;
+import org.apache.oodt.cas.product.jaxrs.enums.ErrorTypes;
 import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
 import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
 
@@ -33,18 +33,18 @@ import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
 @Provider
 public class BadRequestExceptionMapper implements ExceptionMapper<BadRequestException> {
 
-  /** Maps BadRequestException to HTTP Response **/
+  // Maps BadRequestException to HTTP Response
   @Override
   public Response toResponse(BadRequestException exception) {
 
-    /** Initialising ErrorMessage Entity for Mapping to Response **/
+    // Initialising ErrorMessage Entity for Mapping to Response
     ErrorMessage errorMessageEntity =
         new ErrorMessage(
             Response.Status.BAD_REQUEST.getStatusCode(),
-            ErrorType.BAD_REQUEST_EXCEPTION.getErrorType(),
+            ErrorTypes.BAD_REQUEST_EXCEPTION.getErrorType(),
             exception.getMessage());
 
-    /** Maps Error Status 400 to Response **/
+    // Maps Error Status 400 to Response
     return Response.status(Response.Status.BAD_REQUEST)
         .entity(errorMessageEntity)
         .type(MediaType.APPLICATION_JSON)
