@@ -1,0 +1,7 @@
+# IDE temp files
+.idea
+
+# Development Tarball of the plugin
+oodt_fm_plugin_sample-1.0.0.tgz
+
+package-lock.json
