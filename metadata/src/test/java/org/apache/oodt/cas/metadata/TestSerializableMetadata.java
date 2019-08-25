@@ -73,8 +73,8 @@ public class TestSerializableMetadata extends TestCase {
         ois.close();
 
         assertNotNull(sm2);
-        assertNotNull(sm2.getHashtable());
-        assertEquals(2, sm2.getHashtable().size());
+        assertNotNull(sm2.getMap());
+        assertEquals(2, sm2.getMap().size());
         assertNotNull(sm2.getMetadata("key1"));
         assertEquals("val1", sm2.getMetadata("key1"));
         assertNotNull(sm2.getMetadata("key2"));
@@ -106,8 +106,8 @@ public class TestSerializableMetadata extends TestCase {
         out.close();
 
         assertNotNull(metadata2);
-        assertNotNull(metadata2.getHashtable());
-        assertEquals(2, metadata2.getHashtable().size());
+        assertNotNull(metadata2.getMap());
+        assertEquals(2, metadata2.getMap().size());
         assertNotNull(metadata2.getMetadata("Name1"));
         assertEquals("Value1", metadata2.getMetadata("Name1"));
         assertNotNull(metadata2.getMetadata("Name2"));
@@ -127,8 +127,8 @@ public class TestSerializableMetadata extends TestCase {
       Metadata mConv = sm.getMetadata();
 
       assertNotNull(mConv);
-      assertNotNull(mConv.getHashtable());
-      assertEquals(2, mConv.getHashtable().size());
+      assertNotNull(mConv.getMap());
+      assertEquals(2, mConv.getMap().size());
       assertNotNull(mConv.getMetadata("key1"));
       assertEquals("val1", mConv.getMetadata("key1"));
       assertNotNull(mConv.getMetadata("key2"));
@@ -146,7 +146,6 @@ public class TestSerializableMetadata extends TestCase {
     try {
       XMLUtils.writeXmlToStream(metadata.toXML(), out);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 
@@ -155,14 +154,13 @@ public class TestSerializableMetadata extends TestCase {
       metadata2 = new SerializableMetadata(new ByteArrayInputStream(out
           .toByteArray()));
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 
     assertNotNull(metadata2);
-    assertNotNull(metadata2.getHashtable());
+    assertNotNull(metadata2.getMap());
 
-    assertEquals(2, metadata2.getHashtable().size());
+    assertEquals(2, metadata2.getMap().size());
     assertNotNull(metadata2.getMetadata("Name1"));
     assertEquals("Value1", metadata2.getMetadata("Name1"));
     assertNotNull(metadata2.getMetadata("Name2"));

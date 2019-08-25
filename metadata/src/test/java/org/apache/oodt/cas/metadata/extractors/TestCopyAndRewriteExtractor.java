@@ -68,9 +68,9 @@ public class TestCopyAndRewriteExtractor extends MetadataTestCase {
     }
 
     assertNotNull(met);
-    assertNotNull(met.getHashtable());
-    assertNotNull(met.getHashtable().keySet());
-    assertEquals(3, met.getHashtable().keySet().size());
+    assertNotNull(met.getMap());
+    assertNotNull(met.getMap().keySet());
+    assertEquals(3, met.getMap().keySet().size());
     assertTrue(met.containsKey(FILENAME));
     assertEquals(expectedFilename, met.getMetadata(FILENAME));
     assertTrue(met.containsKey(PRODUCT_TYPE));
