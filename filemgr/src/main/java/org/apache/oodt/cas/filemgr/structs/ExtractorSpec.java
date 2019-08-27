@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //JDK imports
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Properties;
  * a {@link FilemgrMetExtractor}.
  * </p>.
  */
-public class ExtractorSpec {
+public class ExtractorSpec implements Serializable {
 
     private String className;
 

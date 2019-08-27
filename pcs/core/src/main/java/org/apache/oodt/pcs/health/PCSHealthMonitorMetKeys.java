@@ -17,13 +17,15 @@
 
 package org.apache.oodt.pcs.health;
 
+import java.io.Serializable;
+
 /**
  * Met keys for the {@link PCSHealthMonitor} tool
  * 
  * @author mattmann
  * @version $Revision$
  */
-public interface PCSHealthMonitorMetKeys {
+public interface PCSHealthMonitorMetKeys extends Serializable {
 
   String HEADER_AND_FOOTER = "--------------------------------------";
 

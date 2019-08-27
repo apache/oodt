@@ -64,9 +64,9 @@ public class TestMetReader extends MetadataTestCase {
         }
 
         assertNotNull(met);
-        assertNotNull(met.getHashtable());
-        assertNotNull(met.getHashtable().keySet());
-        assertEquals(3, met.getHashtable().keySet().size());
+        assertNotNull(met.getMap());
+        assertNotNull(met.getMap().keySet());
+        assertEquals(3, met.getMap().keySet().size());
         assertTrue(met.containsKey(FILENAME));
         assertEquals(met.getMetadata(FILENAME), expectedFilename);
         assertTrue(met.containsKey(FILE_LOCATION));

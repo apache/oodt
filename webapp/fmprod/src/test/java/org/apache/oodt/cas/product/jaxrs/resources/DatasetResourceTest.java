@@ -23,13 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
@@ -70,7 +68,7 @@ public class DatasetResourceTest
     List<Reference> references1 = new ArrayList<Reference>();
     references1.add(reference1);
 
-    Hashtable metadataEntries1 = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries1 = new HashMap<>();
     metadataEntries1.put("product1_meta", "test1");
     Metadata metadata1 = new Metadata();
     metadata1.addMetadata(metadataEntries1);
@@ -91,7 +89,7 @@ public class DatasetResourceTest
     List<Reference> references2 = new ArrayList<Reference>();
     references2.add(reference2);
 
-    Hashtable metadataEntries2 = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries2 = new HashMap<>();
     metadataEntries2.put("product2_meta", "test2");
     Metadata metadata2 = new Metadata();
     metadata2.addMetadata(metadataEntries2);
@@ -106,7 +104,7 @@ public class DatasetResourceTest
 
     // Create a DatasetResource using ProductType, Metadata and ProductResource
     // instances.
-    Hashtable metadataEntries3 = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries3 = new HashMap<>();
     metadataEntries3.put("dataset_meta", "test3");
     Metadata metadata3 = new Metadata();
     metadata3.addMetadata(metadataEntries3);

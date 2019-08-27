@@ -22,13 +22,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-
 import org.apache.oodt.cas.metadata.Metadata;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -65,7 +63,7 @@ public class MetadataResourceTest
       + "</metadata>";
 
     // Create a MetadataResource using a Metadata instance.
-    Hashtable metadataEntries = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries = new HashMap<>();
     metadataEntries.put("1", "one");
     metadataEntries.put("2", "two");
     metadataEntries.put("3", "three");

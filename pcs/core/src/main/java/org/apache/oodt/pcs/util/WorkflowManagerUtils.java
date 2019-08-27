@@ -22,6 +22,7 @@ import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -38,7 +39,7 @@ import java.util.logging.Logger;
  * @author mattmann
  * @version $Revision$
  */
-public class WorkflowManagerUtils {
+public class WorkflowManagerUtils implements Serializable {
 
   /* our workflow manager client */
   private WorkflowManagerClient client;

@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
@@ -46,7 +47,7 @@ public class ResourceRunnerFactory implements EngineRunnerFactory{
    private String resUrl;
 
    public ResourceRunnerFactory() {
-      resUrl = System.getProperty(RESOURCE_MANAGER_URL_PROPERTY);
+      resUrl = PathUtils.replaceEnvVariables(System.getProperty(RESOURCE_MANAGER_URL_PROPERTY));
    }
 
    @Override

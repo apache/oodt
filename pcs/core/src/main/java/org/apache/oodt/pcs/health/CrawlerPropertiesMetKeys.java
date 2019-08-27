@@ -17,6 +17,8 @@
 
 package org.apache.oodt.pcs.health;
 
+import java.io.Serializable;
+
 /**
  * 
  * Met keys read from the {@link CrawlPropertiesFile}.
@@ -24,7 +26,7 @@ package org.apache.oodt.pcs.health;
  * @author mattmann
  * @version $Revision$
  */
-public interface CrawlerPropertiesMetKeys {
+public interface CrawlerPropertiesMetKeys extends Serializable {
 
   String CRAWLER_INFO_GROUP = "CrawlerInfo";
 

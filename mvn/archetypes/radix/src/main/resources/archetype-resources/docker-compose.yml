@@ -1,0 +1,125 @@
+version: '3'
+
+services:
+
+  crawler:
+    image: ${artifactId}-crawler:${version}
+#    restart: always
+    environment:
+      - FAILURE_DIR=/tmp
+      - BACKUP_DIR=/tmp
+      - PUSHPULL_MET_FILE_EXT=met
+      - FILEMGR_URL=http://filemgr:9000
+      - WORKFLOW_URL=http://workflow:9002
+      - RELATIVE_PRODUCT_PATH=
+    volumes:
+      - ${artifactId}-crawler-policy:/oodt/crawler/policy
+      - ${artifactId}-logs:/oodt/crawler/logs
+      - ${artifactId}-data:/oodt/data
+      - ${artifactId}-temp:/tmp
+
+  filemgr:
+    image: ${artifactId}-filemgr:${version}
+    restart: always
+    ports:
+      - 9000:9000
+    environment:
+      - SOLR_URL=http://solr:8983
+    volumes:
+      - ${artifactId}-filemgr-policy:/oodt/filemgr/policy
+      - ${artifactId}-logs:/oodt/filemgr/logs
+      - ${artifactId}-data:/oodt/data
+      - ${artifactId}-temp:/tmp
+
+  resmgr:
+    image: ${artifactId}-resmgr:${version}
+    restart: always
+    ports:
+      - 9001:9001
+    volumes:
+      - ${artifactId}-resmgr-policy:/oodt/resmgr/policy
+      - ${artifactId}-data:/oodt/data
+      - ${artifactId}-logs:/oodt/resmgr/logs
+      - ${artifactId}-temp:/tmp
+
+  solr:
+    image: ${artifactId}-solr:${version}
+    restart: always
+    ports:
+      - 8983:8983
+
+  workflow:
+    image: ${artifactId}-workflow:${version}
+    restart: always
+    ports:
+      - 9002:9002
+    environment:
+      - RESMGR_URL=http://resmgr:9001
+    volumes:
+      - ${artifactId}-workflow-policy:/oodt/workflow/policy
+      - ${artifactId}-logs:/oodt/workflow/logs
+      - ${artifactId}-temp:/tmp
+
+  opsui:
+    image: ${artifactId}-opsui:${version}
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - FILEMGR_URL=http://filemgr:9000
+      - RESMGR_URL=http://resmgr:9001
+      - WORKFLOW_URL=http://workflow:9002
+      - GANGLIA_URL=
+    volumes:
+      - ${artifactId}-workflow-policy:/oodt/workflow/policy
+      - ${artifactId}-pcs-policy:/oodt/pcs/policy
+
+volumes:
+  ${artifactId}-crawler-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/crawler/src/main/resources/policy
+  ${artifactId}-filemgr-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/filemgr/src/main/resources/policy
+  ${artifactId}-resmgr-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/resmgr/src/main/resources/policy
+  ${artifactId}-workflow-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/workflow/src/main/resources/policy
+  ${artifactId}-pcs-policy:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/pcs/src/main/resources/policy
+  ${artifactId}-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/logs
+  ${artifactId}-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/data
+  ${artifactId}-temp:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/temp

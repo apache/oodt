@@ -55,6 +55,12 @@ if [ -z "$WORKFLOW_HOME" ]; then
   export WORKFLOW_HOME
 fi
 
+# Only set RESMGR_URL if not already set
+if [ -z "$RESMGR_URL" ]; then
+  RESMGR_URL=http://localhost:9002
+  export RESMGR_URL
+fi
+
 if [ -z "$WORKFLOW_PID" ]; then
   WORKFLOW_PID="$WORKFLOW_HOME"/run/cas.workflow.pid
 fi

@@ -37,6 +37,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 //JDK imports
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
 
@@ -47,7 +48,7 @@ import java.util.List;
  * <p>Interface of client for FileManager RPC logic. All methods that are used for
  * RPC transfer.</p>
  */
-public interface FileManagerClient extends Closeable {
+public interface FileManagerClient extends Closeable, Serializable {
 
     public boolean refreshConfigAndPolicy();
 

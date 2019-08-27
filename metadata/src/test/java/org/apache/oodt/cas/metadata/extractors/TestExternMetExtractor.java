@@ -144,11 +144,11 @@ public class TestExternMetExtractor extends MetadataTestCase {
     replaceMet.addMetadata(testPathKey, extractorFile.getParent());
     confFileContents = PathUtils.replaceEnvVariables(confFileContents, replaceMet);
     FileUtils.writeStringToFile(this.confFile, confFileContents);
-    
+
 
     try {
       extractor = new ExternMetExtractor();
-    } catch (InstantiationException e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
   }

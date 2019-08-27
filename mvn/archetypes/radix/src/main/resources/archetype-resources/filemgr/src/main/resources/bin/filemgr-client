@@ -55,6 +55,12 @@ if [ -z "$FILEMGR_HOME" ]; then
   export FILEMGR_HOME
 fi
 
+# Only set SOLR_URL if not already set
+if [ -z "$SOLR_URL" ]; then
+  SOLR_URL="http://localhost:8080/solr/oodt-fm"
+  export SOLR_URL
+fi
+
 # For Cygwin, ensure paths are in UNIX format before anything is touched
 if $cygwin; then
   [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`

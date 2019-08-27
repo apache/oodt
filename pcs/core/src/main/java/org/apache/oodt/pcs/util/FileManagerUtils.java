@@ -36,6 +36,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.io.File;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,7 +56,7 @@ import java.util.logging.Logger;
  * @version $Revision$
  * 
  */
-public class FileManagerUtils implements PCSConfigMetadata {
+public class FileManagerUtils implements PCSConfigMetadata, Serializable {
   /* our log stream */
   private static Logger LOG = Logger
       .getLogger(FileManagerUtils.class.getName());

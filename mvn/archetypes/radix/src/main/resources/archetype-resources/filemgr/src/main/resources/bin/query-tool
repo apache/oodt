@@ -55,6 +55,12 @@ if [ -z "$FILEMGR_HOME" ]; then
   export FILEMGR_HOME
 fi
 
+# Only set SOLR_URL if not already set
+if [ -z "$SOLR_URL" ]; then
+  SOLR_URL="http://localhost:8080/solr/oodt-fm"
+  export SOLR_URL
+fi
+
 if [ -z "$FILEMGR_PID" ]; then
   FILEMGR_PID="$FILEMGR_HOME"/run/cas.filemgr.pid
 fi
