@@ -32,16 +32,16 @@ import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
 @Provider
 public class CasProductExceptionMapper implements ExceptionMapper<CasProductException> {
 
-  // Maps CasProductException to HTTP Response
+  /** Maps CasProductException to HTTP Response */
   @Override
   public Response toResponse(CasProductException exception) {
 
-    // Initialising ErrorMessage Entity for Mapping to Response
+    /** Initialising ErrorMessage Entity for Mapping to Response */
     ErrorMessage errorMessageEntity =
         new ErrorMessage(
             Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), exception.getMessage());
 
-    // Maps Error Status 500 to Response
+    /** Maps Error Status 500 to Response */
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
         .entity(errorMessageEntity)
         .type(MediaType.APPLICATION_JSON)

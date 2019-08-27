@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import org.apache.oodt.cas.product.jaxrs.enums.ErrorTypes;
+import org.apache.oodt.cas.product.jaxrs.enums.ErrorType;
 import org.apache.oodt.cas.product.jaxrs.errors.ErrorMessage;
 import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 
@@ -33,18 +33,18 @@ import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 @Provider
 public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 
-  // Maps NotFoundException to HTTP Response
+  /* Maps NotFoundException to HTTP Response */
   @Override
   public Response toResponse(NotFoundException exception) {
 
-    // Initialising ErrorMessage Entity for Mapping to Response
+    /* Initialising ErrorMessage Entity for Mapping to Response */
     ErrorMessage errorMessageEntity =
         new ErrorMessage(
             Response.Status.NOT_FOUND.getStatusCode(),
-            ErrorTypes.NOT_FOUND_EXCEPTION.getErrorType(),
+            ErrorType.NOT_FOUND_EXCEPTION.getErrorType(),
             exception.getMessage());
 
-    // Maps Error Status 404 to Response
+    /* Maps Error Status 404 to Response */
     return Response.status(Response.Status.NOT_FOUND)
         .entity(errorMessageEntity)
         .type(MediaType.APPLICATION_JSON)

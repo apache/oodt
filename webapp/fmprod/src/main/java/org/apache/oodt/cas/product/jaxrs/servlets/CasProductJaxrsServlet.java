@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -38,6 +37,9 @@ import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.jaxrs.configurations.RdfConfiguration;
 import org.apache.oodt.cas.product.jaxrs.configurations.RssConfiguration;
+import org.apache.oodt.cas.product.jaxrs.filters.CORSFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a single place to initialize items such as the file manager client,
@@ -50,8 +52,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
   // Auto-generated ID for serialization.
   private static final long serialVersionUID = -1835790185000773396L;
 
-  private static final Logger LOGGER = Logger.getLogger(CasProductJaxrsServlet
-    .class.getName());
+  private static Logger logger = LoggerFactory.getLogger(CORSFilter.class);
 
   private static final int CONFIG_PARAM_LENGTH = 3;
   private static final int CONFIG_PARAM_FORMAT = 1;
@@ -92,8 +93,10 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
       else
       {
         // Try the default URL for the file manager.
-        LOGGER.log(Level.WARNING, "Unable to find a servlet context parameter "
-          + "for the file manager URL.");
+        logger.debug(
+            "WARNING Exception Thrown: {}",
+            "Unable to find a servlet context parameter \"\n"
+                + "          + \"for the file manager URL.");
         url = new URL("http://localhost:9000");
       }
 
@@ -105,14 +108,18 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
     catch (MalformedURLException e)
     {
       String message = "Encountered a malformed URL for the file manager.";
-      LOGGER.log(Level.SEVERE, message, e);
+      logger.debug(
+          "Exception Thrown: {}",
+          message,e);
       throw new ServletException(message);
     }
     catch (ConnectionException e)
     {
       String message =
         "Client could not establish a connection to the file manager.";
-      LOGGER.log(Level.SEVERE, message, e);
+      logger.debug(
+          "Exception Thrown: {}",
+          message,e);
       throw new ServletException(message);
     }
   }
@@ -138,20 +145,25 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
       if (workingDir.exists() && workingDir.isDirectory())
       {
         context.setAttribute("workingDir", workingDir);
-        LOGGER.log(Level.FINE, "The file manager's working directory has been "
-          + "set up as " + workingDir.getAbsolutePath());
+        logger.debug(
+            "Exception Thrown: {}",
+            "The file manager's working directory has been "
+                + "set up as " + workingDir.getAbsolutePath());
       }
       else
       {
-        LOGGER.log(Level.SEVERE, "Unable to locate the working directory for "
-          + "the file manager.");
+        logger.debug(
+            "Exception Thrown: {}",
+            "Unable to locate the working directory for "
+                + "the file manager.");
       }
     }
     else
     {
       String message = "Unable to find a servlet context parameter for the file"
         + " manager working directory path.";
-      LOGGER.log(Level.SEVERE, message);
+      logger.debug(
+          "Exception Thrown: {}",message);
       throw new ServletException(message);
     }
   }
@@ -203,14 +215,15 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
           }
           catch (IOException e)
           {
-            LOGGER.log(Level.WARNING, "The configuration '" + parameterName
-              + "'could not be initialized (value: " + value + ").", e);
+            logger.debug(
+                "WARNING Exception Thrown: {}","The configuration '" + parameterName
+                    + "'could not be initialized (value: " + value + ").", e);
           }
         }
         else
         {
-          LOGGER.log(Level.FINE,
-            "Configuration context parameter could not be parsed.");
+          logger.debug(
+              "Exception Thrown: {}","Configuration context parameter could not be parsed.");
         }
       }
     }
