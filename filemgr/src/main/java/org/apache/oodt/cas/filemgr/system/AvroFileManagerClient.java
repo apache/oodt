@@ -68,10 +68,10 @@ public class AvroFileManagerClient implements FileManagerClient {
     private static final Logger logger = LoggerFactory.getLogger(AvroFileManagerClient.class);
 
     /** Avro-Rpc client */
-    private Transceiver client;
+    private transient Transceiver client;
 
     /** proxy for the server */
-    private AvroFileManager proxy;
+    private transient AvroFileManager proxy;
 
     /* URL where the fileManager is */
     private URL fileManagerUrl;

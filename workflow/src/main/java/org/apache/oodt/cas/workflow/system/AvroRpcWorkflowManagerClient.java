@@ -47,8 +47,8 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AvroRpcWorkflowManagerClient.class);
 
-    private Transceiver client;
-    private org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager proxy;
+    private transient Transceiver client;
+    private transient org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager proxy;
     private URL workflowManagerUrl;
 
     public AvroRpcWorkflowManagerClient(URL url){
@@ -240,7 +240,7 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
     public void setWorkflowManagerUrl(URL workflowManagerUrl) {
         this.workflowManagerUrl = workflowManagerUrl;
         try {
-            client = new NettyTransceiver(new InetSocketAddress(workflowManagerUrl.getPort()));
+            client = new NettyTransceiver(new InetSocketAddress(workflowManagerUrl.getHost(), workflowManagerUrl.getPort()));
             proxy = SpecificRequestor.getClient(org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class, client);
         } catch (IOException e) {
             logger.error("Error occurred when setting workflow manager url: {}", workflowManagerUrl, e);
