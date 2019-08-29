@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose.yml
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ${artifactId}-workflow
+  name: ${artifactId}-workflow
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ${artifactId}-workflow
+    spec:
+      containers:
+      - env:
+        - name: RESMGR_URL
+          value: http://resmgr:9001
+        image: ${artifactId}-workflow:1.0-SNAPSHOT
+        name: ${artifactId}-workflow
+        ports:
+        - containerPort: 9002
+        resources: {}
+        volumeMounts:
+        - mountPath: /oodt/workflow/policy
+          name: ${artifactId}-workflow-policy
+        - mountPath: /oodt/workflow/logs
+          name: ${artifactId}-logs
+        - mountPath: /tmp
+          name: ${artifactId}-temp
+      restartPolicy: Always
+      volumes:
+      - name: ${artifactId}-workflow-policy
+        persistentVolumeClaim:
+          claimName: ${artifactId}-workflow-policy
+      - name: ${artifactId}-logs
+        persistentVolumeClaim:
+          claimName: ${artifactId}-logs
+      - name: ${artifactId}-temp
+        persistentVolumeClaim:
+          claimName: ${artifactId}-temp
+status: {}
