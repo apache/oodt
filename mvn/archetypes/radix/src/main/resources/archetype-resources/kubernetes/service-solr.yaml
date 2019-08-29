@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose.yml
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ${artifactId}-solr
+  name: ${artifactId}-solr
+spec:
+  ports:
+  - name: "8983"
+    port: 8983
+    targetPort: 8983
+  selector:
+    io.kompose.service: ${artifactId}-solr
+status:
+  loadBalancer: {}
