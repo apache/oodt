@@ -4,6 +4,7 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author ngimhana (Nadeeshan Gimhana)
  */
+@Path("workflow")
 public class WMJaxrsServiceV2 {
 
   private static org.slf4j.Logger logger = LoggerFactory.getLogger(WMJaxrsServiceV2.class);
@@ -49,7 +51,7 @@ public class WMJaxrsServiceV2 {
     }
 
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_WORKFLOWMGR_CLIENT_UNAVILABLE.getErrorType();
-    logger.debug("Warning Message: ", message);
+    logger.debug("Warning Message: {}", message);
     throw new WorkflowException(message);
   }
 
@@ -60,16 +62,16 @@ public class WMJaxrsServiceV2 {
    * @return an HTTP response that represents a {@link WorkflowInstance} from the workflow manager
    */
   @GET
-  @Path("workflowInst")
+  @Path("instance/{ID}")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
   public WorkflowInstanceResource getWorkflowInstanceById(
-      @QueryParam("workflowInstId") String workflowInstId) throws WebApplicationException {
+      @PathParam("ID") String workflowInstId) throws WebApplicationException {
     try {
       WorkflowManagerClient wmclient = getContextClient();
       WorkflowInstance workflowInstanceById = wmclient.getWorkflowInstanceById(workflowInstId);
       WorkflowInstanceResource workflowResource =
           new WorkflowInstanceResource(workflowInstanceById);
-      logger.debug("WorkFlowInstance ID : " + workflowInstId);
+      logger.debug("WorkFlowInstance ID : {}" + workflowInstId);
       return workflowResource;
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
@@ -84,7 +86,7 @@ public class WMJaxrsServiceV2 {
    *     manager
    */
   @GET
-  @Path("workflows/firstpage")
+  @Path("firstpage")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
   public WorkflowInstancePageResource getWorkflowInstancesAtFirstPage()
       throws WebApplicationException {
@@ -106,9 +108,9 @@ public class WMJaxrsServiceV2 {
    * @throws Exception if there occurred an error while executing the operation
    */
   @POST
-  @Path("stop/workflow")
+  @Path("stop/{ID}")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-  public Response stopWorkflowInstance(@QueryParam("workflowInstanceId") String workflowInstanceId)
+  public Response stopWorkflowInstance(@PathParam("ID") String workflowInstanceId)
       throws WebApplicationException {
     try {
       WorkflowManagerClient wmclient = getContextClient();
@@ -134,9 +136,9 @@ public class WMJaxrsServiceV2 {
    * @throws Exception if there occurred an error while executing the operation
    */
   @POST
-  @Path("pause/workflow")
+  @Path("pause/{ID}")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-  public Response pauseWorkflowInstance(@QueryParam("workflowInstanceId") String workflowInstanceId)
+  public Response pauseWorkflowInstanc(@PathParam("ID") String workflowInstanceId)
       throws WebApplicationException {
     try {
       WorkflowManagerClient wmclient = getContextClient();
@@ -162,10 +164,10 @@ public class WMJaxrsServiceV2 {
    * @throws Exception if there occurred an error while executing the operation
    */
   @POST
-  @Path("resume/workflow")
+  @Path("resume/{ID}")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
   public Response resumeWorkflowInstance(
-      @QueryParam("workflowInstanceId") String workflowInstanceId) throws WebApplicationException {
+      @PathParam("ID") String workflowInstanceId) throws WebApplicationException {
     try {
       WorkflowManagerClient wmclient = getContextClient();
       boolean workflowStatus = wmclient.stopWorkflowInstance(workflowInstanceId);
@@ -193,7 +195,7 @@ public class WMJaxrsServiceV2 {
    * @throws Exception if there occurred an error while executing the operation
    */
   @POST
-  @Path("updatestatus/workflow")
+  @Path("updatestatus")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
   public Response resumeWorkflowInstance(
       @QueryParam("workflowInstanceId") String workflowInstanceId,

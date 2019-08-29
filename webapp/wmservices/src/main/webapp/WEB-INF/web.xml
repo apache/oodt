@@ -15,9 +15,9 @@
   License for the specific language governing permissions and limitations under
   the License.
 -->
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  version="2.5"
+<web-app version="2.5"
   xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
@@ -34,6 +34,10 @@
   </filter-mapping>
 
   <servlet>
+    <servlet-name>WmServicesServlet</servlet-name>
+    <servlet-class>
+      org.apache.oodt.cas.wmservices.servlets.WmServicesServlet
+    </servlet-class>
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
@@ -45,10 +49,6 @@
       <param-value>prototype</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
-    <servlet-class>
-      org.apache.oodt.cas.wmservices.servlets.WmServicesServlet
-    </servlet-class>
-    <servlet-name>WmServicesServlet</servlet-name>
   </servlet>
 
   <servlet>
@@ -92,7 +92,7 @@
   <!-- CORS Header Filtering -->
   <servlet-mapping>
     <servlet-name>WmServicesServletV2</servlet-name>
-    <url-pattern>/jaxrs/v2/*</url-pattern>
+    <url-pattern>/wmservice/v2/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

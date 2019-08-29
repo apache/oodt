@@ -27,7 +27,8 @@ import javax.ws.rs.WebApplicationException;
  * @version $Revision$
  */
 public class InternalServerErrorException extends WebApplicationException {
-  /** Auto-generated ID for serialization. * */
+
+  /** Auto-generated ID for serialization. */
   private static final long serialVersionUID = -6132240509391531373L;
 
   /**

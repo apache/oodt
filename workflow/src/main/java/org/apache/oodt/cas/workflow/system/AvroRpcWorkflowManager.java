@@ -90,13 +90,13 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
             throw new IllegalStateException("Null engine");
         }
 
-        URL workflowManagerUrl = safeGetUrlFromString("http://localhost" + ":" + port);
+        URL workflowManagerUrl = safeGetUrlFromString("http://" + getHostname() + ":" + port);
         if(workflowManagerUrl == null){
             throw new IllegalStateException("Null workflow manager URL");
         }
 
         logger.debug("Setting workflow engine url: {}", workflowManagerUrl.toString());
-        engine.setWorkflowManagerUrl(safeGetUrlFromString("http://localhost" + ":" + port));
+        engine.setWorkflowManagerUrl(safeGetUrlFromString("http://" + getHostname()  + ":" + port));
         repo = getWorkflowRepositoryFromProperty();
 
         logger.debug("Starting Http Server...");

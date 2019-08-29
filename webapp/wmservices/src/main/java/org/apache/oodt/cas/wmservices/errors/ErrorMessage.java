@@ -21,75 +21,61 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This is the Corresponding JAVA object for HTTP exception response payload
+ *
  * @author ngimhana (Nadeeshan Gimhana)
  */
 @XmlRootElement
 public class ErrorMessage {
 
-    /** Status code = 400,404,500 etc. **/
-    private int errorStatusCode;
+  /** Status code = 400,404,500 etc. * */
+  private int errorStatusCode;
 
-    /** Basic Description for the Error = InternalServerException etc. **/
-    private String errorType;
+  /** Basic Description for the Error = InternalServerException etc. * */
+  private String errorType;
 
-    /** More Information regarding the thrown exception = Reason for exception in Server side **/
-    private String exception;
+  /** More Information regarding the thrown exception = Reason for exception in Server side * */
+  private String exception;
 
-    public ErrorMessage() {}
+  public ErrorMessage() {}
 
-    public ErrorMessage(int errorStatusCode , String errorType, String exception)
-    {
-        this.setErrorStatusCode(errorStatusCode);
-        this.setErrorType(errorType);
-        this.setException(exception);
-    }
+  public ErrorMessage(int errorStatusCode, String errorType, String exception) {
+    this.setErrorStatusCode(errorStatusCode);
+    this.setErrorType(errorType);
+    this.setException(exception);
+  }
 
+  public ErrorMessage(int errorStatusCode, String message) {
+    this.setErrorStatusCode(errorStatusCode);
+    this.setErrorType(message);
+  }
 
-    public ErrorMessage(int errorStatusCode , String message)
-    {
-        this.setErrorStatusCode(errorStatusCode);
-        this.setErrorType(message);
-    }
+  /** @return the errorStatusCode */
+  public int getErrorStatusCode() {
+    return errorStatusCode;
+  }
 
-    /**
-     * @return the errorStatusCode
-     */
-    public int getErrorStatusCode() {
-        return errorStatusCode;
-    }
+  /** @param errorStatusCode the errorStatusCode to set */
+  public void setErrorStatusCode(int errorStatusCode) {
+    this.errorStatusCode = errorStatusCode;
+  }
 
-    /**
-     * @param errorStatusCode the errorStatusCode to set
-     */
-    public void setErrorStatusCode(int errorStatusCode) {
-        this.errorStatusCode = errorStatusCode;
-    }
+  /** @return the errorType */
+  public String getErrorType() {
+    return errorType;
+  }
 
-    /**
-     * @return the errorType
-     */
-    public String getErrorType() {
-        return errorType;
-    }
+  /** @param errorType the errorType to set */
+  public void setErrorType(String errorType) {
+    this.errorType = errorType;
+  }
 
-    /**
-     * @param errorType the errorType to set
-     */
-    public void setErrorType(String errorType) {
-        this.errorType = errorType;
-    }
+  /** @return the exception */
+  public String getException() {
+    return exception;
+  }
 
-    /**
-     * @return the exception
-     */
-    public String getException() {
-        return exception;
-    }
-
-    /**
-     * @param exception the exception to set
-     */
-    public void setException(String exception) {
-        this.exception = exception;
-    }
+  /** @param exception the exception to set */
+  public void setException(String exception) {
+    this.exception = exception;
+  }
 }

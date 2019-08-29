@@ -27,7 +27,8 @@ import javax.ws.rs.WebApplicationException;
  * @version $Revision$
  */
 public class NotFoundException extends WebApplicationException {
-  /** Auto-generated ID for serialization. * */
+
+  /** Auto-generated ID for serialization. */
   private static final long serialVersionUID = -3835077083758525919L;
 
   /**
