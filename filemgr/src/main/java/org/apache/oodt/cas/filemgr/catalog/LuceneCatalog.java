@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -509,7 +510,7 @@ public class LuceneCatalog implements Catalog {
         if (prod != null) {
             return prod.getProductReferences();
         } else {
-            throw new CatalogException("No product found with matching Id");
+            return Collections.emptyList();
         }
     }
 
@@ -556,7 +557,6 @@ public class LuceneCatalog implements Catalog {
                 } else {
                     LOG.log(Level.FINEST,
                         "Request for products returned no results");
-                    return products;
                 }
             }
         } catch (IOException e) {
@@ -623,7 +623,6 @@ public class LuceneCatalog implements Catalog {
                 } else {
                     LOG.log(Level.FINEST, "Request for products by type: ["
                         + type.getProductTypeId() + "] returned no results");
-                    return products;
                 }
             }
 
@@ -775,10 +774,6 @@ public class LuceneCatalog implements Catalog {
                     LOG.log(Level.WARNING, "Top N query produced no products!");
                 }
             }
-            else{
-                return products;
-            }
-
         } catch (IOException e) {
             LOG.log(Level.WARNING,
                     "IOException when opening index directory: ["
@@ -834,12 +829,8 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
     @Override
-    public ValidationLayer getValidationLayer() throws CatalogException {
-        if(valLayer != null) {
-            return valLayer;
-        } else {
-            throw new CatalogException("validation layer is not initialized");
-        }
+    public ValidationLayer getValidationLayer() {
+        return valLayer;
     }
 
     /*
