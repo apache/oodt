@@ -51,8 +51,8 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
     /* resource manager url */
     private URL resMgrUrl = null;
 
-    Transceiver client;
-    ResourceManager proxy;
+    transient Transceiver client;
+    transient ResourceManager proxy;
 
     public AvroRpcResourceManagerClient(URL url) {
         // set up the configuration, if there is any
@@ -73,7 +73,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         }
 
         try {
-            this.client = new NettyTransceiver(new InetSocketAddress(url.getPort()));
+            this.client = new NettyTransceiver(new InetSocketAddress(url.getHost(), url.getPort()));
             proxy = (ResourceManager) SpecificRequestor.getClient(ResourceManager.class, client);
         } catch (IOException e) {
             e.printStackTrace();

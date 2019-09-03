@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose.yml
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ${artifactId}-crawler
+  name: ${artifactId}-crawler
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ${artifactId}-crawler
+    spec:
+      containers:
+      - env:
+        - name: BACKUP_DIR
+          value: /tmp
+        - name: FAILURE_DIR
+          value: /tmp
+        - name: FILEMGR_URL
+          value: http://filemgr:9000
+        - name: PUSHPULL_MET_FILE_EXT
+          value: met
+        - name: RELATIVE_PRODUCT_PATH
+        - name: WORKFLOW_URL
+          value: http://workflow:9002
+        image: ${artifactId}-crawler:1.0-SNAPSHOT
+        name: ${artifactId}-crawler
+        resources: {}
+        volumeMounts:
+        - mountPath: /oodt/crawler/policy
+          name: ${artifactId}-crawler-policy
+        - mountPath: /oodt/crawler/logs
+          name: ${artifactId}-logs
+        - mountPath: /oodt/data
+          name: ${artifactId}-data
+        - mountPath: /tmp
+          name: ${artifactId}-temp
+      restartPolicy: Always
+      volumes:
+      - name: ${artifactId}-crawler-policy
+        persistentVolumeClaim:
+          claimName: ${artifactId}-crawler-policy
+      - name: ${artifactId}-logs
+        persistentVolumeClaim:
+          claimName: ${artifactId}-logs
+      - name: ${artifactId}-data
+        persistentVolumeClaim:
+          claimName: ${artifactId}-data
+      - name: ${artifactId}-temp
+        persistentVolumeClaim:
+          claimName: ${artifactId}-temp
+status: {}
