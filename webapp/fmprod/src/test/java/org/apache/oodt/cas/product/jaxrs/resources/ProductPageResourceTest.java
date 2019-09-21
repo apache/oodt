@@ -35,10 +35,8 @@ public class ProductPageResourceTest {
   public void testXmlMarshalling()
       throws JAXBException, IOException, SAXException, MimeTypeException {
 
-    /*
-     Create a ProductResource using ProductType, Reference, Metadata and
-     Product instances.
-    */
+    // Create a ProductResource using ProductType, Reference, Metadata and
+    // Product instances.
     HashMap<String, Object> metadataEntries = new HashMap<>();
     metadataEntries.put("CAS.Test", "test value");
     Metadata metadata = new Metadata();
@@ -70,11 +68,11 @@ public class ProductPageResourceTest {
 
     ProductPage productPage = new ProductPage(1, 1, 20, pageProducts);
 
-    /** Create a ProductPageResource using Reference, Metadata and Product instances. * */
+    //      Create a ProductPageResource using Reference, Metadata and Product instances.
     ProductPageResource resource =
         new ProductPageResource(productPage, metadataList, productReferencesList, new File("/tmp"));
 
-    /** Generate the expected output. * */
+    //      Generate the expected output.
     String expectedXml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
             + "<productPage>"
@@ -141,13 +139,13 @@ public class ProductPageResourceTest {
             + "</products>"
             + "</productPage>";
 
-    /** Set up a JAXB context and marshall the ProductResource to XML. * */
+    // Set up a JAXB context and marshall the ProductResource to XML.
     JAXBContext context = JAXBContext.newInstance(resource.getClass());
     Marshaller marshaller = context.createMarshaller();
     StringWriter writer = new StringWriter();
     marshaller.marshal(resource, writer);
 
-    /** Compare the expected and actual outputs. * */
+    // Compare the expected and actual outputs.
     XMLUnit.setIgnoreWhitespace(true);
     XMLUnit.setIgnoreComments(true);
     XMLUnit.setIgnoreAttributeOrder(true);

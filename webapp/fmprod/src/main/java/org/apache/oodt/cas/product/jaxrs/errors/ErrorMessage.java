@@ -26,13 +26,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ErrorMessage {
 
-  /** Status code = 400, 405, 500 etc */
+  /** Status code = 400,404,500 etc. */
   private int errorStatusCode;
 
-  /** Basic Description for the Error = InternalServerException etc. * */
+  /** Basic Description for the Error = InternalServerException etc. */
   private String errorType;
 
-  /** More Information regarding the thrown exception = Reason for exception in Server side * */
+  /** More Information regarding the thrown exception = Reason for exception in Server side */
   private String exception;
 
   public ErrorMessage() {}

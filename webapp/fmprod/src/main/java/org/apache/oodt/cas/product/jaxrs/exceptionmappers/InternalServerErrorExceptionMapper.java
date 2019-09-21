@@ -33,16 +33,16 @@ import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException
 public class InternalServerErrorExceptionMapper
     implements ExceptionMapper<InternalServerErrorException> {
 
-  /** Maps InternalServerException to HTTP Response **/
+  /** Maps InternalServerException to HTTP Response */
   @Override
   public Response toResponse(InternalServerErrorException exception) {
 
-    /** Initialising ErrorMessage Entity for Mapping to Response **/
+    /* Initialising ErrorMessage Entity for Mapping to Response */
     ErrorMessage errorMessageEntity =
         new ErrorMessage(
             Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), exception.getMessage());
 
-    /** Maps Error Status 500 to Response **/
+    /* Maps Error Status 500 to Response */
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
         .entity(errorMessageEntity)
         .type(MediaType.APPLICATION_JSON)

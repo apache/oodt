@@ -17,18 +17,20 @@
 
 package org.apache.oodt.cas.product.jaxrs.services;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.activation.DataHandler;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -71,9 +73,9 @@ import org.slf4j.LoggerFactory;
  */
 public class FileManagerJaxrsServiceV2 {
 
-  private static Logger logger = LoggerFactory.getLogger(FileManagerJaxrsServiceV2.class);
+  private static Logger logger = LoggerFactory.getLogger(CORSFilter.class);
 
-  /* The servlet context, which is used to retrieve context parameters. */
+  // The servlet context, which is used to retrieve context parameters.
   @Context private ServletContext context;
 
   /**
@@ -97,7 +99,7 @@ public class FileManagerJaxrsServiceV2 {
     try {
       FileManagerClient client = getContextClient();
 
-      /* Get the first ProductPage */
+      // Get the first ProductPage
       ProductPage genericFile = client.getFirstPage(client.getProductTypeByName(productTypeName));
 
       return getProductPageResource(client, genericFile);
@@ -131,23 +133,23 @@ public class FileManagerJaxrsServiceV2 {
     try {
       FileManagerClient client = getContextClient();
 
-      /* Get the first ProductPage */
+      // Get the first ProductPage
       ProductPage firstpage = client.getFirstPage(client.getProductTypeByName(productTypeName));
 
-      /* Get the next ProductPage */
+      // Get the next ProductPage
       ProductPage nextPage =
           client.getNextPage(client.getProductTypeByName(productTypeName), firstpage);
 
-      /* Searching for the current page */
+      // Searching for the current page
       while (nextPage.getPageNum() != currentProductPage - 1) {
         nextPage = client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
       }
 
-      /* Get the next page from the current page */
+      // Get the next page from the current page
       ProductPage genericFile =
           client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
 
-      /* Return ProductPage resource */
+      // Return ProductPage resource
       return getProductPageResource(client, genericFile);
 
     } catch (Exception e) {
@@ -166,10 +168,10 @@ public class FileManagerJaxrsServiceV2 {
       FileManagerClient client, ProductPage genericFile)
       throws CatalogException, CasProductException {
 
-    /* List for storing Metadata of the products in the ProductPage */
+    // List for storing Metadata of the products in the ProductPage
     List<Metadata> proMetaDataList = new ArrayList<>();
 
-    /* List for storing References of the products in the ProductPage */
+    // List for storing References of the products in the ProductPage
     List<List<Reference>> proReferencesList = new ArrayList<>();
 
     for (Product pro : genericFile.getPageProducts()) {
@@ -196,7 +198,7 @@ public class FileManagerJaxrsServiceV2 {
     }
 
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_FILEMGR_WORKING_DIR_UNAVILABLE.getErrorType();
-    logger.debug("File Manager Exception : ", message);
+    logger.debug("Exception Thrown: {}", message);
     throw new CasProductException(message);
   }
 
@@ -207,14 +209,14 @@ public class FileManagerJaxrsServiceV2 {
    * @throws Exception if an object cannot be retrieved from the context attribute
    */
   public FileManagerClient getContextClient() throws CasProductException {
-    /* Get the file manager client from the servlet context. */
+    // Get the file manager client from the servlet context.
     Object clientObject = context.getAttribute("client");
     if (clientObject != null && clientObject instanceof FileManagerClient) {
       return (FileManagerClient) clientObject;
     }
 
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_FILEMGR_CLIENT_UNAVILABLE.getErrorType();
-    logger.debug("File Manager Exception: ", message);
+    logger.debug("Exception Thrown: {}", message);
     throw new CasProductException(message);
   }
 
@@ -244,20 +246,22 @@ public class FileManagerJaxrsServiceV2 {
     try {
       FileManagerClient client = getContextClient();
 
-      /* Find the product. */
+      // Find the product.
       Product product = client.getProductById(productId);
       product.setProductReferences(client.getProductReferences(product));
 
-      /*
-       Create the product resource, add the product data and return the
-       resource as the HTTP response.
-      */
+      // Create the product resource, add the product data and return the
+      // resource as the HTTP response.
       return new ProductResource(
           product,
           client.getMetadata(product),
           product.getProductReferences(),
           getContextWorkingDir());
     } catch (Exception e) {
+      // Just for Logging Purposes
+      String message = "Unable to find the requested resource.";
+      logger.debug("Exception Thrown: {}", message);
+
       throw new NotFoundException(e.getMessage());
     }
   }
@@ -283,22 +287,29 @@ public class FileManagerJaxrsServiceV2 {
       String transferServiceFacClass =
           "org.apache.oodt.cas." + "filemgr.datatransfer.LocalDataTransferFactory";
 
-      /* Take Data Handlers for Product and Metadata Files */
+      // Take Data Handlers for Product and Metadata Files
       DataHandler productFileDataHandler = productFile.getDataHandler();
 
-      /* Get the input Streams of the CXF Attachments */
+      // Get the input Streams of the CXF Attachments
       InputStream productFileInputStream = productFileDataHandler.getInputStream();
 
-      /* Write the Product File and MetaFiles to a temporary Files in server before ingest. */
+      // Write the Product File and MetaFiles to a temporary Files in server before ingest.
       File inputProductFile =
           writeToFileServer(
               productFileInputStream, productFile.getContentDisposition().getParameter("filename"));
 
-      /* Get File Manager and Its URL */
+      // Write Default Meta File
+      String defaultMetaFileContent =
+          "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">\n" + "</cas:metadata>";
+      writeToFileServer(
+          new ByteArrayInputStream(defaultMetaFileContent.getBytes(StandardCharsets.UTF_8)),
+          productFile.getContentDisposition().getParameter("filename") + ".met");
+
+      // Get File Manager and Its URL
       FileManagerClient client = getContextClient();
       URL fmURL = client.getFileManagerUrl();
 
-      /* Use StdIngester for Simple File Ingesting */
+      // Use StdIngester for Simple File Ingesting
       StdIngester ingester = new StdIngester(transferServiceFacClass);
 
       /*
@@ -308,13 +319,13 @@ public class FileManagerJaxrsServiceV2 {
       MetExtractor metExtractor = new MetReaderExtractor();
       Metadata prodMeta = metExtractor.extractMetadata(inputProductFile);
 
-      /* Add Several Metadata to Metadata File */
+      // Add Several Metadata to Metadata File
       prodMeta.addMetadata(CoreMetKeys.FILENAME, inputProductFile.getName());
       prodMeta.addMetadata(CoreMetKeys.PRODUCT_TYPE, productType);
       prodMeta.addMetadata(CoreMetKeys.PRODUCT_STRUCTURE, productStructure);
       prodMeta.addMetadata(CoreMetKeys.PRODUCT_NAME, inputProductFile.getName());
 
-      /* Product File Location. should Only provide File Path without FileName */
+      // Product File Location. should Only provide File Path without FileName
       prodMeta.addMetadata(
           CoreMetKeys.FILE_LOCATION,
           (inputProductFile
@@ -346,33 +357,33 @@ public class FileManagerJaxrsServiceV2 {
       String transferServiceFacClass =
           "org.apache.oodt.cas." + "filemgr.datatransfer.LocalDataTransferFactory";
 
-      /* Take Data Handlers for Product and Metadata Files */
+      // Take Data Handlers for Product and Metadata Files
       DataHandler productFileDataHandler = productFile.getDataHandler();
       DataHandler metadataFileDataHandler = metadataFile.getDataHandler();
 
-      /* Get the input Streams of the CXF Attachments */
+      // Get the input Streams of the CXF Attachments
       InputStream productFileInputStream = productFileDataHandler.getInputStream();
       InputStream metadataFileInputStream = metadataFileDataHandler.getInputStream();
 
-      /* Write the Product File and MetaFiles to a temporary Files in server before ingest. */
+      // Write the Product File and MetaFiles to a temporary Files in server before ingest.
       File inputProductFile =
           writeToFileServer(
               productFileInputStream, productFile.getContentDisposition().getParameter("filename"));
 
-      //Get File Manager and Its URL
+      // Get File Manager and Its URL
       FileManagerClient client = getContextClient();
       URL fmURL = client.getFileManagerUrl();
 
-      /* Use StdIngester for Simple File Ingesting */
+      // Use StdIngester for Simple File Ingesting
       StdIngester ingester = new StdIngester(transferServiceFacClass);
 
       Metadata prodMeta = new SerializableMetadata(metadataFileInputStream);
 
-      /* Add Several Metadata to Metadata File */
+      // Add Several Metadata to Metadata File
       prodMeta.addMetadata(CoreMetKeys.FILENAME, inputProductFile.getName());
       prodMeta.addMetadata(CoreMetKeys.PRODUCT_NAME, inputProductFile.getName());
 
-      /* Product File Location. should Only provide File Path without FileName */
+      // Product File Location. should Only provide File Path without FileName
       prodMeta.addMetadata(
           CoreMetKeys.FILE_LOCATION,
           (inputProductFile
@@ -395,7 +406,7 @@ public class FileManagerJaxrsServiceV2 {
   private File writeToFileServer(InputStream inputStream, String fileName) {
 
     OutputStream outputStream = null;
-    File file = new File(fileName);
+    File file = new File("ingestedFiles/" + fileName);
     try {
       outputStream = new FileOutputStream(file);
       int read = 0;
@@ -425,10 +436,82 @@ public class FileManagerJaxrsServiceV2 {
       FileManagerClient client = getContextClient();
       String URL = client.getFileManagerUrl().toString();
       boolean fmStatus = client.isAlive();
-      FMStatusResource status = new FMStatusResource(URL, fmStatus);
+      FMStatusResource status = new FMStatusResource(URL, fmStatus, "Server Status");
       return Response.ok(status).build();
     } catch (Exception e) {
       throw new InternalServerErrorException(e.getMessage());
     }
   }
+
+  /**
+   * This method is for removing the ingested Products
+   *
+   * @return Response object with status and FMProb URL
+   */
+  @DELETE
+  @Path("removeProduct")
+  @Produces({"application/json", "application/xml"})
+  public Response removeIngestedProduct(@QueryParam("productId") String productId) {
+    try {
+      FileManagerClient client = getContextClient();
+
+      String URL = client.getFileManagerUrl().toString();
+      boolean fmStatus = client.isAlive();
+
+      boolean isRemoved = client.removeProduct(client.getProductById(productId));
+      FMStatusResource status =
+          new FMStatusResource(URL, fmStatus, "Product Removal Status: " + isRemoved);
+      return Response.ok(status).build();
+    } catch (Exception e) {
+      throw new InternalServerErrorException(e.getMessage());
+    }
+  }
+
+  //  /**
+  //   * This method is for retrieve a ingested Products
+  //   *
+  //   * @return Response object with status and FMProb URL
+  //   */
+  //  @GET
+  //  @Path("downloadProduct")
+  //
+  //  public Response downloadIngestedProduct(@QueryParam("productId") String productId) {
+  //    try {
+  //      FileManagerClient client = getContextClient();
+  //
+  //      String URL = client.getFileManagerUrl().toString();
+  //      boolean fmStatus = client.isAlive();
+  //
+  ////      String d = client.getProductById(productId).;//      byte[] bytes = client
+  //          byte [] bytes =
+  // client.retrieveFile("/home/castle/Software_tools/apache-tomcat-9.0.20/bin/ingestedFiles/Hello_2", 0, 2000);
+  //
+  //
+  //      //LOGGER.log(Level.INFO,"................."+d);
+  //      // Path of a file
+  //      String FILEPATH = "";
+  //      File outputFile = new File(FILEPATH);
+  //
+  //      // Initialize a pointer
+  //      // in file using OutputStream
+  //      OutputStream os = new FileOutputStream(outputFile);
+  //
+  //      os.write(bytes);
+  //
+  //      // Starts writing the bytes in it
+  //      os.write(bytes);
+  //      System.out.println("Successfully"
+  //          + " byte inserted");
+  //
+  //      // Close the file
+  //      os.close();
+  //      FMStatusResource status = new FMStatusResource(URL, fmStatus,"Product Retreval Status: " +
+  // bytes.length);
+  //      return Response.ok(status).build();
+  //
+  //    } catch (Exception e) {
+  //      throw new InternalServerErrorException(e.getMessage());
+  //    }
+  //  }
+
 }
