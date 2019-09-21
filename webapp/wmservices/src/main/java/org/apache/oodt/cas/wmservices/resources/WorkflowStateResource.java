@@ -15,9 +15,10 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
  * @author ngimhana (Nadeeshan Gimhana)
  */
 @XmlRootElement(name = "workflowState")
-@XmlType(propOrder = {"name","description","message","startTime","category","prevState"})
+@XmlType(propOrder = {"name", "description", "message", "startTime", "category", "prevState"})
 @XmlAccessorType(XmlAccessType.NONE)
 public class WorkflowStateResource {
+
   private String name;
   private String description;
   private String message;
@@ -25,15 +26,14 @@ public class WorkflowStateResource {
   private WorkflowLifecycleStage category;
   private WorkflowState prevState;
 
-  public WorkflowStateResource() {
-  }
+  public WorkflowStateResource() {}
 
   /**
    * Constructor that sets the workflowState to JAXRS resource.
    *
    * @param workflowState the workflowState associated with the resource
    */
-  public WorkflowStateResource(WorkflowState workflowState){
+  public WorkflowStateResource(WorkflowState workflowState) {
     this.name = workflowState.getName();
     this.description = workflowState.getDescription();
     this.message = workflowState.getMessage();
@@ -42,35 +42,33 @@ public class WorkflowStateResource {
     this.prevState = workflowState.getPrevState();
   }
 
-  @XmlElement(name="name")
+  @XmlElement(name = "name")
   public String getName() {
     return name;
   }
 
-  @XmlElement(name="description")
+  @XmlElement(name = "description")
   public String getDescription() {
     return description;
   }
 
-  @XmlElement(name="message")
+  @XmlElement(name = "message")
   public String getMessage() {
     return message;
   }
 
-  @XmlElement(name="startTime")
+  @XmlElement(name = "startTime")
   public Date getStartTime() {
     return startTime;
   }
 
-  @XmlElement(name="category")
+  @XmlElement(name = "category")
   public WorkflowLifecycleStage getCategory() {
     return category;
   }
 
-  @XmlElement(name="prevState")
+  @XmlElement(name = "prevState")
   public WorkflowState getPrevState() {
     return prevState;
   }
-
-
 }

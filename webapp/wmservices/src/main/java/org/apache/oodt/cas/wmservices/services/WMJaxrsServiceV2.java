@@ -34,7 +34,7 @@ public class WMJaxrsServiceV2 {
 
   private static org.slf4j.Logger logger = LoggerFactory.getLogger(WMJaxrsServiceV2.class);
 
-  // The servlet context, which is used to retrieve context parameters.
+  /** The servlet context, which is used to retrieve context parameters. */
   @Context private ServletContext context;
 
   /**
@@ -44,9 +44,9 @@ public class WMJaxrsServiceV2 {
    * @throws Exception if an object cannot be retrieved from the context attribute
    */
   public WorkflowManagerClient getContextClient() throws WorkflowException {
-    /** Get the workflow manager client from the servlet context.* */
+    // Get the workflow manager client from the servlet context.
     Object clientObject = context.getAttribute("client");
-    if (clientObject != null && clientObject instanceof WorkflowManagerClient) {
+    if (clientObject instanceof WorkflowManagerClient) {
       return (WorkflowManagerClient) clientObject;
     }
 
@@ -64,8 +64,8 @@ public class WMJaxrsServiceV2 {
   @GET
   @Path("instance/{ID}")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-  public WorkflowInstanceResource getWorkflowInstanceById(
-      @PathParam("ID") String workflowInstId) throws WebApplicationException {
+  public WorkflowInstanceResource getWorkflowInstanceById(@PathParam("ID") String workflowInstId)
+      throws WebApplicationException {
     try {
       WorkflowManagerClient wmclient = getContextClient();
       WorkflowInstance workflowInstanceById = wmclient.getWorkflowInstanceById(workflowInstId);
@@ -166,8 +166,8 @@ public class WMJaxrsServiceV2 {
   @POST
   @Path("resume/{ID}")
   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-  public Response resumeWorkflowInstance(
-      @PathParam("ID") String workflowInstanceId) throws WebApplicationException {
+  public Response resumeWorkflowInstance(@PathParam("ID") String workflowInstanceId)
+      throws WebApplicationException {
     try {
       WorkflowManagerClient wmclient = getContextClient();
       boolean workflowStatus = wmclient.stopWorkflowInstance(workflowInstanceId);

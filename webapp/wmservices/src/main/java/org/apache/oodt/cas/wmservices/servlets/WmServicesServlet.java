@@ -36,15 +36,18 @@ import org.slf4j.LoggerFactory;
 /**
  * Initialize workflow manager services servlet
  *
- * Set the following Parameters in context.xml for the webapp:
+ * <p>Set the following Parameters in context.xml for the webapp:
+ *
  * <ul>
- *  <li>workflow.url
- *  <li>packagedRepo.dir.path
+ *   <li>workflow.url
+ *   <li>packagedRepo.dir.path
  * </ul>
  *
  * @author vratnakar
  */
 public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
+
+  private static Logger logger = LoggerFactory.getLogger(WmServicesServlet.class);
 
   /**
    * The name of the servlet context attribute that holds a client for the workflow manager, a
@@ -57,7 +60,6 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
    */
   public static final String ATTR_NAME_PKG_REPO_DIR = "pkgRepoFilesDir";
 
-  private static Logger logger = LoggerFactory.getLogger(WmServicesServlet.class);
   // Auto-generated ID for serialization.
   private static final long serialVersionUID = -7830210280506307805L;
   // Default URL for the workflow manager
@@ -135,22 +137,19 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
       /* Get the workflow manager URL from the context parameter. */
       if (urlParameter != null) url = new URL(PathUtils.replaceEnvVariables(urlParameter));
       else {
-        message = "Unable to find a servlet context parameter "
-            + "for the workflow manager URL.";
+        message = "Unable to find a servlet context parameter for the workflow manager URL.";
         /* Try the default URL for the Workflow manager. */
-        logger.debug("WARNING Exception Thrown: {}",  message);
+        logger.debug("WARNING Exception Thrown: {}", message);
         url = new URL(DEFAULT_WM_URL);
       }
 
-      /*
-       Attempt to connect the client to the workflow manager and if successful
-       store the client as a context attribute for other objects to access.
-      */
+      // Attempt to connect the client to the workflow manager and if successful
+      // store the client as a context attribute for other objects to access.
       client = RpcCommunicationFactory.createClient(url);
       context.setAttribute("client", client);
     } catch (MalformedURLException e) {
       message = "Encountered a malformed URL for the workflow manager.";
-      logger.debug("Exception thrown: {}",message,e);
+      logger.debug("Exception thrown: {}", message, e);
       throw new ServletException(message);
     }
   }
@@ -171,20 +170,20 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
       File workingDir = new File(PathUtils.replaceEnvVariables(workingDirPath));
       if (workingDir.exists() && workingDir.isDirectory()) {
         context.setAttribute(ATTR_NAME_PKG_REPO_DIR, workingDir);
-        message = "The workflow manager's working directory has been "
-            + "set up as "
-            + workingDir.getAbsolutePath();
-        logger.debug("Exception thrown: {}",message);
+        message =
+            "The workflow manager's working directory has been "
+                + "set up as "
+                + workingDir.getAbsolutePath();
+        logger.debug("Exception thrown: {}", message);
       } else {
-        message = "Unable to locate the working directory for "
-            + "the workflow manager.";
-        logger.debug("SEVERE Exception thrown: {}",message);
+        message = "Unable to locate the working directory for " + "the workflow manager.";
+        logger.debug("SEVERE Exception thrown: {}", message);
       }
     } else {
       message =
           "Unable to find a servlet context parameter for the workflow"
               + " manager working directory path.";
-      logger.debug("SEVERE Exception thrown: {}",message);
+      logger.debug("SEVERE Exception thrown: {}", message);
       throw new ServletException(message);
     }
   }
@@ -197,7 +196,7 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
         client = null;
       } catch (IOException e) {
         String message = "Unable to close WM Client: " + e.getMessage();
-        logger.debug("SEVERE Exception thrown: {}",message);
+        logger.debug("SEVERE Exception thrown: {}", message);
       }
     }
 

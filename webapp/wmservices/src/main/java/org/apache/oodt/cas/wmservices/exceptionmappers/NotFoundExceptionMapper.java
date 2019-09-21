@@ -37,14 +37,14 @@ public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundExceptio
   @Override
   public Response toResponse(NotFoundException exception) {
 
-    /** Initialising ErrorMessage Entity for Mapping to Response * */
+    // Initialising ErrorMessage Entity for Mapping to Response
     ErrorMessage errorMessageEntity =
         new ErrorMessage(
             Response.Status.NOT_FOUND.getStatusCode(),
             ErrorType.NOT_FOUND_EXCEPTION.getErrorType(),
             exception.getMessage());
 
-    /** Maps Error Status 404 to Response * */
+    // Maps Error Status 404 to Response
     return Response.status(Response.Status.NOT_FOUND)
         .entity(errorMessageEntity)
         .type(MediaType.APPLICATION_JSON)

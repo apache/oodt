@@ -21,7 +21,7 @@ public class WMRequestStatusResource {
 
   public WMRequestStatusResource() {}
 
-  public WMRequestStatusResource(String url,String message) {
+  public WMRequestStatusResource(String url, String message) {
     this.url = url;
     this.message = message;
   }
@@ -31,10 +31,8 @@ public class WMRequestStatusResource {
     return url;
   }
 
-
   @XmlElement(name = "message")
   public String getMessage() {
     return message;
   }
-
 }
