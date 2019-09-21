@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -151,6 +152,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addMetadata(org.apache.oodt.cas.metadata.Metadata,
      *      org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public synchronized void addMetadata(Metadata m, Product product)
             throws CatalogException {
         CompleteProduct p;
@@ -182,6 +184,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#removeMetadata(org.apache.oodt.cas.metadata.Metadata,
      *      org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public synchronized void removeMetadata(Metadata m, Product product)
             throws CatalogException {
         CompleteProduct p;
@@ -240,6 +243,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public synchronized void addProduct(Product product)
             throws CatalogException {
         if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
@@ -276,6 +280,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#modifyProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public synchronized void modifyProduct(Product product)
             throws CatalogException {
         if (product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
@@ -306,6 +311,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#removeProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public synchronized void removeProduct(Product product)
             throws CatalogException {
         removeProductDocument(product);
@@ -316,6 +322,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#setProductTransferStatus(org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public synchronized void setProductTransferStatus(Product product)
             throws CatalogException {
         LOG.log(Level.FINE,
@@ -330,6 +337,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addProductReferences(org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public synchronized void addProductReferences(Product product)
             throws CatalogException {
         if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
@@ -361,6 +369,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductById(java.lang.String)
      */
+    @Override
     public Product getProductById(String productId) throws CatalogException {
         CompleteProduct prod = getCompleteProductById(productId, false);
         return prod.getProduct();
@@ -431,6 +440,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductByName(java.lang.String)
      */
+    @Override
     public Product getProductByName(String productName) throws CatalogException {
         return getProductByName(productName, false);
     }
@@ -494,12 +504,13 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductReferences(org.apache.oodt.cas.filemgr.structs.Product)
      */
+    @Override
     public List<Reference> getProductReferences(Product product) throws CatalogException {
         Product prod = getProductById(product.getProductId(), true);
         if (prod != null) {
             return prod.getProductReferences();
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -508,13 +519,14 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProducts()
      */
+    @Override
     public List<Product> getProducts() throws CatalogException {
         return getProducts(false);
     }
 
     private List<Product> getProducts(boolean getRefs) throws CatalogException {
         IndexSearcher searcher = null;
-        List<Product> products = null;
+        List<Product> products = new Vector<Product>();
 
         try {
             try {
@@ -536,7 +548,6 @@ public class LuceneCatalog implements Catalog {
 
                 // should be > 0 hits
                 if (hits.length > 0) {
-                    products = new Vector<Product>(hits.length);
                     for (ScoreDoc hit : hits) {
                         Document productDoc = searcher.doc(hit.doc);
                         CompleteProduct prod = toCompleteProduct(productDoc,
@@ -546,7 +557,6 @@ public class LuceneCatalog implements Catalog {
                 } else {
                     LOG.log(Level.FINEST,
                         "Request for products returned no results");
-                    return null;
                 }
             }
         } catch (IOException e) {
@@ -572,6 +582,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductsByProductType(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
+    @Override
     public List<Product> getProductsByProductType(ProductType type)
             throws CatalogException {
         return getProductsByProductType(type, false);
@@ -580,7 +591,7 @@ public class LuceneCatalog implements Catalog {
     private List<Product> getProductsByProductType(ProductType type, boolean getRefs)
             throws CatalogException {
         IndexSearcher searcher = null;
-        List<Product> products = null;
+        List<Product> products = new Vector<Product>();
 
         try {
             try {
@@ -603,7 +614,6 @@ public class LuceneCatalog implements Catalog {
 
                 // should be > 0 hits
                 if (hits.length > 0) {
-                    products = new Vector<Product>(hits.length);
                     for (ScoreDoc hit : hits) {
                         Document productDoc = searcher.doc(hit.doc);
                         CompleteProduct prod = toCompleteProduct(productDoc,
@@ -613,7 +623,6 @@ public class LuceneCatalog implements Catalog {
                 } else {
                     LOG.log(Level.FINEST, "Request for products by type: ["
                         + type.getProductTypeId() + "] returned no results");
-                    return null;
                 }
             }
 
@@ -635,6 +644,7 @@ public class LuceneCatalog implements Catalog {
         return products;
     }
 
+    @Override
     public synchronized Metadata getMetadata(Product product) throws CatalogException {
         IndexSearcher searcher = null;
         try {
@@ -681,6 +691,7 @@ public class LuceneCatalog implements Catalog {
         }
     }
     
+    @Override
     public Metadata getReducedMetadata(Product product, List<String> elements) throws CatalogException {
         Metadata fullMetadata = getMetadata(product);
         Metadata reducedMetadata = new Metadata();
@@ -698,6 +709,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#query(org.apache.oodt.cas.filemgr.structs.Query,
      *      org.apache.oodt.cas.filemgr.structs.ProductType)
      */
+    @Override
     public List<String> query(Query query, ProductType type) throws CatalogException {
         // paginate products returns full products, but the query method
         // is expected to return product ids
@@ -720,8 +732,9 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int)
      */
+    @Override
     public synchronized List<Product> getTopNProducts(int n) throws CatalogException {
-        List<Product> products = null;
+        List<Product> products = new Vector<Product>();
         IndexSearcher searcher = null;
 
         try {
@@ -749,7 +762,6 @@ public class LuceneCatalog implements Catalog {
                 ScoreDoc[] hits = topDocs.scoreDocs;
 
                 if (hits.length > 0) {
-                    products = new Vector<Product>(n);
                     int i = 0;
                     while (products.size() < Math.min(n, hits.length)) {
                         Document productDoc = searcher.doc(hits[i].doc);
@@ -762,10 +774,6 @@ public class LuceneCatalog implements Catalog {
                     LOG.log(Level.WARNING, "Top N query produced no products!");
                 }
             }
-            else{
-                return null;
-            }
-
         } catch (IOException e) {
             LOG.log(Level.WARNING,
                     "IOException when opening index directory: ["
@@ -790,6 +798,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int,
      *      org.apache.oodt.cas.filemgr.structs.ProductType)
      */
+    @Override
     public synchronized List<Product> getTopNProducts(int n, ProductType type)
             throws CatalogException {
         int numPages = 1;
@@ -819,6 +828,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
+    @Override
     public ValidationLayer getValidationLayer() {
         return valLayer;
     }
@@ -828,6 +838,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getNumProducts(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
+    @Override
     public int getNumProducts(ProductType type) throws CatalogException {
         Query query = new Query();
         return getNumHits(query, type);
@@ -838,6 +849,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.util.Pagination#getFirstPage(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
+    @Override
     public ProductPage getFirstPage(ProductType type) {
         logger.debug("Getting first page for product type: {}", type);
         ProductPage firstPage = new ProductPage();
@@ -855,12 +867,12 @@ public class LuceneCatalog implements Catalog {
                             + type.getProductTypeId()
                             + "] from catalog: Message: " + e.getMessage());
             logger.error("Unable to get first page for product type: {} - {}", type, e.getMessage());
-            return null;
+            return ProductPage.blankPage();
         }
         // There are no products and thus no first page
         if (products == null || (products.size() == 0)) {
             logger.warn("No product found for first page for product type: {}", type);
-            return null;
+            return ProductPage.blankPage();
         }
 
         firstPage.setPageProducts(products);
@@ -875,6 +887,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.util.Pagination#getLastProductPage(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
+    @Override
     public ProductPage getLastProductPage(ProductType type) {
         ProductPage lastPage = new ProductPage();
         ProductPage firstPage = getFirstPage(type);
@@ -891,11 +904,11 @@ public class LuceneCatalog implements Catalog {
                   "CatalogException getting last page for product type: ["
                           + type.getProductTypeId()
                           + "] from catalog: Message: " + e.getMessage());
-          	return null;
+            return ProductPage.blankPage();
         }
         // There are no products thus there is no last page
         if (products == null || (products.size() == 0)) {
-        	  return null;
+            return ProductPage.blankPage();
         }
         lastPage.setPageProducts(products);
 
@@ -908,6 +921,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.util.Pagination#getNextPage(org.apache.oodt.cas.filemgr.structs.ProductType,
      *      org.apache.oodt.cas.filemgr.structs.ProductPage)
      */
+    @Override
     public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
         if(type==null){
             LOG.warning("getNextPage: Provided type was null: Returning blank page.");
@@ -952,6 +966,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.util.Pagination#getPrevPage(org.apache.oodt.cas.filemgr.structs.ProductType,
      *      org.apache.oodt.cas.filemgr.structs.ProductPage)
      */
+    @Override
     public ProductPage getPrevPage(ProductType type, ProductPage currentPage) {
         if(type==null){
             LOG.warning("getPrevPage: Provided type was null: Returning blank page.");
@@ -980,12 +995,12 @@ public class LuceneCatalog implements Catalog {
                     "CatalogException getting prev page for product type: ["
                             + type.getProductTypeId()
                             + "] from catalog: Message: " + e.getMessage());
-            return null;
+            return ProductPage.blankPage();
         }
         
         // There are no products and thus no pages
         if (products == null || (products.size() == 0)) {
-        	  return null;
+            return ProductPage.blankPage();
         }
         prevPage.setPageProducts(products);
 
@@ -998,6 +1013,7 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#pagedQuery(org.apache.oodt.cas.filemgr.structs.Query,
      *      org.apache.oodt.cas.filemgr.structs.ProductType, int)
      */
+    @Override
     public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
             throws CatalogException {
         try {
@@ -1365,7 +1381,7 @@ public class LuceneCatalog implements Catalog {
 
     private synchronized List<Product> paginateQuery(Query query, ProductType type, int pageNum, ProductPage page)
             throws CatalogException {
-        List<Product> products = null;
+        List<Product> products = new Vector<Product>(pageSize);
         IndexSearcher searcher = null;
 
         boolean doSkip = true;
@@ -1419,8 +1435,6 @@ public class LuceneCatalog implements Catalog {
                         if (startNum > hits.length) {
                             startNum = 0;
                         }
-
-                        products = new Vector<Product>(pageSize);
 
                         for (int i = startNum; i < Math.min(hits.length,
                             (startNum + pageSize)); i++) {
@@ -1502,10 +1516,11 @@ public class LuceneCatalog implements Catalog {
             Term startTerm = null;
             if (!startVal.equals("")) {
                 startTerm = new Term(queryCriteria.getElementName(), startVal);
+            } else {
+                startTerm = new Term(queryCriteria.getElementName());
             }
-
             return TermRangeQuery.newStringRange(startTerm.field(), startVal, endVal, inclusive,inclusive);
-        }else {
+        } else {
             throw new CatalogException("Invalid QueryCriteria ["
                     + queryCriteria.getClass().getCanonicalName() + "]");
         }
