@@ -580,6 +580,10 @@ public class TestXmlRpcWorkflowManagerClient {
     assertTrue(checkVal4 && checkVal5);
   }
 
+  @Test
+  public void testIsAlive() {
+    assertTrue(wmc.isAlive());
+  }
 
   private static void startXmlRpcWorkflowManager() {
     System.setProperty("java.util.logging.config.file", new File(

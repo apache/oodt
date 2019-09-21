@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.workflow.system;
 
 
+import java.util.Collections;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
@@ -528,6 +529,16 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
 
         // reset the client
         client = new XmlRpcClient(workflowManagerUrl);
+    }
+
+    @Override
+    public boolean isAlive() {
+      try {
+        return (boolean) client.execute("workflowmgr.isAlive", new Vector());
+      } catch (XmlRpcException | IOException e) {
+        LOG.log(Level.SEVERE, "An error occurred when checking WM status", e);
+        return false;
+      }
     }
 
     @Override

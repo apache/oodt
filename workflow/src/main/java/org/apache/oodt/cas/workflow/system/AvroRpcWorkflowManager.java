@@ -628,6 +628,10 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
         return doUpdateWorkflowInstance(wInst);
     }
 
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
 
     private static WorkflowEngine getWorkflowEngineFromProperty() {
         return getWorkflowEngineFromClassName(System.getProperty(

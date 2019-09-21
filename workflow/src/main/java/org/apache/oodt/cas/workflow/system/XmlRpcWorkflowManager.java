@@ -654,6 +654,10 @@ public class XmlRpcWorkflowManager implements WorkflowManager {
     return doUpdateWorkflowInstance(wInst);
   }
 
+  public boolean isAlive() {
+    return true;
+  }
+
   public static void main(String[] args) throws IOException {
     int portNum = -1;
     String usage = "XmlRpcWorkflowManager --portNum <port number for xml rpc service>\n";

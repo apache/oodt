@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.workflow.system;
 
+import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.HttpTransceiver;
 import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.Transceiver;
@@ -246,6 +247,16 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
             logger.error("Error occurred when setting workflow manager url: {}", workflowManagerUrl, e);
         }
 
+    }
+
+    @Override
+    public boolean isAlive() {
+        try {
+            return proxy.isAlive();
+        } catch (AvroRemoteException e) {
+            logger.error("Error occurred when checking if WM is alive", e);
+            return false;
+        }
     }
 
     @Override

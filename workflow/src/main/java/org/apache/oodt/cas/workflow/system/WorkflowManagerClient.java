@@ -131,5 +131,7 @@ public interface WorkflowManagerClient extends Closeable, Serializable {
 
     URL getWorkflowManagerUrl();
 
+    boolean isAlive();
+
     void setWorkflowManagerUrl(URL workflowManagerUrl);
 }
