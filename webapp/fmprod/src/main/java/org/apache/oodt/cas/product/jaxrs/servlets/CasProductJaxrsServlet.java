@@ -13,7 +13,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.apache.oodt.cas.product.jaxrs.servlets;
 
@@ -22,14 +22,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-
+import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
@@ -42,13 +39,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides a single place to initialize items such as the file manager client,
- * working directory and configurations when the web application is started up.
+ * Provides a single place to initialize items such as the file manager client, working directory
+ * and configurations when the web application is started up.
+ *
  * @author rlaidlaw
  * @version $Revision$
  */
-public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
-{
+public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet {
   // Auto-generated ID for serialization.
   private static final long serialVersionUID = -1835790185000773396L;
 
@@ -58,10 +55,8 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
   private static final int CONFIG_PARAM_FORMAT = 1;
   private static final int CONFIG_PARAM_NAME = 2;
 
-
   @Override
-  public void init(ServletConfig configuration) throws ServletException
-  {
+  public void init(ServletConfig configuration) throws ServletException {
     super.init(configuration);
     ServletContext context = configuration.getServletContext();
     initializeClient(context);
@@ -69,29 +64,22 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
     initializeConfigurations(context);
   }
 
-
-
   /**
-   * Initializes the file manager client and stores it as a "client" context
-   * attribute by retrieving a value for the file manager URL from the servlet
-   * context.
+   * Initializes the file manager client and stores it as a "client" context attribute by retrieving
+   * a value for the file manager URL from the servlet context.
+   *
    * @param context the servlet context
-   * @throws ServletException if the servlet context parameter for the file
-   * manager working directory path cannot be found
+   * @throws ServletException if the servlet context parameter for the file manager working
+   *     directory path cannot be found
    */
-  private void initializeClient(ServletContext context) throws ServletException
-  {
-    try
-    {
+  private void initializeClient(ServletContext context) throws ServletException {
+    try {
       URL url;
       String urlParameter = context.getInitParameter("filemgr.url");
-      if (urlParameter != null)
-      {
+      if (urlParameter != null) {
         // Get the file manager URL from the context parameter.
         url = new URL(PathUtils.replaceEnvVariables(urlParameter));
-      }
-      else
-      {
+      } else {
         // Try the default URL for the file manager.
         logger.debug(
             "WARNING Exception Thrown: {}",
@@ -104,126 +92,90 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
       // store the client as a context attribute for other objects to access.
       FileManagerClient client = RpcCommunicationFactory.createClient(url);
       context.setAttribute("client", client);
-    }
-    catch (MalformedURLException e)
-    {
+    } catch (MalformedURLException e) {
       String message = "Encountered a malformed URL for the file manager.";
-      logger.debug(
-          "Exception Thrown: {}",
-          message,e);
+      logger.error("Exception Thrown: {}", message, e);
       throw new ServletException(message);
-    }
-    catch (ConnectionException e)
-    {
-      String message =
-        "Client could not establish a connection to the file manager.";
-      logger.debug(
-          "Exception Thrown: {}",
-          message,e);
+    } catch (ConnectionException e) {
+      String message = "Client could not establish a connection to the file manager.";
+      logger.error("Exception Thrown: {}", message, e);
       throw new ServletException(message);
     }
   }
 
-
-
   /**
-   * Initializes the file manager working directory path and stores it as a
-   * "workingDir" context attribute by retrieving a value from the servlet
-   * context.
+   * Initializes the file manager working directory path and stores it as a "workingDir" context
+   * attribute by retrieving a value from the servlet context.
+   *
    * @param context the servlet context
-   * @throws ServletException if the servlet context parameter for the file
-   * manager working directory path cannot be found
+   * @throws ServletException if the servlet context parameter for the file manager working
+   *     directory path cannot be found
    */
-  private void initializeWorkingDir(ServletContext context)
-    throws ServletException
-  {
+  private void initializeWorkingDir(ServletContext context) throws ServletException {
     String workingDirPath = context.getInitParameter("filemgr.working.dir");
-    if (workingDirPath != null)
-    {
+    if (workingDirPath != null) {
       // Validate the path.
       File workingDir = new File(PathUtils.replaceEnvVariables(workingDirPath));
-      if (workingDir.exists() && workingDir.isDirectory())
-      {
+      if (workingDir.exists() && workingDir.isDirectory()) {
         context.setAttribute("workingDir", workingDir);
         logger.debug(
-            "Exception Thrown: {}",
-            "The file manager's working directory has been "
-                + "set up as " + workingDir.getAbsolutePath());
-      }
-      else
-      {
+            "The file manager's working directory has been set up as {}",
+            workingDir.getAbsolutePath());
+      } else {
         logger.debug(
-            "Exception Thrown: {}",
-            "Unable to locate the working directory for "
-                + "the file manager.");
+            "Unable to locate the working directory for the file manager: {}",
+            workingDir.getAbsolutePath());
       }
-    }
-    else
-    {
-      String message = "Unable to find a servlet context parameter for the file"
-        + " manager working directory path.";
-      logger.debug(
-          "Exception Thrown: {}",message);
+    } else {
+      String message =
+          "Unable to find a servlet context parameter for the file manager working directory path.";
+      logger.debug(message);
       throw new ServletException(message);
     }
   }
 
-
-
   /**
-   * Initializes the output configurations for various different formats and
-   * stores them in "configurations" attributes by retrieving values from the
-   * servlet context.
+   * Initializes the output configurations for various different formats and stores them in
+   * "configurations" attributes by retrieving values from the servlet context.
+   *
    * @param context the servlet context
    * @throws IOException if the specified file cannot be found or read
    */
-  public void initializeConfigurations(ServletContext context)
-  {
+  public void initializeConfigurations(ServletContext context) {
     Map<String, RdfConfiguration> rdfConfigurations =
-      new ConcurrentHashMap<String, RdfConfiguration>();
+        new ConcurrentHashMap<String, RdfConfiguration>();
     Map<String, RssConfiguration> rssConfigurations =
-      new ConcurrentHashMap<String, RssConfiguration>();
+        new ConcurrentHashMap<String, RssConfiguration>();
 
     Enumeration<String> enumeration = context.getInitParameterNames();
-    while (enumeration.hasMoreElements())
-    {
+    while (enumeration.hasMoreElements()) {
       String parameterName = enumeration.nextElement();
-      if(parameterName.startsWith("configuration"))
-      {
+      if (parameterName.startsWith("configuration")) {
         String[] values = parameterName.split("\\.");
-        if (values.length == CONFIG_PARAM_LENGTH)
-        {
+        if (values.length == CONFIG_PARAM_LENGTH) {
           String format = values[CONFIG_PARAM_FORMAT];
           String name = values[CONFIG_PARAM_NAME];
-          String value = PathUtils.replaceEnvVariables(
-            context.getInitParameter(parameterName));
+          String value = PathUtils.replaceEnvVariables(context.getInitParameter(parameterName));
 
-          try
-          {
-            if ("rdf".equals(format))
-            {
+          try {
+            if ("rdf".equals(format)) {
               RdfConfiguration configuration = new RdfConfiguration();
               configuration.initialize(new File(value));
               rdfConfigurations.put(name, configuration);
-            }
-            else if ("rss".equals(format))
-            {
+            } else if ("rss".equals(format)) {
               RssConfiguration configuration = new RssConfiguration();
               configuration.initialize(new File(value));
               rssConfigurations.put(name, configuration);
             }
+          } catch (IOException e) {
+            logger.error(
+                "Exception Thrown: The configuration '{}' could not be initialized (value: {}).",
+                parameterName,
+                value,
+                e);
           }
-          catch (IOException e)
-          {
-            logger.debug(
-                "WARNING Exception Thrown: {}","The configuration '" + parameterName
-                    + "'could not be initialized (value: " + value + ").", e);
-          }
-        }
-        else
-        {
-          logger.debug(
-              "Exception Thrown: {}","Configuration context parameter could not be parsed.");
+        } else {
+          logger.debug("Exception Thrown: Configuration context parameter could not be parsed.");
         }
       }
     }

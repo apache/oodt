@@ -33,7 +33,7 @@ import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 @Provider
 public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 
-  /* Maps NotFoundException to HTTP Response */
+  /** Maps NotFoundException to HTTP Response */
   @Override
   public Response toResponse(NotFoundException exception) {
 
