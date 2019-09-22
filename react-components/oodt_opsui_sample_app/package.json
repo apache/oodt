@@ -10,6 +10,8 @@
     "@material-ui/icons": "^4.2.0",
     "axios": "^0.19.0",
     "clsx": "^1.0.4",
+    "oodt_fm_plugin": "file:../oodt_fm_plugin",
+    "oodt_wm_plugin": "file:../oodt_wm_plugin",
     "react-router-dom": "^5.0.1"
   },
   "scripts": {

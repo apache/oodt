@@ -1,4 +1,4 @@
-# React OODT File Manager Plugin Sample
+# React OODT File Manager Plugin
 
 
 ## Requirements
@@ -32,7 +32,7 @@ Since this Plugin is not officially published yet please follow below steps for 
     
 4. Local NPM Package installation. Use this command in relevant React project directory. This will link global node_module plugin directory to project's local node_modules directory.
     ```
-    npm link oodt_fm_plugin_sample
+    npm link oodt_fm_plugin
     ```    
 ## Usage
 
@@ -40,7 +40,7 @@ Here's an example of basic usage:
 
 ```
 import React, { Component } from 'react';
-import { Product } from 'oodt_fm_plugin_sample';
+import { Product } from 'oodt_fm_plugin';
 
 class MyApp extends Component {
   render() {

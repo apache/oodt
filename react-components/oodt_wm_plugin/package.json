@@ -1,11 +1,11 @@
 {
-  "name": "oodt_fm_plugin_sample",
+  "name": "oodt_wm_plugin",
   "version": "1.0.0",
-  "description": "This is a Sample React Plugin for Apache OODT Workflow Manager",
+  "description": "This is the React Plugin for Apache OODT Workflow Manager",
   "main": "dist/build.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NGimhana/oodt_fm_plugin"
+    "url": "https://github.com/apache/oodt/tree/development/react-components/oodt_wm_plugin"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,7 +16,7 @@
     "components",
     "Apache",
     "OODT",
-    "File Manager"
+    "Workflow Manager"
   ],
   "author": "Nadeeshan Gimhana",
   "license": "Apache-2.0",
