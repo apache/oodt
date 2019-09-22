@@ -13,10 +13,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.oodt.cas.wmservices.enums.ErrorType;
+import org.apache.oodt.cas.wmservices.exceptions.InternalServerErrorException;
 import org.apache.oodt.cas.wmservices.exceptions.NotFoundException;
 import org.apache.oodt.cas.wmservices.resources.WMRequestStatusResource;
 import org.apache.oodt.cas.wmservices.resources.WorkflowInstancePageResource;
 import org.apache.oodt.cas.wmservices.resources.WorkflowInstanceResource;
+import org.apache.oodt.cas.wmservices.resources.WorkflowManagerStatus;
 import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
@@ -53,6 +55,27 @@ public class WMJaxrsServiceV2 {
     String message = ErrorType.CAS_PRODUCT_EXCEPTION_WORKFLOWMGR_CLIENT_UNAVILABLE.getErrorType();
     logger.debug("Warning Message: {}", message);
     throw new WorkflowException(message);
+  }
+
+  /**
+   * Checks if workflow manager is alive
+   *
+   * @return status
+   */
+  @GET
+  @Path("status")
+  @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public WorkflowManagerStatus getWorkflowManagerStatus() {
+    try {
+      WorkflowManagerClient client = getContextClient();
+      WorkflowManagerStatus status = new WorkflowManagerStatus();
+      status.setServerUp(client.isAlive());
+      status.setUrl(client.getWorkflowManagerUrl().toString());
+      return status;
+    } catch (WorkflowException e) {
+      logger.error("Error occurred when getting WM client", e);
+      throw new InternalServerErrorException("Unable to get WM client");
+    }
   }
 
   /**
