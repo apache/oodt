@@ -2,7 +2,7 @@ Apache OODT Change Log
 ======================
 
 =======
-Release 1.9 - In Progress
+Release 1.9 - 23/09/19
 
 * OODT-1006 Add Dockerfile for OODT deployment
 
