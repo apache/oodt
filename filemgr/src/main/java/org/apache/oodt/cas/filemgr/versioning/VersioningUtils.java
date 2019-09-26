@@ -88,7 +88,7 @@ public final class VersioningUtils {
             if (!dir.equals(dirRoot)) {
                 try {
                     Reference r = new Reference();
-                    r.setOrigReference(dir.toURL().toExternalForm());
+                    r.setOrigReference(dir.toURI().toURL().toExternalForm());
                     r.setFileSize(dir.length());
                     references.add(r);
                 } catch (MalformedURLException e) {
@@ -106,7 +106,7 @@ public final class VersioningUtils {
                     // add the file references
                     try {
                         Reference r = new Reference();
-                        r.setOrigReference(file.toURL().toExternalForm());
+                        r.setOrigReference(file.toURI().toURL().toExternalForm());
                         r.setFileSize(file.length());
                         references.add(r);
                     } catch (MalformedURLException e) {
@@ -221,7 +221,7 @@ public final class VersioningUtils {
             String productRepoPathRef;
 
             try {
-                productRepoPathRef = new File(new URI(productRepoPath)).toURL()
+                productRepoPathRef = new File(new URI(productRepoPath)).toURI().toURL()
                                                                        .toExternalForm();
 
                 if (!productRepoPathRef.endsWith("/")) {

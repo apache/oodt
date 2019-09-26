@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.workflow.system;
 
+import org.apache.avro.ipc.HttpTransceiver;
 import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.Transceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
@@ -53,7 +54,7 @@ public class AvroRpcWorkflowManagerClient implements WorkflowManagerClient {
     public AvroRpcWorkflowManagerClient(URL url){
         workflowManagerUrl = url;
         try {
-            client = new NettyTransceiver(new InetSocketAddress(url.getHost(),url.getPort()));
+            client = new HttpTransceiver(url);
             proxy = SpecificRequestor.getClient(org.apache.oodt.cas.workflow.struct.avrotypes.WorkflowManager.class, client);
         } catch (IOException e) {
             logger.error("Error occurred when creating client for: {}", url, e);

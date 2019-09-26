@@ -23,6 +23,10 @@ Release 1.9 - In Progress
 * OODT-959 Update tika to 1.16
 * OODT-968 Add metadata removes product
 
+* OODT-991 Change logging.properties levels from ALL to DEBUG
+
+* OODT-998 Updated cas-filemgr shell scripts to work when distribution is located in a path with spaces
+
 =======
 Release 1.2.2 - 02/05/2018
 

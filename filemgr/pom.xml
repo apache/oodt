@@ -50,7 +50,6 @@
      can be overridden in a specific pom and should have a comment explaing why the version has been overridden
   -->
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
@@ -249,7 +248,7 @@
       <plugin>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro-maven-plugin</artifactId>
-        <version>1.7.7</version>
+        <version>1.8.2</version>
         <configuration>
           <stringType>String</stringType>
           <detail>true</detail>

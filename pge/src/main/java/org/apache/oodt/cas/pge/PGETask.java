@@ -79,11 +79,11 @@ public class PGETask {
         }
 
         SerializableMetadata sm = new SerializableMetadata("UTF-8", false);
-        sm.loadMetadataFromXmlStream(new File(metadataFilePath).toURL()
+        sm.loadMetadataFromXmlStream(new File(metadataFilePath).toURI().toURL()
                 .openStream());
         WorkflowTaskConfiguration config = new WorkflowTaskConfiguration();
         config.getProperties().load(
-                new File(configPropertiesPath).toURL().openStream());
+                new File(configPropertiesPath).toURI().toURL().openStream());
 
         PGETask task = new PGETask(sm, config);
         task.run(pgeTaskInstanceClasspath);

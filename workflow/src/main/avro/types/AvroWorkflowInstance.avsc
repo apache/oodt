@@ -13,7 +13,7 @@
     {"name":"endDateTimeIsoStr","type":["null","string"]},
     {"name":"currentTaskStartDateTimeIsoStr","type":["null","string"]},
     {"name":"currentTaskEndDateTimeIsoStr","type":["null","string"]},
-    {"name":"sharedContext","type":{"type":"map","values":"string"}},
+    {"name":"sharedContext","type":{"type":"map","values":["string",{"type":"array","items":"string"}]}},
     {"name":"priority","type":["null","double"]}
   ]
 }
