@@ -25,9 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.TestCase;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +45,11 @@ public class TestAvroRpcWorkflowManager extends TestCase{
 
     private static final Logger LOG = Logger
             .getLogger(TestXmlRpcWorkflowManager.class.getName());
-
+    
+    /**
+     * {@link #startWorkflow()} fires an event of type "long". This event is associated with 2 instances of "LongWorkflow". Therefore, we should check if the
+     * number of workflow instances are 2 when asserting.
+     */
     @Test
     public void testGetWorkflowInstances() {
 
@@ -67,7 +68,7 @@ public class TestAvroRpcWorkflowManager extends TestCase{
 
         assertNotNull(workflowInsts);
 
-        assertEquals(1, workflowInsts.size());
+        assertEquals(2, workflowInsts.size());
     }
 
     @Before
@@ -84,7 +85,10 @@ public class TestAvroRpcWorkflowManager extends TestCase{
     private void startWorkflow() {
         try (WorkflowManagerClient client =
                      new AvroRpcWorkflowManagerClient(new URL("http://localhost:" + WM_PORT))) {
-            client.sendEvent("long", new Metadata());
+            Metadata metadata = new Metadata();
+            // Hold the task for 20 seconds at least            
+            metadata.addMetadata("numSeconds", String.valueOf(20));
+            client.sendEvent("long", metadata);
         } catch (Exception e) {
             fail(e.getMessage());
         }
