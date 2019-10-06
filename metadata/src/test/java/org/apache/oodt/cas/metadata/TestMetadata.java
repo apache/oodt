@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 //JDK imports
 import java.util.List;
 import java.util.Vector;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  * Test Case Suite for the Metadata class.
@@ -53,7 +53,7 @@ public class TestMetadata extends TestCase {
   }
 
   public void testAddMany() {
-    List counting = new Vector();
+    List<String> counting = new Vector<>();
     counting.add("1");
     counting.add("2");
     counting.add("3");
@@ -69,7 +69,7 @@ public class TestMetadata extends TestCase {
   }
 
   public void testAddHashtable() {
-    Hashtable testHash = new Hashtable();
+    HashMap<String,Object> testHash = new HashMap<>();
     testHash.put("key1", "val1");
     testHash.put("key2", "val2");
 
@@ -88,7 +88,7 @@ public class TestMetadata extends TestCase {
   }
 
   public void testReplace() {
-    Hashtable testHash = new Hashtable();
+    HashMap<String,Object> testHash = new HashMap<>();
     testHash.put("key1", "val1");
     testHash.put("key2", "val2");
 
@@ -114,7 +114,7 @@ public class TestMetadata extends TestCase {
     assertEquals("val2", metadata.getMetadata("key1"));
     assertEquals("val1", metadata.getMetadata("key2"));
 
-    List twoValues = new Vector();
+    List<String> twoValues = new Vector<>();
     twoValues.add("firstVal");
     twoValues.add("secondVal");
 
@@ -131,15 +131,15 @@ public class TestMetadata extends TestCase {
     Metadata m1 = new Metadata();
     m1.addMetadata("Group1/key1", "val1");
     m1.addMetadata("Group1/key2", "val2");
+    m1.addMetadata("Group1/sub1/key2", "val3");
     m1.addMetadata("Group2/key2", "val3");
     m1.addMetadata("Group2/key2/key3", "val3");
-    m1.addMetadata("Group1/sub1/key2", "val3");
     m1.addMetadata("Group1/sub2/key2/key3", "val3");
     List<String> keys = m1.getAllKeysWithName("key2");
     assertEquals(keys.size(), 3);
-    assertEquals(keys.get(0), "Group2/key2");
+    assertEquals(keys.get(0), "Group1/key2");
     assertEquals(keys.get(1), "Group1/sub1/key2");
-    assertEquals(keys.get(2), "Group1/key2");
+    assertEquals(keys.get(2), "Group2/key2");
     keys = m1.getAllKeysWithName("key1");
     assertEquals(keys.size(), 1);
     assertEquals(keys.get(0), "Group1/key1");

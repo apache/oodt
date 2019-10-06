@@ -27,7 +27,7 @@ public class TestMimeTypeUtils extends TestCase {
 		assertEquals("application/pdf", mtUtils.getMimeType("file.pdf"));
 		assertEquals("application/xhtml+xml", mtUtils.getMimeType("file.xhtml"));
 		assertEquals("application/xml", mtUtils.getSuperTypeForMimeType(mtUtils.getMimeType("file.xhtml")));
-		assertEquals("test/example", mtUtils.getMimeType("file.testexample"));
+		assertEquals("application/octet-stream", mtUtils.getMimeType("file.testexample"));
 	}
 	
 }
