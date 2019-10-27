@@ -22,6 +22,8 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.system.FileManagerServer;
 import org.apache.oodt.cas.filemgr.system.rpc.FileManagerClientFactory;
 import org.apache.oodt.cas.filemgr.system.rpc.FileManagerServerFactory;
+import org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerClientFactory;
+import org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerServerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,11 +44,11 @@ public class RpcCommunicationFactory {
 
     private static Logger LOG = Logger.getLogger(RpcCommunicationFactory.class
             .getName());
-
-    private static String getClientFactoryName(){
-        return System.getProperty("filemgr.client",
-                "org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerClientFactory");
-   }
+    
+    private static String getClientFactoryName() {
+        return System.getProperty(FileManagerServer.FILEMGR_CLIENT_SYSTEM_PROPERTY,
+                XmlRpcFileManagerClientFactory.class.getName());
+    }
 
     /**
      * Set properties from filemgr.properties file
@@ -54,8 +56,8 @@ public class RpcCommunicationFactory {
      */
     private static void setPror(){
         // set up the configuration, if there is any
-        if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
-            String configFile = System.getProperty("org.apache.oodt.cas.filemgr.properties");
+        if (System.getProperty(FileManagerServer.FILEMGR_PROPERTIES_FILE_SYSTEM_PROPERTY) != null) {
+            String configFile = System.getProperty(FileManagerServer.FILEMGR_PROPERTIES_FILE_SYSTEM_PROPERTY);
 
             LOG.log(Level.INFO, "Loading File Manager Configuration Properties from: [" + configFile + "]");
 
@@ -126,8 +128,8 @@ public class RpcCommunicationFactory {
     public static FileManagerServer createServer(int port) throws IOException {
         setPror();
 
-        String serverFactory = System.getProperty("filemgr.server",
-                "org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerServerFactory");
+        String serverFactory = System.getProperty(FileManagerServer.FILEMGR_SERVER_SYSTEM_PROPERTY,
+                XmlRpcFileManagerServerFactory.class.getName());
 
         LOG.log(Level.INFO, "Init. server's factory class: " + serverFactory);
 

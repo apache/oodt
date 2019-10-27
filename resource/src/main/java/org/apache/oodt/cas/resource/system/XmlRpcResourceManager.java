@@ -77,8 +77,8 @@ public class XmlRpcResourceManager implements ResourceManager{
         this.port = port;
         List<String> propertiesFiles = new ArrayList<>();
         // set up the configuration, if there is any
-        if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
-            propertiesFiles.add(System.getProperty("org.apache.oodt.cas.resource.properties"));
+        if (System.getProperty(ResourceManager.RESMGR_PROPERTIES_FILE_SYSTEM_PROPERTY) != null) {
+            propertiesFiles.add(System.getProperty(ResourceManager.RESMGR_PROPERTIES_FILE_SYSTEM_PROPERTY));
         }
 
         configurationManager = ConfigurationManagerFactory.getConfigurationManager(Component.RESOURCE_MANAGER, propertiesFiles);
