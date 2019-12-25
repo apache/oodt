@@ -83,7 +83,13 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
                 port, System.getProperty("user.name", "unknown"));
 
         Preconditions.checkArgument(port > 0, "Must specify a port greater than 0");
-
+    
+        try {
+            loadProperties();
+        } catch (IOException e) {
+            logger.error("Error occurred when loading properties", e);
+        }
+    
         logger.debug("Getting workflow engine");
         engine = getWorkflowEngineFromProperty();
         if(engine == null){
