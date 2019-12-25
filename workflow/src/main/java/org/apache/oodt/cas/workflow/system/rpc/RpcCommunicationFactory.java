@@ -82,10 +82,15 @@ public class RpcCommunicationFactory {
         String propertiesFile = System.getProperty(WorkflowManager.PROPERTIES_FILE_PROPERTY, WorkflowManager.DEFAULT_PROPERTIES_FILE);
         InputStream prpFileStream = RpcCommunicationFactory.class.getResourceAsStream(propertiesFile);
         Properties properties = new Properties();
-        try {
-            properties.load(prpFileStream);
-        } catch (IOException e) {
-            logger.error("An error occurred when loading properties file: {}", propertiesFile, e);
+    
+        if (prpFileStream != null) {
+            try {
+                properties.load(prpFileStream);
+            } catch (IOException e) {
+                logger.error("An error occurred when loading properties file: {}", propertiesFile, e);
+            }
+        } else {
+            logger.warn("Properties file: '{}' could not be found. Skipped loading properties", propertiesFile);
         }
         
         return properties;
