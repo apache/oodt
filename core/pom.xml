@@ -36,7 +36,7 @@ the License.
     <docsSrc>${basedir}/src/site/xdoc</docsSrc>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <jena.version>3.0.0</jena.version>
+    <jena.version>3.17.0</jena.version>
     <wicket.version>1.4.17</wicket.version>
     <jetty.version>6.1.25</jetty.version>
     <sonar.language>java</sonar.language>
@@ -78,12 +78,17 @@ the License.
       <dependency>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro-ipc</artifactId>
-        <version>1.8.2</version>
+        <version>1.10.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro</artifactId>
-        <version>1.8.2</version>
+        <version>1.10.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-ipc-jetty</artifactId>
+        <version>1.10.1</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
@@ -93,13 +98,13 @@ the License.
       <dependency>
         <groupId>com.icegreen</groupId>
         <artifactId>greenmail</artifactId>
-        <version>1.5.0</version>
+        <version>1.6.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
-        <version>1.3.1</version>
+        <version>1.4.15</version>
         <exclusions>
           <exclusion>
             <!-- xom is an optional dependency of xstream. Its also an Apache incompatible license -->
@@ -111,12 +116,12 @@ the License.
       <dependency>
         <groupId>commons-cli</groupId>
         <artifactId>commons-cli</artifactId>
-        <version>1.3.1</version>
+        <version>1.4</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.10</version>
+        <version>1.15</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -131,7 +136,7 @@ the License.
       <dependency>
         <groupId>commons-httpclient</groupId>
         <artifactId>commons-httpclient</artifactId>
-        <version>3.0</version>
+        <version>3.1</version>
       </dependency>
       <dependency>
        <groupId>org.apache.httpcomponents</groupId>
@@ -142,12 +147,12 @@ the License.
          <groupId>commons-logging</groupId>
        </exclusion>
       </exclusions>
-        <version>4.4</version>
+        <version>4.5.13</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.5</version>
+        <version>2.8.0</version>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
@@ -182,12 +187,12 @@ the License.
       <dependency>
         <groupId>hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
-        <version>1.8.0.7</version>
+        <version>1.8.0.10</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
-        <version>2.4</version>
+        <version>2.5</version>
       </dependency>
       <dependency>
         <groupId>jgraph</groupId>
@@ -197,7 +202,7 @@ the License.
       <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>2.9.4</version>
+        <version>2.10.9</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -207,12 +212,12 @@ the License.
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>1.2.14</version>
+        <version>1.2.17</version>
       </dependency>
       <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
-        <version>6.0.3</version>
+        <version>8.0.22</version>
       </dependency>
       <dependency>
         <groupId>net.sourceforge.nekohtml</groupId>
@@ -222,7 +227,7 @@ the License.
       <dependency>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>4.4.0</version>
       </dependency>
       <dependency>
         <!--
@@ -242,22 +247,22 @@ the License.
       <dependency>
         <groupId>net.sf.jung</groupId>
         <artifactId>jung-algorithms</artifactId>
-        <version>2.0.1</version>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>net.sf.jung</groupId>
         <artifactId>jung-api</artifactId>
-        <version>2.0.1</version>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>net.sf.jung</groupId>
         <artifactId>jung-graph-impl</artifactId>
-        <version>2.0.1</version>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>net.sf.jung</groupId>
         <artifactId>jung-visualization</artifactId>
-        <version>2.1</version>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>net.sf.saxon</groupId>
@@ -267,17 +272,17 @@ the License.
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.12</version>
+        <version>1.20</version>
       </dependency>
       <dependency>
         <groupId>org.apache.curator</groupId>
         <artifactId>curator-recipes</artifactId>
-        <version>3.3.0</version>
+        <version>5.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.curator</groupId>
         <artifactId>curator-test</artifactId>
-        <version>3.3.0</version>
+        <version>5.1.0</version>
         <exclusions>
           <exclusion>
             <groupId>log4j</groupId>
@@ -288,23 +293,23 @@ the License.
       <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-        <version>3.1.6</version>
+        <version>3.4.2</version>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-rs-extension-providers</artifactId>
-        <version>3.1.6</version>
+        <version>3.4.2</version>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-transports-local</artifactId>
-        <version>3.1.6</version>
+        <version>3.4.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.ftpserver</groupId>
         <artifactId>ftpserver-core</artifactId>
-        <version>1.0.6</version>
+        <version>1.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.geronimo.javamail</groupId>
@@ -433,7 +438,7 @@ the License.
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>
-        <version>3.2-FINAL</version>
+        <version>4.1.2</version>
       </dependency>
       <dependency>
         <groupId>org.apache.solr</groupId>
@@ -448,12 +453,12 @@ the License.
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
-        <version>1.13</version>
+        <version>1.25</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-parsers</artifactId>
-        <version>1.13</version>
+        <version>1.25</version>
       </dependency>
       <dependency>
         <groupId>org.apache.velocity</groupId>
@@ -473,12 +478,12 @@ the License.
       <dependency>
         <groupId>org.codehaus.jettison</groupId>
         <artifactId>jettison</artifactId>
-        <version>1.3.4</version>
+        <version>1.4.1</version>
       </dependency>
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.4</version>
+        <version>4.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -490,7 +495,7 @@ the License.
       <dependency>
         <groupId>org.jglobus</groupId>
         <artifactId>gss</artifactId>
-        <version>2.0.6</version>
+        <version>2.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.jglobus</groupId>
@@ -500,7 +505,7 @@ the License.
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
-        <version>1.9.5</version>
+        <version>1.10.19</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -521,13 +526,13 @@ the License.
       <dependency>
         <groupId>org.python</groupId>
         <artifactId>jython</artifactId>
-        <version>2.2-beta1</version>
+        <version>2.7.2</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.reflections</groupId>
         <artifactId>reflections</artifactId>
-        <version>0.9.9-RC1</version>
+        <version>0.9.12</version>
       </dependency>
       <dependency>
         <groupId>org.safehaus.jug</groupId>
@@ -539,38 +544,38 @@ the License.
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.7.12</version>
+        <version>2.0.0-alpha1</version>
       </dependency>
       <!-- Temporary fix to send java.util.Logger logs to SLF4J -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jul-to-slf4j</artifactId>
-        <version>1.7.12</version>
+        <version>2.0.0-alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.12</version>
+        <version>2.0.0-alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>2.11.0</version>
+        <version>2.14.0</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>2.5.4</version>
+        <version>5.3.2</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>2.5.4</version>
+        <version>5.3.2</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>2.5.4</version>
+        <version>5.3.2</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -580,12 +585,12 @@ the License.
       <dependency>
         <groupId>xalan</groupId>
         <artifactId>xalan</artifactId>
-        <version>2.7.1</version>
+        <version>2.7.2</version>
       </dependency>
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.9.1</version>
+        <version>2.12.1</version>
       </dependency>
       <dependency>
         <groupId>xmlrpc</groupId>
@@ -595,7 +600,7 @@ the License.
       <dependency>
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
-        <version>1.4</version>
+        <version>1.6</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -620,9 +625,9 @@ mm
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <release>8</release>
         </configuration>
       </plugin>
       <plugin>
@@ -635,19 +640,22 @@ mm
       </plugin>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.10</version>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
         <configuration>
           <includes>
             <include>**/*Test*.java</include>
           </includes>
+          <reuseForks>false</reuseForks>
+          <forkCount>1</forkCount>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
+        <version>3.2.0</version>
         <configuration>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
@@ -689,12 +697,11 @@ mm
       <!-- Produce JavaDoc -->
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
+        <version>3.2.0</version>
         <configuration>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
           <encoding>UTF-8</encoding>
-          <aggregate>true</aggregate>
           <source>1.7</source>
         </configuration>
       </plugin>

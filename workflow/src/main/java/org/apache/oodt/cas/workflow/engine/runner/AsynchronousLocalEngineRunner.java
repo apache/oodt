@@ -114,6 +114,9 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
         this.destroy();
       }
 
+      public void destroy() {
+      }
+
     };
 
     String id = "";
