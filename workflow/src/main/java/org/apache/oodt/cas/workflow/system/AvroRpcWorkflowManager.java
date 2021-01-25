@@ -19,7 +19,7 @@ package org.apache.oodt.cas.workflow.system;
 
 import com.google.common.base.Preconditions;
 import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.HttpServer;
+import org.apache.avro.ipc.jetty.HttpServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.cas.metadata.Metadata;

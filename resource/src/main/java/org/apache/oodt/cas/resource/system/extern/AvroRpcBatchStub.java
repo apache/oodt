@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.resource.system.extern;
 
 import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyServer;
+import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.cas.resource.structs.AvroTypeFactory;

@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.resource.batchmgr;
 
 import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyTransceiver;
+import org.apache.avro.ipc.netty.NettyTransceiver;
 import org.apache.avro.ipc.Transceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.apache.oodt.cas.resource.structs.AvroTypeFactory;

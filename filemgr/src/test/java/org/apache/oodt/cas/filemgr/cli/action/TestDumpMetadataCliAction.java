@@ -72,10 +72,10 @@ public class TestDumpMetadataCliAction extends TestCase {
       assertEquals(
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
           + "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">\n"
-          + "<keyval type=\"vector\">\n"
-          + "<key>Filename</key>\n"
-          + "<val>data.dat</val>\n"
-          + "</keyval>\n"
+          + "    <keyval type=\"vector\">\n"
+          + "        <key>Filename</key>\n"
+          + "        <val>data.dat</val>\n"
+          + "    </keyval>\n"
           + "</cas:metadata>\n",
             printer.getPrintedMessages().get(0));
 
@@ -85,10 +85,10 @@ public class TestDumpMetadataCliAction extends TestCase {
       assertEquals(
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
             + "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">\n"
-            + "<keyval type=\"vector\">\n"
-            + "<key>Filename</key>\n"
-            + "<val>data.dat</val>\n"
-            + "</keyval>\n"
+            + "    <keyval type=\"vector\">\n"
+            + "        <key>Filename</key>\n"
+            + "        <val>data.dat</val>\n"
+            + "    </keyval>\n"
             + "</cas:metadata>\n",
             FileUtils.readFileToString(new File(tmpFile, FILE_NAME + ".met")));
    }

@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.filemgr.system;
 
 import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyServer;
+import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;

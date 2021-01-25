@@ -30,7 +30,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 //APACHE imports
-import org.apache.avro.ipc.NettyTransceiver;
+import org.apache.avro.AvroRemoteException;
+import org.apache.avro.ipc.netty.NettyTransceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.apache.oodt.cas.resource.system.extern.AvroRpcBatchStub;
 import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
@@ -623,7 +624,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       client = new NettyTransceiver(new InetSocketAddress(node.getIpAddr().getPort()));
       proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
       return proxy.isAlive();
-    } catch (IOException e) {
+    } catch (IOException | AvroRemoteException e) {
       return false;
     }
   }
