@@ -20,6 +20,9 @@ package org.apache.oodt.commons.database;
 
 //JDK imports
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -29,8 +32,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -44,7 +45,7 @@ import javax.sql.DataSource;
  * </p>.
  */
 public class SqlScript {
-    private static Logger LOG = Logger.getLogger(SqlScript.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(SqlScript.class);
     public final static char QUERY_ENDS = ';';
 
     private File script;
@@ -103,7 +104,7 @@ public class SqlScript {
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
     }
@@ -186,10 +187,7 @@ public class SqlScript {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            System.out.println("Exception executing SQL: [" + sql
-                    + "]: message: " + e.getMessage());
-
+            LOG.error("Exception executing SQL: [{}]: {}", sql, e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -227,11 +225,7 @@ public class SqlScript {
             }
 
         } catch (SQLException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            System.out
-                    .println("Exception executing SQL batch statement: message: "
-                            + e.getMessage());
-
+            LOG.error("Exception executing SQL batch statement: {}", e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {

@@ -22,13 +22,13 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

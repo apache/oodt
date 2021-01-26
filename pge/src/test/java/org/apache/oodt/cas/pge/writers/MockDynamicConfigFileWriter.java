@@ -19,13 +19,13 @@ package org.apache.oodt.cas.pge.writers;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 //Apache imports
 import org.apache.commons.io.FileUtils;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
 
 /**
  * Mock implementation of {@link DynamicConfigFileWriter}.

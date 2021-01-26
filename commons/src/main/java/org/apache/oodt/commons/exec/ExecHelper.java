@@ -20,12 +20,13 @@ package org.apache.oodt.commons.exec;
 
 //JDK imports
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>
@@ -43,7 +44,7 @@ import java.util.logging.Logger;
  */
 public final class ExecHelper {
   public static final int INT = 1024;
-  private static Logger LOG = Logger.getLogger(ExecHelper.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(ExecHelper.class);
 
     /**
      * Executes the specified command and arguments in a separate process, and
@@ -403,8 +404,8 @@ public final class ExecHelper {
 	        this.output = output.toString();
 	        this.error = error.toString();
     	}catch (Exception e) {
-    		LOG.log(Level.SEVERE, e.getMessage());
-    		throw new IOException("Process exec failed : " + e.getMessage());
+    		LOG.error("Process exec failed : {}", e.getMessage(), e);
+    		throw new IOException("Process exec failed", e);
     	}finally {
             try {
             	process.getErrorStream().close();

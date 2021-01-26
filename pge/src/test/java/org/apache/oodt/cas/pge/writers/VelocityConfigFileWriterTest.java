@@ -23,15 +23,14 @@ import org.apache.oodt.cas.metadata.Metadata;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VelocityConfigFileWriterTest extends TestCase {
 
-  private static final Logger LOG = Logger
-      .getLogger(VelocityConfigFileWriterTest.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(VelocityConfigFileWriterTest.class);
 
   public void testCreateConfigFile() throws IOException {
     URL url = this.getClass().getResource("/test-config.vm");
@@ -44,7 +43,7 @@ public class VelocityConfigFileWriterTest extends TestCase {
     try {
       vcfw.generateFile(config.toString(), metadata, LOG, url.getFile());
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
     String output = FileUtils.readFileToString(config);

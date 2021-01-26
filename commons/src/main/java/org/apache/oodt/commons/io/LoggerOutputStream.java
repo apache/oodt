@@ -17,11 +17,12 @@
 package org.apache.oodt.commons.io;
 
 //JDK imports
+import org.slf4j.Logger;
+import org.slf4j.event.Level;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.CharBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * {@link OutputStream} wrapper around a java {@link Logger}.
@@ -37,8 +38,8 @@ public class LoggerOutputStream extends OutputStream {
          NUM_BYTES_PER_WRITE_PROPERTY, VAL);
 
    private Logger logger;
-   private CharBuffer buffer;
    private Level logLevel;
+   private CharBuffer buffer;
 
    public LoggerOutputStream(Logger logger) throws InstantiationException {
       this(logger, Level.INFO);
@@ -72,7 +73,23 @@ public class LoggerOutputStream extends OutputStream {
       if (buffer.position() > 0) {
          char[] flushContext = new char[buffer.position()];
          System.arraycopy(buffer.array(), 0, flushContext, 0, buffer.position());
-         logger.log(logLevel, new String(flushContext));
+         switch(logLevel){
+            case ERROR:
+               logger.error(new String(flushContext));
+               break;
+            case WARN:
+               logger.warn(new String(flushContext));
+               break;
+            case INFO:
+               logger.info(new String(flushContext));
+               break;
+            case DEBUG:
+               logger.debug(new String(flushContext));
+               break;
+            case TRACE:
+               logger.trace(new String(flushContext));
+               break;
+         }
          buffer.clear();
       }
    }
