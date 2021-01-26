@@ -29,14 +29,14 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.util.GenericBaseModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 //Wicket imports
@@ -56,7 +56,7 @@ public class Types extends Panel {
 
   private static final long serialVersionUID = 6263193710066495653L;
 
-  private static final Logger LOG = Logger.getLogger(Types.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(Types.class);
   
   private FileManagerConn fm;
 
@@ -190,9 +190,7 @@ public class Types extends Panel {
       try {
         tuple.getCounts().add(fm.getFm().getNumProducts(type));
       } catch (CatalogException e) {
-        LOG.log(Level.SEVERE, e.getMessage());
-        LOG.log(Level.WARNING, "Unable to set count for product type: ["
-            + type.getName() + "]: Reason: [" + e.getMessage() + "]");
+        LOG.warn("Unable to set count for product type: [{}]: {}", type.getName(), e.getMessage(), e);
       }
 
       if (i == types.size() - 1) {

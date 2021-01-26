@@ -47,14 +47,14 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.ListModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 //Wicket imports
@@ -74,8 +74,7 @@ import java.util.logging.Logger;
  */
 public class TypeBrowser extends Panel {
 
-  private static final Logger LOG = Logger.getLogger(TypeBrowser.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(TypeBrowser.class);
 
   private List<TermQueryCriteria> criteria;
 
@@ -158,10 +157,7 @@ public class TypeBrowser extends Panel {
                   fm.getFm()
                       .getProductPctTransferred(prodItem.getModelObject()))));
         } catch (DataTransferException e) {
-          LOG.log(Level.WARNING,
-              "Unable to obtain transfer percentage for product: ["
-                  + prodItem.getModelObject().getProductName() + "]: Reason: "
-                  + e.getMessage());
+          LOG.warn("Unable to obtain transfer percentage for product: [{}]: {}", prodItem.getModelObject().getProductName(), e.getMessage(), e);
         }
 
         String prodReceivedTime = fm.getProdReceivedTime(prodItem
@@ -230,8 +226,7 @@ public class TypeBrowser extends Panel {
     try {
       this.productPage = fm.getFm().pagedQuery(query, type, this.pageNum);
     } catch (CatalogException e) {
-      LOG.log(Level.SEVERE, "Unable to obtain page products: type: ["
-          + type.getName() + "]: Reason: " + e.getMessage());
+      LOG.error("Unable to obtain page products: type: [{}]: {}", type.getName(), e.getMessage());
     }
   }
 

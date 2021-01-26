@@ -18,18 +18,18 @@
 package org.apache.oodt.cas.wmservices.resources;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 
 import org.apache.oodt.cas.wmservices.servlets.WmServicesServlet;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractWorkflowServiceResource {
 
-  private static final Logger LOGGER = Logger.getLogger(AbstractWorkflowServiceResource.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractWorkflowServiceResource.class);
 
   // Servlet context
   @Context
@@ -47,7 +47,7 @@ public abstract class AbstractWorkflowServiceResource {
       return (File) repositoryDirObject;
     }
     String message = "Unable to retrieve packaged repository directory from the servlet context.";
-    LOGGER.log(Level.WARNING, message);
+    LOG.warn(message);
     throw new Exception(message);
   }
   
@@ -66,9 +66,8 @@ public abstract class AbstractWorkflowServiceResource {
       return (WorkflowManagerClient) clientObject;
     }
 
-    String message = "Unable to retrieve workflow manager client from the "
-        + "servlet context.";
-    LOGGER.log(Level.WARNING, message);
+    String message = "Unable to retrieve workflow manager client from the servlet context.";
+    LOG.warn(message);
     throw new Exception(message);
   }
 

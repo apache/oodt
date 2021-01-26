@@ -30,14 +30,14 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.util.ListModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
 import java.net.URI;
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
@@ -54,7 +54,7 @@ public class ProductRefsBrowser extends Panel {
   
   private static final long serialVersionUID = -2278188309669737798L;
 
-  private static final Logger LOG = Logger.getLogger(ProductRefsBrowser.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(ProductRefsBrowser.class);
   
   private FileManagerConn fm;
   
@@ -107,9 +107,7 @@ public class ProductRefsBrowser extends Panel {
                     fm.getFm()
                         .getRefPctTransferred(r))));
           } catch (DataTransferException e) {
-            LOG.log(Level.WARNING,
-                "Unable to determine product reference size: Reason: "
-                    + e.getMessage());
+            LOG.warn("Unable to determine product reference size: {}", e.getMessage(), e);
             refItem.add(new Label("ref_pct_transferred", "N/A"));
           }
 

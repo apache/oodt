@@ -38,11 +38,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.util.value.ValueMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  */
 public class WorkflowInstancesViewer extends Panel {
 
-  private static Logger LOG = Logger.getLogger(WorkflowInstancesViewer.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(WorkflowInstancesViewer.class);
   private static final long serialVersionUID = -311004303658412137L;
 
   private WorkflowMgrConn wm;
@@ -259,7 +259,7 @@ public class WorkflowInstancesViewer extends Panel {
       metString = metStrBuf.toString();
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     }
 
     return metString;
@@ -278,7 +278,7 @@ public class WorkflowInstancesViewer extends Panel {
     try {
       lifecycleMgr = new WorkflowLifecycleManager(lifecycleFilePath);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     }
     return lifecycleMgr != null ? WorkflowLifecycleManager
         .formatPct((lifecycleMgr.getPercentageComplete(inst)) * 100.0) : null;

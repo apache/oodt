@@ -23,8 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JAX-RS imports
 import javax.ws.rs.GET;
@@ -47,6 +45,8 @@ import org.apache.oodt.pcs.health.PCSHealthMonitorMetKeys;
 import org.apache.oodt.pcs.health.PCSHealthMonitorReport;
 import org.apache.oodt.pcs.tools.PCSHealthMonitor;
 import org.apache.oodt.pcs.util.FileManagerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -62,8 +62,7 @@ public class HealthResource extends PCSService {
 
   private static final long serialVersionUID = -7768836001459227323L;
 
-  private static final Logger LOG = Logger.getLogger(HealthResource.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(HealthResource.class);
 
   private PCSHealthMonitor mon;
 
@@ -307,8 +306,7 @@ public class HealthResource extends PCSService {
         try {
           this.encodeLatestFile(latestFilesList, prod);
         } catch (MalformedURLException e) {
-          LOG.log(Level.WARNING, "Unable to encode latest file: ["
-              + prod.getProductName() + "]: error: Message: " + e.getMessage());
+          LOG.warn("Unable to encode latest file: [{}]: {}", prod.getProductName(), e.getMessage(), e);
         }
       }
     }
