@@ -18,9 +18,10 @@
 package org.apache.oodt.cas.curation.service;
 
 //JDK imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JAX-RS imports
 import javax.ws.rs.DefaultValue;
@@ -41,8 +42,7 @@ import javax.ws.rs.core.UriInfo;
  * @version $Id$
  */
 public class DirectoryResource extends CurationService {
-  private static final Logger LOG = Logger.getLogger(DirectoryResource.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DirectoryResource.class);
 
   @Context
   UriInfo uriInfo;
@@ -93,9 +93,7 @@ public class DirectoryResource extends CurationService {
     try {
       relativePath = this.cleansePath(path);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Error decoding path: [" + path + "]: Message: "
-          + e.getMessage());
+      LOG.error("Error decoding path: [{}]: {}", path, e.getMessage(), e);
       return html.toString();
     }
 

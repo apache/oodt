@@ -23,6 +23,8 @@ import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 //JDK imports
@@ -30,8 +32,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -59,8 +59,7 @@ import javax.servlet.ServletContext;
  */
 public class CurationServiceConfig implements CuratorConfMetKeys {
 
-  private static final Logger LOG = Logger
-      .getLogger(CurationServiceConfig.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(CurationServiceConfig.class);
 
   private static CurationServiceConfig instance;
   private final Map<String, String> parameters = new ConcurrentHashMap<String, String>();
@@ -128,7 +127,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
     try {
       return RpcCommunicationFactory.createClient(new URL(this.getFileMgrURL()));
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       return null;
     }
   }
@@ -198,6 +197,6 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
       String name = names.nextElement();
       parameters.put(name, context.getInitParameter(name));
     }
-    LOG.log(Level.INFO, "Init Parameters: " + parameters);
+    LOG.info("Init Parameters: {}", parameters);
   }
 }

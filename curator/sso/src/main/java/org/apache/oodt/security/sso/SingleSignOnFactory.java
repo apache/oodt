@@ -18,10 +18,8 @@
 
 package org.apache.oodt.security.sso;
 
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -33,8 +31,7 @@ import java.util.logging.Logger;
  */
 public final class SingleSignOnFactory {
 
-  private static final Logger LOG = Logger.getLogger(SingleSignOnFactory.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(SingleSignOnFactory.class);
 
   @SuppressWarnings("unchecked")
   public static AbstractWebBasedSingleSignOn getWebBasedSingleSignOn(String className) {
@@ -46,20 +43,11 @@ public final class SingleSignOnFactory {
       sso = clazz.newInstance();
       return sso;
     } catch (ClassNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "ClassNotFoundException when loading web based sso class "
-              + className + " Message: " + e.getMessage());
+      LOG.warn("ClassNotFoundException when loading web based sso class [{}]: {}", className, e.getMessage(), e);
     } catch (InstantiationException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "InstantiationException when loading web based sso class "
-              + className + " Message: " + e.getMessage());
+      LOG.warn("InstantiationException when loading web based sso class [{}]: {}", className, e.getMessage(), e);
     } catch (IllegalAccessException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "IllegalAccessException when loading web based sso class "
-              + className + " Message: " + e.getMessage());
+      LOG.warn("IllegalAccessException when loading web based sso class [{}]: {}", className, e.getMessage(), e);
     }
 
     return null;
