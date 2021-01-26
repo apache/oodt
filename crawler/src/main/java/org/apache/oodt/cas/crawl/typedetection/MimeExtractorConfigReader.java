@@ -23,6 +23,8 @@ import org.apache.oodt.commons.xml.XMLUtils;
 
 import com.google.common.base.Strings;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -31,22 +33,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 //W3C imports
 //Google imports
 
 /**
- * Static reader class for {@link MimeExtractor}s.
+ * Static reader class for {@link MimeExtractorRepo}s.
  *
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
 public final class MimeExtractorConfigReader implements
         MimeExtractorConfigMetKeys {
-  private static Logger LOG = Logger.getLogger(MimeExtractorConfigReader.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(MimeExtractorConfigReader.class);
     private MimeExtractorConfigReader() throws InstantiationException {
         throw new InstantiationException("Don't construct reader classes!");
     }
@@ -168,22 +168,22 @@ public final class MimeExtractorConfigReader implements
             }
             return extractorRepo;
         } catch (IllegalAccessException e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage(), e);
           throw e;
         } catch (InstantiationException e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage(), e);
           throw e;
         } catch (MetExtractionException e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage(), e);
           throw e;
         } catch (FileNotFoundException e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage(), e);
           throw e;
         } catch (ClassNotFoundException e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage(), e);
           throw e;
         } catch (CrawlerActionException e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage(), e);
           throw e;
         }
     }

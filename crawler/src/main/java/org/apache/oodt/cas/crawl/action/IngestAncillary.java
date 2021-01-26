@@ -101,12 +101,9 @@ public class IngestAncillary extends FileBasedAction {
       String identifier = ingester.ingest(new URL(this.fileManagerUrl),
           actionFile, ingestMetadata);
       if (identifier != null) {
-        LOG.info("Succesfully ingested ancillary file "
-            + actionFile.getAbsolutePath() + " with identifier " + identifier);
+        LOG.info("Successfully ingested ancillary file '{}' with identifier '{}'", actionFile.getAbsolutePath(), identifier);
       } else {
-        LOG.severe("Failed to ingest ancillary file "
-            + actionFile.getAbsolutePath()
-            + " identifer was not returned from file manager");
+        LOG.error("Failed to ingest ancillary file '{}'. Identifier was not returned from file manager", actionFile.getAbsolutePath());
       }
 
       if (relatedKey != null) {
@@ -135,9 +132,7 @@ public class IngestAncillary extends FileBasedAction {
       }
 
     } catch (Exception ex) {
-      LOG.severe("Failed to ingest ancillary file "
-          + actionFile.getAbsolutePath());
-      LOG.severe(ex.getMessage());
+      LOG.error("Failed to ingest ancillary file {}: {}", actionFile.getAbsolutePath(), ex.getMessage(), ex);
       return false;
     }
 

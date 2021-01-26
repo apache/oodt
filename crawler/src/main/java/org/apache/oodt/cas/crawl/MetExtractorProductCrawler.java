@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Required;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 
 /**
@@ -140,7 +139,6 @@ public class MetExtractorProductCrawler extends ProductCrawler {
     
     private void logConditionMessage(boolean flag, String preCondComparatorId, File product){
       String startMsg = flag ? "Passed":"Failed";
-      LOG.log(Level.INFO, startMsg + " precondition comparator id "
-          + preCondComparatorId+" file: "+product);      
+      LOG.info("{} precondition comparator id {} file: {}", startMsg, preCondComparatorId, product);
     }
 }

@@ -79,25 +79,20 @@ public class EmailNotification extends CrawlerAction {
                metadata).getBytes()));
          for (String recipient : recipients) {
             try {
+               LOG.info("Recipient: {}", PathUtils.replaceEnvVariables(recipient.trim(), metadata));
                msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
                      PathUtils.replaceEnvVariables(recipient.trim(), metadata),
                      ignoreInvalidAddresses));
-               LOG.fine("Recipient: "
-                     + PathUtils.replaceEnvVariables(recipient.trim(), metadata));
             } catch (AddressException ae) {
-               LOG.fine("Recipient: "
-                     + PathUtils.replaceEnvVariables(recipient.trim(), metadata));
-               LOG.warning(ae.getMessage());
+               LOG.warn(ae.getMessage(), ae);
             }
          }
-         LOG.fine("Subject: " + msg.getSubject());
-         LOG.fine("Message: "
-               + new String(PathUtils.doDynamicReplacement(message, metadata)
-                     .getBytes()));
+         LOG.info("Subject: {}", msg.getSubject());
+         LOG.info("Message: {}", new String(PathUtils.doDynamicReplacement(message, metadata).getBytes()));
          Transport.send(msg);
          return true;
       } catch (Exception e) {
-         LOG.severe(e.getMessage());
+         LOG.error(e.getMessage(), e);
          return false;
       }
    }
