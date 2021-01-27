@@ -40,11 +40,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 import org.junit.Ignore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author woollard
@@ -57,7 +57,7 @@ import org.junit.Ignore;
  * </p>.
  */
 public class TestLuceneCatalog extends TestCase {
-    private static Logger LOG = Logger.getLogger(TestLuceneCatalog.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestLuceneCatalog.class);
     private LuceneCatalog myCat;
 
     private String tmpDirPath = null;
@@ -456,7 +456,7 @@ public class TestLuceneCatalog extends TestCase {
             Product retProd = myCat.getTopNProducts(5).get(0);
             assertEquals("test", retProd.getProductName());
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
     }
@@ -825,7 +825,7 @@ public class TestLuceneCatalog extends TestCase {
             Product retProd = myCat.getTopNProducts(5, type).get(0);
             assertEquals("test", retProd.getProductName());
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
     }
@@ -841,7 +841,7 @@ public class TestLuceneCatalog extends TestCase {
         myCat.getTopNProducts(20);
       }
       catch(Exception e){
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
         fail(e.getMessage());
       }
     }
@@ -853,7 +853,7 @@ public class TestLuceneCatalog extends TestCase {
             myCat.addProduct(testProduct);
             myCat.addMetadata(getTestMetadata("tempProduct"), testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -884,7 +884,7 @@ public class TestLuceneCatalog extends TestCase {
             myCat.addProduct(testProduct);
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -910,14 +910,14 @@ public class TestLuceneCatalog extends TestCase {
             myCat.addProduct(testProduct);
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
         try {
             myCat.removeMetadata(met, testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -926,7 +926,7 @@ public class TestLuceneCatalog extends TestCase {
             String retValue = retMet.getMetadata("Filename");
             assertNull(retValue);
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
     }
@@ -949,7 +949,7 @@ public class TestLuceneCatalog extends TestCase {
                 myCat.addProduct(testProduct);
                 myCat.addMetadata(met, testProduct);
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e.getMessage());
+                LOG.error(e.getMessage(), e);
                 fail(e.getMessage());
             }
     	}
@@ -960,7 +960,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		bqc.setOperator(BooleanQueryCriteria.AND);
     	}catch (Exception e){
-    		LOG.log(Level.SEVERE, e.getMessage());
+    		LOG.error(e.getMessage(), e);
             fail(e.getMessage());
     	}
     	TermQueryCriteria tqc = new TermQueryCriteria();
@@ -969,7 +969,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		bqc.addTerm(tqc);
     	}catch (Exception e){
-    		LOG.log(Level.SEVERE, e.getMessage());
+    		LOG.error(e.getMessage(), e);
             fail(e.getMessage());
     	}
     	tqc = new TermQueryCriteria();
@@ -978,7 +978,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		bqc.addTerm(tqc);
     	}catch (Exception e){
-    		LOG.log(Level.SEVERE, e.getMessage());
+    		LOG.error(e.getMessage(), e);
             fail(e.getMessage());
     	}
     	query.addCriterion(bqc);
@@ -988,7 +988,7 @@ public class TestLuceneCatalog extends TestCase {
     	try{
     		page = myCat.pagedQuery(query, testProduct.getProductType(), 1);
     	}catch (Exception e){
-    		LOG.log(Level.SEVERE, e.getMessage());
+    		LOG.error(e.getMessage(), e);
             fail(e.getMessage());
     	}
     	assertEquals(page.getPageProducts().size(), 1);

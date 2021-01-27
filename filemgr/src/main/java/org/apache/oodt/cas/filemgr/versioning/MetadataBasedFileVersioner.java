@@ -19,8 +19,6 @@ package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -28,6 +26,8 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -51,8 +51,7 @@ public class MetadataBasedFileVersioner implements Versioner {
     private String filePathSpec = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger
-            .getLogger(MetadataBasedFileVersioner.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MetadataBasedFileVersioner.class);
 
     /* whether or not we only handle flat products */
     private boolean flatProducts = true;
@@ -102,7 +101,7 @@ public class MetadataBasedFileVersioner implements Versioner {
         String filePathUri = new File(filePathRef).toURI().toString();
 
         Reference r = (Reference) product.getProductReferences().get(0);
-        LOG.log(Level.INFO, "Generated data store ref: [" + filePathUri
+        LOG.info("Generated data store ref: [" + filePathUri
                 + "] from origRef: [" + r.getOrigReference() + "]");
         r.setDataStoreReference(filePathUri);
     }

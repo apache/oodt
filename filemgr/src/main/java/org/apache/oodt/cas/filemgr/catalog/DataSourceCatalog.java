@@ -36,6 +36,8 @@ import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
 //SPRING imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 
@@ -50,8 +52,6 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -74,7 +74,7 @@ public class DataSourceCatalog implements Catalog {
     protected DataSource dataSource = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(DataSourceCatalog.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DataSourceCatalog.class);
 
     /* our validation layer */
     private ValidationLayer validationLayer = null;
@@ -147,7 +147,7 @@ public class DataSourceCatalog implements Catalog {
             metadataTypes = validationLayer.getElements(product
                     .getProductType());
         } catch (ValidationLayerException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
@@ -158,10 +158,7 @@ public class DataSourceCatalog implements Catalog {
         List<String> values = m.getAllMetadata(element.getElementName());
 
         if (values == null) {
-          LOG.log(Level.WARNING, "No Metadata specified for product ["
-                                 + product.getProductName() + "] for required field ["
-                                 + element.getElementName()
-                                 + "]: Attempting to continue processing metadata");
+          LOG.warn("No Metadata specified for product [{}] for required field [{}]: Attemting to continue processing metadata", product.getProductName(), element.getElementName());
           continue;
         }
 
@@ -169,19 +166,7 @@ public class DataSourceCatalog implements Catalog {
           try {
             addMetadataValue(element, product, value);
           } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG
-                .log(
-                    Level.WARNING,
-                    "Exception ingesting metadata. Error inserting field: ["
-                    + element.getElementId()
-                    + "=>"
-                    + value
-                    + "]: for product: ["
-                    + product.getProductName()
-                    + "]: Message: "
-                    + e.getMessage()
-                    + ": Attempting to continue processing metadata");
+            LOG.warn("Exception ingesting metadata. Error inserting field: [{}=>{}]: for product: [{}]: {}. Attempting to continue processing metadata", element.getElementId(), value, product.getProductName(), e.getMessage(), e);
           }
         }
       }
@@ -202,11 +187,9 @@ public class DataSourceCatalog implements Catalog {
             metadataTypes = validationLayer.getElements(product
                     .getProductType());
         } catch (ValidationLayerException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new CatalogException(
-                    "ValidationLayerException when trying to obtain element list for product type: "
-                            + product.getProductType().getName()
-                            + ": Message: " + e.getMessage(), e);
+            String msg = String.format("ValidationLayerException when trying to obtain element list for product type: {}: {}", product.getProductType().getName(), e.getMessage());
+            LOG.error(msg, e);
+            throw new CatalogException(msg, e);
         }
 
       for (Element element : metadataTypes) {
@@ -217,19 +200,7 @@ public class DataSourceCatalog implements Catalog {
             try {
               removeMetadataValue(element, product, value);
             } catch (Exception e) {
-              LOG.log(Level.SEVERE, e.getMessage());
-              LOG
-                  .log(
-                      Level.WARNING,
-                      "Exception removing metadata. Error deleting field: ["
-                      + element.getElementId()
-                      + "=>"
-                      + value
-                      + "]: for product: ["
-                      + product.getProductName()
-                      + "]: Message: "
-                      + e.getMessage()
-                      + ": Attempting to continue processing metadata");
+                LOG.warn("Exception removing metadata. Error deleting field: [{}=>{}] for product: [{}]: {}. Attempting to continue processing metadata", element.getElementId(), value, product.getProductName(), e.getMessage(), e);
             }
           }
         }
@@ -272,7 +243,7 @@ public class DataSourceCatalog implements Catalog {
 	                + productTypeIdStr
 	                + ")";
 
-				        LOG.log(Level.FINE, "addProduct: Executing: " + addProductSql);
+				        LOG.info("addProduct: Executing: {}", addProductSql);
 				        statement.execute(addProductSql);
 				
 				        // read "product_id" value that was automatically assigned by the database
@@ -311,7 +282,7 @@ public class DataSourceCatalog implements Catalog {
                     +", now()"
                     + ")";                       
 
-            	LOG.log(Level.FINE, "addProduct: Executing: " + addProductSql);
+            	LOG.info("addProduct: Executing: {}", addProductSql);
             	statement.execute(addProductSql);
             	
               product.setProductId(productId);
@@ -321,17 +292,13 @@ public class DataSourceCatalog implements Catalog {
 
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception adding product. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception adding product: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback addProduct transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback addProduct transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -386,8 +353,7 @@ public class DataSourceCatalog implements Catalog {
                     + product.getTransferStatus() + "' "
                     + "WHERE product_id = " + quoteIt(product.getProductId());
 
-            LOG.log(Level.FINE, "modifyProduct: Executing: "
-                                + modifyProductSql);
+            LOG.info("modifyProduct: Executing: {}", modifyProductSql);
             statement.execute(modifyProductSql);
             conn.commit();
 
@@ -395,15 +361,12 @@ public class DataSourceCatalog implements Catalog {
             updateReferences(product);
 
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Exception modifying product. Message: "
-                    + e.getMessage());
+            LOG.error("Exception modifying product: {}", e.getMessage(), e);
             try {
               assert conn != null;
               conn.rollback();
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback modifyProduct transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback modifyProduct transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -446,38 +409,28 @@ public class DataSourceCatalog implements Catalog {
             String deleteProductSql = "DELETE FROM products WHERE product_id = "
                     + quoteIt(product.getProductId());
 
-            LOG
-                    .log(Level.FINE, "removeProduct: Executing: "
-                            + deleteProductSql);
+            LOG.info("removeProduct: Executing: {}", deleteProductSql);
             statement.execute(deleteProductSql);
             deleteProductSql = "DELETE FROM "
                     + product.getProductType().getName() + "_metadata "
                     + " WHERE product_id = " + quoteIt(product.getProductId());
-            LOG
-                    .log(Level.FINE, "removeProduct: Executing: "
-                            + deleteProductSql);
+            LOG.info("removeProduct: Executing: {}", deleteProductSql);
             statement.execute(deleteProductSql);
             deleteProductSql = "DELETE FROM "
                     + product.getProductType().getName() + "_reference "
                     + " WHERE product_id = " + quoteIt(product.getProductId());
-            LOG
-                    .log(Level.FINE, "removeProduct: Executing: "
-                            + deleteProductSql);
+            LOG.info("removeProduct: Executing: {}", deleteProductSql);
             statement.execute(deleteProductSql);
             conn.commit();
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception removing product. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception removing product: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback removeProduct transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback removeProduct transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -521,23 +474,17 @@ public class DataSourceCatalog implements Catalog {
                     + "' "
                     + "WHERE product_id = " + quoteIt(product.getProductId());
 
-            LOG.log(Level.FINE, "setProductTransferStatus: Executing: "
-                    + modifyProductSql);
+            LOG.info("setProductTransferStatus: Executing: {}", modifyProductSql);
             statement.execute(modifyProductSql);
             conn.commit();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception setting transfer status for product. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception setting transfer status for product: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback setProductTransferStatus transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback setProductTransferStatus transaction: {}", e2.getMessage(), e);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -597,26 +544,20 @@ public class DataSourceCatalog implements Catalog {
                                + ((r.getMimeType() == null) ? "" : r.getMimeType()
                                                                     .getName()) + "')";
 
-            LOG.log(Level.FINE, "addProductReferences: Executing: "
-                                + addRefSql);
+            LOG.info("addProductReferences: Executing: {}", addRefSql);
             statement.execute(addRefSql);
           }
 
             conn.commit();
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception adding product references. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception adding product references: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback addProductReferences transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback addProductReferences transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -660,7 +601,7 @@ public class DataSourceCatalog implements Catalog {
             String getProductSql = "SELECT * " + "FROM products "
                     + "WHERE product_id = " + quoteIt(productId);
 
-            LOG.log(Level.FINE, "getProductById: Executing: " + getProductSql);
+            LOG.info("getProductById: Executing: {}", getProductSql);
             rs = statement.executeQuery(getProductSql);
 
             while (rs.next()) {
@@ -668,17 +609,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting product. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting product: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductById transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductById transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -731,9 +668,7 @@ public class DataSourceCatalog implements Catalog {
             String getProductSql = "SELECT products.* " + "FROM products "
                     + "WHERE product_name = '" + productName + "'";
 
-            LOG
-                    .log(Level.FINE, "getProductByName: Executing: "
-                            + getProductSql);
+            LOG.info("getProductByName: Executing: {}", getProductSql);
             rs = statement.executeQuery(getProductSql);
 
             while (rs.next()) {
@@ -741,17 +676,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting product. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting product: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductByName transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductByName transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -809,8 +740,7 @@ public class DataSourceCatalog implements Catalog {
               getProductRefSql.append(" ORDER BY pkey");
             }
 
-            LOG.log(Level.FINE, "getProductReferences: Executing: "
-                    + getProductRefSql);
+            LOG.info("getProductReferences: Executing: {}", getProductRefSql);
             rs = statement.executeQuery(getProductRefSql.toString());
 
             references = new Vector<Reference>();
@@ -820,17 +750,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting product type. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting product type: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductTypeById transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductTypeById transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -883,7 +809,7 @@ public class DataSourceCatalog implements Catalog {
             String getProductSql = "SELECT products.* " + "FROM products "
                     + "ORDER BY products.product_id DESC";
 
-            LOG.log(Level.FINE, "getProducts: Executing: " + getProductSql);
+            LOG.info("getProducts: Executing: {}", getProductSql);
             rs = statement.executeQuery(getProductSql);
             products = new Vector<Product>();
 
@@ -897,17 +823,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting products. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting products: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductstransaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductsTransaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -966,8 +888,7 @@ public class DataSourceCatalog implements Catalog {
             getProductSql = "SELECT products.* " + "FROM products "
                     + "WHERE products.product_type_id = " + productTypeIdStr;
 
-            LOG.log(Level.FINE, "getProductsByProductType: Executing: "
-                    + getProductSql);
+            LOG.info("getProductsByProductType: Executing: {}", getProductSql);
             rs = statement.executeQuery(getProductSql);
             products = new Vector<Product>();
 
@@ -981,17 +902,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting products. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting products: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductsByProductType transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductsByProductType transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -1043,7 +960,7 @@ public class DataSourceCatalog implements Catalog {
           metadataSql.append(" ORDER BY pkey");
         }
 
-            LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
+            LOG.info("getMetadata: Executing: {}", metadataSql);
             rs = statement.executeQuery(metadataSql.toString());
             
             m = new Metadata();
@@ -1052,11 +969,9 @@ public class DataSourceCatalog implements Catalog {
             try {
                 elements = validationLayer.getElements(product.getProductType());
             } catch (ValidationLayerException e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                throw new CatalogException(
-                        "ValidationLayerException when trying to obtain element list for product type: "
-                                + product.getProductType().getName()
-                                + ": Message: " + e.getMessage(), e);
+                String msg = String.format("ValidationLayerException when trying to obtain element list for product type: {} : {}", product.getProductType().getName(), e.getMessage());
+                LOG.error(msg, e);
+                throw new CatalogException(msg, e);
             }
 
             while (rs.next()) {
@@ -1073,10 +988,9 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting metadata. Message: "
-                    + e.getMessage());
-            throw new CatalogException(e.getMessage(), e);
+            String msg = String.format("Exception getting metadata: {}", e.getMessage());
+            LOG.warn(msg, e);
+            throw new CatalogException(msg, e);
         } finally {
 
             if (rs != null) {
@@ -1136,7 +1050,7 @@ public class DataSourceCatalog implements Catalog {
               metadataSql.append(" ORDER BY pkey");
             }
 
-            LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
+            LOG.info("getMetadata: Executing: {}", metadataSql);
             rs = statement.executeQuery(metadataSql.toString());
 
             m = new Metadata();
@@ -1145,11 +1059,9 @@ public class DataSourceCatalog implements Catalog {
             try {
                 elements = validationLayer.getElements(product.getProductType());
             } catch (ValidationLayerException e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                throw new CatalogException(
-                        "ValidationLayerException when trying to obtain element list for product type: "
-                                + product.getProductType().getName()
-                                + ": Message: " + e.getMessage(), e);
+                String msg = String.format("ValidationLayerException when trying to obtain element list for product type: {}: {}", product.getProductType().getName(), e.getMessage());
+                LOG.error(msg, e);
+                throw new CatalogException(msg, e);
             }
 
             while (rs.next()) {
@@ -1166,10 +1078,9 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting metadata. Message: "
-                    + e.getMessage());
-            throw new CatalogException(e.getMessage(), e);
+            String msg = String.format("Exception getting metadata: {}", e.getMessage());
+            LOG.warn(msg, e);
+            throw new CatalogException(msg, e);
         } finally {
 
             if (rs != null) {
@@ -1255,7 +1166,7 @@ public class DataSourceCatalog implements Catalog {
 
             getProductSql.append("ORDER BY products.product_id DESC");
 
-            LOG.log(Level.FINE, "getTopNProducts: executing: " + getProductSql.toString());
+            LOG.info("getTopNProducts: executing: {}", getProductSql.toString());
 
             rs = statement.executeQuery(getProductSql.toString());
             products = new Vector<Product>();
@@ -1270,18 +1181,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting top N products. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting top N products: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback get top N products. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback get top N products: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(),e);
         } finally {
@@ -1355,23 +1261,17 @@ public class DataSourceCatalog implements Catalog {
             String metaIngestSql = ("INSERT INTO " + metadataTable
                                     + " (product_id, element_id, metadata_value) ")
                     + valueClauseSql.toString();
-            LOG
-                    .log(Level.FINE, "addMetadataValue: Executing: "
-                            + metaIngestSql);
+            LOG.info("addMetadataValue: Executing: {}", metaIngestSql);
             statement.execute(metaIngestSql);
             conn.commit();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception adding metadata value. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception adding metadata value: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback add metadata value. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback add metadata value: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -1419,23 +1319,17 @@ public class DataSourceCatalog implements Catalog {
                 metRemoveSql.append("METADATA_VALUE = ").append(value);
             }
 
-            LOG.log(Level.FINE, "removeMetadataValue: Executing: "
-                    + metRemoveSql);
+            LOG.info("removeMetadataValue: Executing: {}", metRemoveSql);
             statement.execute(metRemoveSql.toString());
             conn.commit();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception removing metadata value. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception removing metadata value: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback remove metadata value. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback remove metadata value: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -1484,7 +1378,7 @@ public class DataSourceCatalog implements Catalog {
                 getProductSql.append("WHERE products.product_type_id = ").append(type.getProductTypeId()).append(" ");
             }
 
-            LOG.log(Level.FINE, "getNumProducts: executing: " + getProductSql.toString());
+            LOG.info("getNumProducts: executing: {}", getProductSql.toString());
 
             rs = statement.executeQuery(getProductSql.toString());
 
@@ -1493,17 +1387,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting num products. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting num products: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback get num products. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback get num products: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -1549,8 +1439,7 @@ public class DataSourceCatalog implements Catalog {
         try {
             firstPage = pagedQuery(query, type, 1);
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING, "Exception getting first page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting first page: {}", e.getMessage(), e);
         }
         return firstPage;
     }
@@ -1567,8 +1456,7 @@ public class DataSourceCatalog implements Catalog {
         try {
             lastPage = pagedQuery(query, type, firstPage.getTotalPages());
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING, "Exception getting last page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting last page: {}", e.getMessage(), e);
         }
 
         return lastPage;
@@ -1595,8 +1483,7 @@ public class DataSourceCatalog implements Catalog {
         try {
             nextPage = pagedQuery(query, type, currentPage.getPageNum() + 1);
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING, "Exception getting next page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting next page: {}", e.getMessage(), e);
         }
 
         return nextPage;
@@ -1622,8 +1509,7 @@ public class DataSourceCatalog implements Catalog {
         try {
             prevPage = pagedQuery(query, type, currentPage.getPageNum() - 1);
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING, "Exception getting prev page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting prev page: {}", e.getMessage(), e);
         }
 
         return prevPage;
@@ -1803,8 +1689,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
 
-            LOG.log(Level.FINE, "catalog get num results: executing: "
-                    + getProductSql.toString());
+            LOG.info("catalog get num results: executing: {}", getProductSql.toString());
 
             rs = statement.executeQuery(getProductSql.toString());
 
@@ -1813,18 +1698,13 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception performing get num results. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception performing get num results: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback get num results transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback get num results transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -1879,10 +1759,7 @@ public class DataSourceCatalog implements Catalog {
 
               return timeDifferenceMinutes < cacheUpdateMinutes;
             } catch (Exception e) {
-                LOG.log(Level.WARNING,
-                        "Unable to parse last update time for product type: ["
-                                + productTypeId + "]: Message: "
-                                + e.getMessage());
+                LOG.warn("Unable to parse last update time for product type: [{}]: {}", productTypeId, e.getMessage(), e);
                 return false;
             }
         }
@@ -1925,10 +1802,7 @@ public class DataSourceCatalog implements Catalog {
                 products = getProductsByProductType(type);
                 flagCacheUpdate(type.getProductTypeId(), products);
             } catch (CatalogException e) {
-                LOG.log(Level.WARNING,
-                        "CatalogException getting cached products for type: ["
-                                + type.getProductTypeId() + "]: Message: "
-                                + e.getMessage());
+                LOG.warn("CatalogException getting cached products for type: [{}]: {}", type.getProductTypeId(), e.getMessage(), e);
                 return null;
             }
         }
@@ -1987,7 +1861,7 @@ public class DataSourceCatalog implements Catalog {
               
             }
             
-            LOG.log(Level.FINE, "catalog query: executing: " + getProductSql.toString());
+            LOG.info("catalog query: executing: {}", getProductSql.toString());
 
             rs = statement.executeQuery(getProductSql.toString());
 
@@ -2034,17 +1908,13 @@ public class DataSourceCatalog implements Catalog {
             return productIds;
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception performing query. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception performing query: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback query transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback query transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {
@@ -2160,8 +2030,7 @@ public class DataSourceCatalog implements Catalog {
             String deleteProductSql = "DELETE FROM "
                     + product.getProductType().getName() + "_reference "
                     + " WHERE product_id = " + quoteIt(product.getProductId());
-            LOG.log(Level.FINE, "updateProductReferences: Executing: "
-                    + deleteProductSql);
+            LOG.info("updateProductReferences: Executing: {}", deleteProductSql);
             statement.execute(deleteProductSql);
 
             // now add the new ones back in
@@ -2176,26 +2045,20 @@ public class DataSourceCatalog implements Catalog {
                                + r.getFileSize() + ",'" + r.getMimeType().getName()
                                + "')";
 
-            LOG.log(Level.FINE, "updateProductReferences: Executing: "
-                                + addRefSql);
+            LOG.info("updateProductReferences: Executing: {}", addRefSql);
             statement.execute(addRefSql);
           }
 
             conn.commit();
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception updating product references. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception updating product references: {}", e.getMessage(), e);
             try {
               if (conn != null) {
                 conn.rollback();
               }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback updateProductReferences transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback updateProductReferences transaction: {}", e2.getMessage(), e2);
             }
             throw new CatalogException(e.getMessage(), e);
         } finally {

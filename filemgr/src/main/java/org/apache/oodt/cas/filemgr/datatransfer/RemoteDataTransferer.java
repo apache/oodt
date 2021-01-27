@@ -24,6 +24,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 //JDK imports
@@ -34,8 +36,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -67,8 +67,7 @@ public class RemoteDataTransferer implements DataTransfer {
    private FileManagerClient client = null;
 
    /* our log stream */
-   private static final Logger LOG = Logger
-         .getLogger(RemoteDataTransferer.class.getName());
+   private static final Logger LOG = LoggerFactory.getLogger(RemoteDataTransferer.class);
 
    /**
      * 
@@ -88,11 +87,9 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client = RpcCommunicationFactory.createClient(url);
          this.fileManagerUrl = url;
-         LOG.log(Level.INFO, "Remote Data Transfer to: ["
-               + client.getFileManagerUrl().toString() + "] enabled");
+         LOG.info("Remote Data Transfer to: [{}] enabled", client.getFileManagerUrl());
       } catch (ConnectionException e) {
-         LOG.log(Level.WARNING, "Connection exception for filemgr: [" + url
-               + "]");
+         LOG.warn("ConnectionException for filemgr: [{}]: {}", url, e.getMessage(), e);
       }
    }
 
@@ -121,29 +118,20 @@ public class RemoteDataTransferer implements DataTransfer {
        try {
          refFile = new File(new URI(r.getOrigReference()));
        } catch (URISyntaxException e) {
-         LOG.log(Level.WARNING,
-             "Unable to test if reference: [" + r.getOrigReference()
-             + "] is a directory: skipping it");
+         LOG.warn("Unable to test if reference: [{}] is a directory. skipping.", r.getOrigReference());
          continue;
        }
 
        if (!refFile.isDirectory()) {
-         LOG.log(Level.FINE, "Reference: [" + r.getOrigReference()
-                             + "] is file: transferring it");
+         LOG.info("Reference: [{}] is a file. transferring it", r.getOrigReference());
 
          try {
            remoteTransfer(r, product);
          } catch (URISyntaxException e) {
-           LOG.log(Level.WARNING,
-               "Error transferring file: [" + r.getOrigReference()
-               + "]: URISyntaxException: " + e.getMessage());
+           LOG.warn("URISyntaxException when transferring file: [{}]: {}", r.getOrigReference(), e.getMessage(), e);
          }
        } else {
-         LOG.log(
-             Level.FINE,
-             "RemoteTransfer: skipping reference: ["
-             + refFile.getAbsolutePath() + "] of product: ["
-             + product.getProductName() + "]: ref is a directory");
+         LOG.info("RemoteTransfer: skipping reference: [{}] of product: [{}]: ref is a directory", refFile.getAbsolutePath(), product.getProductName());
        }
      }
 
@@ -167,11 +155,7 @@ public class RemoteDataTransferer implements DataTransfer {
                   reference.getDataStoreReference()));
             File dest = new File(directory, dataStoreFile.getName());
             fOut = new FileOutputStream(dest, false);
-            LOG.log(
-                  Level.INFO,
-                  "RemoteDataTransfer: Copying File: " + "fmp:"
-                        + dataStoreFile.getAbsolutePath() + " to " + "file:"
-                        + dest.getAbsolutePath());
+            LOG.info("RemoteDataTransfer: Copying File from fmp:{} to file:{}", dataStoreFile.getAbsolutePath(), dest.getAbsolutePath());
             byte[] fileData;
             int offset = 0;
             while (true) {
@@ -230,24 +214,16 @@ public class RemoteDataTransferer implements DataTransfer {
          // remove the file if it already exists: this operation
          // is an overwrite
          if (!client.removeFile(destFilePath)) {
-            LOG.log(Level.WARNING,
-                  "RemoteDataTransfer: attempt to perform overwrite of dest file: ["
-                        + destFilePath + "] failed");
+            LOG.warn("RemoteDataTransfer: attempt to overwrite dest file: [{}] failed", destFilePath);
          }
 
          while ((numBytes = is.read(buf, offset, chunkSize)) != -1) {
             client.transferFile(destFilePath, buf, offset, numBytes);
          }
       } catch (IOException e) {
-         LOG.log(Level.WARNING,
-               "Error opening input stream to read file to transfer: Message: "
-                     + e.getMessage());
+         LOG.warn("Error opening input stream to read file to transfer: {}", e.getMessage(), e);
       } catch (DataTransferException e) {
-         LOG.log(
-               Level.WARNING,
-               "DataTransferException when transfering file: [" + origFilePath
-                     + "] to [" + destFilePath + "]: Message: "
-                     + e.getMessage());
+         LOG.warn("DataTransferException when transferring file: [{}] to: [{}]: {}", origFilePath, destFilePath, e.getMessage(), e);
       } finally {
          if (is != null) {
             try {
@@ -263,10 +239,7 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client.transferringProduct(p);
       } catch (DataTransferException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
-         LOG.log(Level.WARNING,
-               "Error notifying file manager of product transfer initiation for product: ["
-                     + p.getProductId() + "]: Message: " + e.getMessage());
+         LOG.warn("Error notifying filemgr of product transfer initiation for product: [{}]: {}", p.getProductId(), e.getMessage(), e);
       }
    }
 
@@ -274,10 +247,7 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client.removeProductTransferStatus(p);
       } catch (DataTransferException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
-         LOG.log(Level.WARNING,
-               "Error notifying file manager of product transfer completion for product: ["
-                     + p.getProductId() + "]: Message: " + e.getMessage());
+         LOG.warn("Error notifying filemgr of product transfer completion for product: [{}]: {}", p.getProductId(), e.getMessage(), e);
       }
    }
 

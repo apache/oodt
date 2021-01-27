@@ -29,6 +29,8 @@ import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,8 +40,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 //JDK imports
@@ -59,8 +59,7 @@ import java.util.logging.Logger;
 public class LocalDataTransferer implements DataTransfer {
 
    /* our log stream */
-   private static final Logger LOG = Logger.getLogger(LocalDataTransferer.class
-         .getName());
+   private static final Logger LOG = LoggerFactory.getLogger(LocalDataTransferer.class);
 
    /* file manager client */
    private FileManagerClient client = null;
@@ -83,9 +82,9 @@ public class LocalDataTransferer implements DataTransfer {
    public void setFileManagerUrl(URL url) {
       try {
          client = RpcCommunicationFactory.createClient(url);
-         LOG.log(Level.INFO, "Local Data Transfer to: [" + client.getFileManagerUrl().toString() + "] enabled");
+         LOG.info("Local Data Transfer to: [{}] enabled", client.getFileManagerUrl());
       } catch (ConnectionException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
+          LOG.warn("ConnectionException for filemgr: [{}]: {}", url, e.getMessage(), e);
       }
    }
 
@@ -104,26 +103,18 @@ public class LocalDataTransferer implements DataTransfer {
          try {
             moveDirToProductRepo(product);
          } catch (URISyntaxException e) {
-            LOG.log(
-                  Level.WARNING,
-                  "URI Syntax Exception when moving dir "
-                        + product.getProductReferences().get(0)
-                              .getOrigReference() + ": Message: "
-                        + e.getMessage());
+            LOG.warn("URI Syntax Exception when moving dir [{}]: {}", product.getProductReferences().get(0).getOrigReference(), e.getMessage(), e);
             throw new DataTransferException(e);
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
          try {
             moveFilesToProductRepo(product);
          } catch (URISyntaxException e) {
-            LOG.log(
-                  Level.WARNING,
-                  "URI Syntax Exception when moving files: Message: "
-                        + e.getMessage());
+            LOG.warn("URI Syntax Exception when moving files: {}", e.getMessage(), e);
             throw new DataTransferException(e);
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
-            LOG.log(Level.INFO,"Streaming products are not moved.");
+            LOG.info("Streaming products are not moved.");
       } else {
          throw new DataTransferException(
                "Cannot transfer product on unknown ProductStructure: "
@@ -146,26 +137,18 @@ public class LocalDataTransferer implements DataTransfer {
          try {
             copyDirToDir(product, directory);
          } catch (URISyntaxException e) {
-            LOG.log(
-                  Level.WARNING,
-                  "URI Syntax Exception when moving dir "
-                        + product.getProductReferences().get(0)
-                              .getDataStoreReference() + ": Message: "
-                        + e.getMessage());
+            LOG.warn("URI Syntax Exception when moving dir: [{}]: {}", product.getProductReferences().get(0).getDataStoreReference(), e.getMessage(), e);
             throw new DataTransferException(e);
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
          try {
             copyFilesToDir(product, directory);
          } catch (URISyntaxException e) {
-            LOG.log(
-                  Level.WARNING,
-                  "URI Syntax Exception when moving files: Message: "
-                        + e.getMessage());
+             LOG.warn("URI Syntax Exception when moving files: {}", e.getMessage(), e);
             throw new DataTransferException(e);
          }
       } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
-         LOG.log(Level.INFO,"Streaming products are not transfered.");
+         LOG.info("Streaming products are not moved.");
       } else {
          throw new DataTransferException(
                "Cannot transfer product on unknown ProductStructure: "
@@ -204,7 +187,7 @@ public class LocalDataTransferer implements DataTransfer {
                .create(System
                      .getProperty("org.apache.oodt.cas.filemgr.mime.type.repository"));
       } catch (MimeTypeException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
+         LOG.error(e.getMessage(), e);
          throw new IOException(e.getMessage());
       }
 
@@ -221,15 +204,12 @@ public class LocalDataTransferer implements DataTransfer {
             dirReference = new Reference();
             dirReference.setOrigReference(new File(new URI(args[++i])).toURI()
                   .toString());
-            LOG.log(Level.FINER,
-                  "LocalFileTransfer.main: Generated orig reference: "
-                        + dirReference.getOrigReference());
+            LOG.info("LocalFileTransfer.main: Generated orig reference: {}", dirReference.getOrigReference());
          } else if (args[i].equals("--files")) {
             transferType = "files";
             fileReferences = new Vector<Reference>();
             for (int j = i + 1; j < args.length; j++) {
-               LOG.log(Level.FINER, "LocalFileTransfer.main: Adding file ref: "
-                     + args[j]);
+               LOG.info("LocalFileTransfer.main: Adding file ref: {}", args[j]);
                fileReferences.add(new Reference(args[j], null,
                      new File(args[j]).length(), mimeTypeRepo
                            .getMimeType(args[j])));
@@ -280,11 +260,7 @@ public class LocalDataTransferer implements DataTransfer {
    private void copyDirToDir(Product product, File directory)
          throws IOException, URISyntaxException {
       Reference dirRef = product.getProductReferences().get(0);
-      LOG.log(
-            Level.INFO,
-            "LocalDataTransferer: Staging Directory: "
-                  + dirRef.getDataStoreReference() + " into directory "
-                  + directory.getAbsolutePath());
+      LOG.info("LocalDataTransfer: Staging Directory: {} into directory: {}", dirRef.getDataStoreReference(), directory.getAbsolutePath());
 
      for (Reference r : product.getProductReferences()) {
        File fileRef = new File(new URI(r.getDataStoreReference()));
@@ -298,16 +274,11 @@ public class LocalDataTransferer implements DataTransfer {
          // just in case there's no files in it
          File dest = new File(directory, fileRef.getName());
          if (!new File(new URI(dest.getAbsolutePath())).exists()) {
-           LOG.log(Level.FINER, "Directory: [" + dest.getAbsolutePath()
-                                + "] doesn't exist: creating it");
+           LOG.info("Directory: [{}] doesn't exist: creating it", dest.getAbsolutePath());
            try {
              FileUtils.forceMkdir(new File(new URI(dest.getAbsolutePath())));
            } catch (IOException e) {
-             LOG.log(
-                 Level.WARNING,
-                 "Unable to create directory: ["
-                 + dest.getAbsolutePath()
-                 + "] in local data transferer");
+             LOG.warn("Unable to create directory: [{}] in local data transfer: {}", dest.getAbsolutePath(), e.getMessage(), e);
 
            }
          }
@@ -318,11 +289,7 @@ public class LocalDataTransferer implements DataTransfer {
    private void moveDirToProductRepo(Product product) throws IOException,
          URISyntaxException {
       Reference dirRef = product.getProductReferences().get(0);
-      LOG.log(
-            Level.INFO,
-            "LocalDataTransferer: Moving Directory: "
-                  + dirRef.getOrigReference() + " to "
-                  + dirRef.getDataStoreReference());
+      LOG.info("LocalDataTransfer: Moving Directory: {} to: {}", dirRef.getOrigReference(), dirRef.getDataStoreReference());
 
       // notify the file manager that we started
       quietNotifyTransferProduct(product);
@@ -338,16 +305,11 @@ public class LocalDataTransferer implements DataTransfer {
          // create it
          // just in case there's no files in it
          if (!new File(new URI(r.getDataStoreReference())).exists()) {
-           LOG.log(Level.FINER, "Directory: [" + r.getDataStoreReference()
-                                + "] doesn't exist: creating it");
+           LOG.info("Directory: [{}] doesn't exist: creating it", r.getDataStoreReference());
            try {
              FileUtils.forceMkdir(new File(new URI(r.getDataStoreReference())));
            } catch (IOException e) {
-             LOG.log(
-                 Level.WARNING,
-                 "Unable to create directory: ["
-                 + r.getDataStoreReference()
-                 + "] in local data transferer");
+             LOG.warn("Unable to create directory: [{}] in local data transfer: {}", r.getDataStoreReference(), e.getMessage(), e);
            }
          }
        }
@@ -384,9 +346,7 @@ public class LocalDataTransferer implements DataTransfer {
    private void moveFile(Reference r, boolean log) throws IOException,
          URISyntaxException {
       if (log) {
-         LOG.log(Level.INFO,
-               "LocalDataTransfer: Moving File: " + r.getOrigReference()
-                     + " to " + r.getDataStoreReference());
+         LOG.info("LocalDataTransfer: Moving File: {} to: {}", r.getOrigReference(), r.getDataStoreReference());
       }
       File srcFileRef = new File(new URI(r.getOrigReference()));
       File destFileRef = new File(new URI(r.getDataStoreReference()));
@@ -397,44 +357,33 @@ public class LocalDataTransferer implements DataTransfer {
    private void copyFile(Reference r, File directory) throws IOException,
          URISyntaxException {
       File srcFileRef = new File(new URI(r.getDataStoreReference()));
-      LOG.log(Level.INFO,
-            "LocalDataTransfer: Copying File: " + r.getDataStoreReference()
-                  + " to file:" + directory.getAbsolutePath() + "/"
-                  + srcFileRef.getName());
+      LOG.info("LocalDataTransfer: Copying File: {} to file: {}/{}", r.getDataStoreReference(), directory.getAbsolutePath(), srcFileRef.getName());
       FileUtils.copyFile(srcFileRef, new File(directory, srcFileRef.getName()));
    }
 
    private void quietNotifyTransferProduct(Product p) {
       if (client == null) {
-         LOG.log(Level.WARNING,
-               "File Manager service not defined: this transfer will not be tracked");
+         LOG.warn("File Manager service not defined: this transfer will not be tracked");
          return;
       }
 
       try {
          client.transferringProduct(p);
       } catch (DataTransferException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
-         LOG.log(Level.WARNING,
-               "Error notifying file manager of product transfer initiation for product: ["
-                     + p.getProductId() + "]: Message: " + e.getMessage());
+         LOG.warn("Error notifying file manager of product transfer initiation for product: [{}]: {}", p.getProductId(), e.getMessage(), e);
       }
    }
 
    private void quietNotifyProductTransferComplete(Product p) {
       if (client == null) {
-         LOG.log(Level.WARNING,
-               "File Manager service not defined: this transfer will not be tracked");
+         LOG.warn("File Manager service not defined: this transfer will not be tracked");
          return;
       }
 
       try {
          client.removeProductTransferStatus(p);
       } catch (DataTransferException e) {
-         LOG.log(Level.SEVERE, e.getMessage());
-         LOG.log(Level.WARNING,
-               "Error notifying file manager of product transfer completion for product: ["
-                     + p.getProductId() + "]: Message: " + e.getMessage());
+         LOG.warn("Error notifying file manager of product transfer completion for product: [{}]: {}", p.getProductId(), e.getMessage(), e);
       }
    }
 

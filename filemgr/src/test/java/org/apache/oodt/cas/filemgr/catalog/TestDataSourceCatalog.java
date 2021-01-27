@@ -38,12 +38,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
@@ -59,7 +59,7 @@ import static org.junit.Assert.assertThat;
  */
 public class TestDataSourceCatalog extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(TestDataSourceCatalog.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestDataSourceCatalog.class);
     protected Catalog myCat;
 
     private String tmpDirPath = null;
@@ -325,7 +325,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addProduct(testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -357,7 +357,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -383,14 +383,14 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
         try {
             myCat.removeMetadata(met, testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -418,7 +418,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addProductReferences(testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -526,7 +526,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addProduct(testProduct);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -581,7 +581,7 @@ public class TestDataSourceCatalog extends TestCase {
             coreSchemaScript.loadScript();
             coreSchemaScript.execute();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 

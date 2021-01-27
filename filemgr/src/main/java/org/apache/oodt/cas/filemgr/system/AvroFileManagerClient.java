@@ -121,7 +121,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                 success = proxy.isAlive();
             } else return false;
         } catch (AvroRemoteException e) {
-            logger.error("Error when connecting to filemgr: {}", fileManagerUrl);
+            logger.error("Error when connecting to filemgr: {}", fileManagerUrl, e);
             success = false;
         }
 
@@ -626,7 +626,7 @@ public class AvroFileManagerClient implements FileManagerClient {
                         addProductReferences(product);
                     } catch (CatalogException e) {
                         logger.error("Error when adding Product references for Product [{}] to repository manager: {}",
-                                product.getProductName(), e.getMessage());
+                                product.getProductName(), e.getMessage(), e);
                         throw e;
                     }
                 } else {
@@ -644,12 +644,12 @@ public class AvroFileManagerClient implements FileManagerClient {
                         setProductTransferStatus(product);
                     } catch (CatalogException e) {
                         logger.error("Error when updating product transfer status for Product[{}]: {}",
-                                product.getProductName(), e.getMessage());
+                                product.getProductName(), e.getMessage(), e);
                         throw e;
                     }
                 } catch (Exception e) {
                     logger.error("DataTransferException when transferring Product[{}]: {}",
-                            product.getProductName(), e.getMessage());
+                            product.getProductName(), e.getMessage(), e);
                     throw new DataTransferException(e);
                 }
 
@@ -659,7 +659,7 @@ public class AvroFileManagerClient implements FileManagerClient {
             // error versioning file
         } catch (VersioningException e) {
             logger.error("VersioningException when versioning Product[{}] with versioner: {}: {}",
-                    product.getProductName(), product.getProductType().getVersioner(), e.getMessage());
+                    product.getProductName(), product.getProductType().getVersioner(), e.getMessage(), e);
             throw new VersioningException(e);
         } catch (Exception e) {
             logger.error("Failed to ingest product [{}]. -- rolling back ingest", product, e);

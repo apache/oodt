@@ -30,10 +30,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 //Junit imports
@@ -48,7 +48,7 @@ import junit.framework.TestCase;
  */
 public class TestAcquisitionDateVersioner extends TestCase {
 
-  private static Logger LOG = Logger.getLogger(TestAcquisitionDateVersioner.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(TestAcquisitionDateVersioner.class);
   private Properties initialProperties = new Properties(System.getProperties());
 
   public void setUp() throws Exception {
@@ -80,7 +80,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
 
@@ -104,7 +104,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
 
@@ -127,7 +127,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
 

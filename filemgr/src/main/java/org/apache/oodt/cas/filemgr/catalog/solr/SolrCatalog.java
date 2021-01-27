@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -33,6 +32,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.pagination.PaginationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
@@ -53,7 +54,7 @@ public class SolrCatalog implements Catalog {
 	// Class responsible for interacting with the Solr server
 	SolrClient solrClient;
 
-	private static final Logger LOG = Logger.getLogger(SolrCatalog.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(SolrCatalog.class);
 
 	public SolrCatalog(String solrUrl, ProductIdGenerator productIdGenerator, ProductSerializer productSerializer) {
 		this.productIdGenerator = productIdGenerator;
@@ -143,7 +144,7 @@ public class SolrCatalog implements Catalog {
 
 
 		} else {
-			LOG.info("Adding product:" + product.getProductName());
+			LOG.info("Adding product: {}", product.getProductName());
 
 			// generate product identifier if not existing already
 			if (!StringUtils.hasText(product.getProductId())) {
@@ -163,7 +164,7 @@ public class SolrCatalog implements Catalog {
 	@Override
 	public void modifyProduct(Product product) throws CatalogException {
 
-		LOG.info("Modifying product:"+product.getProductName());
+		LOG.info("Modifying product: {}", product.getProductName());
 
 		// serialize the update product information to Solr document(s)
 		List<String> docs = productSerializer.serialize(product, false); // create=false
@@ -213,10 +214,10 @@ public class SolrCatalog implements Catalog {
 
 		CompleteProduct cp = getCompleteProductByName(productName);
 		if (cp!=null) {
-			LOG.info("Found product name="+productName+" id="+cp.getProduct().getProductId());
+			LOG.info("Found product (name={}, id={})", productName, cp.getProduct().getProductId());
 			return cp.getProduct();
 		} else {
-			LOG.info("Product with name="+productName+" not found");
+			LOG.info("Product with name={} not found", productName);
 			return null;
 		}
 
@@ -263,7 +264,7 @@ public class SolrCatalog implements Catalog {
 		// convert filemgr query into a Solr query
 		List<String> qc = new ArrayList<String>();
 		for (QueryCriteria queryCriteria : query.getCriteria()) {
-			LOG.info("Query criteria="+queryCriteria.toString());
+			LOG.info("Query criteria={}", queryCriteria.toString());
 			qc.add(queryCriteria.toString());
 		}
 		params.put("fq", qc.toArray( new String[ qc.size() ] ));
@@ -310,8 +311,8 @@ public class SolrCatalog implements Catalog {
 
 		}
 
-		LOG.info("Total number of products found="+queryResponse.getNumFound());
-		LOG.info("Total number of products returned="+queryResponse.getCompleteProducts().size());
+		LOG.info("Total number of products found={}", queryResponse.getNumFound());
+		LOG.info("Total number of products returned={}", queryResponse.getCompleteProducts().size());
 		return queryResponse;
 
 	}
@@ -538,7 +539,7 @@ public class SolrCatalog implements Catalog {
 	private CompleteProduct extractCompleteProduct(String doc) throws CatalogException {
 
 		// deserialize document into Product
-		LOG.info("Parsing Solr document: "+doc);
+		LOG.info("Parsing Solr document: {}", doc);
 		QueryResponse queryResponse = productSerializer.deserialize(doc);
 		int numFound = queryResponse.getNumFound();
 		if (numFound>1) {
