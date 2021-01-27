@@ -20,11 +20,11 @@ package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  */
 public class ProductNameCheckComparator extends PreConditionComparator<Boolean> {
 	
-	private static final Logger LOG = Logger.getLogger(ExistanceCheckComparator.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ExistanceCheckComparator.class);
 	
 	private final static String PNC_REGEX = "PNC_REGEX";
 	
@@ -59,15 +59,15 @@ public class ProductNameCheckComparator extends PreConditionComparator<Boolean> 
 	@Override
 	protected int performCheck(File product, Boolean compareItem) throws PreconditionComparatorException {
 		
-		LOG.log(Level.FINEST, "Comparing product: "+product.getName()+" versus regex: "+pattern.toString());
+		LOG.info("Comparing product: "+product.getName()+" versus regex: "+pattern.toString());
 		
 		Matcher matcher = pattern.matcher(product.getName());
 		if (matcher.matches()) {
-			LOG.log(Level.FINEST, "Product: "+product.getName()+" passes 'regex' check: "+pattern.toString());
+			LOG.info("Product: "+product.getName()+" passes 'regex' check: "+pattern.toString());
 			return Boolean.TRUE.compareTo(compareItem);
 		} else {
 
-			LOG.log(Level.FINEST, "Product: "+product.getName()+" failed 'regex' check: "+pattern.toString());
+			LOG.info("Product: "+product.getName()+" failed 'regex' check: "+pattern.toString());
 			return Boolean.FALSE.compareTo(compareItem);
 		}
 

@@ -22,11 +22,11 @@ package org.apache.oodt.cas.metadata.preconditions;
 
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * </p>.
  */
 public class MimeTypeComparator extends PreConditionComparator<String> {
-    private static Logger LOG = Logger.getLogger(MimeTypeComparator.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(MimeTypeComparator.class);
     private boolean useMagic;
 
     private MimeTypeUtils mimeTypeUtils = new MimeTypeUtils();
@@ -63,10 +63,9 @@ public class MimeTypeComparator extends PreConditionComparator<String> {
             }
             return tikaMimeType != null ? tikaMimeType.compareTo(mimeType) : 0;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new PreconditionComparatorException(
-                    "Failed to get mime-type for " + product + " : "
-                            + e.getMessage());
+            String msg = String.format("Failed to get mimetype for product [%s]: %s", product, e.getMessage());
+            LOG.error(msg, e);
+            throw new PreconditionComparatorException(msg);
         }
     }
 

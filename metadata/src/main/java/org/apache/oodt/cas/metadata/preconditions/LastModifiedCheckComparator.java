@@ -20,11 +20,11 @@ package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class LastModifiedCheckComparator extends PreConditionComparator<Boolean> {
 	
-	private static final Logger LOG = Logger.getLogger(ExistanceCheckComparator.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ExistanceCheckComparator.class);
 	
 	private long maxAgeInSeconds = Long.MAX_VALUE;
 
@@ -56,12 +56,12 @@ public class LastModifiedCheckComparator extends PreConditionComparator<Boolean>
 		
 		// reject this product
 		if (deltaInSecs>maxAgeInSeconds) {
-			LOG.log(Level.FINEST, "Product: "+product.getAbsolutePath()+" fails 'Last Modified' check: "+new Date(lastModTime));
+			LOG.info("Product: "+product.getAbsolutePath()+" fails 'Last Modified' check: "+new Date(lastModTime));
 			return Boolean.FALSE.compareTo(compareItem);
 			
 		// accept this product
 		} else {
-			LOG.log(Level.FINEST, "Product: "+product.getAbsolutePath()+" passes 'Last Modified' check: "+new Date(lastModTime));
+			LOG.info("Product: "+product.getAbsolutePath()+" passes 'Last Modified' check: "+new Date(lastModTime));
 			return Boolean.TRUE.compareTo(compareItem);
 
 		}

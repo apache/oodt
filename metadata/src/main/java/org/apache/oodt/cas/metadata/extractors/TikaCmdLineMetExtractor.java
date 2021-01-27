@@ -23,13 +23,13 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.tika.Tika;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //Apache imports
 //OODT imports
@@ -53,8 +53,7 @@ import java.util.logging.Logger;
  */
 public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
 
-    private static final Logger LOG = Logger
-            .getLogger(TikaCmdLineMetExtractor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TikaCmdLineMetExtractor.class);
 
     protected static MetReaderConfigReader reader = 
             new MetReaderConfigReader();
@@ -80,19 +79,19 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
             InputStream is = new FileInputStream(file);
 
             // extract met from prod using tika
-            LOG.fine("Invoking tika extractor on file ["
+            LOG.info("Invoking tika extractor on file ["
                     + file.getAbsolutePath() + "]");
             Tika tika = new Tika();
             tika.parse(is, tikaMet); // extract metadata
             tikaMet.add("content", tika.parseToString(file)); // extract content
 
-            LOG.fine("Number of captured tika metadata keys: ["
+            LOG.info("Number of captured tika metadata keys: ["
                     + tikaMet.names().length + "]");
 
             // copy tika met into oodt met
             for (String key : tikaMet.names()) {
                 met.addMetadata(key, StringEscapeUtils.escapeXml(tikaMet.get(key)));
-                LOG.fine("Added tika met key [" + key + "] with value ["
+                LOG.info("Added tika met key [" + key + "] with value ["
                         + met.getMetadata(key) + "]");
             }
 
@@ -105,7 +104,7 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
                 String configMetKeyVal = (String) myConfig.get(configMetKey);
 
                 met.addMetadata(configMetKey, StringEscapeUtils.escapeXml(configMetKeyVal));
-                LOG.fine("Added config file met key [" + configMetKey + 
+                LOG.info("Added config file met key [" + configMetKey +
                         "] with value [" + met.getMetadata(configMetKey) + "]");
             }
             
@@ -116,9 +115,8 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
             return met;
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.severe(e.getMessage());
-            throw new MetExtractionException(e.getMessage());
+            LOG.error(e.getMessage(), e);
+            throw new MetExtractionException(e.getMessage(), e);
         }
     }
 

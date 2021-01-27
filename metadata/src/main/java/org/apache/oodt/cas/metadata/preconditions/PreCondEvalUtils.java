@@ -19,12 +19,12 @@
 package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //Spring imports
 
@@ -41,8 +41,7 @@ import java.util.logging.Logger;
  */
 public class PreCondEvalUtils implements PreConditionOperatorMetKeys {
 
-    private static Logger LOG = Logger.getLogger(PreCondEvalUtils.class
-            .getName());
+    private static Logger LOG = LoggerFactory.getLogger(PreCondEvalUtils.class);
 
     private ApplicationContext applicationContext;
 
@@ -67,11 +66,11 @@ public class PreCondEvalUtils implements PreConditionOperatorMetKeys {
             if (!((PreConditionComparator<?>) applicationContext.getBean(
                     preCondComparatorId, PreConditionComparator.class))
                     .passes(product)) {
-                LOG.log(Level.INFO, "Failed precondition comparator id "
+                LOG.info("Failed precondition comparator id "
                         + preCondComparatorId);
                 return false;
             } else {
-                LOG.log(Level.INFO, "Passed precondition comparator id "
+                LOG.info("Passed precondition comparator id "
                         + preCondComparatorId);
             }
         }

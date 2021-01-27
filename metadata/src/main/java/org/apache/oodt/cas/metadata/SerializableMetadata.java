@@ -19,6 +19,8 @@ package org.apache.oodt.cas.metadata;
 
 import org.apache.oodt.commons.xml.XMLUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,8 +32,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,7 +54,7 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class SerializableMetadata extends Metadata implements Serializable {
 
-    private static Logger LOG = Logger.getLogger(SerializableMetadata.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(SerializableMetadata.class);
     private static final long serialVersionUID = 6863087581652632499L;
 
     private String xmlEncoding;
@@ -162,9 +162,9 @@ public class SerializableMetadata extends Metadata implements Serializable {
             xformer.transform(source, result);
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new IOException("Error generating metadata xml file!: "
-                    + e.getMessage());
+            String msg = String.format("Error generating metadata xml file: %s", e.getMessage());
+            LOG.error(msg, e);
+            throw new IOException(msg, e);
         }
     }
 
@@ -212,10 +212,9 @@ public class SerializableMetadata extends Metadata implements Serializable {
             }
             return document;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new IOException(
-                    "Failed to create XML DOM Document for SerializableMetadata : "
-                            + e.getMessage());
+            String msg = String.format("Failed to create XML DOM Document for SerializableMetadata: %s", e.getMessage());
+            LOG.error(msg, e);
+            throw new IOException(msg, e);
         }
     }
 
