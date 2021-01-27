@@ -39,14 +39,13 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AvroRpcResourceManagerClient implements ResourceManagerClient {
 
     /* our log stream */
-    private static Logger LOG = Logger
-            .getLogger(XmlRpcResourceManagerClient.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(AvroRpcResourceManagerClient.class);
 
     /* resource manager url */
     private URL resMgrUrl = null;
@@ -59,16 +58,12 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
             String configFile = System
                     .getProperty("org.apache.oodt.cas.resource.properties");
-            LOG.log(Level.INFO,
-                    "Loading Resource Manager Configuration Properties from: ["
-                            + configFile + "]");
+            LOG.info("Loading resmgr configuration properties from [{}]", configFile);
             try {
                 System.getProperties().load(
                         new FileInputStream(new File(configFile)));
             } catch (Exception e) {
-                LOG.log(Level.INFO,
-                        "Error loading configuration properties from: ["
-                                + configFile + "]");
+                LOG.warn("Error loading resmgr configuration properties from [{}]: {}", configFile, e.getMessage(), e);
             }
         }
 
@@ -138,8 +133,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         try {
             return proxy.killJob(jobId);
         } catch (AvroRemoteException e) {
-            LOG.log(Level.SEVERE,
-                    "Server error!");
+            LOG.error("Server error!: {}", e.getMessage(), e);
         }
         return false;
     }
@@ -149,8 +143,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         try {
             return proxy.getExecutionNode(jobId);
         } catch (AvroRemoteException e) {
-            LOG.log(Level.SEVERE,
-                    "Server error!");
+            LOG.error("Server error!: {}", e.getMessage(), e);
         }
         return null;
     }
@@ -160,7 +153,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         try {
             return proxy.getNodeReport();
         } catch (AvroRemoteException e) {
-            LOG.log(Level.SEVERE, "Server error!");
+            LOG.error("Server error!: {}", e.getMessage(), e);
         }
         return null;
     }
@@ -170,7 +163,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         try {
             return proxy.getExecReport();
         } catch (AvroRemoteException e) {
-            LOG.log(Level.SEVERE, "Server error!");
+            LOG.error("Server error!: {}", e.getMessage(), e);
         }
         return null;
     }
@@ -180,8 +173,7 @@ public class AvroRpcResourceManagerClient implements ResourceManagerClient {
         try {
             return proxy.handleJob(AvroTypeFactory.getAvroJob(exec), AvroTypeFactory.getAvroJobInput(in));
         } catch (AvroRemoteException e) {
-            LOG.log(Level.SEVERE,
-                    "Server error!");
+            LOG.error("Server error!: {}", e.getMessage(), e);
 
         }
         return null;

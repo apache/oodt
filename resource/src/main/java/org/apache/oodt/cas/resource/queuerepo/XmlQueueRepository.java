@@ -33,8 +33,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 //DOM imports
@@ -59,8 +59,7 @@ public class XmlQueueRepository implements QueueRepository {
 		}
 	};
 
-	private static final Logger LOG = Logger.getLogger(XmlQueueRepository.class
-			.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(XmlQueueRepository.class);
 
 	private List<String> dirUris;
 
@@ -91,7 +90,7 @@ public class XmlQueueRepository implements QueueRepository {
 						.getDocumentRoot(new FileInputStream(
 							nodesFile));
 				  } catch (FileNotFoundException e) {
-					LOG.log(Level.SEVERE, e.getMessage());
+					LOG.error(e.getMessage(), e);
 					return null;
 				  }
 
@@ -116,17 +115,7 @@ public class XmlQueueRepository implements QueueRepository {
 							  .addNodeToQueue(nodeId,
 								  (String) assignment);
 						} catch (Exception e) {
-						  LOG
-							  .log(
-								  Level.WARNING,
-								  "Failed to add node '"
-								  + nodeId
-								  + "' to queue '"
-								  + (String) assignment
-								  + "' : "
-								  + e
-									  .getMessage(),
-								  e);
+						  LOG.warn("Failed to add node [{}] to queue [{}]: {}", nodeId, assignment, e.getMessage(), e);
 						}
 					  }
 					}
@@ -135,13 +124,7 @@ public class XmlQueueRepository implements QueueRepository {
 				}
 			  }
 			} catch (URISyntaxException e) {
-			  LOG.log(Level.SEVERE, e.getMessage());
-			  LOG
-				  .log(
-					  Level.WARNING,
-					  "DirUri: "
-					  + dirUri
-					  + " is not a directory: skipping node loading for it.");
+			  LOG.warn("DirUri: [{}] is not a directory: skipping node loading for it", dirUri, e);
 			}
 		  }
 

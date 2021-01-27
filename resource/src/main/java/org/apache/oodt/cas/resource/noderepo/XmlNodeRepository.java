@@ -33,8 +33,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 //DOM imports
@@ -51,8 +51,7 @@ import java.util.logging.Logger;
  */
 public class XmlNodeRepository implements NodeRepository {
 
-	private static final Logger LOG = Logger.getLogger(XmlNodeRepository.class
-			.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(XmlNodeRepository.class);
 
 	private static FileFilter nodesXmlFilter = new FileFilter() {
 		public boolean accept(File pathname) {
@@ -89,7 +88,7 @@ public class XmlNodeRepository implements NodeRepository {
 							.getDocumentRoot(new FileInputStream(
 								nodesFile));
 					  } catch (FileNotFoundException e) {
-						LOG.log(Level.SEVERE, e.getMessage());
+						LOG.error(e.getMessage(), e);
 						return null;
 					  }
 
@@ -105,9 +104,7 @@ public class XmlNodeRepository implements NodeRepository {
 				  }
 				}
 			} catch (URISyntaxException e) {
-				LOG.log(Level.WARNING, "DirUri: " + dirUri
-						+ " is not a directory: skipping node loading for it.",
-						e);
+				LOG.warn("DirUri [{}] is not a directory: skipping node loading for it.", dirUri, e);
 			}
 		}
 		return nodes;
