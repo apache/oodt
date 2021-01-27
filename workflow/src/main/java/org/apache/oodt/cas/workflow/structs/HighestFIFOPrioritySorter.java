@@ -23,8 +23,8 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -47,8 +47,7 @@ public class HighestFIFOPrioritySorter implements PrioritySorter {
   private int secondsBetweenBoosts;
   private double boostAmount;
   private double boostCap;
-  private static final Logger LOG = Logger
-      .getLogger(HighestFIFOPrioritySorter.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(HighestFIFOPrioritySorter.class);
 
   public HighestFIFOPrioritySorter(int secondsBetweenBoosts,
       double boostAmount, double boostCap) {
@@ -80,10 +79,7 @@ public class HighestFIFOPrioritySorter implements PrioritySorter {
       aliveTime = (double) (System.currentTimeMillis() - processorStub
           .getWorkflowInstance().getCreationDate().getTime());
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "Unable to compute aliveTime for computing FIFO priority: Reason: ["
-              + e.getMessage() + "]");
+      LOG.warn("Unable to compute aliveTime for computing FIFO priority: {}", e.getMessage(), e);
       aliveTime = 0.0;
     }
 

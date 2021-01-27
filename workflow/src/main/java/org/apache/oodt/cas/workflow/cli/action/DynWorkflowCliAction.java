@@ -20,9 +20,10 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 
 /**
@@ -33,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class DynWorkflowCliAction extends WorkflowCliAction {
 
-    private static final Logger LOGGER = Logger.getLogger(DynWorkflowCliAction.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DynWorkflowCliAction.class);
 
     private List<String> taskIds;
     private Metadata metadata;
@@ -48,9 +49,9 @@ public class DynWorkflowCliAction extends WorkflowCliAction {
         Validate.notNull(taskIds, "Must specify taskIds");
 
         try (WorkflowManagerClient client = getClient()) {
-            LOGGER.fine(String.format("Starting workflow %d tasks", taskIds.size()));
+            LOG.info(String.format("Starting workflow %d tasks", taskIds.size()));
             String instId = client.executeDynamicWorkflow(taskIds, metadata);
-            LOGGER.fine(String.format("Started workflow with instanceId: %s", instId));
+            LOG.info(String.format("Started workflow with instanceId: %s", instId));
             printer.println("Started dynamic workflow with id '" + instId + "'");
         } catch (Exception e) {
             throw new CmdLineActionException(

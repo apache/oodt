@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -50,8 +50,7 @@ public class MemoryWorkflowInstanceRepository extends
     private ConcurrentHashMap workflowInstMap = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger
-            .getLogger(MemoryWorkflowInstanceRepository.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MemoryWorkflowInstanceRepository.class);
 
     /**
      * <p>
@@ -92,16 +91,11 @@ public class MemoryWorkflowInstanceRepository extends
      */
     public synchronized void updateWorkflowInstance(WorkflowInstance wInst)
             throws InstanceRepositoryException {
+        LOG.info("Attempting to update workflow instance [id={}]", wInst.getId());
         WorkflowInstance inst = (WorkflowInstance) workflowInstMap.get(wInst
                 .getId());
-
         if (inst == null) {
-            LOG
-                    .log(
-                            Level.WARNING,
-                            "Attempt to update workflow instance id: "
-                                    + wInst.getId()
-                                    + " workflow instance is not being tracked by this engine!");
+            LOG.warn("Workflow instance [id={}] is not being tracked by this engine!", wInst.getId());
             return;
         }
 

@@ -18,8 +18,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,8 +40,7 @@ public final class TaskPolicyWriter implements TaskPolicyMetKeys {
     private static final String TASKS_XML_FILE_NAME = "tasks.xml";
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(TaskPolicyWriter.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TaskPolicyWriter.class);
 
     private TaskPolicyWriter() throws InstantiationException {
         throw new InstantiationException("Don't construct writers!");
@@ -65,12 +64,9 @@ public final class TaskPolicyWriter implements TaskPolicyMetKeys {
         try {
             XMLUtils.writeXmlToStream(getTaskXmlDocument(taskSubsetMap),
                     new FileOutputStream(new File(taskXmlFileFullPath)));
-            LOG.log(Level.INFO, "Successfully updated task policy file: ["
-                    + taskXmlFileFullPath + "]");
+            LOG.info("Successfully updated task policy file: [{}]", taskXmlFileFullPath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING, "Unable to write task policy file: ["
-                    + taskXmlFileFullPath + "]: file not found");
+            LOG.warn("Unable to write task policy file: [{}]: file not found", taskXmlFileFullPath, e);
         }
 
     }
@@ -175,8 +171,7 @@ public final class TaskPolicyWriter implements TaskPolicyMetKeys {
 
             return document;
         } catch (ParserConfigurationException pce) {
-            LOG.log(Level.WARNING, "Error generating tasks xml document!: "
-                    + pce.getMessage());
+            LOG.warn("Error generating tasks xml document: {}", pce.getMessage(), pce);
         }
 
         return null;

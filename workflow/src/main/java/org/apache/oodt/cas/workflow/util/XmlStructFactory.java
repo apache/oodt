@@ -38,7 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -52,7 +53,7 @@ import java.util.logging.Logger;
 public final class XmlStructFactory {
 
   /* our log stream */
-  public static Logger LOG = Logger.getLogger(XmlStructFactory.class.getName());
+  public static Logger LOG = LoggerFactory.getLogger(XmlStructFactory.class);
 
   private XmlStructFactory() throws InstantiationException {
     throw new InstantiationException("Don't instantiate XML Struct Factories!");

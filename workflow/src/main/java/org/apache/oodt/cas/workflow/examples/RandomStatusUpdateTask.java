@@ -29,8 +29,8 @@ import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  */
 public class RandomStatusUpdateTask implements WorkflowTaskInstance {
     public static final long MILLIS = 5000L;
-    private static Logger LOG = Logger.getLogger(RandomStatusUpdateTask.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(RandomStatusUpdateTask.class);
     private static final String[] statuses = new String[] { "THINKING",
             "RUNNING", "WAITING", "INFINITELY WAITING", "WATCHING TV",
             "SLEEPING", "DREAMING", "WORKING", "WATCHING MOVIES" };
@@ -87,7 +87,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
         try {
             this.client.updateWorkflowInstanceStatus(wInstId, status);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
     }
@@ -101,7 +101,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
         try {
             return new URL(urlStr);
         } catch (MalformedURLException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return null;
         }
     }

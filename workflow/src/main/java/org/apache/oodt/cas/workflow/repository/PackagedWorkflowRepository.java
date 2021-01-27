@@ -49,8 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -79,8 +79,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 
   private Map<String, List<ParentChildWorkflow>> eventWorkflowMap;
 
-  private static final Logger LOG = Logger
-      .getLogger(PackagedWorkflowRepository.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(PackagedWorkflowRepository.class);
 
   public PackagedWorkflowRepository(List<File> files)
       throws InstantiationException {
@@ -88,7 +87,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     try {
       this.init();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new InstantiationException(e.getMessage());
     }
   }
@@ -408,7 +407,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         computeWorkflowConditions();
       }
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new RepositoryException(e.getMessage());
     }
   }
@@ -482,9 +481,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     List<Element> taskBlocks = this.getChildrenByTagName(rootElem, "task");
 
     if (conditionBlocks != null && conditionBlocks.size() > 0) {
-      LOG.log(Level.FINER, "Loading: [" + conditionBlocks.size()
-          + "] conditions from: ["
-          + rootElem.getOwnerDocument().getDocumentURI() + "]");
+      LOG.info("Loading [{}] conditions from [{}]", conditionBlocks.size(), rootElem.getOwnerDocument().getDocumentURI());
 
       for (Element condElem : conditionBlocks) {
         loadGraphs(rootElements, condElem, new Graph(), staticMetadata);
@@ -493,8 +490,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
 
     if (taskBlocks != null && taskBlocks.size() > 0) {
-      LOG.log(Level.FINER, "Loading: [" + taskBlocks.size() + "] tasks from: ["
-          + rootElem.getOwnerDocument().getDocumentURI() + "]");
+      LOG.info("Loading [{}] tasks from [{}]", taskBlocks.size(), rootElem.getOwnerDocument().getDocumentURI());
       for (Element taskElem : taskBlocks) {
         loadGraphs(rootElements, taskElem, new Graph(), staticMetadata);
       }
@@ -505,7 +501,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       Graph parent, Metadata staticMetadata)
       throws CommonsException, CasMetadataException, WorkflowException, ParseException {
 
-    LOG.log(Level.FINEST, "Visiting node: [" + graphElem.getNodeName() + "]");
+    LOG.info("Visiting node [{}]", graphElem.getNodeName());
     loadConfiguration(rootElements, graphElem, staticMetadata);
     Graph graph = !graphElem.getNodeName().equals("cas:workflows") ? new Graph(
         graphElem, staticMetadata) : new Graph();
@@ -516,12 +512,11 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
 
     for (String processorType : Graph.processorIds) {
-      LOG.log(Level.FINE, "Scanning for: [" + processorType + "] nodes");
+      LOG.info("Scanning for [{}] nodes", processorType);
       List<Element> procTypeBlocks = this.getChildrenByTagName(graphElem,
           processorType);
       if (procTypeBlocks != null && procTypeBlocks.size() > 0) {
-        LOG.log(Level.FINE, "Found: [" + procTypeBlocks.size() + "] ["
-            + processorType + "] processor types");
+        LOG.info("Found [{}] [{}] processor types", procTypeBlocks.size(), processorType);
         for (Element procTypeBlock : procTypeBlocks) {
           loadGraphs(rootElements, procTypeBlock, graph, staticMetadata);
         }
@@ -533,8 +528,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
             List<Element> procTypeBlockNodes = this.getChildrenByTagName(
                 conditionsElem, "condition");
             if (procTypeBlockNodes != null && procTypeBlockNodes.size() > 0) {
-              LOG.log(Level.FINE, "Found: [" + procTypeBlockNodes.size()
-                  + "] linked condition definitions");
+              LOG.info("Found [{}] linked condition definitions", procTypeBlockNodes.size());
               for (Element procTypeBlockNode : procTypeBlockNodes) {
                 loadGraphs(rootElements, procTypeBlockNode, graph,
                     staticMetadata);
@@ -618,8 +612,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       workflow.setName(graph.getModelName());
       graph.setWorkflow(workflow);
       if (graph.getParent() == null || (graph.getParent().getWorkflow() == null)) {
-        LOG.log(Level.FINEST, "Workflow: [" + graph.getModelId()
-            + "] has no parent: it's a top-level workflow");
+        LOG.info("Workflow [{}] has no parent: it's a top-level workflow", graph.getModelId());
       }
 
       if (workflow.getName() == null || (workflow.getName().equals(""))) {
@@ -651,19 +644,16 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       graph.setCond(cond);
       if (graph.getParent() != null) {
         if (graph.getParent().getWorkflow() != null) {
-          LOG.log(Level.FINEST, "Adding condition: [" + cond.getConditionName()
-              + "] to parent workflow: ["
-              + graph.getParent().getWorkflow().getName() + "]");
+          LOG.info("Adding condition [{}] to parent workflow [{}]",
+                  cond.getConditionName(), graph.getParent().getWorkflow().getName());
           graph.getParent().getWorkflow().getConditions().add(cond);
         } else if (graph.getParent().getTask() != null) {
           graph.getParent().getTask().getConditions().add(cond);
         } else {
-          LOG.log(Level.FINEST, "Condition: [" + graph.getModelId()
-              + "] has not parent: it's a condition definition");
+          LOG.info("Condition [{}] has not parent: it's a condition definition", graph.getModelId());
         }
       } else {
-        LOG.log(Level.FINEST, "Condition: [" + graph.getModelId()
-            + "]: parent is null");
+        LOG.info("Condition [{}] parent is null", graph.getModelId());
       }
       // if parent doesn't have task or workflow set, then its parent
       // is null and it's a condition definition, just add it
@@ -671,7 +661,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     } else if (graph.getExecutionType().equals("task")) {
       WorkflowTask task;
       if (graph.getModelIdRef() != null && !graph.getModelIdRef().equals("")) {
-        LOG.log(Level.FINER, "Model ID-Ref to: [" + graph.getModelIdRef() + "]");
+        LOG.info("Model ID-Ref to [{}]", graph.getModelIdRef());
         task = this.tasks.get(graph.getModelIdRef());
       } else {
         task = new WorkflowTask();
@@ -691,12 +681,10 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         if (graph.getParent().getWorkflow() != null) {
           graph.getParent().getWorkflow().getTasks().add(task);
         } else {
-          LOG.log(Level.FINEST, "Task: [" + graph.getModelId()
-              + "] has no parent: it's a task definition");
+          LOG.info("Task [{}] has no parent: it's a task definition", graph.getModelId());
         }
       } else {
-        LOG.log(Level.FINEST, "Task: [" + graph.getModelId()
-            + "]: parent is null");
+        LOG.info("Task: [{}]: parent is null", graph.getModelId());
       }
     }
 

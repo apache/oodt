@@ -28,7 +28,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 //JDK imports
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -42,8 +43,7 @@ import java.util.logging.Logger;
 public final class DbStructFactory {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(DbStructFactory.class
-            .getName());
+    private static Logger LOG = LoggerFactory.getLogger(DbStructFactory.class);
 
     private DbStructFactory() throws InstantiationException {
         throw new InstantiationException("Don't construct DbStructFactories!");
