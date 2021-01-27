@@ -26,11 +26,11 @@ import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 
@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  * 
  */
 public class Reference {
-    private static Logger LOG = Logger.getLogger(Reference.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Reference.class);
     /* the item's original location */
     private String origReference = null;
 
@@ -119,7 +119,7 @@ public class Reference {
         try {
             this.mimeType = mimeTypeRepository.forName(new Tika().detect(origRef));
         } catch (MimeTypeException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            logger.error(e.getMessage(), e);
         }
 
     }
@@ -220,7 +220,7 @@ public class Reference {
         try {
           this.mimeType = mimeTypeRepository.forName(name);
         } catch (MimeTypeException e) {
-           LOG.log(Level.SEVERE, e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 

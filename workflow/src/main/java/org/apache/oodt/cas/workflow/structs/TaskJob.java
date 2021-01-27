@@ -24,8 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
@@ -51,7 +51,7 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(TaskJob.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TaskJob.class);
 
     /**
      * Default Constructor.
@@ -120,7 +120,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
         try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.updateWorkflowInstanceStatus(workflowInstId, status)) {
-                LOG.log(Level.WARNING,
+                LOG.warn(
                         "Unable to update status for workflow instance: ["
                                 + workflowInstId + "] to : [" + status + "]");
             }
@@ -133,7 +133,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
         try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.updateMetadataForWorkflow(workflowInstId, met)) {
-                LOG.log(Level.WARNING,
+                LOG.warn(
                         "Unable to update Metadata for workflow instance: ["
                                 + workflowInstId + "]");
             }
@@ -148,7 +148,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
         try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.setWorkflowInstanceCurrentTaskStartDateTime(
                     workflowInstId, startDateTime)) {
-                LOG.log(Level.WARNING,
+                LOG.warn(
                         "Unable to update start date time for workflow instance: ["
                                 + workflowInstId + "]");
             }
@@ -163,7 +163,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
         try (WorkflowManagerClient wClient = getWmClientFromMetadata(met)) {
             if (!wClient.setWorkflowInstanceCurrentTaskEndDateTime(
                     workflowInstId, endDateTime)) {
-                LOG.log(Level.WARNING,
+                LOG.warn(
                         "Unable to update end date time for workflow instance: ["
                                 + workflowInstId + "]");
             }

@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 
 
 /**
@@ -108,13 +107,11 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
             }
             return true;
          } else {
-            LOG.log(Level.WARNING, "No extractor specs specified for "
-                  + product);
+            LOG.warn("No extractor specs specified for {}", product);
             return false;
          }
       } catch (Exception e) {
-         LOG.log(Level.WARNING,
-               "Failed to evaluate preconditions : " + e.getMessage());
+         LOG.warn("Failed to evaluate preconditions : {}", e.getMessage());
          return false;
       }
    }

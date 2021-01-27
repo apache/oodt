@@ -29,14 +29,14 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -68,8 +68,7 @@ public class ExpImpCatalog {
     private boolean ensureUnique = false;
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(ExpImpCatalog.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ExpImpCatalog.class);
 
     /**
      * Default Constructor.
@@ -86,16 +85,14 @@ public class ExpImpCatalog {
         try {
             sourceClient = RpcCommunicationFactory.createClient(sUrl);
         } catch (ConnectionException e) {
-            LOG.log(Level.WARNING, "Unable to connect to source filemgr: ["
-                    + sUrl + "]");
+            LOG.warn("Unable to connect to source filemgr: [{}]: {}", sUrl, e.getMessage(), e);
             throw new RuntimeException(e);
         }
 
         try {
             destClient = RpcCommunicationFactory.createClient(dUrl);
         } catch (ConnectionException e) {
-            LOG.log(Level.WARNING, "Unable to connect to dest filemgr: ["
-                    + dUrl + "]");
+            LOG.warn("Unable to connect to dest filemgr: [{}]: {}", dUrl, e.getMessage(), e);
             throw new RuntimeException(e);
         }
 
@@ -106,7 +103,7 @@ public class ExpImpCatalog {
             boolean unique) throws InstantiationException {
         this.ensureUnique = unique;
 
-        LOG.log(Level.INFO, "Constructing tool using catalog interfaces");
+        LOG.info("Constructing tool using catalog interfaces");
         // first load the source prop file
         try {
             System.getProperties().load(
@@ -117,8 +114,7 @@ public class ExpImpCatalog {
 
         // now construct the source catalog
         String srcCatFactoryStr = System.getProperty("filemgr.catalog.factory");
-        LOG.log(Level.INFO, "source catalog factory: [" + srcCatFactoryStr
-                + "]");
+        LOG.info("source catalog factory: [{}]", srcCatFactoryStr);
         this.srcCatalog = GenericFileManagerObjectFactory
                 .getCatalogServiceFromFactory(srcCatFactoryStr);
 
@@ -132,9 +128,7 @@ public class ExpImpCatalog {
 
         String destCatFactoryStr = System
                 .getProperty("filemgr.catalog.factory");
-        LOG
-                .log(Level.INFO, "dest catalog factory: [" + destCatFactoryStr
-                        + "]");
+        LOG.info("dest catalog factory: [{}]", destCatFactoryStr);
         this.destCatalog = GenericFileManagerObjectFactory
                 .getCatalogServiceFromFactory(destCatFactoryStr);
 
@@ -152,13 +146,10 @@ public class ExpImpCatalog {
                 throw new FileManagerException(
                         "The source product types must be present in the dest file manager!");
             } else {
-                LOG
-                        .log(Level.INFO,
-                                "Source types and Dest types match: beginning processing");
+                LOG.info("Source types and Dest types match: beginning processing");
             }
         } else {
-          LOG.log(Level.INFO,
-              "Skipping type validation: catalog i/f impls being used.");
+          LOG.info("Skipping type validation: catalog i/f impls being used.");
         }
 
         // we'll use the get product page method for each product type
@@ -169,9 +160,7 @@ public class ExpImpCatalog {
         try {
           exportTypeToDest(type);
         } catch (CatalogException e) {
-          LOG.log(Level.WARNING, "Error exporting product type: ["
-                                 + type.getName() + "] from source to dest: Message: "
-                                 + e.getMessage(), e);
+          LOG.warn("Error exporting product type: [{}] from source to dest: {}", type.getName(), e.getMessage(), e);
           throw e;
         }
       }
@@ -224,10 +213,7 @@ public class ExpImpCatalog {
               boolean hasProduct = safeHasProductTypeByName(p
                   .getProductName());
               if (hasProduct) {
-                LOG.log(Level.INFO, "Skipping product: ["
-                                    + p.getProductName()
-                                    + "]: ensure unique enabled: "
-                                    + "product exists in dest catalog");
+                LOG.info("Skipping product: [{}]: already in dest catalog. ensure unique enabled", p.getProductName());
                 continue;
               }
             }
@@ -249,13 +235,7 @@ public class ExpImpCatalog {
               met = srcCatalog.getMetadata(p);
             }
 
-            LOG
-                .log(
-                    Level.INFO,
-                    "Source Product: ["
-                    + p.getProductName()
-                    + "]: Met Extraction and "
-                    + "Reference Extraction successful: writing to dest file manager");
+            LOG.info("Source Product: [{}]: Met/Ref Extraction successful: writing to dest filemgr", p.getProductName());
 
             // OODT-543
             if (sourceClient != null) {
@@ -273,8 +253,7 @@ public class ExpImpCatalog {
                 .getProductTypeById(type.getProductTypeId()) : type);
             destProduct.setTransferStatus(p.getTransferStatus());
 
-            LOG.log(Level.INFO, "Cataloging Product: ["
-                                + p.getProductName() + "]");
+            LOG.info("Cataloging Product: [{}]", p.getProductName());
             String destProductId;
             if (destCatalog != null) {
               destCatalog.addProduct(destProduct);
@@ -282,35 +261,26 @@ public class ExpImpCatalog {
             } else {
               destProductId = destClient.catalogProduct(destProduct);
             }
-            LOG.log(Level.INFO, "Catalog successful: dest product id: ["
-                                + destProductId + "]");
+            LOG.info("Catalog successful: dest product id: [{}]", destProductId);
             destProduct.setProductId(destProductId);
 
-            LOG.log(Level.INFO, "Adding references for dest product: ["
-                                + destProductId + "]");
+            LOG.info("Adding references for dest product: [{}]", destProductId);
             destProduct.setProductReferences(p.getProductReferences());
             if (destCatalog != null) {
               destCatalog.addProductReferences(destProduct);
             } else {
               destClient.addProductReferences(destProduct);
             }
-            LOG.log(Level.INFO,
-                "Reference addition successful for dest product: ["
-                + destProductId + "]");
-
-            LOG.log(Level.INFO, "Adding metadata for dest product: ["
-                                + destProductId + "]");
+            LOG.info("Reference addition successful for dest product: [{}]", destProductId);
+            LOG.info("Adding metadata for dest product: [{}]", destProductId);
             if (destCatalog != null) {
               destCatalog.addMetadata(met, destProduct);
             } else {
               destClient.addMetadata(destProduct, met);
             }
-            LOG.log(Level.INFO,
-                "Met addition successful for dest product: ["
-                + destProductId + "]");
+            LOG.info("Met addition successful for dest product: [{}]", destProductId);
 
-            LOG.log(Level.INFO, "Successful import of product: ["
-                                + p.getProductName() + "] into dest file manager");
+            LOG.info("Successful import of product: [{}] into dest filemgr", p.getProductName());
           }
         }
     }
@@ -406,8 +376,7 @@ public class ExpImpCatalog {
       for (Object aSourceList : sourceList) {
         ProductType type = (ProductType) aSourceList;
         if (!typeInList(type, destList)) {
-          LOG.log(Level.WARNING, "Source type: [" + type.getName()
-                                 + "] not present in dest file manager");
+          LOG.warn("Source type: [{}] not present in dest filemgr", type.getName());
           return false;
         }
       }
@@ -437,24 +406,14 @@ public class ExpImpCatalog {
             try {
                 return (destCatalog.getProductByName(productName) != null);
             } catch (CatalogException e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                LOG
-                        .log(Level.WARNING,
-                                "Exceptiong checking for product type by name: ["
-                                        + productName + "]: Message: "
-                                        + e.getMessage());
+                LOG.warn("Exception checking for product type by name: [{}]: {}", productName, e.getMessage(), e);
                 return false;
             }
         } else {
             try {
                 return destClient.hasProduct(productName);
             } catch (CatalogException e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                LOG
-                        .log(Level.WARNING,
-                                "Exceptiong checking for product type by name: ["
-                                        + productName + "]: Message: "
-                                        + e.getMessage());
+                LOG.warn("Exception checking for product type by name: [{}]: {}", productName, e.getMessage(), e);
                 return false;
             }
 

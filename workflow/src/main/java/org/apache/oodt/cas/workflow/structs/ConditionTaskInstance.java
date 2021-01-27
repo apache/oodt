@@ -23,8 +23,8 @@ import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceExcep
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -47,8 +47,7 @@ import java.util.logging.Logger;
  */
 public class ConditionTaskInstance implements WorkflowTaskInstance {
 
-  private static final Logger LOG = Logger
-      .getLogger(ConditionTaskInstance.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(ConditionTaskInstance.class);
 
   /*
    * (non-Javadoc)
@@ -68,7 +67,7 @@ public class ConditionTaskInstance implements WorkflowTaskInstance {
               + conditionClassName + "]: unable to run ConditionTaskInstance!");
     }
 
-    LOG.log(Level.INFO, "ConditionTaskInstance: evaluating condition: ["
+    LOG.info("ConditionTaskInstance: evaluating condition: ["
         + conditionClassName + "]");
     WorkflowConditionInstance cond = GenericWorkflowObjectFactory
         .getConditionObjectFromClassName(conditionClassName);

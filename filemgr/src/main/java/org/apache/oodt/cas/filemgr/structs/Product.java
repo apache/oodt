@@ -19,6 +19,8 @@ package org.apache.oodt.cas.filemgr.structs;
 
 import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -33,8 +35,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -91,7 +91,7 @@ public class Product {
     private static String[] VALID_STRUCTURES = new String[]{STRUCTURE_FLAT,STRUCTURE_HIERARCHICAL,STRUCTURE_STREAM};
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(Product.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Product.class);
 
     private String productReceivedTime;
     /**
@@ -312,10 +312,9 @@ public class Product {
             }
 
         } catch (ParserConfigurationException pce) {
-            LOG.log(Level.WARNING, "Error generating product xml file!: "
-                    + pce.getMessage());
-            throw new FileManagerException("Error generating product xml file!: "
-                    + pce.getMessage());
+            String msg = String.format("ParserConfigurationException when generating product xml file: %s", pce.getMessage());
+            LOG.warn(msg, pce);
+            throw new FileManagerException(msg);
         }
 
         return doc;
@@ -329,10 +328,7 @@ public class Product {
             this.productName = URLDecoder.decode(root.getAttribute("name"),
                     "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            LOG.log(Level.WARNING,
-                    "Unable to set product name: error decoding encoded string: Message: "
-                            + e.getMessage());
-
+            LOG.warn("UnsupportedEncodingException when setting product name: {}", e.getMessage(), e);
         }
 
         this.productStructure = XMLUtils.getElementText("structure", root);

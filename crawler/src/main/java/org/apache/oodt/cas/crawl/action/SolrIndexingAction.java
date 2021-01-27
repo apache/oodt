@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 //OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
@@ -52,9 +51,9 @@ public class SolrIndexingAction extends CrawlerAction {
 	public boolean performAction(File product, Metadata productMetadata) throws CrawlerActionException {
 		
 		//try {
-			
+
 			String productName = productMetadata.getMetadata("ProductName");
-			LOG.log(Level.INFO, "Indexing product: "+productName+ " from File Manager catalog: "+fileManagerUrl+" into Solr index: "+solrUrl);
+			LOG.info("Indexing product: {} from File Manager catalog: {} into Solr index: {}", productName, fileManagerUrl, solrUrl);
 		try {
 			solrIndexer.indexProductByName(productName, true); // delete=true
 		} catch (SolrServerException e) {

@@ -17,8 +17,8 @@
 
 package org.apache.oodt.cas.resource.monitor.ganglia.loadcalc;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author rajith
@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class WeightedAverageLoadCalcFactory implements LoadCalculatorFactory {
 
-    private static final Logger LOG = Logger.getLogger(WeightedAverageLoadCalcFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(WeightedAverageLoadCalcFactory.class);
 
     /**
      *
@@ -43,7 +43,7 @@ public class WeightedAverageLoadCalcFactory implements LoadCalculatorFactory {
                     System.getProperty("org.apache.oodt.cas.resource.monitor.loadcalc.weight.loadfifteen"));
             return new WeightedAverageLoadCalc(loadOneWeight, loadFiveWeight, loadFifteenWeight);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to create Load Calculator : " + e.getMessage(), e);
+            LOG.error("Failed to create Load Calculator: {}", e.getMessage(), e);
             return null;
         }
     }

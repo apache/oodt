@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author riverma (Rishi Verma)
@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  * 
  */
 public class CygwinScriptFile extends ScriptFile {
-    private static Logger LOG = Logger.getLogger(CygwinScriptFile.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(CygwinScriptFile.class);
     /**
      * 
      */
@@ -68,7 +68,7 @@ public class CygwinScriptFile extends ScriptFile {
                     new File(filePath))));
             pw.print(toString()); // Changed println to print for Cygwin compatibility
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new WorkflowException("Error writing script file!: " + e.getMessage());
         } finally {
             try {

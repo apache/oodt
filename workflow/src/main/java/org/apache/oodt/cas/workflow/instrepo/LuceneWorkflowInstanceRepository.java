@@ -59,8 +59,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -83,8 +83,7 @@ public class LuceneWorkflowInstanceRepository extends
     private String idxFilePath = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger
-            .getLogger(LuceneWorkflowInstanceRepository.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LuceneWorkflowInstanceRepository.class);
 
     /* our workflow inst id generator */
     private static UUIDGenerator generator = UUIDGenerator.getInstance();
@@ -127,9 +126,7 @@ public class LuceneWorkflowInstanceRepository extends
             numInsts = topDocs.totalHits;
 
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when opening index directory: [" + idxFilePath
-                            + "] for search: Message: " + e.getMessage());
+            LOG.warn("IOException when opening index directory [{}] for search: {}", idxFilePath, e.getMessage(), e);
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
             if (searcher != null) {
@@ -168,9 +165,7 @@ public class LuceneWorkflowInstanceRepository extends
             numInsts = topDocs.totalHits;
 
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when opening index directory: [" + idxFilePath
-                            + "] for search: Message: " + e.getMessage());
+            LOG.warn("IOException when opening index directory [{}] for search: {}", idxFilePath, e.getMessage(), e);
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
             if (searcher != null) {
@@ -242,10 +237,8 @@ public class LuceneWorkflowInstanceRepository extends
             TopDocs check = searcher.search(query, 1);
 
             if (check.totalHits != 1) {
-                LOG.log(Level.WARNING, "The workflow instance: ["
-                        + workflowInstId + "] is not being "
-                        + "managed by this " + "workflow engine, or "
-                        + "is not unique in the catalog: num hits: ["+check.totalHits+"]");
+                LOG.warn("The workflow instance [{}] is not being managed by this workflow engine, " +
+                        "or is not unique in the catalog (num hits: [{}])", workflowInstId, check.totalHits);
                 return null;
             } else {
                 TopDocs topDocs = searcher.search(query, check.totalHits);
@@ -255,9 +248,7 @@ public class LuceneWorkflowInstanceRepository extends
             }
 
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when opening index directory: [" + idxFilePath
-                            + "] for search: Message: " + e.getMessage());
+            LOG.warn("IOException when opening index directory [{}] for search: {}", idxFilePath, e.getMessage(), e);
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
             if (searcher != null) {
@@ -306,9 +297,7 @@ public class LuceneWorkflowInstanceRepository extends
             }
 
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when opening index directory: [" + idxFilePath
-                            + "] for search: Message: " + e.getMessage());
+            LOG.warn("IOException when opening index directory [{}] for search: {}", idxFilePath, e.getMessage(), e);
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
             if (searcher != null) {
@@ -333,15 +322,10 @@ public class LuceneWorkflowInstanceRepository extends
           config.setMergePolicy(lmp);
 
           writer = new IndexWriter(indexDir, config);
-          LOG.log(Level.FINE,
-                  "LuceneWorkflowEngine: remove all workflow instances");
+          LOG.info("LuceneWorkflowEngine: remove all workflow instances");
           writer.deleteDocuments(new Term("myfield", "myvalue"));
       } catch (IOException e) {
-          LOG.log(Level.SEVERE, e.getMessage());
-          LOG
-                  .log(Level.WARNING,
-                          "Exception removing workflow instances from index: Message: "
-                                  + e.getMessage());
+          LOG.warn("Exception removing workflow instances from index: {}", e.getMessage(), e);
           throw new InstanceRepositoryException(e.getMessage());
       } finally {
         if (writer != null){
@@ -394,9 +378,7 @@ public class LuceneWorkflowInstanceRepository extends
             }
 
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when opening index directory: [" + idxFilePath
-                            + "] for search: Message: " + e.getMessage());
+            LOG.warn("IOException when opening index directory [{}] for search: {}", idxFilePath, e.getMessage(), e);
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
             if (searcher != null) {
@@ -442,9 +424,7 @@ public class LuceneWorkflowInstanceRepository extends
 
             Sort sort = new Sort(new SortField("workflow_inst_startdatetime",
                     SortField.Type.STRING, true));
-            LOG.log(Level.FINE,
-                    "Querying LuceneWorkflowInstanceRepository: q: ["
-                            + booleanQuery + "]");
+            LOG.info("Querying LuceneWorkflowInstanceRepository: q: [{}]", booleanQuery);
             TopDocs check = searcher.search(booleanQuery.build(), 1, sort);
             if(check.totalHits>0) {
                 TopDocs topDocs = searcher.search(booleanQuery.build(), check.totalHits, sort);
@@ -467,14 +447,11 @@ public class LuceneWorkflowInstanceRepository extends
 
                     }
                 } else {
-                    LOG.log(Level.WARNING, "No workflow instances found "
-                            + "when attempting to paginate!");
+                    LOG.warn("No workflow instances found when attempting to paginate!");
                 }
             }
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when opening index directory: [" + idxFilePath
-                            + "] for search: Message: " + e.getMessage());
+            LOG.warn("IOException when opening index directory [{}] for search: {}", idxFilePath, e.getMessage(), e);
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
             if (searcher != null) {
@@ -506,18 +483,11 @@ public class LuceneWorkflowInstanceRepository extends
             config.setMergePolicy(lmp);
 
             IndexWriter writer = new IndexWriter(indexDir, config);
-            LOG.log(Level.FINE,
-                    "LuceneWorkflowEngine: remove document from index for workflow instance: ["
-                            + inst.getId() + "]");
+            LOG.info("LuceneWorkflowEngine: remove document from index for workflow instance [{}]", inst.getId());
             writer.deleteDocuments(new Term("workflow_inst_id", inst.getId()));
             writer.close();
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG
-                    .log(Level.WARNING,
-                            "Exception removing workflow instance: ["
-                                    + inst.getId() + "] from index: Message: "
-                                    + e.getMessage());
+            LOG.warn("IOException when removing workflow instance [{}] from index: {}", inst.getId(), e.getMessage(), e);
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
             if (reader != null) {
@@ -547,11 +517,9 @@ public class LuceneWorkflowInstanceRepository extends
             Document doc = toDoc(wInst);
             writer.addDocument(doc);
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Unable to index workflow instance: ["
-                    + wInst.getId() + "]: Message: " + e.getMessage());
-            throw new InstanceRepositoryException(
-                    "Unable to index workflow instance: [" + wInst.getId()
-                            + "]: Message: " + e.getMessage());
+            String msg = String.format("IOException when indexing workflow instance [%s]: %s", wInst.getId(), e.getMessage());
+            LOG.warn(msg, e);
+            throw new InstanceRepositoryException(msg, e);
         } finally {
             try {
                 writer.close();
@@ -813,9 +781,7 @@ public class LuceneWorkflowInstanceRepository extends
         if (taskIds.length != taskNames.length
                 || taskIds.length != taskOrders.length
                 || taskIds.length != taskClasses.length) {
-            LOG.log(Level.WARNING,
-                    "task arrays are not of same size when rebuilding "
-                            + "task list from Document!");
+            LOG.warn("task arrays are not of same size when rebuilding task list from Document!");
             return null;
         }
 
@@ -845,9 +811,7 @@ public class LuceneWorkflowInstanceRepository extends
         }
 
         if (propNames.length != propValues.length) {
-            LOG.log(Level.WARNING,
-                    "Task Config prop name and value arrays are not "
-                            + "of same size!");
+            LOG.warn("Task Config prop name and value arrays are not of same size!");
             return null;
         }
 
@@ -877,9 +841,7 @@ public class LuceneWorkflowInstanceRepository extends
                 || condNames.length != condIds.length 
                 || (condTimeouts != null && condNames.length != condTimeouts.length)
                 || (condOptionals != null && condNames.length != condOptionals.length)) {
-            LOG.log(Level.WARNING,
-                    "Condition arrays are not of same size when "
-                            + "rebuilding from given Document");
+            LOG.warn("Condition arrays are not of same size when rebuilding from given Document");
             return null;
         }
         

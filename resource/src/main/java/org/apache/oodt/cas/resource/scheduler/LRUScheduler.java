@@ -18,9 +18,8 @@
 
 package org.apache.oodt.cas.resource.scheduler;
 
-//JDKimports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
@@ -47,8 +46,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 public class LRUScheduler implements Scheduler {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(LRUScheduler.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LRUScheduler.class);
     public static final double DOUBLE = 1000.0;
 
     private LRUQueueManager queueManager;
@@ -95,22 +93,16 @@ public class LRUScheduler implements Scheduler {
 
                 try {
                     exec = myJobQueue.getNextJob();
-                    LOG.log(Level.INFO, "Obtained Job: ["
-                            + exec.getJob().getId()
-                            + "] from Queue: Scheduling for execution");
+                    LOG.info("Obtained Job: [{}] from Queue: Scheduling for execution", exec.getJob().getId());
                 } catch (Exception e) {
-                    LOG.log(Level.WARNING,
-                            "Error getting next job from JobQueue: Message: "
-                                    + e.getMessage());
+                    LOG.warn("Error getting next job from JobQueue: {}", e.getMessage(), e);
                     continue;
                 }
 
                 try {
                     schedule(exec);
                 } catch (Exception e) {
-                    LOG.log(Level.WARNING, "Error scheduling job: ["
-                            + exec.getJob().getId() + "]: Message: "
-                            + e.getMessage());
+                    LOG.warn("Error scheduling job [{}]: {}", exec.getJob().getId(), e.getMessage(), e);
                     // place the job spec back on the queue
                     try {
                         myJobQueue.requeueJob(exec);
@@ -140,20 +132,14 @@ public class LRUScheduler implements Scheduler {
                 queueManager.usedNode(queueName, node.getNodeId());
                 
                 // assign via batch system
-                LOG.log(Level.INFO, "Assigning job: ["
-                        + spec.getJob().getName() + "] to node: ["
-                        + node.getNodeId() + "]");
+                LOG.info("Assigning job [{}] to node [{}]", spec.getJob().getName(), node.getNodeId());
                 try {
                     myBatchmgr.executeRemotely(spec, node);
                 } catch (JobExecutionException e) {
-                    LOG.log(Level.WARNING, "Exception executing job: ["
-                            + spec.getJob().getId() + "] to node: ["
-                            + node.getIpAddr() + "]: Message: "
-                            + e.getMessage());
+                    LOG.warn("Exception executing job [{}] to node [{}]: {}", spec.getJob().getId(), node.getIpAddr(), e.getMessage(), e);
                     try {
                         // queue the job back up
-                        LOG.log(Level.INFO, "Requeueing job: ["
-                                + spec.getJob().getId() + "]");
+                        LOG.info("Re-queueing job [{}]", spec.getJob().getId());
                         myJobQueue.requeueJob(spec);
 
                         // make sure to decrement the load
@@ -162,10 +148,9 @@ public class LRUScheduler implements Scheduler {
                     }
                 }
             } catch (MonitorException e) {
-                LOG.log(Level.WARNING, "Exception assigning load to resource "
-                        + "node: [" + node.getNodeId() + "]: load: [" + load
-                        + "]: Message: " + e.getMessage());
-                throw new SchedulerException(e.getMessage());
+                String msg = String.format("Exception assigning load to resource node [%s]: load [%d]: %s", node.getNodeId(), load, e.getMessage());
+                LOG.warn(msg, e);
+                throw new SchedulerException(msg, e);
             }
         } else {
             // could not find resource, push onto JobQueue
@@ -232,11 +217,9 @@ public class LRUScheduler implements Scheduler {
 	                resNode = myMonitor.getNodeById(nodeId);
 	                nodeLoad = myMonitor.getLoad(resNode);
 	            } catch (MonitorException e) {
-	                LOG
-	                        .log(Level.WARNING, "Exception getting load on "
-	                                + "node: [" + (resNode != null ? resNode.getNodeId() : null)
-	                                + "]: Message: " + e.getMessage());
-	                throw new SchedulerException(e.getMessage());
+	                String msg = String.format("Exception getting load on node [%s]: %s", resNode != null ? resNode.getNodeId() : null, e.getMessage());
+	                LOG.warn(msg, e);
+	                throw new SchedulerException(msg, e);
 	            }
 	
 	            if (load <= nodeLoad) {

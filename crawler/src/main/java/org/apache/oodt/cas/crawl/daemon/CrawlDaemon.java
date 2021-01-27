@@ -21,9 +21,8 @@ package org.apache.oodt.cas.crawl.daemon;
 //OODT imports
 import org.apache.oodt.cas.crawl.ProductCrawler;
 import org.apache.xmlrpc.WebServer;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 //APACHE imports
@@ -43,7 +42,7 @@ public class CrawlDaemon {
 
     public static final double DOUBLE = 1000.0;
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(CrawlDaemon.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(CrawlDaemon.class);
 
     /* are we running or not? */
     private boolean running = true;
@@ -75,8 +74,7 @@ public class CrawlDaemon {
         server.addHandler("crawldaemon", this);
         server.start();
 
-        LOG.log(Level.INFO, "Crawl Daemon started by "
-                + System.getProperty("user.name", "unknown"));
+        LOG.info("Crawl Daemon started by {}", System.getProperty("user.name", "unknown"));
 
         while (running) {
             // okay, time to crawl
@@ -86,7 +84,7 @@ public class CrawlDaemon {
             milisCrawling += (timeAfter - timeBefore);
             numCrawls++;
 
-            LOG.log(Level.INFO, "Sleeping for: [" + waitInterval + "] seconds");
+            LOG.info("Sleeping for: [{}] seconds", waitInterval);
             // take a nap
             try {
                 Thread.currentThread().sleep(waitInterval * 1000);
@@ -94,12 +92,10 @@ public class CrawlDaemon {
             }
         }
 
-        LOG.log(Level.INFO, "Crawl Daemon: Shutting down gracefully");
-        LOG.log(Level.INFO, "Num Crawls: [" + this.numCrawls + "]");
-        LOG.log(Level.INFO, "Total time spent crawling: ["
-                + (this.milisCrawling / DOUBLE) + "] seconds");
-        LOG.log(Level.INFO, "Average Crawl Time: ["
-                + (this.getAverageCrawlTime() / DOUBLE) + "] seconds");
+        LOG.info("Crawl Daemon: Shutting down gracefully");
+        LOG.info("Num Crawls: [{}]", this.numCrawls);
+        LOG.info("Total time spent crawling: [{}] seconds", this.milisCrawling / DOUBLE);
+        LOG.info("Average Crawl Time: [{}] seconds", this.getAverageCrawlTime() / DOUBLE);
         server.shutdown();
     }
 

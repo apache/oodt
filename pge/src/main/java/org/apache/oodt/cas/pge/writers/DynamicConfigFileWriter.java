@@ -19,11 +19,11 @@ package org.apache.oodt.cas.pge.writers;
 //JDK imports
 
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -36,8 +36,7 @@ import java.util.logging.Logger;
  */
 public abstract class DynamicConfigFileWriter implements SciPgeConfigFileWriter {
 
-	private static final Logger logger = Logger
-			.getLogger(DynamicConfigFileWriter.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(DynamicConfigFileWriter.class);
 
 	/*
 	 * (non-Javadoc)
@@ -54,7 +53,7 @@ public abstract class DynamicConfigFileWriter implements SciPgeConfigFileWriter 
 			return this.generateFile(sciPgeConfigFilePath, inputMetadata,
 					logger, customArgs);
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage());
+			logger.error(e.getMessage(), e);
 			throw new IOException(e);
 		}
 	}

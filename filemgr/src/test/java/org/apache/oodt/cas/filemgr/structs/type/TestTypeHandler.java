@@ -52,16 +52,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestTypeHandler extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(TestTypeHandler.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestTypeHandler.class);
 
     String tmpDirPath;
     
@@ -161,7 +161,7 @@ public class TestTypeHandler extends TestCase {
             testProduct.setProductType(fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -193,7 +193,7 @@ public class TestTypeHandler extends TestCase {
             testProduct.setProductType(genericFile = fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
         
@@ -296,7 +296,7 @@ public class TestTypeHandler extends TestCase {
             coreSchemaScript.loadScript();
             coreSchemaScript.execute();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -394,9 +394,7 @@ public class TestTypeHandler extends TestCase {
             try {
                 firstPage = pagedQuery(query, type, 1);
             } catch (CatalogException e) {
-                LOG.log(Level.WARNING,
-                        "Exception getting first page: Message: "
-                                + e.getMessage());
+                LOG.warn("Exception getting first page: {}", e.getMessage(), e);
             }
             return firstPage;
         }
@@ -422,8 +420,7 @@ public class TestTypeHandler extends TestCase {
             try {
                 nextPage = pagedQuery(query, type, currentPage.getPageNum() + 1);
             } catch (CatalogException e) {
-                LOG.log(Level.WARNING, "Exception getting next page: Message: "
-                        + e.getMessage());
+                LOG.warn("Exception getting next page: {}", e.getMessage(), e);
             }
 
             return nextPage;
@@ -586,8 +583,7 @@ public class TestTypeHandler extends TestCase {
                     getProductSql += whereClause.toString();
                 }
 
-                LOG.log(Level.FINE, "catalog query: executing: "
-                        + getProductSql);
+                LOG.info("catalog query: executing: {}", getProductSql);
 
                 rs = statement.executeQuery(getProductSql);
                 productIds = new Vector();
@@ -636,15 +632,11 @@ public class TestTypeHandler extends TestCase {
                 }
 
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                LOG.log(Level.WARNING, "Exception performing query. Message: "
-                        + e.getMessage());
+                LOG.warn("Exception performing query: {}", e.getMessage(), e);
                 try {
                     conn.rollback();
                 } catch (SQLException e2) {
-                    LOG.log(Level.SEVERE,
-                            "Unable to rollback query transaction. Message: "
-                                    + e2.getMessage());
+                    LOG.error("Unable to rollback query transaction. {}", e2.getMessage(), e);
                 }
                 throw new CatalogException(e.getMessage());
             } finally {
@@ -826,8 +818,7 @@ public class TestTypeHandler extends TestCase {
                     getProductSql += whereClause.toString();
                 }
 
-                LOG.log(Level.FINE, "catalog get num results: executing: "
-                        + getProductSql);
+                LOG.info("catalog get num results: {}", getProductSql);
 
                 rs = statement.executeQuery(getProductSql);
 
@@ -836,16 +827,11 @@ public class TestTypeHandler extends TestCase {
                 }
 
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                LOG.log(Level.WARNING,
-                        "Exception performing get num results. Message: "
-                                + e.getMessage());
+                LOG.warn("Exception performing get num results: {}", e.getMessage(), e);
                 try {
                     conn.rollback();
                 } catch (SQLException e2) {
-                    LOG.log(Level.SEVERE,
-                            "Unable to rollback get num results transaction. Message: "
-                                    + e2.getMessage());
+                    LOG.error("Unable to rollback get num results transaction: {}", e2.getMessage(), e);
                 }
                 throw new CatalogException(e.getMessage());
             } finally {

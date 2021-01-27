@@ -139,11 +139,10 @@ the License.
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
     </dependency>
-
-    <!-- Logging - JUL to SLF4J -->
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>jul-to-slf4j</artifactId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.28</version>
     </dependency>
   </dependencies>
   <build>

@@ -21,6 +21,8 @@ import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -29,8 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Initialize workflow manager services servlet
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  */
 public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
 
-  private static final Logger LOGGER = Logger.getLogger(WmServicesServlet.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(WmServicesServlet.class);
   
   private static final long serialVersionUID = -7830210280506307805L;
 
@@ -84,9 +84,7 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
         url = new URL(PathUtils.replaceEnvVariables(urlParameter));
       } else {
         // Try the default URL for the workflow manager.
-        LOGGER.log(Level.WARNING,
-            "Unable to find the servlet context parameter" + " (\""
-                + PARAM_NAME_URL + "\") for the workflow manager's URL.");
+        LOG.warn("Unable to find the servlet context parameter: {} for the workflow manager's URL.", PARAM_NAME_URL);
         url = new URL(DEFAULT_WM_URL);
       }
       // Attempt to connect the client to the workflow manager and if successful
@@ -94,7 +92,7 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
       client = RpcCommunicationFactory.createClient(url);
       context.setAttribute(ATTR_NAME_CLIENT, client);
     } catch (MalformedURLException e) {
-      LOGGER.log(Level.SEVERE, "Encountered a malformed URL for the workflow manager.", e);
+      LOG.error("Encountered a malformed URL for the workflow manager: {}", e.getMessage(), e);
       throw new ServletException(e);
     }
 
@@ -106,9 +104,7 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
       if (workflowDir.exists() && workflowDir.isDirectory()) {
         context.setAttribute(ATTR_NAME_PKG_REPO_DIR, workflowDir);
       } else {
-        LOGGER.log(Level.SEVERE,
-            "Unable to locate the Packaged repository directory ("
-                + workflowDir.getAbsolutePath());
+        LOG.error("Unable to locate the Packaged repository directory: {}", workflowDir.getAbsolutePath());
       }
     }
   }
@@ -120,7 +116,7 @@ public class WmServicesServlet extends CXFNonSpringJaxrsServlet {
         client.close();
         client = null;
       } catch (IOException e) {
-        LOGGER.severe(String.format("Unable to close WM Client: %s", e.getMessage()));
+        LOG.error("Unable to close WM Client: {}", e.getMessage(), e);
       }
     }
 

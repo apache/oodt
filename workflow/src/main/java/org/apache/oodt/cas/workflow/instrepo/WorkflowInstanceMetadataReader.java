@@ -33,8 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -53,8 +53,7 @@ public final class WorkflowInstanceMetadataReader implements
         WorkflowInstanceMetMapKeys {
 
     /* our log stream */
-    private static Logger LOG = Logger
-            .getLogger(WorkflowInstanceMetadataReader.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(WorkflowInstanceMetadataReader.class);
 
     private WorkflowInstanceMetadataReader() throws InstantiationException {
         throw new InstantiationException("Don't construct utility classes!");
@@ -121,9 +120,7 @@ public final class WorkflowInstanceMetadataReader implements
         try {
             xmlInputStream = new File(xmlFile).toURI().toURL().openStream();
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when getting input stream from [" + xmlFile
-                            + "]: returning null document root");
+            LOG.warn("IOException when getting input stream from [{}]: {}. returning null document root", xmlFile, e.getMessage(), e);
             return null;
         }
 
@@ -134,8 +131,7 @@ public final class WorkflowInstanceMetadataReader implements
             parser = factory.newDocumentBuilder();
             document = parser.parse(inputSource);
         } catch (Exception e) {
-            LOG.warning("Unable to parse xml file [" + xmlFile + "]."
-                    + "Reason is [" + e + "]");
+            LOG.warn("Unable to parse xml file [{}]: {}", xmlFile, e.getMessage(), e);
             return null;
         }
 

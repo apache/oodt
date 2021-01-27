@@ -4,13 +4,14 @@ import org.apache.oodt.cas.filemgr.metadata.extractors.AbstractFilemgrMetExtract
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * @author rverma
@@ -23,7 +24,7 @@ public class FileAttributesExtractor extends AbstractFilemgrMetExtractor {
 
     private String attributes;
 
-    Logger LOG = Logger.getLogger(FileAttributesExtractor.class.getName());
+    Logger LOG = LoggerFactory.getLogger(FileAttributesExtractor.class);
 
     public FileAttributesExtractor() {
         attributes = BASIC_FILE_ATTRIBUTES;
@@ -40,7 +41,7 @@ public class FileAttributesExtractor extends AbstractFilemgrMetExtractor {
         merge(metadata, outMetadata);
         Metadata fileAttributesMetadata = getMetadataFromFileAttributes(product);
 
-        LOG.fine(fileAttributesMetadata.toString());
+        LOG.info(fileAttributesMetadata.toString());
 
         merge(fileAttributesMetadata, outMetadata);
 
@@ -62,7 +63,7 @@ public class FileAttributesExtractor extends AbstractFilemgrMetExtractor {
         try {
             file = getProductFile(product);
         } catch (MetExtractionException e) {
-            LOG.severe(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
         if (file != null) {
@@ -70,7 +71,7 @@ public class FileAttributesExtractor extends AbstractFilemgrMetExtractor {
             try {
                 attrMap = Files.readAttributes(file.toPath(), attributes);
             } catch (IOException e) {
-                LOG.severe(e.getMessage());
+                LOG.error(e.getMessage(), e);
             }
 
             for (Map.Entry<String, Object> entry : attrMap.entrySet()) {

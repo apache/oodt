@@ -33,8 +33,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -50,8 +50,7 @@ import java.util.logging.Logger;
 public final class RunDirJobSubmitter {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(RunDirJobSubmitter.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RunDirJobSubmitter.class);
 
     /* our res mgr client */
     private XmlRpcResourceManagerClient client = null;
@@ -116,7 +115,7 @@ public final class RunDirJobSubmitter {
                 jobInput.setNameValuePair("runDirName", line);
 
                 jobId = submitJob(job, jobInput);
-                LOG.log(Level.INFO, "Job Submitted: id: [" + jobId + "]");
+                LOG.info("Job Submitted: id [{}]", jobId);
             }
 
             in.close();

@@ -22,16 +22,17 @@ import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public abstract class AbstractFileManagerServerTest extends TestCase {
 
-    private static final Logger LOG = Logger.getLogger(AbstractFileManagerServerTest.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractFileManagerServerTest.class);
 
     protected static final int FM_PORT = 50001;
     protected static final String transferServiceFacClass =

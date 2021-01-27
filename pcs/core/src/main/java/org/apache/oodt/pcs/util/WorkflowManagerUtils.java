@@ -21,14 +21,14 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.xmlrpc.XmlRpcClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class WorkflowManagerUtils {
   private WorkflowManagerClient client;
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(WorkflowManagerUtils.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(WorkflowManagerUtils.class);
 
   private URL wmUrl;
 
@@ -65,7 +65,7 @@ public class WorkflowManagerUtils {
     try {
       this.client.updateWorkflowInstanceStatus(wInstId, status);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     }
 
   }
@@ -96,9 +96,7 @@ public class WorkflowManagerUtils {
     try {
       return this.client.getWorkflowInstancesByStatus(status);
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "exception obtaining workflow instances by status: [" + status
-              + "]: message: " + e.getMessage());
+      LOG.warn("PCS: Exception obtaining workflow instances by status [{}]: {}", status, e.getMessage(), e);
       return null;
     }
   }
@@ -107,9 +105,7 @@ public class WorkflowManagerUtils {
     try {
       return this.client.getNumWorkflowInstancesByStatus(status);
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "exception obtaining num workflow instances by status: [" + status
-              + "]: message: " + e.getMessage());
+      LOG.warn("PCS: Exception obtaining num workflow instances by status [{}]: {}", status, e.getMessage(), e);
       return -1;
     }
   }
@@ -138,8 +134,7 @@ public class WorkflowManagerUtils {
     try {
       url = new URL(urlStr);
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE, "PCS: Unable to generate url from url string: ["
-          + urlStr + "]: Message: " + e.getMessage());
+      LOG.error("PCS: MalformedURLException when generating url from url string [{}]: {}", urlStr, e.getMessage(), e);
     }
 
     return url;

@@ -26,6 +26,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.IOException;
@@ -33,8 +35,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -62,8 +62,7 @@ public class LocalCache implements Cache {
 
     private FileManagerClient fm;
 
-    private static final Logger LOG = Logger.getLogger(LocalCache.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LocalCache.class);
 
     /**
      * 
@@ -171,9 +170,7 @@ public class LocalCache implements Cache {
         try {
             this.fm = RpcCommunicationFactory.createClient(fmUrl);
         } catch (ConnectionException e) {
-            LOG.log(Level.WARNING,
-                    "Exception setting file manager connection to: [" + fmUrl
-                            + "]");
+            LOG.warn("Exception setting filemgr connection to: [{}]: {}", fmUrl, e.getMessage(), e);
         }
     }
 

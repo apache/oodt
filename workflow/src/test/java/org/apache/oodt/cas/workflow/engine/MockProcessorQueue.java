@@ -24,8 +24,8 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
 
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class MockProcessorQueue extends WorkflowProcessorQueue {
 
-  private static Logger LOG = Logger.getLogger(MockProcessorQueue.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(MockProcessorQueue.class);
 
   private QuerierAndRunnerUtils utils;
 
@@ -66,7 +66,7 @@ public class MockProcessorQueue extends WorkflowProcessorQueue {
         this.consumed = true;
       }
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
 

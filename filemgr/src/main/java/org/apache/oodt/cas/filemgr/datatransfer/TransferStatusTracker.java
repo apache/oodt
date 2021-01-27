@@ -23,6 +23,8 @@ import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
@@ -32,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -54,8 +54,7 @@ public class TransferStatusTracker {
     private Catalog catalog = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(TransferStatusTracker.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TransferStatusTracker.class);
 
     /**
      * <p>
@@ -161,10 +160,7 @@ public class TransferStatusTracker {
             destFile = new File(new URI(r.getDataStoreReference()));
             return destFile.length();
         } catch (URISyntaxException e) {
-            LOG.log(Level.WARNING,
-                    "URISyntaxException when checking size of destFile: ["
-                            + r.getDataStoreReference() + "]: Message: "
-                            + e.getMessage());
+            LOG.warn("URISyntaxException when checking size of destFile: [{}]: {}", r.getDataStoreReference(), e.getMessage(), e);
             return -1L;
         }
     }
@@ -175,11 +171,7 @@ public class TransferStatusTracker {
         try {
             refs = catalog.getProductReferences(p);
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Error retreiving references for product: ["
-                    + p.getProductId()
-                    + "] from catalog in transfer status tracker: Message: "
-                    + e.getMessage());
+            LOG.warn("Error retrieving references for product: [{}] from catalog in TransferStatusTracker: {}", p.getProductId(), e.getMessage(), e);
             refs = new Vector<Reference>();
         }
 

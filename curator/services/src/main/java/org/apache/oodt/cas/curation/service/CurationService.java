@@ -23,6 +23,8 @@ import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
 import org.apache.oodt.security.sso.SingleSignOn;
 
 import net.sf.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -33,7 +35,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -58,8 +59,7 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
 
   private static final long serialVersionUID = -5370697580594691669L;
   
-  private static final Logger LOG = Logger.getLogger(CurationService.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(CurationService.class);
   
   public static CurationServiceConfig config = null;
   

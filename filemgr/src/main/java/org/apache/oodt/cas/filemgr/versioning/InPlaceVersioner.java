@@ -17,15 +17,13 @@
 
 package org.apache.oodt.cas.filemgr.versioning;
 
-//JDK imports
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -38,8 +36,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 public class InPlaceVersioner implements Versioner {
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(InPlaceVersioner.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(InPlaceVersioner.class);
 
   /**
      * 
@@ -59,7 +56,7 @@ public class InPlaceVersioner implements Versioner {
       throws VersioningException {
       for (Reference r : product.getProductReferences()) {
         r.setDataStoreReference(r.getOrigReference());
-        LOG.log(Level.INFO, "in-place ingestion at datastore path: "
+        LOG.info("in-place ingestion at datastore path: "
             + r.getDataStoreReference()
             + ".which is the same as the product's origin: "
             + r.getOrigReference());

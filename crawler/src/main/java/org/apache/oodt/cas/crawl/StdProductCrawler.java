@@ -23,7 +23,6 @@ import org.apache.oodt.cas.metadata.extractors.MetReaderExtractor;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
 
 /**
  * A generic Product Crawler for Products. The Crawler is given a root Product
@@ -64,12 +63,10 @@ public class StdProductCrawler extends ProductCrawler {
       String preCondComparatorId = "MetFileExistsCheck";
 
       if (!flag){
-        LOG.log(Level.INFO, "Failed precondition comparator id "
-            + preCondComparatorId+" file: "+metFilePath+" does not exist.");
+        LOG.info("Failed precondition comparator id {} file: {} does not exist.", preCondComparatorId, metFilePath);
       }
       else{
-        LOG.log(Level.INFO, "Passed precondition comparator id "
-            + preCondComparatorId+" file: "+metFilePath+" exists.");        
+        LOG.info("Passed precondition comparator id {} file: {} exists.", preCondComparatorId, metFilePath);
       }
       return flag;
    }

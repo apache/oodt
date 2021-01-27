@@ -40,6 +40,8 @@ import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.util.MesosUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author starchmd
@@ -47,6 +49,8 @@ import org.apache.oodt.cas.resource.util.MesosUtilities;
  * This "Executor" is run by mesos to actually run the job.
  */
 public class ResourceExecutor implements Executor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceExecutor.class);
 
     PrintStream str = null;
     String id = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime())+" ";
@@ -57,7 +61,7 @@ public class ResourceExecutor implements Executor {
             str = new PrintStream(new FileOutputStream(tmp));
             str.println(id+"Starting up new<<<<<");
         } catch (FileNotFoundException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
     }
     /* (non-Javadoc)
@@ -111,7 +115,7 @@ public class ResourceExecutor implements Executor {
                             status = TaskStatus.newBuilder().setTaskId(info.getTaskId())
                                     .setState(TaskState.TASK_FINISHED).build();
                         } catch (JobInputException e) {
-                            LOG.log(Level.SEVERE, e.getMessage());
+                            LOG.error(e.getMessage(), e);
                             status = TaskStatus.newBuilder().setTaskId(info.getTaskId())
                                     .setState(TaskState.TASK_FAILED).build();
                         }

@@ -24,11 +24,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.io.DirectorySelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -50,8 +50,7 @@ public class XMLValidationLayerFactory implements ValidationLayerFactory {
     private List<String> dirList = null;
     
     /* our log stream */
-    private static final Logger LOG = Logger
-            .getLogger(XMLValidationLayerFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(XMLValidationLayerFactory.class);
 
     /**
      * <p>
@@ -88,7 +87,7 @@ public class XMLValidationLayerFactory implements ValidationLayerFactory {
             			dirList.addAll( dirsel.traverseDir(new File(new URI(rootDir))) );
             			
             		} catch (URISyntaxException e) {
-            			LOG.log(Level.WARNING, "URISyntaxException when traversing directory: "+rootDir);
+            			LOG.warn("URISyntaxException when traversing directory: {}: {}", rootDir, e.getMessage(), e);
             		}
             	}        	
 
@@ -97,9 +96,9 @@ public class XMLValidationLayerFactory implements ValidationLayerFactory {
             	dirList = Arrays.asList(dirUriList);
             }
             
-            LOG.log(Level.FINE,"Collecting XML validation files from the following directories:");
+            LOG.info("Collecting XML validation files from the following directories:");
             for (String pdir : dirList) {
-            	LOG.log(Level.FINE, pdir);
+            	LOG.info(pdir);
             }
             
         }

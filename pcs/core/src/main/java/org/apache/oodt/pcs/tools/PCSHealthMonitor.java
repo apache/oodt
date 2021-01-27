@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
 
 //APACHE imports
 import org.apache.avro.ipc.NettyTransceiver;
@@ -52,6 +51,8 @@ import org.apache.oodt.pcs.util.FileManagerUtils;
 import org.apache.oodt.pcs.util.ResourceManagerUtils;
 import org.apache.oodt.pcs.util.WorkflowManagerUtils;
 import org.apache.xmlrpc.XmlRpcClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -59,8 +60,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //APACHE imports
 //OODT imports
@@ -76,7 +75,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     PCSHealthMonitorMetKeys {
   public static final double DOUBLE = 1000.0;
   public static final double DOUBLE1 = 1000.0;
-  private static Logger LOG = Logger.getLogger(PCSHealthMonitor.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(PCSHealthMonitor.class);
   private FileManagerUtils fm;
 
   private WorkflowManagerUtils wm;
@@ -235,7 +234,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     try {
       mon.quickPrintMonitorToConsole();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     }
   }
 

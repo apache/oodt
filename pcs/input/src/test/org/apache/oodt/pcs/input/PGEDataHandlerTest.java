@@ -89,7 +89,7 @@ public class PGEDataHandlerTest extends TestCase {
       SAXParser saxParser = factory.newSAXParser();
       saxParser.parse(new File(testFilePath), handler);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail("exception reading data out of: [" + testFilePath + "]: Message: "
           + e.getMessage());
     }

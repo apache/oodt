@@ -23,6 +23,8 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -38,8 +40,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -60,8 +60,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class XMLValidationLayer implements ValidationLayer {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(XMLValidationLayer.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(XMLValidationLayer.class);
 
     /* product type ID to element map */
     private ConcurrentHashMap<String, List<Element>> productTypeElementMap = new ConcurrentHashMap<String, List<Element>>();
@@ -283,8 +282,7 @@ public class XMLValidationLayer implements ValidationLayer {
 
           if (!elementDir.isDirectory()) {
             LOG
-                .log(
-                    Level.WARNING,
+                .warn(
                     "Element directory: "
                     + dirUri
                     + " is not "
@@ -313,13 +311,12 @@ public class XMLValidationLayer implements ValidationLayer {
 
         } catch (URISyntaxException e) {
           LOG
-              .log(
-                  Level.WARNING,
+              .warn(
                   "URISyntaxException when saving element "
                   + "directory URI: "
                   + dirUri
                   + ": Skipping Element and Product Type map saving"
-                  + "for it: Message: " + e.getMessage());
+                  + "for it: Message: " + e.getMessage(), e);
         }
 
       }
@@ -335,7 +332,7 @@ public class XMLValidationLayer implements ValidationLayer {
           elementDir = new File(new URI(dirUri));
 
           if (!elementDir.isDirectory()) {
-            LOG.log(Level.WARNING, "Element directory: " + dirUri
+            LOG.warn("Element directory: " + dirUri
                                    + " is not "
                                    + "a directory: skipping element loading from it.");
             continue;
@@ -365,11 +362,11 @@ public class XMLValidationLayer implements ValidationLayer {
           }
 
         } catch (URISyntaxException e) {
-          LOG.log(Level.WARNING,
+          LOG.warn(
               "URISyntaxException when loading element "
               + "directory URI: " + dirUri
               + ": Skipping element loading"
-              + "for it: Message: " + e.getMessage());
+              + "for it: Message: " + e.getMessage(), e);
         }
       }
     }
@@ -384,8 +381,7 @@ public class XMLValidationLayer implements ValidationLayer {
 
           if (!elementDir.isDirectory()) {
             LOG
-                .log(
-                    Level.WARNING,
+                .warn(
                     "Element directory: "
                     + dirUri
                     + " is not "
@@ -450,11 +446,11 @@ public class XMLValidationLayer implements ValidationLayer {
           }
 
         } catch (URISyntaxException e) {
-          LOG.log(Level.WARNING,
+          LOG.warn(
               "URISyntaxException when loading element "
               + "directory URI: " + dirUri
               + ": Skipping product type map loading"
-              + "for it: Message: " + e.getMessage());
+              + "for it: Message: " + e.getMessage(), e);
         }
       }
     }
@@ -471,9 +467,7 @@ public class XMLValidationLayer implements ValidationLayer {
         try {
             xmlInputStream = new File(xmlFile).toURI().toURL().openStream();
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when getting input stream from [" + xmlFile
-                            + "]: returning null document root");
+            LOG.warn("IOException when getting input stream from [{}]: {}. returning null document root", xmlFile, e.getMessage(), e);
             return null;
         }
 
@@ -484,8 +478,7 @@ public class XMLValidationLayer implements ValidationLayer {
             parser = factory.newDocumentBuilder();
             document = parser.parse(inputSource);
         } catch (Exception e) {
-            LOG.warning("Unable to parse xml file [" + xmlFile + "]."
-                    + "Reason is [" + e + "]");
+            LOG.warn("Unable to parse xml file [{}]: {}", xmlFile, e.getMessage(), e);
             return null;
         }
 

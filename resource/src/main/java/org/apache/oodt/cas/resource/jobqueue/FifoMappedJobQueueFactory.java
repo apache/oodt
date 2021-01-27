@@ -18,8 +18,8 @@
 package org.apache.oodt.cas.resource.jobqueue;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
@@ -41,8 +41,7 @@ public class FifoMappedJobQueueFactory implements JobQueueFactory {
 	private int stackSize = -1;
 	private JobRepository repo;
 	
-	private static final Logger LOG =
-			Logger.getLogger(FifoMappedJobQueueFactory.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(FifoMappedJobQueueFactory.class);
 	
 	public FifoMappedJobQueueFactory() {
 		try{
@@ -59,8 +58,7 @@ public class FifoMappedJobQueueFactory implements JobQueueFactory {
 			this.repo = GenericResourceManagerObjectFactory.
 					getJobRepositoryFromServiceFactory(jobRepoFactoryClassStr);
 		}catch(Exception e){
-			LOG.log(Level.SEVERE, "An error occurred while creating a " +
-					"FifoMappedJobQueue: " + e.getMessage());
+			LOG.error("An error occurred while creating a FifoMappedJobQueue: {}", e.getMessage(), e);
 		}
 
 	}

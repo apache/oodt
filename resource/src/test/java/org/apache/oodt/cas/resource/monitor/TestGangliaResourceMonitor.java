@@ -28,8 +28,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -44,7 +44,7 @@ import junit.framework.TestCase;
  * Test Suite for the {@link org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitor}
  */
 public class TestGangliaResourceMonitor extends TestCase {
-    private static Logger LOG = Logger.getLogger(TestGangliaResourceMonitor.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestGangliaResourceMonitor.class);
 
     private GangliaResourceMonitor gangliaResourceMonitor;
     private ThreadLocal<MockGmetad> mockGmetad = new ThreadLocal<MockGmetad>();
@@ -69,7 +69,7 @@ public class TestGangliaResourceMonitor extends TestCase {
             resourceNode.setId("localhost");
             assertEquals(1, gangliaResourceMonitor.getLoad(resourceNode));
         } catch (Exception e) {
-        	LOG.log(Level.SEVERE, e.getMessage());
+        	LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
     }
@@ -79,7 +79,7 @@ public class TestGangliaResourceMonitor extends TestCase {
             gangliaResourceMonitor.removeNodeById("localhost");
             assertNull(gangliaResourceMonitor.getNodeById("remotenode"));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
     }
@@ -108,7 +108,7 @@ public class TestGangliaResourceMonitor extends TestCase {
     		assertTrue(hasLocal&&hasLocal2&&hasRemote);
     	}
     	catch (Exception e){
-    		LOG.log(Level.SEVERE, e.getMessage());
+    		LOG.error(e.getMessage(), e);
     		fail(e.getMessage());
     	}
     }
@@ -126,7 +126,7 @@ public class TestGangliaResourceMonitor extends TestCase {
     		assertEquals("remotenode", node.getNodeId());
     	}
     	catch(Exception e){
-    		LOG.log(Level.SEVERE, e.getMessage());
+    		LOG.error(e.getMessage(), e);
     		fail(e.getMessage());
     	}
     }

@@ -37,8 +37,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -54,7 +54,7 @@ import java.util.zip.ZipOutputStream;
 public final class DataUtils implements DataDeliveryKeys {
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(DataUtils.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DataUtils.class);
 
   /* file filter to list zip files */
   private static final FileFilter ZIP_FILTER = new FileFilter() {
@@ -73,8 +73,7 @@ public final class DataUtils implements DataDeliveryKeys {
 
     // try and remove it first
     if (!new File(datasetZipFilePath).delete()) {
-      LOG.log(Level.WARNING, "Attempt to remove temp dataset zip file: ["
-          + datasetZipFilePath + "] failed.");
+      LOG.warn("Attempt to remove temp dataset zip file [{}] failed", datasetZipFilePath);
     }
 
     // get a list of all the product zip files within the temp dir
@@ -105,11 +104,9 @@ public final class DataUtils implements DataDeliveryKeys {
       in.close();
 
       if (!productZipFile.delete()) {
-        LOG.log(Level.WARNING, "Unable to remove tempoary product zip file: ["
-                               + productZipFile.getAbsolutePath() + "]");
+        LOG.warn("Unable to remove temporary product zip file [{}]", productZipFile.getAbsolutePath());
       } else {
-        LOG.log(Level.INFO, "Deleting original product zip file: ["
-                            + productZipFile.getAbsolutePath() + "]");
+        LOG.info("Deleted original product zip file [{}]", productZipFile.getAbsolutePath());
       }
     }
 
@@ -132,8 +129,7 @@ public final class DataUtils implements DataDeliveryKeys {
 
     // try and remove it first
     if (!new File(productZipFilePath).delete()) {
-      LOG.log(Level.WARNING, "Attempt to remove temp zip file: ["
-          + productZipFilePath + "] failed.");
+      LOG.warn("Attempt to remove temp zip file: [{}] failed", productZipFilePath);
     }
 
     // now get a reference to the zip file that we want to write
@@ -144,8 +140,7 @@ public final class DataUtils implements DataDeliveryKeys {
       try {
         File prodFile = new File(new URI(r.getDataStoreReference()));
         if (prodFile.isDirectory()) {
-          LOG.log(Level.WARNING, "Data store reference is a directory. Not adding directory to the zip file: ["
-                                 + r.getDataStoreReference() + "]");
+          LOG.warn("Data store reference is a directory. Not adding directory to the zip file: [{}]", r.getDataStoreReference());
           continue;
         }
         String filename = prodFile.getName();
@@ -153,8 +148,7 @@ public final class DataUtils implements DataDeliveryKeys {
         addZipEntryFromStream(in, out, filename);
         in.close();
       } catch (URISyntaxException e) {
-        LOG.log(Level.WARNING, "Unable to get filename from uri: ["
-                               + r.getDataStoreReference() + "]");
+        LOG.warn("Unable to get filename from uri: [{}]: {}", r.getDataStoreReference(), e.getMessage(), e);
       }
 
     }

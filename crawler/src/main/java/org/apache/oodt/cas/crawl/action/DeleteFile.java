@@ -18,7 +18,6 @@ package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
 
 //Apache imports
 import org.apache.commons.io.FileUtils;
@@ -51,7 +50,7 @@ public class DeleteFile extends CrawlerAction {
             fileToDelete = new File(product.getAbsolutePath() + "." + fileExtension);
          }
 
-         LOG.log(Level.INFO, "Deleting file " + fileToDelete.getAbsolutePath());
+         LOG.info("Deleting file: {}", fileToDelete.getAbsolutePath());
          if (fileToDelete.isDirectory()) {
          	// the following method will throw an exception if the directory cannot be deleted
          	FileUtils.deleteDirectory(fileToDelete); 
@@ -61,8 +60,7 @@ public class DeleteFile extends CrawlerAction {
          }
          
       } catch (Exception e) {
-         LOG.log(Level.SEVERE, "Error while deleting file for product '"
-               + product + "' : " + e.getMessage(), e);
+         LOG.error("Error while deleting file for product '{}' : {}", product, e.getMessage(), e);
          return false;
       }
    }

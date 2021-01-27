@@ -20,8 +20,8 @@ package org.apache.oodt.cas.workflow.repository;
 //JDK imports
 import java.io.File;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -36,8 +36,7 @@ public class PackagedWorkflowRepositoryFactory implements
 
   private String wDirPath;
 
-  private static final Logger LOG = Logger
-      .getLogger(PackagedWorkflowRepositoryFactory.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(PackagedWorkflowRepositoryFactory.class);
 
   public PackagedWorkflowRepositoryFactory() throws InstantiationException {
     this.wDirPath = System
@@ -64,16 +63,11 @@ public class PackagedWorkflowRepositoryFactory implements
             Arrays.asList(new File(this.wDirPath).listFiles()));
       }
       else {
-        LOG.log(
-            Level.SEVERE,
-            "Unable to create packaged workflow repository! Reason: empty wDirPath");
+        LOG.error("Unable to create packaged workflow repository! Reason: empty wDirPath");
         return null;
       }
     } catch (Exception e) {
-      LOG.log(
-          Level.SEVERE,
-          "Unable to create packaged workflow repository! Reason: "
-              + e.getMessage());
+      LOG.error("Unable to create packaged workflow repository: {}", e.getMessage(), e);
       return null;
     }
   }

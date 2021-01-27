@@ -29,8 +29,8 @@ import org.junit.Test;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
  */
 public class TestPackagedWorkflowRepository {
 
-  private static Logger LOG = Logger.getLogger(TestPackagedWorkflowRepository.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(TestPackagedWorkflowRepository.class);
 
   private PackagedWorkflowRepository repo;
 
@@ -137,7 +137,7 @@ public class TestPackagedWorkflowRepository {
       cond = this.repo.getWorkflowConditionById("urn:npp:MOA_IASI_L1C_Daily");
     }
     catch(Exception e){
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
     
@@ -155,7 +155,7 @@ public class TestPackagedWorkflowRepository {
       cond = this.repo.getWorkflowConditionById("urn:npp:MOA_ORBITS_FileBased");
     }
     catch(Exception e){
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
     

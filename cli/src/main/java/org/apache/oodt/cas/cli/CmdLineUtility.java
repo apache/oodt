@@ -31,7 +31,6 @@ import static org.apache.oodt.cas.cli.util.CmdLineUtils.isAdvancedOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
@@ -68,6 +67,8 @@ import org.apache.oodt.cas.cli.util.ParsedArg;
 
 //Google imports
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A highly configurable utility class which supports parsing and handling of
@@ -80,7 +81,7 @@ import com.google.common.collect.Lists;
  * @author bfoster (Brian Foster)
  */
 public class CmdLineUtility {
-   private static Logger LOG = Logger.getLogger(CmdLineUtility.class.getName());
+   private static Logger logger = LoggerFactory.getLogger(CmdLineUtility.class);
    private boolean debugMode;
    private CmdLineParser parser;
    private CmdLineConstructor constructor;

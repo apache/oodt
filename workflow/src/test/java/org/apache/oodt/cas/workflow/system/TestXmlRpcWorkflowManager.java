@@ -25,8 +25,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -49,8 +49,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
 
   private String luceneCatLoc;
 
-  private static final Logger LOG = Logger
-      .getLogger(TestXmlRpcWorkflowManager.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(TestXmlRpcWorkflowManager.class);
 
   public void testGetWorkflowInstances() {
 
@@ -61,7 +60,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
       try {
         workflowInsts = wmgr.getWorkflowInstances();
       } catch (Exception e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
       }
 
       assertNotNull(workflowInsts);
@@ -92,7 +91,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     try {
       client.sendEvent("long", new Metadata());
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
 
@@ -115,14 +114,14 @@ public class TestXmlRpcWorkflowManager extends TestCase {
       luceneCatLoc = !luceneCatLoc.endsWith("/") ? luceneCatLoc + "/"
           : luceneCatLoc;
       luceneCatLoc += "repo";
-      LOG.log(Level.INFO, "Lucene instance repository: [" + luceneCatLoc + "]");
+      LOG.info("Lucene instance repository: [" + luceneCatLoc + "]");
     } catch (Exception e) {
       fail(e.getMessage());
     }
 
     if (new File(luceneCatLoc).exists()) {
       // blow away lucene cat
-      LOG.log(Level.INFO, "Removing workflow instance repository: ["
+      LOG.info("Removing workflow instance repository: ["
           + luceneCatLoc + "]");
       try {
         FileUtils.deleteDirectory(new File(luceneCatLoc));
@@ -151,7 +150,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     try {
       wmgr = new XmlRpcWorkflowManager(WM_PORT);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
 

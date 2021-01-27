@@ -25,6 +25,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,8 +37,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 
@@ -53,8 +53,7 @@ import java.util.logging.Logger;
 public class DeleteProduct {
 
   /* our log stream */
-  private static final Logger LOG = Logger
-      .getLogger(DeleteProduct.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DeleteProduct.class);
 
   private FileManagerClient client;
   /* whether or not we should commit our deletions */
@@ -66,13 +65,13 @@ public class DeleteProduct {
     try {
       client = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
     } catch (Exception e) {
-      LOG.severe("Unable to create client: " + e.getMessage());
+      LOG.error("Unable to create client: " + e.getMessage(), e);
     }
 
     if (!this.commit) {
-      LOG.log(Level.INFO, "Commit disabled.");
+      LOG.info("Commit disabled.");
     } else {
-      LOG.log(Level.INFO, "Commit enabled.");
+      LOG.info("Commit enabled.");
     }
   }
 
@@ -82,9 +81,9 @@ public class DeleteProduct {
     try {
       target = client.getProductById(productId);
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Unable to obtain product : [" + productId + "] from file manager: ["
-              + client.getFileManagerUrl() + "]: Message: " + e.getMessage());
+              + client.getFileManagerUrl() + "]: Message: " + e.getMessage(), e);
     }
 
     if (target == null) {
@@ -98,10 +97,10 @@ public class DeleteProduct {
     try {
       refs = (Vector) client.getProductReferences(target);
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "Unable to obtain references for product : [" + productId
               + "] from file manager: [" + client.getFileManagerUrl()
-              + "]: Message: " + e.getMessage());
+              + "]: Message: " + e.getMessage(), e);
     }
 
     for (Object ref1 : refs) {
@@ -112,19 +111,19 @@ public class DeleteProduct {
           client.removeFile(
               new File(new URI(ref.getDataStoreReference())).getAbsolutePath());
         } catch (DataTransferException e) {
-          LOG.log(Level.WARNING,
+          LOG.warn(
               "Unable to delete reference : [" + ref.getDataStoreReference()
                   + "] for product : [" + productId + "] from file manager : ["
                   + client.getFileManagerUrl() + "]: Message: "
-                  + e.getMessage());
+                  + e.getMessage(), e);
         } catch (URISyntaxException e) {
-          LOG.log(Level.WARNING,
+          LOG.warn(
               "uri syntax exception getting file absolute path from URI: ["
                   + ref.getDataStoreReference() + "]: Message: "
-                  + e.getMessage());
+                  + e.getMessage(), e);
         }
       } else {
-        LOG.log(Level.INFO,
+        LOG.info(
             "Delete file: [" + ref.getDataStoreReference() + "]");
       }
 
@@ -136,13 +135,13 @@ public class DeleteProduct {
       try {
         client.removeProduct(target);
       } catch (CatalogException e) {
-        LOG.log(Level.WARNING,
+        LOG.warn(
             "Unable to remove product : [" + productId
                 + "] from file manager: [" + client.getFileManagerUrl()
-                + "]: Message: " + e.getMessage());
+                + "]: Message: " + e.getMessage(), e);
       }
     } else {
-      LOG.log(Level.INFO, "Remote catalog entry for product: ["
+      LOG.info("Remote catalog entry for product: ["
           + target.getProductName() + "]");
     }
 
@@ -218,7 +217,7 @@ public class DeleteProduct {
         prodIds.add(line);
       }
     } catch (IOException e) {
-      LOG.log(Level.WARNING, "Error reading prod id: line: [" + line
+      LOG.warn("Error reading prod id: line: [" + line
           + "]: Message: " + e.getMessage(), e);
     } finally {
       try {

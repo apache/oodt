@@ -51,13 +51,11 @@ public class GroupAction extends CrawlerAction {
             LOG.info("Performing action (id = " + action.getId()
                   + " : description = " + action.getDescription() + ")");
             if (!action.performAction(product, metadata)) {
-               throw new Exception("Action (id = " + action.getId()
-                                   + " : description = " + action.getDescription()
-                                   + ") returned false");
+               throw new Exception(String.format("Action (id = %s : description = %s) returned false", action.getId(), action.getDescription()));
             }
          } catch (Exception e) {
             allSucceeded = false;
-            LOG.warning("Failed to perform crawler action : " + e.getMessage());
+            LOG.warn("Failed to perform crawler action : {}", e.getMessage(), e);
          }
 
       }

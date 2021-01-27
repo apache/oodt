@@ -21,8 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -44,8 +44,7 @@ import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
  */
 public class DatasetZipper
 {
-  private static final Logger LOGGER = Logger.getLogger(DatasetZipper.class
-    .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DatasetZipper.class);
 
   private ProductZipper productZipper = new ProductZipper();
 
@@ -65,7 +64,7 @@ public class DatasetZipper
       {
         String message = "Unable to create the working directory ("
           + workingDir.getAbsolutePath() + ") to build the zip file.";
-        LOGGER.log(Level.FINE, message);
+        LOG.info(message);
         throw new IOException(message);
       }
 
@@ -77,7 +76,7 @@ public class DatasetZipper
         String message = "Unable to delete an existing zip file ("
           + file.getAbsolutePath()
           + ") before creating a new zip file with the same name.";
-        LOGGER.log(Level.FINE, message);
+        LOG.info(message);
         throw new IOException(message);
       }
 
@@ -97,7 +96,7 @@ public class DatasetZipper
           String message = "Unable to delete a temporary product zip ("
             + refFile.getAbsolutePath()
             + ") after adding it to the dataset zip.";
-          LOGGER.log(Level.FINE, message);
+          LOG.info(message);
           throw new IOException(message);
         }
       }
@@ -120,16 +119,15 @@ public class DatasetZipper
 
     catch (ZipException e)
     {
-      String message = "Unable to create a zip archive of the dataset.";
-      LOGGER.log(Level.FINE, message, e);
-      throw new InternalServerErrorException(message + " " + e.getMessage());
+      String message = String.format("Unable to create a zip archive of the dataset: %s", e.getMessage());
+      LOG.warn(message, e);
+      throw new InternalServerErrorException(message);
     }
     catch (IOException e)
     {
-      String message = "Encountered I/O problems while trying to create a zip "
-        + "archive of the dataset.";
-      LOGGER.log(Level.FINE, message, e);
-      throw new InternalServerErrorException(message + " " + e.getMessage());
+      String message = String.format("Encountered I/O problems while trying to create a zip archive of the dataset: %s", e.getMessage());
+      LOG.warn(message, e);
+      throw new InternalServerErrorException(message);
     }
   }
 }

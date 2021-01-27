@@ -25,8 +25,8 @@ import org.apache.oodt.cas.resource.structs.NameValueJobInput;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 
@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  * </p>.
  */
 public class TestResmgr {
-  private static Logger LOG = Logger.getLogger(TestResmgr.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(TestResmgr.class);
   public static void main(String[] Args) {
 
     if (Args.length != 1) {
@@ -63,7 +63,7 @@ public class TestResmgr {
       client.submitJob(hw1, hw1Input);
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     }
 
   }

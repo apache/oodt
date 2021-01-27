@@ -38,8 +38,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assume.*;
 import static org.junit.Assert.*;
@@ -58,7 +58,7 @@ import static org.junit.Assert.*;
  * 
  */
 public class TestAsynchronousLocalEngineRunner {
-  private static Logger LOG = Logger.getLogger(TestAsynchronousLocalEngineRunner.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(TestAsynchronousLocalEngineRunner.class);
   private AsynchronousLocalEngineRunner runner;
 
   protected File testDir;
@@ -89,7 +89,7 @@ public class TestAsynchronousLocalEngineRunner {
       runner.execute(taskProcessor1);
       runner.execute(taskProcessor2);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
     
@@ -114,7 +114,7 @@ public class TestAsynchronousLocalEngineRunner {
               + ": seconds elapsed: [" + seconds.getSeconds() + "]");
         }
       } catch (Exception e) {
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
         ranFast = false;
       } finally {
         if (br != null) {

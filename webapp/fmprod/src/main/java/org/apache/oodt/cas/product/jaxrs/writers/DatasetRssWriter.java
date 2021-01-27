@@ -23,8 +23,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -58,8 +58,7 @@ import org.w3c.dom.Element;
 public class DatasetRssWriter extends RssWriter
   implements MessageBodyWriter<DatasetResource>
 {
-  private static final Logger LOGGER = Logger.getLogger(DatasetRssWriter.class
-    .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DatasetRssWriter.class);
 
 
 
@@ -179,14 +178,14 @@ public class DatasetRssWriter extends RssWriter
     }
     catch (ParserConfigurationException e)
     {
-      String message = "Unable to create RSS XML document for RSS response.";
-      LOGGER.log(Level.WARNING, message, e);
+      String message = String.format("Unable to create RSS XML document for RSS response: %s", e.getMessage());
+      LOG.warn(message, e);
       throw new InternalServerErrorException(message);
     }
     catch (ParseException e)
     {
-      String message = "Unable to create RSS XML document for RSS response.";
-      LOGGER.log(Level.WARNING, message, e);
+      String message = String.format("Unable to create RSS XML document for RSS response: %s", e.getMessage());
+      LOG.warn(message, e);
       throw new InternalServerErrorException(message);
     }
   }

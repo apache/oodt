@@ -23,12 +23,12 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -42,8 +42,7 @@ public class PCSServiceConfig implements PCSServiceConfMetKeys {
 
   private Map<String, String> parameters;
 
-  private static final Logger LOG = Logger.getLogger(PCSServiceConfig.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(PCSServiceConfig.class);
 
   public PCSServiceConfig(ServletConfig config) {
     this.parameters = new ConcurrentHashMap<String, String>();
@@ -122,7 +121,7 @@ public class PCSServiceConfig implements PCSServiceConfMetKeys {
           .getInitParameter(paramName));
     }
 
-    LOG.log(Level.INFO, "Init Parameters: " + this.parameters);
+    LOG.info("Init Parameters: {}", this.parameters);
   }
 
 }

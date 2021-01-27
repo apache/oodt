@@ -36,6 +36,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,8 +50,6 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class containing client-side functionality for interacting with a Solr server.
@@ -63,7 +63,7 @@ public class SolrClient {
 	// base URL of Solr server
 	private String solrUrl;
 
-	private final Logger LOG = Logger.getLogger(this.getClass().getName());
+	private final Logger LOG = LoggerFactory.getLogger(SolrClient.class);
 
 	/**
 	 * Constructor initializes the Solr URL
@@ -98,20 +98,20 @@ public class SolrClient {
 			message.append("</add>");
 
 			// send POST request
-			LOG.info("Posting message:"+message+" to URL:"+url);
+			LOG.info("Posting message: {} to URL: {}", message, url);
 			String response = doPost(url, message.toString(), mimeType);
-			LOG.info(response);
+			LOG.info("Response: {}", response);
 
 			// commit changes ?
 			if (commit) {
 				this.commit();
 			}
 
-			LOG.info(response);
+			LOG.info("Response: {}", response);
 			return response;
 
 		} catch(Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			throw new CatalogException(e.getMessage());
 		}
 
@@ -136,12 +136,12 @@ public class SolrClient {
 			String message = "<delete><query>id:"+id+"</query></delete>";
 
 			// send POST request
-			LOG.info("Posting message:"+message+" to URL:"+url);
+			LOG.info("Posting message: {} to URL: {}", message, url);
 
 			return doPost(url, message, Parameters.MIME_TYPE_XML);
 
 		} catch(Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			throw new CatalogException(e.getMessage());
 		}
 
@@ -236,7 +236,7 @@ public class SolrClient {
 			return this.doGet(url, parameters, mimeType);
 
 		} catch(Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			throw new CatalogException(e.getMessage());
 		}
 
@@ -268,7 +268,7 @@ public class SolrClient {
 		String paramString = URLEncodedUtils.format(nvps, "utf-8");
 
 		HttpRequestBase method = new HttpGet(url+"?"+paramString);
-		LOG.info("GET url: "+url+" query string: "+method.getURI());
+		LOG.info("GET url: {} query string: {}", url, method.getURI());
 
 		// send HTTP/GET request, return response
 		return doHttp(method);

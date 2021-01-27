@@ -27,6 +27,8 @@ import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.commons.pagination.PaginationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,8 +39,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,8 +65,7 @@ public class ScienceDataCatalog implements Catalog {
   protected int pageSize = -1;
 
   // Our log stream
-  private Logger LOG = Logger.getLogger(ScienceDataCatalog.class
-      .getName());
+  private Logger LOG = LoggerFactory.getLogger(ScienceDataCatalog.class);
 
   public ScienceDataCatalog(DataSource dataSource,
       ValidationLayer validationLayer, int pageSize) {
@@ -98,24 +97,21 @@ public class ScienceDataCatalog implements Catalog {
         String keyName = key.substring(6); // trim "param_"
 
         int paramId = this.createParameter(datasetId, keyName);
-        LOG.log(Level.INFO, "Currently extracting data for variable '"
-            + keyName + "' ");
+        LOG.info("Currently extracting data for variable: [{}]", keyName);
 
         // Create a record for each dataPoint for each parameter
         // detected in the file
 
         List<String> dataPoints = m.getAllMetadata("data_" + keyName);
 
-        LOG.log(Level.INFO, "Will now extract " + dataPoints.size()
-            + " data points for variable '" + keyName + "'... ");
+        LOG.info("Will now extract {} data points for variable: [{}]...", dataPoints.size(), keyName);
 
         StringBuffer queryBuffer = new StringBuffer(
             "INSERT INTO `dataPoint` (`granule_id`,`dataset_id`,`parameter_id`,"
                 + "`latitude`,`longitude`,`vertical`,`time`,`value`) VALUES ");
         // grab a count of items in the dataPoints list
 
-        LOG.log(Level.INFO, "there are " + dataPoints.size()
-            + " data points in the List");
+        LOG.info("there are {} data points in the List", dataPoints.size());
 
         // CGOODALE int to count how many times this thing loops
         int iterCount = 0;
@@ -188,14 +184,11 @@ public class ScienceDataCatalog implements Catalog {
         queryBuffer.append(";");
         this.commitQuery(queryBuffer, null);
 
-        LOG.log(Level.INFO, "Extracted " + dataPoints.size()
-            + " data points for variable '" + keyName + "' ");
+        LOG.info("Extracted {} data points for variable: [{}]", dataPoints.size(), keyName);
       }
 
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "Exception adding product metadata. Message: " + e.getMessage());
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.warn("Exception adding product metadata: {}", e.getMessage(), e);
       throw new CatalogException(e.getMessage(), e);
     }
   }
@@ -219,10 +212,8 @@ public class ScienceDataCatalog implements Catalog {
       }
       alreadyExists = (granuleId > 0);
     } catch (SQLException e) {
-      LOG.log(Level.WARNING,
-          "SQL Exception querying for granule existence. Last query was: "
-              + queryExists + " , Message: " + e.getMessage());
-      throw new SQLException(e.getMessage(), e);
+      LOG.warn("SQLException querying for granule existence: {}: {}", queryExists, e.getMessage(), e);
+      throw e;
     } finally {
       if (statement != null) {
         try {
@@ -276,10 +267,8 @@ public class ScienceDataCatalog implements Catalog {
       }
       alreadyExists = (parameterId > 0);
     } catch (SQLException e) {
-      LOG.log(Level.WARNING,
-          "SQL Exception querying for parameter existence. Last query was: "
-              + queryExists + " , Message: " + e.getMessage());
-      throw new SQLException(e.getMessage(), e);
+      LOG.warn("SQL Exception querying for parameter existence: {}: {}", queryExists, e.getMessage(), e);
+      throw e;
     } finally {
       if (statement != null) {
         try {
@@ -339,20 +328,15 @@ public class ScienceDataCatalog implements Catalog {
 
     } catch (SQLException e) {
       // TODO Auto-generated catch block
-      LOG.log(Level.WARNING,
-          "SQL Exception adding product metadata. Last query was: " + query
-              + " , Message: " + e.getMessage());
+      LOG.warn("SQL Exception adding product metadata: {}: {}", query, e.getMessage(), e);
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(
-            Level.SEVERE,
-            "Unable to rollback addMetadata transaction. Message: "
-                + e2.getMessage());
+        LOG.error("Unable to rollback addMetadata transaction: {}", e2.getMessage(), e);
       }
-      throw new SQLException(e.getMessage(), e);
+      throw e;
     } finally {
       if (statement != null) {
         try {
@@ -411,7 +395,7 @@ public class ScienceDataCatalog implements Catalog {
         numProducts = rs.getInt("num_products");
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -454,7 +438,7 @@ public class ScienceDataCatalog implements Catalog {
         product = DbStructFactory.toScienceDataProduct(rs);
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -498,7 +482,7 @@ public class ScienceDataCatalog implements Catalog {
         product = DbStructFactory.toScienceDataProduct(rs);
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -546,7 +530,7 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -591,7 +575,7 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -643,13 +627,13 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       statement = conn.createStatement();
-      LOG.log(Level.INFO, "Executing: [" + sql + "]");
+      LOG.info("Executing SQL: [{}]", sql);
       rs = statement.executeQuery(sql);
       while (rs.next()) {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -691,13 +675,13 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       statement = conn.createStatement();
-      LOG.log(Level.INFO, "Executing: [" + sql + "]");
+      LOG.info("Executing SQL: [{}]", sql);
       rs = statement.executeQuery(sql);
       while (rs.next()) {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -770,8 +754,7 @@ public class ScienceDataCatalog implements Catalog {
     try {
       firstPage = pagedQuery(query, type, 1);
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING,
-          "Exception getting first page: Message: " + e.getMessage());
+      LOG.warn("Exception getting first page: {}", e.getMessage(), e);
     }
     return firstPage;
   }
@@ -790,8 +773,7 @@ public class ScienceDataCatalog implements Catalog {
     try {
       lastPage = pagedQuery(query, type, firstPage.getTotalPages());
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING,
-          "Exception getting last page: Message: " + e.getMessage());
+      LOG.warn("Exception getting last page: {}", e.getMessage(), e);
     }
 
     return lastPage;
@@ -820,8 +802,7 @@ public class ScienceDataCatalog implements Catalog {
     try {
       nextPage = pagedQuery(query, type, currentPage.getPageNum() + 1);
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING,
-          "Exception getting next page: Message: " + e.getMessage());
+      LOG.warn("Exception getting next page: {}", e.getMessage(), e);
     }
 
     return nextPage;
@@ -849,8 +830,7 @@ public class ScienceDataCatalog implements Catalog {
     try {
       prevPage = pagedQuery(query, type, currentPage.getPageNum() - 1);
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING,
-          "Exception getting prev page: Message: " + e.getMessage());
+      LOG.warn("Exception getting prev page: {}", e.getMessage(), e);
     }
 
     return prevPage;
@@ -923,7 +903,7 @@ public class ScienceDataCatalog implements Catalog {
       String getProductSql = "SELECT DISTINCT granule_id FROM granule WHERE "
           + "dataset_id = " + type.getProductTypeId()
           + " ORDER BY granule_id DESC ";
-      LOG.log(Level.FINE, "Executing: [" + getProductSql + "]");
+      LOG.info("Executing SQL: [{}]", getProductSql);
       rs = statement.executeQuery(getProductSql);
 
       if (doSkip) {
@@ -965,16 +945,13 @@ public class ScienceDataCatalog implements Catalog {
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "Exception performing query. Message: " + e.getMessage());
+      LOG.warn("Exception performing query: {}", e.getMessage(), e);
       try {
         if (conn != null) {
           conn.rollback();
         }
       } catch (SQLException e2) {
-        LOG.log(Level.SEVERE, "Unable to rollback query transaction. Message: "
-            + e2.getMessage());
+        LOG.error("Unable to rollback query transaction: {}", e2.getMessage(), e);
       }
       throw new CatalogException(e.getMessage(), e);
     } finally {
@@ -1020,13 +997,13 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       statement = conn.createStatement();
-      LOG.log(Level.INFO, "Executing: [" + sql + "]");
+      LOG.info("Executing SQL: [{}]", sql);
       rs = statement.executeQuery(sql);
       while (rs.next()) {
         size = rs.getInt("result_size");
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -1075,7 +1052,7 @@ public class ScienceDataCatalog implements Catalog {
         startDateTime = DateUtils.toString(cal);
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {
@@ -1124,7 +1101,7 @@ public class ScienceDataCatalog implements Catalog {
         endDateTime = DateUtils.toString(cal);
       }
     } catch (SQLException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
     } finally {
       if (rs != null) {
         try {

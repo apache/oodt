@@ -40,8 +40,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -56,8 +56,7 @@ import java.util.logging.Logger;
 public class OFSNFileHandler implements LargeProductQueryHandler,
     XMLQueryMetKeys, OFSNXMLMetKeys, OFSNMetKeys, OFSNXMLConfigMetKeys {
 
-  private static final Logger LOG = Logger
-      .getLogger(OFSNFileHandler.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(OFSNFileHandler.class);
 
   private static final String CMD_SEPARATOR = ";";
 
@@ -133,12 +132,10 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
         MediaType mediaType = MediaType
             .parse(cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR));
         if (mediaType == null) {
-          LOG.log(Level.WARNING,
-              "MIME type ["
-                  + cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR)
-                  + "] specified " + "for handler [" + cfg.getClassName()
-                  + "] invalid. Defaulting to MIME type ["
-                  + MediaType.OCTET_STREAM.toString() + "]");
+          LOG.warn("MIME type [{}] specified for handler [{}] invalid. Defaulting to MIME type [{}]",
+                  cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR),
+                  cfg.getClassName(),
+                  MediaType.OCTET_STREAM.toString());
           mediaType = MediaType.OCTET_STREAM;
         }
         mimeType = mediaType.toString();
@@ -229,7 +226,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
       return (OFSNListHandler) HANDLER_CACHE.get(rtType);
     } else {
       OFSNListHandler handler = OFSNObjectFactory.getListHandler(className);
-      LOG.log(Level.INFO, "Getting handler config for RT: [" + rtType + "]");
+      LOG.info("Getting handler config for RT: [" + rtType + "]");
       handler.configure(this.conf.getHandlerConfig(rtType).getHandlerConf());
       HANDLER_CACHE.put(rtType, handler);
       return handler;

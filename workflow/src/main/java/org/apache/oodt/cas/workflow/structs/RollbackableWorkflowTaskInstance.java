@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
@@ -16,7 +17,7 @@ import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 public abstract class RollbackableWorkflowTaskInstance implements WorkflowTaskInstance {
 
-  private static final Logger LOGGER= Logger.getLogger(RollbackableWorkflowTaskInstance.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(RollbackableWorkflowTaskInstance.class);
 
   protected String workflowInstId;
 
@@ -32,7 +33,7 @@ public abstract class RollbackableWorkflowTaskInstance implements WorkflowTaskIn
       //clean up task instance from instance rep?
       clearInstRep();
     } catch (IOException e) {
-      LOGGER.severe(String.format("WorkflowManagerClient error : %s", e.getMessage()));
+      LOG.error("WorkflowManagerClient IOException: {}", e.getMessage(), e);
     }
   }
 

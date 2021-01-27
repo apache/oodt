@@ -15,6 +15,9 @@
 
 package org.apache.oodt.commons.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,8 +26,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
 	This class is a wrapper for JDBC.
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
 */
 public class JDBC_DB
 {
-  private static Logger LOG = Logger.getLogger(JDBC_DB.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(JDBC_DB.class);
 	Properties serverProps;
 	Connection connect;
 	String sql_command;
@@ -131,29 +132,23 @@ public class JDBC_DB
 
 		classname = serverProps.getProperty("org.apache.oodt.commons.util.JDBC_DB.driver", "oracle.jdbc.driver.OracleDriver");
 		try {
-			System.err.println("Attempting to load class " + classname);
+			LOG.debug("Attempting to load class: {}", classname);
 			Class.forName(classname);
-			System.err.println("Loaded " + classname);
+			LOG.debug("Loaded class: {}", classname);
 		} catch (ClassNotFoundException e) {
-			System.err.println("Can't load JDBC driver \"" + classname + "\": " + e.getMessage());
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error("Can't load JDBC driver [{}]: {}", classname, e.getMessage(), e);
 		}
 		url = serverProps.getProperty("org.apache.oodt.commons.util.JDBC_DB.url", "jdbc:oracle:@");
 		try {
 			if (database != null) {
-				System.err.println("Connecting to url+database combo: " + url + database);
+				LOG.debug("Connecting to url+database combo: {} {}", url, database);
 				connect = DriverManager.getConnection(url+database, props);
 			} else {
-				System.err.println("Connecting to full url: " + url);
+				LOG.debug("Connecting to full URL: {}", url);
 				connect = DriverManager.getConnection(url, props);
 			}
 		} catch (SQLException e) {
-			System.err.println("SQL Exception during connection creation: " + e.getMessage());
-			LOG.log(Level.SEVERE, e.getMessage());
-			while (e != null) {
-				System.err.println(e.getMessage());
-				e = e.getNextException();
-			}
+			LOG.error("SQL Exception during connection creation: {}", e.getMessage(), e);
 		}
 
 		connect.setAutoCommit(autoCommitMode);
@@ -187,7 +182,7 @@ public class JDBC_DB
 			rs = null;
 			stmt = null;
 		} catch (SQLException e) {
-			System.err.println("Ignoring database close connection exception");
+			LOG.debug("Ignoring database close connection exception");
 		}
 	}
 

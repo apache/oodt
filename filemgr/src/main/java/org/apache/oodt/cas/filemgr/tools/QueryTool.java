@@ -35,13 +35,13 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -61,7 +61,7 @@ public final class QueryTool {
     private enum QueryType { LUCENE, SQL }
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(QueryTool.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(QueryTool.class);
 
     public QueryTool(URL fmUrl) throws InstantiationException {
         try {
@@ -90,9 +90,7 @@ public final class QueryTool {
                         }
                     }
                 } catch (CatalogException e) {
-                    LOG.log(Level.WARNING, "Exception querying for: ["
-                                           + type.getName() + "] products: Message: "
-                                           + e.getMessage());
+                    LOG.warn("Exception querying for [{}] products: {}", type.getName(), e.getMessage(), e);
                 }
 
             }
@@ -233,10 +231,7 @@ public final class QueryTool {
         try {
             prodTypes = client.getProductTypes();
         } catch (RepositoryManagerException e) {
-            LOG.log(Level.WARNING,
-                    "Error obtaining product types from file manager: ["
-                            + client.getFileManagerUrl() + "]: Message: "
-                            + e.getMessage());
+            LOG.warn("Error obtaining product types from file manager URL: [{}]: {}", client.getFileManagerUrl(), e.getMessage(), e);
         }
 
         return prodTypes;

@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -45,8 +45,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractCrawlLister implements OFSNListHandler {
 
-  protected final static Logger LOG = Logger
-      .getLogger(AbstractCrawlLister.class.getName());
+  protected final static Logger LOG = LoggerFactory.getLogger(AbstractCrawlLister.class);
 
   protected static final FileFilter FILE_FILTER = new FileFilter() {
     public boolean accept(File pathname) {
@@ -92,7 +91,7 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
     stack.push(dirRoot.isDirectory() ? dirRoot : dirRoot.getParentFile());
     while (!stack.isEmpty()) {
       File dir = (File) stack.pop();
-      LOG.log(Level.INFO, "OFSN: Crawling " + dir);
+      LOG.info("OFSN: Crawling {}", dir);
 
       File[] productFiles;
       productFiles = crawlForDirs ? dir.listFiles(DIR_FILTER) : dir.listFiles(FILE_FILTER);

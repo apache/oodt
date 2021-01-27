@@ -27,8 +27,8 @@ import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -46,7 +46,7 @@ import junit.framework.TestCase;
  */
 public class TestExternScriptTaskInstance extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(TestExternScriptTaskInstance.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestExternScriptTaskInstance.class);
     private static final String testScriptPath = new File(
             "./src/test/resources/myScript.sh").getAbsolutePath();
 
@@ -82,7 +82,7 @@ public class TestExternScriptTaskInstance extends TestCase {
             assertEquals(expectedStr.trim(), outputFileStr.trim());
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
     }

@@ -21,7 +21,6 @@ import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
@@ -53,8 +52,7 @@ public class ExternAction extends CrawlerAction {
                new File(workingDir != null ? doDynamicReplacement(workingDir,
                      productMetadata) : product.getParent())) == 0;
       } catch (Exception e) {
-         LOG.log(Level.SEVERE, "Failed to execute extern command '"
-               + executeCommand + "' : " + e.getMessage(), e);
+         LOG.error("Failed to execute extern command '{}' : {}", executeCommand, e.getMessage(), e);
          return false;
       }
    }

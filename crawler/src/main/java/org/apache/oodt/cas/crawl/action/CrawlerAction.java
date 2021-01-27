@@ -20,7 +20,6 @@ package org.apache.oodt.cas.crawl.action;
 //JDK imports
 import java.io.File;
 import java.util.List;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.commons.lang.Validate;
@@ -29,6 +28,8 @@ import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Spring imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -42,7 +43,7 @@ public abstract class CrawlerAction implements SpringSetIdInjectionType {
 
    public List<String> phases;
 
-   public static Logger LOG = Logger.getLogger(CrawlerAction.class.getName());
+   public static Logger LOG = LoggerFactory.getLogger(CrawlerAction.class);
 
    private String description;
 

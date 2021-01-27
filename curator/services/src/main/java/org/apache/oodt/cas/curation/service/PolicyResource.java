@@ -29,6 +29,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 
 import net.sf.json.JSONObject;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -39,8 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -62,8 +62,7 @@ public class PolicyResource extends CurationService {
 
   private static final long serialVersionUID = -3757481221589264709L;
 
-  private static final Logger LOG = Logger.getLogger(PolicyResource.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(PolicyResource.class);
 
   private static final FilenameFilter DIR_FILTER = new FilenameFilter() {
 
@@ -121,9 +120,7 @@ public class PolicyResource extends CurationService {
       productType = fmClient.getProductTypeByName(productTypeName);
       page = fmClient.pagedQuery(new Query(), productType, pageNum);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Unable to obtain products for product type: ["
-          + productTypeName + "]: Message: " + e.getMessage());
+      LOG.warn("Unable to obtain products for product type: [{}]: {}", productTypeName, e.getMessage(), e);
       return "";
     }
 
@@ -184,10 +181,7 @@ public class PolicyResource extends CurationService {
     try {
       typeNames = this.getProductTypeNamesForPolicy(policy);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "Unable to obtain product type names for policy: [" + policy
-              + "]: Message: " + e.getMessage());
+      LOG.warn("Unable to obtain product type names for policy: [{}]: {}", policy, e.getMessage(), e);
       return "";
     }
 
@@ -294,8 +288,7 @@ public class PolicyResource extends CurationService {
       vPath = vPath.substring(1);
     }
     String[] pathToks = vPath.split("/");
-    LOG.log(Level.INFO, "origPath: ["+path+"]");
-    LOG.log(Level.INFO, "pathToks: "+Arrays.asList(pathToks));
+    LOG.info("origPath: [{}] pathToks: [{}]", path, Arrays.asList(pathToks));
     return pathToks;
   }
 

@@ -29,18 +29,19 @@ package org.apache.oodt.commons.exec;
  *
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class StreamGobbler extends Thread {
 	
-	private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(StreamGobbler.class);
 	
     InputStream is;
 
@@ -79,7 +80,7 @@ public class StreamGobbler extends Thread {
                 pw.flush();
             }
         } catch (IOException ioe) {
-        	LOG.log(Level.FINEST, "StreamGobbler failed while gobbling : " + ioe.getMessage(), ioe);
+        	LOG.info("StreamGobbler failed while gobbling : {}", ioe.getMessage(), ioe);
         }
     }
 

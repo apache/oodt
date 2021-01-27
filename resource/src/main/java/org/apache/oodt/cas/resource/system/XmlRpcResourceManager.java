@@ -47,8 +47,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author woollard
@@ -63,7 +63,7 @@ import java.util.logging.Logger;
 public class XmlRpcResourceManager implements ResourceManager{
 
     /** our log stream */
-    private static Logger LOG = Logger.getLogger(XmlRpcResourceManager.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(XmlRpcResourceManager.class);
 
     private int port;
     /** our xml rpc web server */
@@ -89,7 +89,7 @@ public class XmlRpcResourceManager implements ResourceManager{
         try {
             configurationManager.loadConfiguration();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to load configuration", e);
+            LOG.error("Unable to load configuration: {}", e.getMessage(), e);
             throw new IOException("Unable to load configuration", e);
         }
 
@@ -108,8 +108,7 @@ public class XmlRpcResourceManager implements ResourceManager{
         webServer.addHandler("resourcemgr", this);
         webServer.start();
 
-        LOG.log(Level.INFO, "Resource Manager started by "
-                + System.getProperty("user.name", "unknown"));
+        LOG.info("Resource Manager started by {}", System.getProperty("user.name", "unknown"));
     }
 
     public boolean isAlive() {
@@ -155,11 +154,8 @@ public class XmlRpcResourceManager implements ResourceManager{
             spec = scheduler.getJobQueue().getJobRepository()
                     .getJobById(jobId);
         } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING,
-                    "Exception communicating with job repository for job: ["
-                            + jobId + "]: Message: " + e.getMessage());
-            throw new JobRepositoryException("Unable to get job: [" + jobId
-                    + "] from repository!");
+            LOG.warn("Exception communicating with job repository for job [{}]: {}", jobId, e.getMessage(), e);
+            throw new JobRepositoryException(String.format("Unable to get job: [%s] from repository!", jobId));
         }
 
         return XmlRpcStructFactory.getXmlRpcJob(spec.getJob());
@@ -260,9 +256,7 @@ public class XmlRpcResourceManager implements ResourceManager{
     public boolean killJob(String jobId) throws MonitorException {
         String resNodeId = scheduler.getBatchmgr().getExecutionNode(jobId);
         if (resNodeId == null) {
-            LOG.log(Level.WARNING, "Attempt to kill job: [" + jobId
-                    + "]: cannot find execution node"
-                    + " (has the job already finished?)");
+            LOG.warn("Attempt to kill job [{}]: cannot find execution node (has the job already finished?)", jobId);
             return false;
         }
         ResourceNode node = scheduler.getMonitor().getNodeById(resNodeId);
@@ -272,8 +266,7 @@ public class XmlRpcResourceManager implements ResourceManager{
     public String getExecutionNode(String jobId) {
         String execNode = scheduler.getBatchmgr().getExecutionNode(jobId);
         if (execNode == null) {
-            LOG.log(Level.WARNING, "Job: [" + jobId
-                    + "] not currently executing on any known node");
+            LOG.warn("Job [{}] not currently executing on any known node", jobId);
             return "";
         } else {
             return execNode;
@@ -453,15 +446,15 @@ public class XmlRpcResourceManager implements ResourceManager{
             System.err.println(usage);
             System.exit(1);
         }
-	
+
 		XmlRpcResourceManager resourceManager = new XmlRpcResourceManager(portNum);
 		try {
 			resourceManager.startUp();
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, "An error occurred while starting resource manager", e);
+			LOG.error("An error occurred while starting resource manager: {}", e.getMessage(), e);
 			return;
 		}
-	
+
 		for (;;) {
             try {
                 Thread.currentThread().join();
@@ -474,8 +467,7 @@ public class XmlRpcResourceManager implements ResourceManager{
     	try{
     		this.scheduler.getMonitor().getNodeById(nodeId).setCapacity(capacity);
     	}catch (MonitorException e){
-    		LOG.log(Level.WARNING, "Exception setting capacity on node "
-    				+ nodeId + ": " + e.getMessage());
+    		LOG.warn("Exception setting capacity on node [{}]: {}", nodeId, e.getMessage(), e);
     		return false;
     	}
     	return true;
@@ -503,9 +495,9 @@ public class XmlRpcResourceManager implements ResourceManager{
         try {
             jobId = scheduler.getJobQueue().addJob(spec);
         } catch (JobQueueException e) {
-            LOG.log(Level.WARNING, "JobQueue exception adding job: Message: "
-                    + e.getMessage());
-            throw new SchedulerException(e.getMessage());
+            String msg = String.format("JobQueueException when adding job: %s", e.getMessage());
+            LOG.warn(msg, e);
+            throw new SchedulerException(msg, e);
         }
         return jobId;
     }
@@ -542,8 +534,7 @@ public class XmlRpcResourceManager implements ResourceManager{
         try {
             url = new URL(urlStr);
         } catch (MalformedURLException e) {
-            LOG.log(Level.WARNING, "Error converting string: [" + urlStr
-                    + "] to URL object: Message: " + e.getMessage());
+            LOG.warn("Error converting string [{}] to URL: {}", urlStr, e.getMessage(), e);
         }
 
         return url;

@@ -20,12 +20,12 @@ package org.apache.oodt.cas.pge.writers;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.logging.Logger;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

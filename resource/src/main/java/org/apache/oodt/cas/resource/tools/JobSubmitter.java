@@ -23,8 +23,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 import org.apache.oodt.cas.resource.structs.JobSpec;
@@ -44,8 +44,7 @@ import org.apache.oodt.cas.resource.util.JobBuilder;
 public final class JobSubmitter {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(JobSubmitter.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(JobSubmitter.class);
 
     /* our res mgr client */
     private XmlRpcResourceManagerClient client = null;
@@ -70,12 +69,9 @@ public final class JobSubmitter {
             for (File jobFile : jobFiles) {
                 try {
                     String id = submitJobFile(jobFile);
-                    LOG.log(Level.INFO, "Job Submitted: id: [" + id + "]");
-
+                    LOG.info("Job Submitted: id [{}]", id);
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE, e.getMessage());
-                    LOG.log(Level.WARNING, "Exception submitting job file: ["
-                                           + jobFile + "]: Message: " + e.getMessage());
+                    LOG.warn("Exception submitting job file [{}]: {}", jobFile, e.getMessage(), e);
                 }
             }
         }
@@ -125,7 +121,7 @@ public final class JobSubmitter {
             submitter.submitJobFiles(jobFileDirPath);
         } else {
             String jobId = submitter.submitJobFile(jobFilePath);
-            LOG.log(Level.INFO, "Job Submitted: id: [" + jobId + "]");
+            LOG.info("Job Submitted: id [{}]", jobId);
         }
 
     }

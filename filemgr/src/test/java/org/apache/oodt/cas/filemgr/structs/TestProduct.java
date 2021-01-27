@@ -28,10 +28,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 //Junit imports
@@ -47,7 +47,7 @@ import junit.framework.TestCase;
  */
 public class TestProduct extends TestCase {
 
-  private static Logger LOG = Logger.getLogger(TestProduct.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(TestProduct.class);
   private Properties initialProperties = new Properties(System.getProperties());
 
   public void setUp() throws Exception {
@@ -113,7 +113,7 @@ public class TestProduct extends TestCase {
     try {
       XMLUtils.writeXmlToStream(product.toXML(), os);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
 

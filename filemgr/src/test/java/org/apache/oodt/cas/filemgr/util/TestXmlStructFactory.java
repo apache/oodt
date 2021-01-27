@@ -23,11 +23,10 @@ package org.apache.oodt.cas.filemgr.util;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.commons.exec.EnvUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -48,7 +47,7 @@ import junit.framework.TestCase;
  */
 public class TestXmlStructFactory extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(TestXmlStructFactory.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestXmlStructFactory.class);
     private static final String origRepoPath = "[HOME]/some/path";
 
     private static final String HOME = EnvUtilities.getEnv("HOME");
@@ -91,7 +90,7 @@ public class TestXmlStructFactory extends TestCase {
                     + "]", type.getProductRepositoryPath(), expectedRepoPath);
 
         } catch (ParserConfigurationException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
     }

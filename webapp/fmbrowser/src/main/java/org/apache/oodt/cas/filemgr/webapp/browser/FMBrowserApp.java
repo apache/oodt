@@ -17,14 +17,14 @@
 
 package org.apache.oodt.cas.filemgr.webapp.browser;
 
-//JDK imports
-import java.util.logging.Logger;
-
 //OODT imports
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserAppBase;
 
 //Wicket imports
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Application object for your web application. If you want to run this
@@ -33,8 +33,7 @@ import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
  */
 public class FMBrowserApp extends FMBrowserAppBase {
 
-  private static final Logger LOG = Logger.getLogger(FMBrowserApp.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(FMBrowserApp.class);
 
   /**
    *

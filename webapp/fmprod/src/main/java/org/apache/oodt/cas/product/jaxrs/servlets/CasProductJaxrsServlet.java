@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -50,8 +50,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
   // Auto-generated ID for serialization.
   private static final long serialVersionUID = -1835790185000773396L;
 
-  private static final Logger LOGGER = Logger.getLogger(CasProductJaxrsServlet
-    .class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(CasProductJaxrsServlet.class);
 
   private static final int CONFIG_PARAM_LENGTH = 3;
   private static final int CONFIG_PARAM_FORMAT = 1;
@@ -91,10 +90,10 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
       }
       else
       {
+        String defaultUrl = "http://localhost:9000";
         // Try the default URL for the file manager.
-        LOGGER.log(Level.WARNING, "Unable to find a servlet context parameter "
-          + "for the file manager URL.");
-        url = new URL("http://localhost:9000");
+        LOG.warn("Unable to find a servlet context parameter for the file manager URL. Using default: {}", defaultUrl);
+        url = new URL(defaultUrl);
       }
 
       // Attempt to connect the client to the file manager and if successful
@@ -104,16 +103,15 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
     }
     catch (MalformedURLException e)
     {
-      String message = "Encountered a malformed URL for the file manager.";
-      LOGGER.log(Level.SEVERE, message, e);
-      throw new ServletException(message);
+      String message = String.format("Encountered a malformed URL for the file manager: %s", e.getMessage());
+      LOG.error(message, e);
+      throw new ServletException(message, e);
     }
     catch (ConnectionException e)
     {
-      String message =
-        "Client could not establish a connection to the file manager.";
-      LOGGER.log(Level.SEVERE, message, e);
-      throw new ServletException(message);
+      String message = String.format("Client could not establish a connection to the file manager: %s", e.getMessage());
+      LOG.error(message, e);
+      throw new ServletException(message, e);
     }
   }
 
@@ -138,20 +136,18 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
       if (workingDir.exists() && workingDir.isDirectory())
       {
         context.setAttribute("workingDir", workingDir);
-        LOGGER.log(Level.FINE, "The file manager's working directory has been "
-          + "set up as " + workingDir.getAbsolutePath());
+        LOG.info("The file manager's working directory has been set up as {}", workingDir.getAbsolutePath());
       }
       else
       {
-        LOGGER.log(Level.SEVERE, "Unable to locate the working directory for "
-          + "the file manager.");
+        LOG.error("Unable to locate the working directory for the file manager.");
       }
     }
     else
     {
       String message = "Unable to find a servlet context parameter for the file"
         + " manager working directory path.";
-      LOGGER.log(Level.SEVERE, message);
+      LOG.error(message);
       throw new ServletException(message);
     }
   }
@@ -203,14 +199,12 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
           }
           catch (IOException e)
           {
-            LOGGER.log(Level.WARNING, "The configuration '" + parameterName
-              + "'could not be initialized (value: " + value + ").", e);
+            LOG.warn("The configuration {} could not be initialized (value: {}): {}", parameterName, value, e.getMessage(), e);
           }
         }
         else
         {
-          LOGGER.log(Level.FINE,
-            "Configuration context parameter could not be parsed.");
+          LOG.info("Configuration context parameter could not be parsed.");
         }
       }
     }

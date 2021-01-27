@@ -22,10 +22,9 @@ package org.apache.oodt.cas.crawl.util;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //Spring imports
 
@@ -38,13 +37,13 @@ import java.util.logging.Logger;
  */
 public class CasPropertyPlaceholderConfigurer extends
         PropertyPlaceholderConfigurer {
-    private static Logger LOG = Logger.getLogger(CasPropertyPlaceholderConfigurer.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(CasPropertyPlaceholderConfigurer.class);
     @Override
     protected String convertPropertyValue(String value) {
         try {
             return PathUtils.doDynamicReplacement(value);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return value;
         }
     }

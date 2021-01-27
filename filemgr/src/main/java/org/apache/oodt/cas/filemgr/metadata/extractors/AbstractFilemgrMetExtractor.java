@@ -23,14 +23,14 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractFilemgrMetExtractor implements
         FilemgrMetExtractor {
-  private static Logger LOG = Logger.getLogger(AbstractFilemgrMetExtractor.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(AbstractFilemgrMetExtractor.class);
     protected Properties configuration;
 
     /*
@@ -116,9 +116,9 @@ public abstract class AbstractFilemgrMetExtractor implements
                         .getProductReferences(), product.getProductType()
                         .getProductRepositoryPath()));
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                throw new MetExtractionException("URI exception parsing: ["
-                        + product.getRootRef().getOrigReference() + "]");
+                String msg = String.format("URI exception parsing: [%s]: %s", product.getRootRef().getOrigReference(), e.getMessage());
+                LOG.error(msg, e);
+                throw new MetExtractionException(msg, e);
             }
         } else {
             try {

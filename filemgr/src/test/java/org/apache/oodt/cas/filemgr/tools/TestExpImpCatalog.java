@@ -34,10 +34,10 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 //Junit imports
@@ -51,7 +51,7 @@ import junit.framework.TestCase;
  * </p>.
  */
 public class TestExpImpCatalog extends TestCase {
-    private static Logger LOG = Logger.getLogger(TestExpImpCatalog.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestExpImpCatalog.class);
     private static final int FM_PORT = 50010;
 
     private FileManagerServer fm;
@@ -76,7 +76,7 @@ public class TestExpImpCatalog extends TestCase {
             expImp.doExpImport();
             expImp.doExpImport();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -104,7 +104,7 @@ public class TestExpImpCatalog extends TestCase {
 
             assertEquals(1, countProds);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }        
     }
@@ -116,7 +116,7 @@ public class TestExpImpCatalog extends TestCase {
             expImp.doExpImport();
             expImp.doExpImport();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -145,7 +145,7 @@ public class TestExpImpCatalog extends TestCase {
 
             assertEquals(2, countProds);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -155,7 +155,7 @@ public class TestExpImpCatalog extends TestCase {
         try {
             expImp.doExpImport();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -171,7 +171,7 @@ public class TestExpImpCatalog extends TestCase {
             assertNotNull(prod.getProductReferences());
             assertEquals(1, prod.getProductReferences().size());
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
     }
@@ -195,7 +195,7 @@ public class TestExpImpCatalog extends TestCase {
             expImp = new ExpImpCatalog(new URL("http://localhost:" + FM_PORT),
                     new URL("http://localhost:" + (FM_PORT + 1)), true);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
     }

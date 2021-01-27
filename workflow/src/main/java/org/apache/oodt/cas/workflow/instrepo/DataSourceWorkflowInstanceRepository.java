@@ -32,8 +32,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 
@@ -55,8 +55,7 @@ public class DataSourceWorkflowInstanceRepository extends
     private DataSource dataSource = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger
-            .getLogger(DataSourceWorkflowInstanceRepository.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DataSourceWorkflowInstanceRepository.class);
 
     /* should we quote fields or not */
     private boolean quoteFields = false;
@@ -110,7 +109,7 @@ public class DataSourceWorkflowInstanceRepository extends
                     + wInst.getCurrentTaskEndDateTimeIsoStr() + "', "+wInst.getPriority().getValue()+", "
                     + wInst.getTimesBlocked() + ")";
 
-            LOG.log(Level.FINE, "sql: Executing: " + startWorkflowSql);
+            LOG.info("sql: Executing: {}", startWorkflowSql);
             statement.execute(startWorkflowSql);
 
             String workflowInstId = "";
@@ -132,17 +131,13 @@ public class DataSourceWorkflowInstanceRepository extends
             // now add its metadata
             addWorkflowInstanceMetadata(wInst);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception starting workflow. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception starting workflow: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback startWorkflow transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback startWorkflow transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -188,24 +183,18 @@ public class DataSourceWorkflowInstanceRepository extends
           
           String deleteSql = "DELETE FROM workflow_instances";
           
-          LOG.log(Level.FINE, "deleteSql: Executing: "
-                  + deleteSql);
+          LOG.info("deleteSql: Executing: {}", deleteSql);
           statement.execute(deleteSql);
           conn.commit();
 
       } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
-          LOG.log(Level.WARNING,
-                  "Exception deleting all workflow instances. Message: "
-                          + e.getMessage());
+          LOG.warn("Exception deleting all workflow instances: {}", e.getMessage(), e);
           try {
               if (conn != null) {
                   conn.rollback();
               }
           } catch (SQLException e2) {
-              LOG.log(Level.SEVERE,
-                      "Unable to rollback delete workflow instances "
-                              + "transaction. Message: " + e2.getMessage());
+              LOG.error("Unable to rollback delete workflow instances transaction: {}", e2.getMessage(), e2);
           }
           throw new InstanceRepositoryException(e.getMessage());
       } finally {
@@ -269,8 +258,7 @@ public class DataSourceWorkflowInstanceRepository extends
                     + wInst.getTimesBlocked()
                     +" WHERE workflow_instance_id = " + wInst.getId();
 
-            LOG.log(Level.FINE, "updateStatusSql: Executing: "
-                    + updateStatusSql);
+            LOG.info("updateStatusSql: Executing: {}", updateStatusSql);
             statement.execute(updateStatusSql);
             conn.commit();
 
@@ -279,18 +267,13 @@ public class DataSourceWorkflowInstanceRepository extends
             addWorkflowInstanceMetadata(wInst);
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception updating workflow instance. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception updating workflow instance: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback updateWorkflowInstanceStatus "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback updateWorkflowInstanceStatus transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -332,7 +315,7 @@ public class DataSourceWorkflowInstanceRepository extends
             String deleteSql = "DELETE FROM workflow_instances "
                     + "WHERE workflow_instance_id = " + wInst.getId();
 
-            LOG.log(Level.FINE, "sql: Executing: " + deleteSql);
+            LOG.info("sql: Executing: {}", deleteSql);
             statement.execute(deleteSql);
             conn.commit();
 
@@ -340,18 +323,13 @@ public class DataSourceWorkflowInstanceRepository extends
             removeWorkflowInstanceMetadata(wInst.getId());
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception removing workflow instance. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception removing workflow instance: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback removeWorkflowInstance "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback removeWorkflowInstance transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -395,8 +373,7 @@ public class DataSourceWorkflowInstanceRepository extends
             String getWorkflowSql = "SELECT * from workflow_instances "
                     + "WHERE workflow_instance_id = " + workflowInstId;
 
-            LOG.log(Level.FINE, "getWorkflowInstanceById: Executing: "
-                    + getWorkflowSql);
+            LOG.info("getWorkflowInstanceById: Executing: {}", getWorkflowSql);
             rs = statement.executeQuery(getWorkflowSql);
 
             while (rs.next()) {
@@ -408,18 +385,13 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting workflow instance. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting workflow instance: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getWorkflowInstanceById "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback getWorkflowInstanceById transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -471,8 +443,7 @@ public class DataSourceWorkflowInstanceRepository extends
             String getWorkflowSql = "SELECT * from workflow_instances "
                     + "ORDER BY workflow_instance_id DESC";
 
-            LOG.log(Level.FINE, "getWorkflowInstances: Executing: "
-                    + getWorkflowSql);
+            LOG.info("getWorkflowInstances: Executing: {}", getWorkflowSql);
             rs = statement.executeQuery(getWorkflowSql);
 
             workflowInsts = new Vector();
@@ -487,18 +458,13 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting workflow instance. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting workflow instance: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getWorkflowInstances "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback getWorkflowInstances transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -553,8 +519,7 @@ public class DataSourceWorkflowInstanceRepository extends
                     + "WHERE workflow_instance_status = '" + status
                     + "' ORDER BY workflow_instance_id DESC";
 
-            LOG.log(Level.FINE, "getWorkflowInstancesByStatus: Executing: "
-                    + getWorkflowSql);
+            LOG.info("getWorkflowInstancesByStatus: Executing: {}", getWorkflowSql);
             rs = statement.executeQuery(getWorkflowSql);
 
             workflowInsts = new Vector();
@@ -569,18 +534,13 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting workflow instance. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting workflow instance: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getWorkflowInstancesByStatus "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback getWorkflowInstancesByStatus transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -631,8 +591,7 @@ public class DataSourceWorkflowInstanceRepository extends
 
             String getWorkflowSql = "SELECT COUNT(workflow_instance_id) AS num_insts from workflow_instances";
 
-            LOG.log(Level.FINE, "getNumWorkflowInstances: Executing: "
-                    + getWorkflowSql);
+            LOG.info("getNumWorkflowInstances: Executing: {}", getWorkflowSql);
             rs = statement.executeQuery(getWorkflowSql);
 
             while (rs.next()) {
@@ -640,18 +599,13 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting num workflow instances. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting num workflow instances: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getNumWorkflowInstances "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback getNumWorkflowInstances transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -704,8 +658,7 @@ public class DataSourceWorkflowInstanceRepository extends
             String getWorkflowSql = "SELECT COUNT(workflow_instance_id) AS num_insts from workflow_instances "
                     + "WHERE workflow_instance_status = '" + status + "'";
 
-            LOG.log(Level.FINE, "getNumWorkflowInstancesByStatus: Executing: "
-                    + getWorkflowSql);
+            LOG.info("getNumWorkflowInstancesByStatus: Executing: {}", getWorkflowSql);
             rs = statement.executeQuery(getWorkflowSql);
 
             while (rs.next()) {
@@ -713,18 +666,13 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting num workflow instances by status. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting num workflow instances by status: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getNumWorkflowInstancesByStatus "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback getNumWorkflowInstancesByStatus transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -787,8 +735,7 @@ public class DataSourceWorkflowInstanceRepository extends
 
             getWorkflowSql += "ORDER BY workflow_instance_id DESC ";
 
-            LOG.log(Level.FINE, "workflow instance paged query: executing: "
-                    + getWorkflowSql);
+            LOG.info("workflow instance paged query: executing: {}", getWorkflowSql);
 
             rs = statement.executeQuery(getWorkflowSql);
             wInstIds = new Vector();
@@ -829,17 +776,13 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception performing query. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception performing query: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback query transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback query transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -888,7 +831,7 @@ public class DataSourceWorkflowInstanceRepository extends
             String getWorkflowSql = "SELECT * from workflow_instance_metadata "
                     + "WHERE workflow_instance_id = " + workflowInstId;
 
-            LOG.log(Level.FINE, "Executing: " + getWorkflowSql);
+            LOG.info("Executing: {}", getWorkflowSql);
             rs = statement.executeQuery(getWorkflowSql);
 
             while (rs.next()) {
@@ -897,18 +840,13 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting workflow instance metadata. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting workflow instance metadata: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getWorkflowInstancesMetadata "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback getWorkflowInstancesMetadata transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -976,23 +914,18 @@ public class DataSourceWorkflowInstanceRepository extends
                     + " (workflow_instance_id,workflow_met_key,workflow_met_val) VALUES ("
                     + wInstId + ",'" + key + "','" + URLEncoder.encode(val, "UTF-8") + "')";
 
-            LOG.log(Level.FINE, "sql: Executing: " + addMetSql);
+            LOG.info("sql: Executing: {}", addMetSql);
             statement.execute(addMetSql);
 
             conn.commit();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception adding metadata [" + key + "=>"
-                    + val + "] to workflow inst: [" + wInstId + "]. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception adding metadata [{}=>{}] to workflow inst [{}]: {}", key, val, wInstId, e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback addMetadataValue transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback addMetadataValue transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {
@@ -1030,23 +963,18 @@ public class DataSourceWorkflowInstanceRepository extends
             String deleteSql = "DELETE FROM workflow_instance_metadata "
                     + "WHERE workflow_instance_id = " + workflowInstId;
 
-            LOG.log(Level.FINE, "sql: Executing: " + deleteSql);
+            LOG.info("sql: Executing: {}", deleteSql);
             statement.execute(deleteSql);
             conn.commit();
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception removing workflow instance metadata. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception removing workflow instance metadata: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback removeWorkflowInstanceMetadata "
-                                + "transaction. Message: " + e2.getMessage());
+                LOG.error("Unable to rollback removeWorkflowInstanceMetadata transaction: {}", e2.getMessage(), e2);
             }
             throw new InstanceRepositoryException(e.getMessage());
         } finally {

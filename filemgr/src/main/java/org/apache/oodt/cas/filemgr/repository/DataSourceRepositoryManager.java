@@ -21,6 +21,8 @@ package org.apache.oodt.cas.filemgr.repository;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.util.DbStructFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.sql.Connection;
@@ -29,8 +31,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 /**
@@ -51,8 +51,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
     private DataSource dataSource = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(DataSourceRepositoryManager.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DataSourceRepositoryManager.class);
 
     /**
      * 
@@ -93,8 +92,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
                     + "', '"
                     + productType.getVersioner() + "')";
 
-            LOG.log(Level.FINE, "addProductType: Executing: "
-                    + addProductTypeSql);
+            LOG.info("addProductType: Executing: {}", addProductTypeSql);
             statement.execute(addProductTypeSql);
 
             String productTypeId = "";
@@ -112,29 +110,25 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             String createRefSql = "CREATE TABLE product_reference_"
                     + productTypeId
                     + " (product_id int NOT NULL, product_orig_reference varchar(255), product_datastore_reference varchar(255))";
-            LOG.log(Level.FINE, "addProductType: Executing: " + createRefSql);
+            LOG.info("addProductType: Executing: {}", createRefSql);
             statement.execute(createRefSql);
 
             // create the metadata table
             String createMetaSql = "CREATE TABLE product_metadata_"
                     + productTypeId
                     + " (product_id int NOT NULL, element_id int NOT NULL, metadata_value varchar(2000) NOT NULL)";
-            LOG.log(Level.FINE, "addProductType: Executing: " + createMetaSql);
+            LOG.info("addProductType: Executing: {}", createMetaSql);
             statement.execute(createMetaSql);
             conn.commit();
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception adding product type. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception adding product type: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback addProductType transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback addProductType transaction: {}", e2.getMessage(), e2);
             }
             throw new RepositoryManagerException(e.getMessage());
         } finally {
@@ -195,24 +189,18 @@ public class DataSourceRepositoryManager implements RepositoryManager {
                     + "WHERE product_type_id = "
                     + productType.getProductTypeId();
 
-            LOG.log(Level.FINE, "modifyProductType: Executing: "
-                    + modifyProductTypeSql);
+            LOG.info("modifyProductType: Executing: {}", modifyProductTypeSql);
             statement.execute(modifyProductTypeSql);
             conn.commit();
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception modifying product type. Message: "
-                            + e.getMessage());
+            LOG.warn("Exception modifying product type: {}",e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback modifyProductType transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback modifyProductType transaction: {}", e2.getMessage(), e2);
             }
             throw new RepositoryManagerException(e.getMessage());
         } finally {
@@ -255,8 +243,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             String deleteProductTypeSql = "DELETE FROM product_types WHERE product_type_id = "
                     + productType.getProductTypeId();
 
-            LOG.log(Level.FINE, "removeProductType: Executing: "
-                    + deleteProductTypeSql);
+            LOG.info("removeProductType: Executing: {}", deleteProductTypeSql);
             statement.execute(deleteProductTypeSql);
 
             // TODO: Decide if it makes sense to delete the references table
@@ -268,17 +255,13 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             conn.commit();
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception removing product type. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception removing product type: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback removeProductType transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback removeProductType transaction: {}", e2.getMessage(), e2);
             }
             throw new RepositoryManagerException(e.getMessage());
         } finally {
@@ -322,8 +305,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             String getProductTypeSql = "SELECT * from product_types WHERE product_type_id = "
                     + productTypeId;
 
-            LOG.log(Level.FINE, "getProductTypeById: Executing: "
-                    + getProductTypeSql);
+            LOG.info("getProductTypeById: Executing: {}", getProductTypeSql);
             rs = statement.executeQuery(getProductTypeSql);
 
             while (rs.next()) {
@@ -331,17 +313,13 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting product type. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting product type: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductTypeById transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductTypeById transaction: {}", e2.getMessage(), e2);
             }
             throw new RepositoryManagerException(e.getMessage());
         } finally {
@@ -395,8 +373,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             String getProductTypeSql = "SELECT * from product_types WHERE product_type_name = '"
                     + productTypeName + "'";
 
-            LOG.log(Level.FINE, "getProductTypeByName: Executing: "
-                    + getProductTypeSql);
+            LOG.info("getProductTypeByName: Executing: {}", getProductTypeSql);
             rs = statement.executeQuery(getProductTypeSql);
 
             while (rs.next()) {
@@ -404,17 +381,13 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting product type. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting product type: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductTypeByName transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductTypeByName transaction: {}", e2.getMessage(), e2);
             }
             throw new RepositoryManagerException(e.getMessage());
         } finally {
@@ -466,8 +439,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
 
             String getProductTypeSql = "SELECT * from product_types";
 
-            LOG.log(Level.FINE, "getProductTypes: Executing: "
-                    + getProductTypeSql);
+            LOG.info("getProductTypes: Executing: {}", getProductTypeSql);
             rs = statement.executeQuery(getProductTypeSql);
 
             productTypes = new Vector<ProductType>();
@@ -481,17 +453,13 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting product types. Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting product types: {}", e.getMessage(), e);
             try {
                 if (conn != null) {
                     conn.rollback();
                 }
             } catch (SQLException e2) {
-                LOG.log(Level.SEVERE,
-                        "Unable to rollback getProductTypes transaction. Message: "
-                                + e2.getMessage());
+                LOG.error("Unable to rollback getProductTypes transaction: {}", e2.getMessage(), e2);
             }
             throw new RepositoryManagerException(e.getMessage());
         } finally {

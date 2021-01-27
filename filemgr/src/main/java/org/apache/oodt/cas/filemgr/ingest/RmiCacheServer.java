@@ -20,6 +20,8 @@ package org.apache.oodt.cas.filemgr.ingest;
 //OODT imports
 
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -29,8 +31,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 
@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  */
 public class RmiCacheServer extends UnicastRemoteObject implements RemoteableCache, Serializable{
 
-    private static Logger LOG = Logger.getLogger(RmiCacheServer.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(RmiCacheServer.class);
     private static final long serialVersionUID = -538329403363156379L;
 
     private LocalCache cache;
@@ -82,10 +82,9 @@ public class RmiCacheServer extends UnicastRemoteObject implements RemoteableCac
             Naming.unbind("rmi://localhost:" + port + "/RmiDatabaseServer");
             UnicastRemoteObject.unexportObject(reg,true);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new RemoteException(
-                    "Unable to unbind Database Server: reason: "
-                            + e.getMessage());
+            String msg = String.format("Unable to unbind Database Server: %s", e.getMessage());
+            LOG.error(msg, e);
+            throw new RemoteException(msg, e);
         }
     }
 
@@ -190,8 +189,7 @@ public class RmiCacheServer extends UnicastRemoteObject implements RemoteableCac
         try {
             reg = LocateRegistry.createRegistry(port);
             Naming.rebind("rmi://localhost:" + port + "/RmiDatabaseServer", this);
-            System.out.println("RMI server created at rmi://localhost:" + port
-                    + "/RmiDatabaseServer");
+            LOG.info("RMI server created at rmi://localhost:{}//RmiDatabaseServer", port);
         } catch (Exception e) {
             throw new RemoteException("Failed to create RMI Server : "
                     + e.getMessage());

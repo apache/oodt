@@ -23,8 +23,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -56,8 +56,7 @@ import org.w3c.dom.Element;
 public class DatasetRdfWriter extends RdfWriter
   implements MessageBodyWriter<DatasetResource>
 {
-  private static final Logger LOGGER = Logger.getLogger(DatasetRdfWriter.class
-    .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DatasetRdfWriter.class);
 
 
 
@@ -144,8 +143,8 @@ public class DatasetRdfWriter extends RdfWriter
     }
     catch (ParserConfigurationException e)
     {
-      String message = "Unable to build org.w3c.dom.Document for output.";
-      LOGGER.log(Level.WARNING, message, e);
+      String message = String.format("Unable to build org.w3c.dom.Document for output: %s", e.getMessage());
+      LOG.warn(message, e);
       throw new InternalServerErrorException(message);
     }
   }

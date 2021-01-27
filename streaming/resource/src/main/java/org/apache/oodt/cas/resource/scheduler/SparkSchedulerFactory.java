@@ -19,8 +19,6 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 //JAVA imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 //OODT imports
@@ -28,6 +26,8 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author starchmd
@@ -40,7 +40,7 @@ import org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory;
  */
 public class SparkSchedulerFactory implements SchedulerFactory {
 
-	private static final Logger LOG = Logger.getLogger(SparkSchedulerFactory.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(SparkSchedulerFactory.class);
 
 
 	private JobQueue queue = null;
@@ -50,7 +50,7 @@ public class SparkSchedulerFactory implements SchedulerFactory {
 	public SparkSchedulerFactory() {
 		String jobQueueClassStr = System.getProperty("resource.jobqueue.factory",
 		        JobStackJobQueueFactory.class.getName());
-		LOG.log(Level.INFO,"Using job-queue: "+jobQueueClassStr+ " with: "+SparkScheduler.class.getName());
+		LOG.info("Using job-queue: {} with: {}", jobQueueClassStr, SparkScheduler.class);
 		queue = GenericResourceManagerObjectFactory.getJobQueueServiceFromFactory(jobQueueClassStr);
 	}
 	/**

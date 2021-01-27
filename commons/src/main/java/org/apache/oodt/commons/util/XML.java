@@ -60,6 +60,8 @@
 
 package org.apache.oodt.commons.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -83,7 +85,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -105,7 +106,7 @@ import javax.xml.transform.stream.StreamResult;
  * @author Kelly
  */
 public class XML {
-  private static Logger LOG = Logger.getLogger(XML.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(XML.class);
 	private static DocumentBuilder getStandardDocumentBuilder() {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -150,15 +151,13 @@ public class XML {
 		builder.setEntityResolver(ENTERPRISE_ENTITY_RESOLVER);
 		builder.setErrorHandler(new ErrorHandler() {
 			public void error(SAXParseException ex) {
-				System.err.println("Parse error: " + ex.getMessage());
-				ex.printStackTrace();
+				LOG.error("Parse error: {}", ex.getMessage(), ex);
 			}
 			public void warning(SAXParseException ex) {
-				System.err.println("Parse warning: " + ex.getMessage());
+				LOG.warn("Parse warning: {}", ex.getMessage(), ex);
 			}
 			public void fatalError(SAXParseException ex) {
-				System.err.println("Fatal parse error: " + ex.getMessage());
-				ex.printStackTrace();
+				LOG.error("Fatal parse error: {}", ex.getMessage(), ex);
 			}
 		});
 		return new DOMParser(builder);
@@ -180,13 +179,13 @@ public class XML {
 			saxParser.getXMLReader().setEntityResolver(ENTERPRISE_ENTITY_RESOLVER);
 			saxParser.getXMLReader().setErrorHandler(new ErrorHandler() {
 				public void error(SAXParseException ex) {
-					System.err.println("Parse error: " + ex.getMessage());
+					LOG.error("Parse error: {}", ex.getMessage(), ex);
 				}
 				public void warning(SAXParseException ex) {
-					System.err.println("Parse warning: " + ex.getMessage());
+					LOG.warn("Parse warning: {}", ex.getMessage(), ex);
 				}
 				public void fatalError(SAXParseException ex) {
-					System.err.println("Fatal parse error: " + ex.getMessage());
+					LOG.error("Fatal parse error: {}", ex.getMessage(), ex);
 				}
 			});
 		  return new SAXParser(saxParser);

@@ -22,6 +22,8 @@ package org.apache.oodt.cas.filemgr.ingest;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,8 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -53,8 +53,7 @@ public class CachedIngester extends StdIngester {
 
     private Cache cache;
 
-    private static final Logger LOG = Logger.getLogger(CachedIngester.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CachedIngester.class);
 
     /**
      * @param transferService
@@ -134,18 +133,16 @@ public class CachedIngester extends StdIngester {
             try {
                 cache.sync();
             } catch (CacheException e) {
-                LOG.log(Level.WARNING,
-                        "Exception re-syncing cache to file manager: [" + fmUrl
-                                + "]: Message: " + e.getMessage());
-                throw new CatalogException(
-                        "Exception re-syncing cache to file manager: [" + fmUrl
-                                + "]: Message: " + e.getMessage(), e);
+                String msg = String.format("Exception re-syncing cache to file manager: [%s]: %s", fmUrl, e.getMessage());
+                LOG.warn(msg, e);
+                throw new CatalogException(msg, e);
             }
             return cache.contains(productName);
         }
       } catch (URISyntaxException e) {
-        LOG.log(Level.SEVERE, "Exception getting URI from URL");
-        throw new CatalogException("Exception getting URL from URL: Message: " + e.getMessage(), e);
+        String msg = String.format("Exception getting URI from URL: %s", e.getMessage());
+        LOG.error(msg, e);
+        throw new CatalogException(msg, e);
       }
     }
 

@@ -36,10 +36,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 //Junit imports
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  */
 public class TestLocalCache extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(TestLocalCache.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestLocalCache.class);
     private LocalCache cache;
 
     private static final int FM_PORT = 50010;
@@ -200,7 +200,7 @@ public class TestLocalCache extends TestCase {
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 

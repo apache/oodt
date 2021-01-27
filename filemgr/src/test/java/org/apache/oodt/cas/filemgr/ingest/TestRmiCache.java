@@ -36,10 +36,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 //Junit imports
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  */
 public class TestRmiCache extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(TestRmiCache.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestRmiCache.class);
     private RmiCache cache;
 
     private RmiCacheServer cacheServer;
@@ -171,7 +171,7 @@ public class TestRmiCache extends TestCase {
             cacheServer.launchServer(new URL(FM_URL), RMI_PORT);
             cache = new RmiCache(rmiServerURN);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail("Error performing test setup: Message: " + e.getMessage());
         }
     }
@@ -218,7 +218,7 @@ public class TestRmiCache extends TestCase {
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 

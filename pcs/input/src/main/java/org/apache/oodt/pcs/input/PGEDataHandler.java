@@ -16,13 +16,14 @@
 package org.apache.oodt.pcs.input;
 
 //JDK imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -37,8 +38,7 @@ import java.util.logging.Logger;
 public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(PGEDataHandler.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(PGEDataHandler.class);
 
   /* scalars to be set as tags are encountered */
   private Map scalars = new ConcurrentHashMap();

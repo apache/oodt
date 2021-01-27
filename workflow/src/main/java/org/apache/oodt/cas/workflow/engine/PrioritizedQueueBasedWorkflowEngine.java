@@ -35,11 +35,11 @@ import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -54,8 +54,7 @@ import java.util.logging.Logger;
  */
 public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
 
-  private static final Logger LOG = Logger
-      .getLogger(PrioritizedQueueBasedWorkflowEngine.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(PrioritizedQueueBasedWorkflowEngine.class);
   private final Thread queuerThread;
   private final Thread runnerThread;
   private final WorkflowInstanceRepository repo;
@@ -253,7 +252,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
         repo.updateWorkflowInstance(inst);
       }
     } catch (InstanceRepositoryException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new EngineException(e.getMessage());
     }
   }

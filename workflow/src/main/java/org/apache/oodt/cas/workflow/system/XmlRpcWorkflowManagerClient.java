@@ -35,8 +35,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -54,8 +54,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
     private XmlRpcClient client = null;
 
     /* our log stream */
-    private static Logger LOG = Logger
-            .getLogger(XmlRpcWorkflowManagerClient.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(XmlRpcWorkflowManagerClient.class);
 
     /* workflow manager url */
     private URL workflowManagerUrl = null;
@@ -146,7 +145,7 @@ public class XmlRpcWorkflowManagerClient implements WorkflowManagerClient {
             pageHash = (Map) client.execute("workflowmgr.getPrevPage",
                     argList);
         } catch (XmlRpcException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new Exception(e.getMessage());
         } catch (IOException e) {
             throw new Exception(e.getMessage());

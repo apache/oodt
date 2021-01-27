@@ -35,8 +35,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -53,8 +53,7 @@ import java.util.logging.Logger;
 public final class XmlStructFactory {
 
     /* our log stream */
-    public static Logger LOG = Logger.getLogger(XmlStructFactory.class
-            .getName());
+    public static Logger LOG = LoggerFactory.getLogger(XmlStructFactory.class);
 
     private XmlStructFactory() throws InstantiationException {
         throw new InstantiationException(
@@ -76,7 +75,7 @@ public final class XmlStructFactory {
 					: resourceNodeRoot.getAttribute("ip"));
             capacity = Integer.valueOf(resourceNodeRoot.getAttribute("capacity"));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
         return new ResourceNode(id, ip, capacity);

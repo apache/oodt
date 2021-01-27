@@ -18,8 +18,8 @@
 package org.apache.oodt.cas.workflow.examples;
 
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
@@ -50,8 +50,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceExcep
 public class FilterTask implements WorkflowTaskInstance {
 
 	private final static String REMOVE_KEY = "Remove_Key";
-	private static final Logger LOG = Logger.getLogger(FilterTask.class
-			.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(FilterTask.class);
 
 	@Override
 	public void run(Metadata metadata, WorkflowTaskConfiguration config)
@@ -65,14 +64,14 @@ public class FilterTask implements WorkflowTaskInstance {
 				String renameKeyName = config.getProperty(configKeyName);
 				// check to see if key exists
 				if (metadata.containsKey(renameOrigKeyName)) {
-					LOG.log(Level.INFO, "Renaming key: [" + renameOrigKeyName
+					LOG.info("Renaming key: [" + renameOrigKeyName
 							+ "] to [" + renameKeyName + "]: values: "
 							+ metadata.getAllMetadata(renameOrigKeyName));
 					metadata.replaceMetadata(renameKeyName,
 							metadata.getAllMetadata(renameOrigKeyName));
 					metadata.removeMetadata(renameOrigKeyName);
 				} else {
-					LOG.log(Level.WARNING, "Request to rename key: ["
+					LOG.warn("Request to rename key: ["
 							+ renameOrigKeyName + "] to [" + renameKeyName
 							+ "]: orig key does not exist in dynamic metadata!");
 				}
@@ -86,13 +85,13 @@ public class FilterTask implements WorkflowTaskInstance {
 				// handle whitespace
 				keyName = keyName.trim();
 				if (metadata.containsKey(keyName)) {
-					LOG.log(Level.INFO,
+					LOG.info(
 							"Removing key from workflow metadata: [" + keyName
 									+ "]: values: "
 									+ metadata.getAllMetadata(keyName));
 					metadata.removeMetadata(keyName);
 				} else {
-					LOG.log(Level.WARNING, "Request to remove key: [" + keyName
+					LOG.warn("Request to remove key: [" + keyName
 							+ "]: key does not exist in workflow metadata!");  
 				}
 			}

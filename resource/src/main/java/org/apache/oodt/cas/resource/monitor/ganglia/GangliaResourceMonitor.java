@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.NAME;
 
@@ -43,8 +43,7 @@ import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.NAME;
  */
 public class GangliaResourceMonitor implements Monitor {
 
-	private static final Logger LOG = Logger
-			.getLogger(GangliaResourceMonitor.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(GangliaResourceMonitor.class);
 	private LoadCalculator loadCalculator;
 	private Map<String, Integer> loadMap;
 	private Map<String, Map<String, String>> gmetaNodes;
@@ -69,11 +68,7 @@ public class GangliaResourceMonitor implements Monitor {
 		try {
 			this.initGmetaNodes(gmetadHost, gmetadPort);
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage());
-			LOG.log(Level.WARNING,
-					"URL exception initializing gmetad nodes: [" + gmetadHost
-							+ ":" + gmetadPort + "]: Message: "
-							+ e.getMessage());
+			LOG.warn("URL exception initializing gmetad nodes [{}:{}]: {}", gmetadHost, gmetadPort, e.getMessage(), e);
 		}
 
 	}
@@ -141,8 +136,8 @@ public class GangliaResourceMonitor implements Monitor {
 					try {
 						nodes.add(this.nodeFromMap(map));
 					} catch (MalformedURLException e) {
-						LOG.log(Level.SEVERE, e.getMessage());
-						throw new MonitorException(e.getMessage());
+						LOG.error(e.getMessage(), e);
+						throw new MonitorException(e.getMessage(), e);
 					}
 				}
 			}
@@ -156,8 +151,8 @@ public class GangliaResourceMonitor implements Monitor {
 		try {
 			return this.nodeFromMap(this.locateNode(nodeId));
 		} catch (MalformedURLException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
-			throw new MonitorException(e.getMessage());
+			LOG.error(e.getMessage(), e);
+			throw new MonitorException(e.getMessage(), e);
 		}
 	}
 
@@ -177,8 +172,8 @@ public class GangliaResourceMonitor implements Monitor {
 						try {
 							return this.nodeFromMap(aNodeId.getValue());
 						} catch (MalformedURLException e) {
-							LOG.log(Level.SEVERE, e.getMessage());
-							throw new MonitorException(e.getMessage());
+							LOG.error(e.getMessage(), e);
+							throw new MonitorException(e.getMessage(), e);
 						}
 					}
 				}
@@ -217,10 +212,7 @@ public class GangliaResourceMonitor implements Monitor {
 						return nodeStatus.get(nodeId);
 					}
 				} catch (MonitorException e) {
-					LOG.log(Level.WARNING,
-							"MonitorException contacting Ganglia: ["
-									+ adapter.getUrlString() + "]");
-					LOG.log(Level.SEVERE, e.getMessage());
+					LOG.warn("MonitorException contacting Ganglia [{}]: {}", adapter.getUrlString(), e.getMessage(), e);
 				}
 			}
 
@@ -262,9 +254,7 @@ public class GangliaResourceMonitor implements Monitor {
 	private void removeGmetadNode(String host) {
 		if (this.gmetaNodes.containsKey(host)
 				&& this.gmetaAdapters.containsKey(host)) {
-			LOG.log(Level.FINE,
-					"Removing gmetad node: ["
-							+ gmetaAdapters.get(host).getUrlString() + "]");
+			LOG.info("Removing gmetad node [{}]", gmetaAdapters.get(host).getUrlString());
 			this.gmetaAdapters.remove(host);
 			this.gmetaNodes.remove(host);
 		}

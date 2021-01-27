@@ -35,8 +35,8 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //java.util.concurrent imports
 import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
@@ -64,8 +64,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
   private ConcurrentHashMap workerMap = null;
 
   /* our log stream */
-  private static final Logger LOG = Logger
-      .getLogger(ThreadPoolWorkflowEngine.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(ThreadPoolWorkflowEngine.class);
 
   /* our instance repository */
   private WorkflowInstanceRepository instRep = null;
@@ -135,7 +134,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
         .get(workflowInstId);
     if (worker == null) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "WorkflowEngine: Attempt to pause workflow instance id: "
               + workflowInstId
               + ", however, this engine is not tracking its execution");
@@ -159,7 +158,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
         .get(workflowInstId);
     if (worker == null) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "WorkflowEngine: Attempt to resume workflow instance id: "
               + workflowInstId + ", however, this engine is "
               + "not tracking its execution");
@@ -169,7 +168,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     // also check to make sure that the worker is currently paused
     // only can resume WorkflowInstances that are paused, right?
     if (!worker.isPaused()) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "WorkflowEngine: Attempt to resume a workflow that "
               + "isn't paused currently: instance id: " + workflowInstId);
       return;
@@ -243,7 +242,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
         .get(workflowInstId);
     if (worker == null) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "WorkflowEngine: Attempt to update metadata context "
               + "for workflow instance id: " + workflowInstId
               + ", however, this engine is " + "not tracking its execution");
@@ -254,11 +253,10 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     try {
       persistWorkflowInstance(worker.getWorkflowInstance());
     } catch (Exception e) {
-      LOG.log(
-          Level.WARNING,
+      LOG.warn(
           "Exception persisting workflow instance: ["
               + worker.getWorkflowInstance().getId() + "]: Message: "
-              + e.getMessage());
+              + e.getMessage(), e);
       return false;
     }
 
@@ -288,7 +286,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
         .get(workflowInstId);
     if (worker == null) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
           "WorkflowEngine: Attempt to stop workflow instance id: "
               + workflowInstId + ", however, this engine is "
               + "not tracking its execution");
@@ -325,15 +323,12 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
       // try and get the metadata
       // from the workflow instance repository (as it was persisted)
       try {
+        LOG.info("WorkflowEngine: Attempting to get metadata for workflow instance [id={}]", workflowInstId);
         WorkflowInstance inst = instRep.getWorkflowInstanceById(workflowInstId);
         return inst.getSharedContext();
       } catch (InstanceRepositoryException e) {
-        LOG.log(Level.FINEST, "WorkflowEngine: Attempt to get metadata "
-            + "for workflow instance id: " + workflowInstId
-            + ", however, this engine is "
-            + "not tracking its execution and the id: [" + workflowInstId
-            + "] " + "was never persisted to " + "the instance repository");
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error("WorkflowEngine: This engine is not tracking the workflow instance [id={}] " +
+                "as was never persisted to the instance repository: {}", workflowInstId, e.getMessage(), e);
         return new Metadata();
       }
     }
@@ -414,8 +409,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     // should never be in this state, so return 0
     if (workflowTaskStartDateTime.after(currentDateOrStopTime)) {
-      LOG.log(
-          Level.WARNING,
+      LOG.warn(
           "Start date time: ["
               + DateConvert.isoFormat(workflowTaskStartDateTime)
               + " of workflow inst [" + inst.getId() + "] is AFTER "
@@ -445,7 +439,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         instRep.updateWorkflowInstance(wInst);
       }
     } catch (InstanceRepositoryException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new EngineException(e.getMessage());
     }
 
@@ -462,8 +456,8 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
   private static Date safeDateConvert(String isoTimeStr) {
     try {
       return DateConvert.isoParse(isoTimeStr);
-    } catch (Exception ignore) {
-      LOG.log(Level.SEVERE, ignore.getMessage());
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
       return null;
     }
   }

@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-import java.util.logging.Level;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.AbstractMetExtractor;
@@ -111,14 +110,14 @@ public abstract class CmdLineMetExtractor extends AbstractMetExtractor {
       // XMLUtils doesn't overwrite, and throws an Exception
       File metFile = new File(metFilePath);
       if (!metFile.delete()) {
-          LOG.log(Level.WARNING, "Attempt to overwrite met file: ["
+          LOG.warn("Attempt to overwrite met file: ["
                   + metFilePath + "] unsuccessful!");
       }
 
       try {
           return new FileOutputStream(metFile);
       } catch (FileNotFoundException e) {
-          LOG.log(Level.WARNING, "Could not create met file: [" + metFile
+          LOG.warn("Could not create met file: [" + metFile
                   + "]: Reason " + e.getMessage(), e);
           return null;
       }

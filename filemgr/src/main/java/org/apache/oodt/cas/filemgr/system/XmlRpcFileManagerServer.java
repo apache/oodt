@@ -35,6 +35,9 @@ import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.xmlrpc.WebServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
@@ -47,6 +50,9 @@ import java.util.Vector;
  */
 @Deprecated
 public class XmlRpcFileManagerServer implements FileManagerServer {
+
+    /* our log stream */
+    private static Logger LOG = LoggerFactory.getLogger(XmlRpcFileManagerServer.class);
 
     /* the port to run the XML RPC web server on, default is 1999 */
     protected int port = 1999;
@@ -118,7 +124,7 @@ public class XmlRpcFileManagerServer implements FileManagerServer {
 
             fileManager.loadConfiguration();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn(e.getMessage(), e);
             success = false;
         }
         return success;

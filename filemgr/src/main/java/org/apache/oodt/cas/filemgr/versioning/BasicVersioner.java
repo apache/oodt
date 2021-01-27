@@ -22,6 +22,8 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -29,8 +31,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 public class BasicVersioner implements Versioner {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(BasicVersioner.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BasicVersioner.class);
 
     /**
      * 
@@ -91,29 +91,18 @@ public class BasicVersioner implements Versioner {
                 }
                 
                 dataStoreRef+= URLEncoder.encode(productName, "UTF-8") + "/";
-                LOG.log(Level.INFO, "BasicVersioner: generated DataStore ref: "
-                        + dataStoreRef + " from origRef: "
-                        + r.getOrigReference());
+                LOG.info("BasicVersioner: generated DataStore ref: {} from origRef: {}", dataStoreRef, r.getOrigReference());
                 r.setDataStoreReference(dataStoreRef);
                 VersioningUtils.createBasicDataStoreRefsHierarchical(product
                         .getProductReferences());
             } catch (URISyntaxException e) {
-                LOG.log(Level.WARNING,
-                        "BasicVersioner: URISyntaxException while generating initial "
-                                + "data store ref for origRef: "
-                                + r.getOrigReference());
+                LOG.warn("BasicVersioner: URISyntaxException while generating initial DataStore ref for origRef: {}: {}", r.getOrigReference(), e.getMessage(), e);
                 throw new VersioningException(e);
             } catch (MalformedURLException e) {
-                LOG.log(Level.WARNING,
-                        "BasicVersioner: MalformedURLException while generating initial "
-                                + "data store ref for origRef: "
-                                + r.getOrigReference());
+                LOG.warn("BasicVersioner: MalformedURLException while generating initial DataStore ref for origRef: {}: {}", r.getOrigReference(), e.getMessage(), e);
                 throw new VersioningException(e);
             } catch (UnsupportedEncodingException e) {
-                LOG.log(Level.WARNING,
-                        "BasicVersioner: UnsupportedEncodingException while generating "
-                                + "initial data store ref for origRef: "
-                                + r.getOrigReference());
+                LOG.warn("BasicVersioner: UnsupportedEncodingException while generating initial DataStore ref for origRef: {}: {}", r.getOrigReference(), e.getMessage(), e);
                 throw new VersioningException(e);
             }
 

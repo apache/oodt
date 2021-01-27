@@ -27,13 +27,13 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
 import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,7 +76,7 @@ import java.util.regex.Pattern;
  */
 public class SqlParser {
 
-    private static Logger LOG = Logger.getLogger(SqlParser.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(SqlParser.class);
     private SqlParser() {
     }
     
@@ -101,8 +101,9 @@ public class SqlParser {
             
             return complexQuery;
         }catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new QueryFormulationException("Failed to parse SQL method : " + e.getMessage());
+            String msg = "Failed to parse SQL method : " + e.getMessage();
+            LOG.error(msg, e);
+            throw new QueryFormulationException(msg);
         }
     }
     

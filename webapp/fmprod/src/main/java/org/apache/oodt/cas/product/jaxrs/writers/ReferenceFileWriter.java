@@ -25,8 +25,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -52,8 +52,7 @@ import org.apache.tika.mime.MimeType;
 @Produces("application/octet-stream")
 public class ReferenceFileWriter implements MessageBodyWriter<ReferenceResource>
 {
-  private static final Logger LOGGER = Logger.getLogger(ReferenceFileWriter
-    .class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceFileWriter.class);
 
 
 
@@ -100,9 +99,8 @@ public class ReferenceFileWriter implements MessageBodyWriter<ReferenceResource>
       File file = new File(new URI(dataStoreReference));
       if (!file.exists() || file.isDirectory())
       {
-        String message =
-          "Could not locate the reference source file(s) in the data store.";
-        LOGGER.log(Level.FINE, message);
+        String message = "Could not locate the reference source file(s) in the data store.";
+        LOGGER.info(message);
         throw new BadRequestException(message);
       }
 
@@ -115,10 +113,9 @@ public class ReferenceFileWriter implements MessageBodyWriter<ReferenceResource>
     }
     catch (URISyntaxException e)
     {
-      String message =
-        "Problem with the data store URI for the reference source file(s).";
-      LOGGER.log(Level.FINE, message, e);
-      throw new NotFoundException(message + " " + e.getMessage());
+      String message = String.format("Problem with the data store URI for the reference source file(s): %s", e.getMessage());
+      LOGGER.info(message, e);
+      throw new NotFoundException(message);
     }
   }
 }

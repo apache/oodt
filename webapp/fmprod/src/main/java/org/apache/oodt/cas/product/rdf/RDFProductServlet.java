@@ -43,8 +43,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -82,7 +82,7 @@ public class RDFProductServlet extends HttpServlet {
   private FileManagerClient fClient = null;
 
   /* our log stream */
-  private Logger LOG = Logger.getLogger(RDFProductServlet.class.getName());
+  private Logger LOG = LoggerFactory.getLogger(RDFProductServlet.class);
 
   /* our RDF configuration */
   private RDFConfig rdfConf;
@@ -104,8 +104,8 @@ public class RDFProductServlet extends HttpServlet {
     try {
       this.rdfConf = RDFUtils.initRDF(config);
     } catch (FileNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      throw new ServletException(e.getMessage());
+      LOG.error(e.getMessage(), e);
+      throw new ServletException(e.getMessage(), e);
     }
 
     String fileManagerUrl;
@@ -115,7 +115,7 @@ public class RDFProductServlet extends HttpServlet {
     } catch (Exception e) {
       throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
     }
-    
+
     if (fileManagerUrl == null) {
       // try the default port
       fileManagerUrl = "http://localhost:9000";
@@ -125,14 +125,8 @@ public class RDFProductServlet extends HttpServlet {
 
     try {
       fClient = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
-    } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE,
-          "Unable to initialize file manager url in RDF Servlet: [url="
-              + fileManagerUrl + "], Message: " + e.getMessage());
-    } catch (ConnectionException e) {
-      LOG.log(Level.SEVERE,
-          "Unable to initialize file manager url in RDF Servlet: [url="
-              + fileManagerUrl + "], Message: " + e.getMessage());
+    } catch (MalformedURLException | ConnectionException e) {
+      LOG.error("Unable to initialize file manager url in RDF Servlet [url={}]: {}", fileManagerUrl, e.getMessage(), e);
     }
   }
 
@@ -164,9 +158,7 @@ public class RDFProductServlet extends HttpServlet {
         try {
           type = fClient.getProductTypeById(productTypeId);
         } catch (RepositoryManagerException e) {
-          LOG.log(Level.SEVERE,
-              "Unable to obtain product type from product type id: ["
-                  + productTypeId + "]: Message: " + e.getMessage());
+          LOG.error("Unable to obtain product type from product type [id={}]: {}", productTypeId, e.getMessage(), e);
           return;
         }
 
@@ -174,11 +166,7 @@ public class RDFProductServlet extends HttpServlet {
       }
 
     } catch (CatalogException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG
-          .log(Level.WARNING,
-              "Exception getting products from Catalog: Message: "
-                  + e.getMessage());
+      LOG.warn("Exception getting products from catalog: {}", e.getMessage(), e);
       return;
     }
 
@@ -218,11 +206,7 @@ public class RDFProductServlet extends HttpServlet {
           try {
             productType = fClient.getProductTypeById(productTypeIdStr);
           } catch (RepositoryManagerException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.SEVERE,
-                "Unable to obtain product type from product type id: ["
-                + ((Product) products.get(0)).getProductType()
-                                             .getProductTypeId() + "]: Message: " + e.getMessage());
+            LOG.error("Unable to obtain product type from product type [id={}]: {}", productTypeIdStr, e.getMessage(), e);
             return;
           }
         }
@@ -274,11 +258,7 @@ public class RDFProductServlet extends HttpServlet {
       resp.setContentType("text/xml");
       transformer.transform(source, result);
 
-    } catch (ParserConfigurationException e) {
-      throw new ServletException(e);
-    } catch (TransformerException e) {
-      throw new ServletException(e);
-    } catch (IOException e) {
+    } catch (ParserConfigurationException | IOException | TransformerException e) {
       throw new ServletException(e);
     }
   }
@@ -321,9 +301,7 @@ public class RDFProductServlet extends HttpServlet {
     try {
       met = fClient.getMetadata(p);
     } catch (CatalogException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Error retrieving metadata for product: ["
-          + p.getProductId() + "]: Message: " + e.getMessage());
+      LOG.warn("Error retrieving metadata for product [{}]: {}", p.getProductId(), e.getMessage(), e);
     }
 
     return met;
@@ -335,9 +313,7 @@ public class RDFProductServlet extends HttpServlet {
     try {
       types = fClient.getProductTypes();
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Error retrieving product types: Message: "
-          + e.getMessage());
+      LOG.warn("Error retrieving product types: {}", e.getMessage(), e);
     }
 
     return types;

@@ -22,8 +22,8 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author bfoster
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  */
 public class XStreamJobRepositoryFactory implements JobRepositoryFactory {
 
-	private static final Logger LOG = Logger.getLogger(XStreamJobRepositoryFactory.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(XStreamJobRepositoryFactory.class);
 	
 	public XStreamJobRepository createRepository() {
 		try {
@@ -50,7 +50,7 @@ public class XStreamJobRepositoryFactory implements JobRepositoryFactory {
 			int maxHistory = Integer.parseInt(System.getProperty("org.apache.oodt.cas.resource.jobrepo.xstream.max.history", "-1"));
 			return new XStreamJobRepository(working, maxHistory);
 		}catch (Exception e) {
-			LOG.log(Level.SEVERE, "Failed to loaded XStreamJobRepository : " + e.getMessage(), e);
+			LOG.error("Failed to loaded XStreamJobRepository: {}", e.getMessage(), e);
 			return null;
 		}
 	}

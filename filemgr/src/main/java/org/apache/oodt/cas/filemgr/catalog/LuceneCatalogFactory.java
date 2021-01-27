@@ -21,7 +21,6 @@ package org.apache.oodt.cas.filemgr.catalog;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.lucene.index.DirectoryReader;
@@ -35,6 +34,8 @@ import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 //Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -75,7 +76,7 @@ public class LuceneCatalogFactory implements CatalogFactory {
 	private boolean lenientFields = false;
 	
 	/* our log stream */
-    private static final Logger LOG = Logger.getLogger(LuceneCatalogFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LuceneCatalogFactory.class);
     
 	/**
 	 * 
@@ -137,13 +138,13 @@ public class LuceneCatalogFactory implements CatalogFactory {
 				}
 
 	        } catch (Exception e) {
-	            LOG.severe("Unable to create index: " + e.getMessage());
+	            LOG.error("Unable to create index: {}", e.getMessage(), e);
 	        } finally {
 	            if (writer != null) {
 	                try {
 	                    writer.close();
 	                } catch (Exception e) {
-	                    LOG.severe("Unable to close index: " + e.getMessage());
+	                    LOG.error("Unable to close index: {}", e.getMessage(), e);
 	                }
 	            }
 	        }

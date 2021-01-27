@@ -26,12 +26,12 @@ import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_HIERARCHICAL;
 import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_STREAM;
@@ -50,7 +50,7 @@ import static org.apache.oodt.cas.filemgr.versioning.VersioningUtils.getURIsFrom
  * @author bfoster (Brian Foster)
  */
 public class IngestProductCliAction extends FileManagerCliAction {
-   private static Logger LOG = Logger.getLogger(IngestProductCliAction.class.getName());
+   private static Logger LOG = LoggerFactory.getLogger(IngestProductCliAction.class);
    private String productName;
    private String productStructure;
    private String productTypeName;
@@ -116,9 +116,9 @@ public class IngestProductCliAction extends FileManagerCliAction {
                      new SerializableMetadata(getUri(metadataFile).toURL()
                            .openStream()), dataTransferer != null));
       } catch (Exception e) {
-         LOG.log(Level.SEVERE, e.getMessage());
-         throw new CmdLineActionException("Failed to ingest product '"
-               + productName + "' : " + e.getMessage(), e);
+         String msg = String.format("Failed to ingest product: [%s]: %s", productName, e.getMessage());
+         LOG.error(msg, e);
+         throw new CmdLineActionException(msg, e);
       }
    }
 

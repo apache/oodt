@@ -34,8 +34,8 @@ import org.junit.Test;
 import java.io.File;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
@@ -51,7 +51,7 @@ import static org.junit.Assert.*;
  */
 public class TestWorkflowRepository  {
 
-    private static Logger LOG = Logger.getLogger(TestWorkflowRepository.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestWorkflowRepository.class);
     private XMLWorkflowRepository workflowRepository = null;
 
     private static List workflowDirUris = new Vector();
@@ -92,7 +92,7 @@ public class TestWorkflowRepository  {
         try {
             w = workflowRepository.getWorkflowByName("backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -106,7 +106,7 @@ public class TestWorkflowRepository  {
             w = workflowRepository
                     .getWorkflowById("urn:oodt:backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -119,7 +119,7 @@ public class TestWorkflowRepository  {
         try {
             workflows = workflowRepository.getWorkflows();
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -133,7 +133,7 @@ public class TestWorkflowRepository  {
         try {
             workflows = workflowRepository.getWorkflowsForEvent("test");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -143,7 +143,7 @@ public class TestWorkflowRepository  {
         try {
             workflows = workflowRepository.getWorkflowsForEvent("backwards");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -154,7 +154,7 @@ public class TestWorkflowRepository  {
         try {
             workflows = workflowRepository.getWorkflowsForEvent("externalScript");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -169,7 +169,7 @@ public class TestWorkflowRepository  {
             tasks = workflowRepository
                     .getTasksByWorkflowId("urn:oodt:backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -183,7 +183,7 @@ public class TestWorkflowRepository  {
             tasks = workflowRepository
                     .getTasksByWorkflowName("backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -197,7 +197,7 @@ public class TestWorkflowRepository  {
             conditions = workflowRepository
                     .getConditionsByTaskId("urn:oodt:GoodbyeWorld");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -211,7 +211,7 @@ public class TestWorkflowRepository  {
             conditions = workflowRepository
                     .getConditionsByTaskName("Goodbye World");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -227,7 +227,7 @@ public class TestWorkflowRepository  {
         cond = workflowRepository.getWorkflowConditionById("urn:oodt:TimeoutCondition");
       }
       catch(Exception e){
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
         fail(e.getMessage());
       }
       
@@ -243,7 +243,7 @@ public class TestWorkflowRepository  {
         cond = workflowRepository.getWorkflowConditionById("urn:oodt:OptionalCondition");
       }
       catch(Exception e){
-        LOG.log(Level.SEVERE, e.getMessage());
+        LOG.error(e.getMessage(), e);
         fail(e.getMessage());
       }
       
@@ -257,7 +257,7 @@ public class TestWorkflowRepository  {
             config = workflowRepository
                     .getConfigurationByTaskId("urn:oodt:GoodbyeWorld");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -271,7 +271,7 @@ public class TestWorkflowRepository  {
             config = workflowRepository
                     .getConfigurationByTaskId("urn:oodt:PropReplaceTask");
         } catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 

@@ -37,10 +37,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 // Jnit imports
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * </p>.
  */
 public class TestCachedIngester extends TestCase {
-    private static Logger LOG = Logger.getLogger(TestCachedIngester.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestCachedIngester.class);
     private static final int FM_PORT = 50010;
 
     private FileManagerServer fm;
@@ -288,7 +288,7 @@ public class TestCachedIngester extends TestCase {
             fm = RpcCommunicationFactory.createServer(FM_PORT);
             fm.startUp();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
     }

@@ -16,11 +16,11 @@
  */
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
-import java.util.logging.Logger;
-
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.catalog.CatalogFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory class that creates a {@link SolrCatalog} instance
@@ -35,7 +35,7 @@ public class SolrCatalogFactory implements CatalogFactory {
 	private ProductIdGenerator productIdGenerator;
 	private ProductSerializer productSerializer;
 	
-	private static final Logger LOG = Logger.getLogger(SolrCatalogFactory.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(SolrCatalogFactory.class);
 	
 	public SolrCatalogFactory() throws IllegalArgumentException {
 		
@@ -62,7 +62,7 @@ public class SolrCatalogFactory implements CatalogFactory {
 			try {
 				productSerializer = (ProductSerializer)Class.forName( PathUtils.replaceEnvVariables(productSerializerClass) ).newInstance();
 			} catch(Exception e) {
-				LOG.severe(e.getMessage());
+				logger.error(e.getMessage(), e);
 				System.exit(-1);
 			}
 		} else {
@@ -75,7 +75,7 @@ public class SolrCatalogFactory implements CatalogFactory {
 			try {
 				productIdGenerator = (ProductIdGenerator)Class.forName( PathUtils.replaceEnvVariables(productIdGeneratorClass) ).newInstance();
 			} catch(Exception e) {
-				LOG.severe(e.getMessage());
+				logger.error(e.getMessage(), e);
 				System.exit(-1);
 			}
 		} else {
@@ -86,7 +86,7 @@ public class SolrCatalogFactory implements CatalogFactory {
 
 	@Override
 	public Catalog createCatalog() {
-		LOG.info("Creating Solr Catalog for URL="+this.solrUrl);
+		logger.info("Creating Solr Catalog for URL={}", this.solrUrl);
 		return new SolrCatalog(solrUrl, productIdGenerator, productSerializer);
 	}
 

@@ -18,7 +18,6 @@ package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
 
 //OODT imports
 import org.apache.commons.lang.Validate;
@@ -65,11 +64,9 @@ public class MoveFile extends CrawlerAction {
          if (createToDir) {
             toFile.getParentFile().mkdirs();
          }
-         LOG.log(Level.INFO, "Moving file " + srcFile.getAbsolutePath()
-               + " to " + toFile.getAbsolutePath());
+         LOG.info("Moving file {} to {}", srcFile.getAbsolutePath(), toFile.getAbsolutePath());
          if(!srcFile.renameTo(toFile)) {//If the file failed to copy
-        	 LOG.log(Level.INFO, "Moving failed, possibly because ingest dir is nfs mounted. Retrying to move " + srcFile.getAbsolutePath()
-                     + " to " + toFile.getAbsolutePath());
+        	 LOG.info("Moving failed, possibly because ingest dir is nfs mounted. Retrying to move {} to {}", srcFile.getAbsolutePath(), toFile.getAbsolutePath());
         	 FileUtils.copyFileToDirectory(srcFile, toFile.getParentFile());
         	 FileUtils.forceDelete(srcFile); //Need to delete the old file
         	 return true; //File copied on second attempt
@@ -78,8 +75,8 @@ public class MoveFile extends CrawlerAction {
             return true; //File copied
          }
       } catch (Exception e) {
-         throw new CrawlerActionException("Failed to move file from " + mvFile
-               + " to " + this.toDir + " : " + e.getMessage(), e);
+         String message = String.format("Failed to move file from {} to {} : {}", mvFile, this.toDir, e.getMessage());
+         throw new CrawlerActionException(message, e);
       }
    }
 

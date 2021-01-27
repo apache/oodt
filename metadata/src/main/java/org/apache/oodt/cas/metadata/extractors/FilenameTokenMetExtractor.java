@@ -21,13 +21,14 @@ package org.apache.oodt.cas.metadata.extractors;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.commons.date.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -44,8 +45,7 @@ import java.util.logging.Logger;
 public class FilenameTokenMetExtractor extends CmdLineMetExtractor implements
     FilenameTokenExtractorMetKeys {
 
-  private static final Logger LOG = Logger
-      .getLogger(FilenameTokenMetExtractor.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(FilenameTokenMetExtractor.class);
 
   /**
    * Default constructor.

@@ -95,14 +95,14 @@ public abstract class FileBasedAction extends CrawlerAction {
       File actionFile = new File(selectedFileString);
 
       if (failMissingFile && !actionFile.exists()) {
-         LOG.severe("File does not exist: " + actionFile.getAbsolutePath());
+         LOG.error("File does not exist: " + actionFile.getAbsolutePath());
          return false;
       }
 
       if (actionFile.exists()) {
          return this.performFileAction(actionFile, metadata);
       } else {
-         LOG.fine("File does not exist: " + actionFile.getAbsolutePath());
+         LOG.info("File does not exist: " + actionFile.getAbsolutePath());
       }
 
       return true;

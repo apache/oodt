@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.oodt.cas.resource.jobrepo.JobRepository;
 import org.apache.oodt.cas.resource.structs.JobSpec;
@@ -45,8 +45,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
   private Map<String, Vector<String>> queues;
   private int maxQueueSize;
   private JobRepository repo;
-  private static final Logger LOG = Logger
-      .getLogger(FifoMappedJobQueue.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(FifoMappedJobQueue.class);
 
   public FifoMappedJobQueue(int maxSize, JobRepository repo) {
     this.maxQueueSize = maxSize;
@@ -96,9 +95,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
           + " in the job repository: " + e.getMessage());
     }
 
-    LOG.log(Level.INFO,
-        "Job [id=" + spec.getJob().getId() + ",name=" + spec.getJob().getName()
-            + "] was added to the job queue in queue " + queueName);
+    LOG.info("Job [id={},name={}] was added to the job queue in queue {}", spec.getJob().getId(), spec.getJob().getName(), queueName);
     return spec.getJob().getId();
 
   }
@@ -147,7 +144,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
         try {
           allJobs.add(this.repo.getJobById(jobId));
         } catch (JobRepositoryException e) {
-          LOG.log(Level.WARNING, "Failed to fetch JobSpec from repo: " + jobId);
+          LOG.warn("Failed to fetch Job [{}] Spec from repo: {}", jobId, e.getMessage(), e);
         }
       }
     }
@@ -234,8 +231,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
           try {
             spec = this.repo.getJobById(jobId);
           } catch (JobRepositoryException e) {
-            LOG.log(Level.WARNING,
-                "Failed to fetch JobSpec from repo: " + jobId);
+            LOG.warn("Failed to fetch Job [{}] Spec from repo: {}", jobId, e.getMessage(), e);
           }
           if (spec.getJob().getReady()) {
 
@@ -247,10 +243,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
             try {
               this.repo.updateJob(spec);
             } catch (JobRepositoryException e) {
-              LOG.log(Level.WARNING,
-                  "The status of job " + spec.getJob().getId()
-                      + "was not properly set "
-                      + "after being dequeued. Message: " + e.getMessage());
+              LOG.warn("The status of job {} was not properly set after being dequeued: {}", spec.getJob().getId(), e.getMessage(), e);
             }
 
             return spec;
@@ -297,10 +290,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
         try {
           this.repo.updateJob(spec);
         } catch (JobRepositoryException e) {
-          LOG.log(Level.WARNING,
-              "The status of job " + spec.getJob().getId()
-                  + "was not properly set after being" + " dequeued. Message: "
-                  + e.getMessage());
+          LOG.warn("The status of job {} was not properly set after being dequeued: {}", spec.getJob().getId(), e.getMessage(), e);
         }
 
         return spec;
@@ -376,8 +366,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
     List<String> queue = this.queues.get(queueName);
     int index = getIndexInQueue(id, queue);
     if (index == -1) {
-      LOG.log(Level.WARNING, "No job with ID " + id + "could be removed "
-          + "since it was not found in the queue.");
+      LOG.warn("No job with ID {} could be removed since it was not found in the queue", id);
     } else {
       queue.remove(index);
     }
@@ -410,8 +399,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
     // Warn the user if they are losing jobs
     int queueSize = this.queues.get(queueName).size();
     if (queueSize > 0) {
-      LOG.log(Level.WARNING, "The queue being removed (" + queueName
-          + ") contains " + queueSize + " jobs.");
+      LOG.warn("The queue being removed ({}) contains {} jobs", queueName, queueSize);
     }
 
     // Delete the queue
@@ -435,8 +423,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
     List<String> queue = this.queues.get(queueName);
     int index = getIndexInQueue(id, queue);
     if (index == -1) {
-      LOG.log(Level.WARNING, "No job with ID " + id + "could be promoted "
-          + "since it was not found in the queue.");
+      LOG.warn("No job with ID {} could be promoted since it was not found in the queue", id);
     } else {
       queue.add(0, queue.remove(index));
     }
@@ -464,7 +451,7 @@ public class FifoMappedJobQueue implements MappedJobQueue {
         try {
           spec = this.repo.getJobById(jobId);
         } catch (JobRepositoryException e) {
-          LOG.log(Level.WARNING, "Failed to fetch JobSpec from repo: " + jobId);
+          LOG.warn("Failed to fetch Job [{}] Spec from repo: {}", jobId, e.getMessage());
         }
         if (spec.getIn().getMetadata().get(key).equals(val)) {
           specsToPromote.add(spec);

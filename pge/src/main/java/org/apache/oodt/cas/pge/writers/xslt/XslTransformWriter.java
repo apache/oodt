@@ -23,11 +23,11 @@ package org.apache.oodt.cas.pge.writers.xslt;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -51,7 +51,7 @@ import javax.xml.transform.stream.StreamSource;
  * </p>.
  */
 public class XslTransformWriter implements SciPgeConfigFileWriter {
-  private static Logger LOG = Logger.getLogger(XslTransformWriter.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(XslTransformWriter.class);
     public File createConfigFile(String sciPgeConfigFilePath,
             Metadata inputMetadata, Object... customArgs) throws IOException {
         try {
@@ -75,7 +75,7 @@ public class XslTransformWriter implements SciPgeConfigFileWriter {
 
             return sciPgeConfigFile;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new IOException("Failed to create science PGE config file '"
                     + sciPgeConfigFilePath + "' : " + e.getMessage());
         }

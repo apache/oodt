@@ -27,8 +27,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * 
  */
 public class StdOFSNGetHandler implements OFSNGetHandler {
-  private static Logger LOG = Logger.getLogger(StdOFSNGetHandler.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(StdOFSNGetHandler.class);
   /*
    * (non-Javadoc)
    * 
@@ -75,9 +75,9 @@ public class StdOFSNGetHandler implements OFSNGetHandler {
             + "] bytes from product: num actually read: [" + numRead + "]");
       }
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      throw new ProductException("IO exception retrieving chunk of product: ["
-          + filepath + "]: Message: " + e.getMessage());
+      String msg = String.format("IO exception retrieving chunk of product: [%s]: Message: %s", filepath, e.getMessage());
+      LOG.error(msg, e);
+      throw new ProductException(msg, e);
     } finally {
       if (in != null) {
         try {

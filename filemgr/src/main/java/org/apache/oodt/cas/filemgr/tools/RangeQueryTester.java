@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //Lucene imports
 import org.apache.lucene.document.Document;
@@ -31,6 +29,8 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -59,8 +59,7 @@ public final class RangeQueryTester {
     private String indexPath = null;
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(RangeQueryTester.class
-            .getName());
+    private static final Logger logger = LoggerFactory.getLogger(RangeQueryTester.class);
 
     DirectoryReader reader;
     /**
@@ -137,17 +136,13 @@ public final class RangeQueryTester {
                     products.add(productDoc.get("reference_data_store"));
                 }
             } else {
-                LOG.log(Level.WARNING, "Query: [" + query1
-                        + "] for Product Type: [" + productTypeId
-                        + "] returned no results");
+                logger.warn("Query: [{}] for Product Type: [{}] returned no results", query1, productTypeId);
             }
 
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException when opening index directory: ["
-                            + this.indexPath + "] for search: Message: "
-                            + e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            String msg = String.format("IOException when opening index directory: [%s] for search: %s", this.indexPath, e.getMessage());
+            logger.warn(msg, e);
+            throw new RuntimeException(msg, e);
         } finally {
             if (searcher != null) {
                 try {

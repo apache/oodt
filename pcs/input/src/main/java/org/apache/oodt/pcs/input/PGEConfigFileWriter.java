@@ -16,14 +16,14 @@
 package org.apache.oodt.pcs.input;
 
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,8 +47,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
   private PGEConfigurationFile configFile = null;
 
   /* our log stream */
-  private static Logger LOG = Logger.getLogger(PGEConfigFileWriter.class
-      .getName());
+  private static Logger LOG = LoggerFactory.getLogger(PGEConfigFileWriter.class);
 
   /*
    * whether or not the values in the XML file should be URLEncoded: if true,
@@ -170,15 +169,9 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
       return document;
 
     } catch (ParserConfigurationException pce) {
-      LOG.log(Level.WARNING, "Error generating pge configuration file!: "
-          + pce.getMessage());
-      throw new Exception("Error generating pge configuration file!: "
-          + pce.getMessage());
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      throw e;
+      LOG.warn("Error generating pge configuration file!: {}", pce.getMessage(), pce);
+      throw pce;
     }
-
   }
 
   private Element getGroupElement(PGEGroup group, Document document)
@@ -203,10 +196,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
             scalarElem.appendChild(document.createTextNode(URLEncoder.encode(
                 scalar.getValue(), "UTF-8")));
           } catch (UnsupportedEncodingException e) {
-            LOG.log(Level.WARNING,
-                "Error creating text node for scalar element: "
-                + scalar.getName() + " in pge group: " + group.getName()
-                + " Message: " + e.getMessage());
+            LOG.warn("Error creating text node for scalar element: {} in pge group: {}: {}", scalar.getName(), group.getName(), e.getMessage(), e);
           }
 
         } else {
@@ -239,10 +229,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
               elementElem.appendChild(document.createTextNode(URLEncoder
                   .encode(element, "UTF-8")));
             } catch (UnsupportedEncodingException e) {
-              LOG.log(Level.WARNING,
-                  "Error creating text node for vector element: "
-                  + vector.getName() + " in pge group: " + group.getName()
-                  + " Message: " + e.getMessage());
+              LOG.warn("Error creating text node for vector element: {} in pge group: {}: {}", vector.getName(), group.getName(), e.getMessage(), e);
             }
           } else {
             elementElem.appendChild(document.createTextNode(element));
@@ -283,11 +270,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
                 colElem.appendChild(document.createTextNode(URLEncoder.encode(
                     colValue, "UTF-8")));
               } catch (UnsupportedEncodingException e) {
-                LOG.log(Level.WARNING,
-                    "Error creating node for matrix element: "
-                    + matrix.getName() + " (" + rowNum + "," + colNum
-                    + ") in pge group: " + group.getName() + " Message: "
-                    + e.getMessage());
+                LOG.warn("Error creating text node for matrix element: {} ({},{}) in pge group: {}: {}", matrix.getName(), rowNum, colNum, group.getName(), e.getMessage(), e);
               }
 
             } else {

@@ -26,8 +26,8 @@ import org.apache.oodt.commons.pagination.PaginationUtils;
 
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -45,8 +45,7 @@ public abstract class AbstractPaginatibleInstanceRepository implements
     protected int pageSize = -1;
 
     /* our log stream */
-    private static final Logger LOG = Logger
-            .getLogger(AbstractPaginatibleInstanceRepository.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPaginatibleInstanceRepository.class);
 
     /*
      * (non-Javadoc)
@@ -59,9 +58,7 @@ public abstract class AbstractPaginatibleInstanceRepository implements
         try {
             firstPage = getPagedWorkflows(1);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Exception getting first page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting first page: {}", e.getMessage(), e);
         }
         return firstPage;
     }
@@ -78,8 +75,7 @@ public abstract class AbstractPaginatibleInstanceRepository implements
         try {
             lastPage = getPagedWorkflows(firstPage.getTotalPages());
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Exception getting last page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting last page: {}", e.getMessage(), e);
         }
 
         return lastPage;
@@ -104,8 +100,7 @@ public abstract class AbstractPaginatibleInstanceRepository implements
         try {
             nextPage = getPagedWorkflows(currentPage.getPageNum() + 1);
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Exception getting next page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting next page: {}", e.getMessage(), e);
         }
 
         return nextPage;
@@ -130,8 +125,7 @@ public abstract class AbstractPaginatibleInstanceRepository implements
         try {
             nextPage = getPagedWorkflows(currentPage.getPageNum() - 1);
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Exception getting next page: Message: "
-                    + e.getMessage());
+            LOG.warn("Exception getting next page: {}", e.getMessage(), e);
         }
 
         return nextPage;

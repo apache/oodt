@@ -24,10 +24,10 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 //Junit imports
@@ -42,8 +42,7 @@ import junit.framework.TestCase;
  */
 public class MetadataKeyReplacementTemplateWriterTest extends TestCase {
 
-  private static final Logger LOG = Logger
-      .getLogger(MetadataKeyReplacementTemplateWriterTest.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(MetadataKeyReplacementTemplateWriterTest.class);
 
   private static final String expected = "Welcome to ApacheCon Paul and Chris! You are a member of the following projects OODT,Tika,SIS,Gora.";
 
@@ -68,7 +67,7 @@ public class MetadataKeyReplacementTemplateWriterTest extends TestCase {
     try {
       writer.generateFile(outPath, met, LOG, templateSourcePath);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
 

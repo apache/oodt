@@ -22,10 +22,10 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -45,8 +45,7 @@ public class SingleFileBasicVersioner implements Versioner {
     public static final String FILENAME_FIELD = "Filename";
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(SingleFileBasicVersioner.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SingleFileBasicVersioner.class);
 
     /**
      * 
@@ -103,7 +102,7 @@ public class SingleFileBasicVersioner implements Versioner {
         // get the first reference back
         // set its data store ref
         Reference ref = product.getProductReferences().get(0);
-        LOG.log(Level.INFO, "Generated data store ref: [" + dataStoreRef
+        LOG.info("Generated data store ref: [" + dataStoreRef
                 + "] from origRef: [" + ref.getOrigReference() + "]");
         ref.setDataStoreReference(dataStoreRef);
 

@@ -31,8 +31,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 
@@ -55,7 +55,7 @@ public class InstanceRepoCleaner implements Closeable {
 
   public static final String CRAWLING = "CRAWLING";
 
-  private static final Logger LOG = Logger.getLogger(InstanceRepoCleaner.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(InstanceRepoCleaner.class);
 
   private WorkflowManagerClient wm;
 
@@ -102,7 +102,7 @@ public class InstanceRepoCleaner implements Closeable {
     WorkflowInstancePage page = wm != null ? wm.getFirstPage() : rep.getFirstPage();
     while (page != null && page.getPageWorkflows() != null && page.getPageWorkflows().size() > 0) {
 
-      LOG.log(Level.INFO,
+      LOG.info(
           "Cleaning workflow instances: page: [" + page.getPageNum() + "] of ["
               + page.getTotalPages() + "]: page size: [" + page.getPageSize()
               + "]");
@@ -117,9 +117,9 @@ public class InstanceRepoCleaner implements Closeable {
             || inst.getStatus().equals(RUNNING_PGE)
             || inst.getStatus().equals(STAGING_INPUT)) {
           String endDateTimeIsoStr = DateUtils.toString(Calendar.getInstance());
-          LOG.log(Level.INFO, "Updated workflow instance id: [" + inst.getId()
+          LOG.info("Updated workflow instance id: [" + inst.getId()
               + "]: setting end date time to: [" + endDateTimeIsoStr + "]");
-          LOG.log(Level.INFO, "Existing status: [" + inst.getStatus()
+          LOG.info("Existing status: [" + inst.getStatus()
               + "]: setting to [" + WorkflowStatus.FINISHED + "]");
           inst.setEndDateTimeIsoStr(endDateTimeIsoStr);
           if (inst.getStartDateTimeIsoStr() == null || (inst
@@ -136,7 +136,7 @@ public class InstanceRepoCleaner implements Closeable {
       }
 
       if (page.isLastPage()) {
-        LOG.log(Level.INFO, "Last set of workflow instances cleaned.");
+        LOG.info("Last set of workflow instances cleaned.");
         break;
       }
 

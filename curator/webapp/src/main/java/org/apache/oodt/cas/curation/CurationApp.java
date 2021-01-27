@@ -26,13 +26,12 @@ import org.apache.wicket.util.file.File;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CurationApp extends WebApplication {
 
-  private static final Logger LOG = Logger.getLogger(CurationApp.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(CurationApp.class);
 
   public static final String PROJECT_DISPLAY_NAME = "org.apache.oodt.cas.curator.projectName";
 
@@ -68,7 +67,7 @@ public class CurationApp extends WebApplication {
     try {
       return (Class<? extends Page>) Class.forName(getHomePageClass());
     } catch (ClassNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       return HomePage.class;
     }
   }
@@ -101,7 +100,7 @@ public class CurationApp extends WebApplication {
     CurationSession session = new CurationSession(request);
     String skin = getSkin();
     if (skin != null && !skin.equals("")) {
-      LOG.log(Level.INFO, "Setting skin to: [" + skin + "]");
+      LOG.info("Setting skin to: [{}]", skin);
       session.setStyle(skin);
     }
     return session;
@@ -122,8 +121,7 @@ public class CurationApp extends WebApplication {
       if (!local.contains(compare)) {
         filtered.add(bResource);
       } else {
-        LOG.log(Level.INFO, "Filtered conflicting bench resource: ["
-            + bResource + "]");
+        LOG.info("Filtered conflicting bench resource: [{}]", bResource);
       }
 
     }
@@ -135,8 +133,7 @@ public class CurationApp extends WebApplication {
       for (String resource : resources) {
         String resName = new File(resource).getName();
         String resPath = "/images/" + resName;
-        LOG.log(Level.INFO, "Mounting: [" + resPath + "] origName: [" + resName
-            + "]: resource: [" + resource + "]");
+        LOG.info("Mounting: [{}] origName: [{}] resource: [{}]", resPath, resName, resource);
         mountSharedResource(resPath,
             new ResourceReference(clazz, resName).getSharedResourceKey());
       }

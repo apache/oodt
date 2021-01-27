@@ -42,6 +42,8 @@ import org.apache.oodt.cas.workflow.system.AvroRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.junit.After;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.event.Level;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,15 +57,8 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.*;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
@@ -189,39 +184,33 @@ public class TestPGETaskInstance {
       PGETaskInstance pgeTask1 = createTestInstance();
       PGETaskInstance pgeTask2 = createTestInstance();
 
-      pgeTask1.julLogger.log(Level.INFO, "pge1 message1");
-      pgeTask1.julLogger.log(Level.INFO, "pge1 message2");
-      pgeTask2.julLogger.log(Level.SEVERE, "pge2 message1");
-      pgeTask1.julLogger.log(Level.INFO, "pge1 message3");
+      pgeTask1.logger.info("pge1 message1");
+      pgeTask1.logger.info("pge1 message2");
+      pgeTask2.logger.error("pge2 message1");
+      pgeTask1.logger.info("pge1 message3");
 
-      for (Handler handler : pgeTask1.julLogger.getHandlers()) {
-         handler.flush();
-      }
-      for (Handler handler : pgeTask2.julLogger.getHandlers()) {
-         handler.flush();
-      }
       File logDir = new File(pgeTask1.pgeConfig.getExeDir() + "/logs");
       assertTrue(logDir.exists());
-      List<String> messages = FileUtils.readLines(logDir.listFiles(
-         new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-               return pathname.getName().endsWith(".log");
-            }
-         })[0], "UTF-8");
-      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message1", messages.get(1));
-      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message2", messages.get(3));
-      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message3", messages.get(5));
+      List<String> messages = FileUtils.readLines(Objects.requireNonNull(logDir.listFiles(
+              new FileFilter() {
+                  @Override
+                  public boolean accept(File pathname) {
+                      return pathname.getName().endsWith(".log");
+                  }
+              }))[0], "UTF-8");
+      assertEquals(Level.INFO.toString() + ": pge1 message1", messages.get(1));
+      assertEquals(Level.INFO.toString() + ": pge1 message2", messages.get(3));
+      assertEquals(Level.INFO.toString() + ": pge1 message3", messages.get(5));
       logDir = new File(pgeTask2.pgeConfig.getExeDir() + "/logs");
       assertTrue(logDir.exists());
-      messages = FileUtils.readLines(logDir.listFiles(
-         new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-               return pathname.getName().endsWith(".log");
-            }
-         })[0], "UTF-8");
-      assertEquals(Level.SEVERE.getLocalizedName() + ": pge2 message1", messages.get(1));
+      messages = FileUtils.readLines(Objects.requireNonNull(logDir.listFiles(
+              new FileFilter() {
+                  @Override
+                  public boolean accept(File pathname) {
+                      return pathname.getName().endsWith(".log");
+                  }
+              }))[0], "UTF-8");
+      assertEquals(Level.ERROR.toString() + ": pge2 message1", messages.get(1));
    }
 
    @Test
@@ -586,17 +575,16 @@ public class TestPGETaskInstance {
             Lists.newArrayList(precondsFailIngestStatus));
       replay(pc);
 
-      pgeTask.julLogger = createMock(Logger.class);
-      pgeTask.julLogger.info("Verifying ingests successful...");
-      pgeTask.julLogger.warning(
-            "Product was not ingested [file='/tmp/dir1',result='PRECONDS_FAILED',msg='Preconditions failed']");
-      pgeTask.julLogger.info("Ingests were successful");
-      replay(pgeTask.julLogger);
+      pgeTask.logger = createMock(Logger.class);
+      pgeTask.logger.info("Verifying ingests successful...");
+      pgeTask.logger.warn("Product was not ingested [file='/tmp/dir1',result='PRECONDS_FAILED',msg='Preconditions failed']");
+      pgeTask.logger.info("Ingests were successful");
+      replay(pgeTask.logger);
 
       pgeTask.verifyIngests(pc);
 
       verify(pc);
-      verify(pgeTask.julLogger);
+      verify(pgeTask.logger);
 
       // Test case success.
       pc = createMock(AutoDetectProductCrawler.class);
@@ -618,15 +606,15 @@ public class TestPGETaskInstance {
             Lists.newArrayList(successIngestStatus));
       replay(pc);
 
-      pgeTask.julLogger = createMock(Logger.class);
-      pgeTask.julLogger.info("Verifying ingests successful...");
-      pgeTask.julLogger.info("Ingests were successful");
-      replay(pgeTask.julLogger);
+      pgeTask.logger = createMock(Logger.class);
+      pgeTask.logger.info("Verifying ingests successful...");
+      pgeTask.logger.info("Ingests were successful");
+      replay(pgeTask.logger);
 
       pgeTask.verifyIngests(pc);
 
       verify(pc);
-      verify(pgeTask.julLogger);
+      verify(pgeTask.logger);
    }
 
    private PGETaskInstance createTestInstance() throws Exception {
@@ -642,7 +630,7 @@ public class TestPGETaskInstance {
       pgeTask.pgeConfig = new PgeConfig();
       File exeDir = new File(createTmpDir(), workflowInstId);
       pgeTask.pgeConfig.setExeDir(exeDir.getAbsolutePath());
-      pgeTask.julLogger = pgeTask.createLogger();
+      pgeTask.logger = pgeTask.createLogger();
       return pgeTask;
    }
 

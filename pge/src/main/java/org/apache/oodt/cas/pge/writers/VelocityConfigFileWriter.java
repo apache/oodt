@@ -23,11 +23,11 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.logging.Logger;
 
 //APACHE imports
 

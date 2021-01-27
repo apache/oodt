@@ -20,13 +20,13 @@ package org.apache.oodt.commons.io;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 //JUnit imports
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+import org.slf4j.event.LoggingEvent;
 
 /**
  * Test class for {@link LoggerOutputStream}.
@@ -36,18 +36,8 @@ import junit.framework.TestCase;
 public class TestLoggerOutputStream extends TestCase {
 
    public void testLogging() throws InstantiationException, IOException {
-      final List<LogRecord> records = new ArrayList<LogRecord>();
-      Logger logger = Logger.getLogger(TestLoggerOutputStream.class.getName());
-      logger.addHandler(new Handler() {
-         @Override
-         public void close() throws SecurityException {}
-         @Override
-         public void flush() {}
-         @Override
-         public void publish(LogRecord record) {
-            records.add(record);
-         }
-      });
+      final List<LoggingEvent> records = new ArrayList<>();
+      Logger logger = LoggerFactory.getLogger(TestLoggerOutputStream.class);
       LoggerOutputStream los = new LoggerOutputStream(logger, 10, Level.INFO);
       los.write("This is a test write to a log file".getBytes());
       los.close();

@@ -196,11 +196,7 @@ the License.
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
     </dependency>
-    <!-- Logging - JUL to SLF4J -->
-    <dependency>
-       <groupId>org.slf4j</groupId>
-       <artifactId>jul-to-slf4j</artifactId>
-    </dependency>
+    <!-- Logging -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

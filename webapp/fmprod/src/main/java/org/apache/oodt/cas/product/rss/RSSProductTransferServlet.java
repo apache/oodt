@@ -39,8 +39,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -81,8 +81,7 @@ public class RSSProductTransferServlet extends HttpServlet {
     private RSSConfig rssconf;
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(RSSProductTransferServlet.class
-            .getName());
+    private Logger LOG = LoggerFactory.getLogger(RSSProductTransferServlet.class);
 
     public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2010: Apache Software Foundation";
 
@@ -117,14 +116,8 @@ public class RSSProductTransferServlet extends HttpServlet {
 
         try {
             fClient = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
-        } catch (MalformedURLException e) {
-            LOG.log(Level.SEVERE,
-                    "Unable to initialize file manager url in RSS Servlet: [url="
-                            + fileManagerUrl + "], Message: " + e.getMessage());
-        } catch (ConnectionException e) {
-            LOG.log(Level.SEVERE,
-                    "Unable to initialize file manager url in RSS Servlet: [url="
-                            + fileManagerUrl + "], Message: " + e.getMessage());
+        } catch (MalformedURLException | ConnectionException e) {
+            LOG.error("Unable to initialize file manager url in RSS Servlet: [url=%s], Message: %s", fileManagerUrl, e.getMessage(), e);
         }
 
         try
@@ -156,10 +149,7 @@ public class RSSProductTransferServlet extends HttpServlet {
         try {
             currentTransfers = fClient.getCurrentFileTransfers();
         } catch (DataTransferException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception getting current transfers from file manager: Message: "
-                            + e.getMessage());
+            LOG.warn("Exception getting current transfers from file manager: {}", e.getMessage(), e);
             return;
         }
 
@@ -265,9 +255,7 @@ public class RSSProductTransferServlet extends HttpServlet {
                 resp.setContentType("text/xml");
                 transformer.transform(source, result);
 
-            } catch (ParserConfigurationException e) {
-                throw new ServletException(e);
-            } catch (TransformerException e) {
+            } catch (ParserConfigurationException | TransformerException e) {
                 throw new ServletException(e);
             }
 

@@ -32,6 +32,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,8 +42,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  * 
  */
 public class CatalogSearch {
-    private static Logger LOG = Logger.getLogger(CatalogSearch.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(CatalogSearch.class);
 
     private static FileManagerClient client;
 
@@ -73,7 +73,7 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
         for (Object product : products) {
             PostQuery(((ProductType) product).getProductTypeId(),
@@ -95,9 +95,9 @@ public class CatalogSearch {
 
         try {
             results = (Vector) client.query(casQuery, productType);
-        } catch (CatalogException ignore) {
+        } catch (CatalogException e) {
             System.out.println("Error querying the File Manager");
-            LOG.log(Level.SEVERE, ignore.getMessage());
+            LOG.error(e.getMessage(), e);
             System.exit(-1);
         }
 
@@ -137,7 +137,7 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
         for (Object product : products) {
             System.out.print(((ProductType) product).getProductTypeId()
@@ -156,7 +156,7 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
     }
@@ -173,7 +173,7 @@ public class CatalogSearch {
                     + prodID);
         } catch (ValidationLayerException e) {
             // TODO Auto-generated catch block
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
         for (Object element : elements) {

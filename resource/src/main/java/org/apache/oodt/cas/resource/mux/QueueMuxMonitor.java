@@ -28,8 +28,8 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author starchmd
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * A monitor to monitor the multiple monitors.
  */
 public class QueueMuxMonitor implements Monitor {
-    private static final Logger LOG = Logger.getLogger(QueueMuxMonitor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(QueueMuxMonitor.class);
     private BackendManager backend;
     private QueueManager qManager;
     /**
@@ -71,7 +71,8 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 max = Math.max(max,backend.getMonitor(queue).getLoad(node));
             } catch (QueueManagerException e) {
-                LOG.log(Level.WARNING,"Queue '"+queue+"' has dissappeared.");
+                String msg = String.format("Queue [%s] has dissapeared: %s", queue, e.getMessage());
+                LOG.warn(msg, e);
             }
         }
         return max;
@@ -125,8 +126,9 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 ret &= backend.getMonitor(queue).reduceLoad(node, loadValue);
             } catch (QueueManagerException e) {
-                LOG.log(Level.SEVERE,"Queue '"+queue+"' has dissappeared.");
-                throw new MonitorException(e);
+                String msg = String.format("Queue [%s] has dissapeared: %s", queue, e.getMessage());
+                LOG.warn(msg, e);
+                throw new MonitorException(msg, e);
             }
         }
         return ret;
@@ -144,8 +146,9 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 ret &= backend.getMonitor(queue).assignLoad(node, loadValue);
             } catch (QueueManagerException e) {
-                LOG.log(Level.SEVERE,"Queue '"+queue+"' has dissappeared.");
-                throw new MonitorException(e);
+                String msg = String.format("Queue [%s] has dissapeared: %s", queue, e.getMessage());
+                LOG.warn(msg, e);
+                throw new MonitorException(msg, e);
             }
         }
         return ret;
@@ -161,8 +164,9 @@ public class QueueMuxMonitor implements Monitor {
             try {
                 backend.getMonitor(queue).addNode(node);
             } catch (QueueManagerException e) {
-                LOG.log(Level.SEVERE,"Queue '"+queue+"' has dissappeared.");
-                throw new MonitorException(e);
+                String msg = String.format("Queue [%s] has dissapeared: %s", queue, e.getMessage());
+                LOG.warn(msg, e);
+                throw new MonitorException(msg, e);
             }
         }
     }
@@ -194,7 +198,8 @@ public class QueueMuxMonitor implements Monitor {
                     ret.add(queue);
                 }
             } catch(QueueManagerException e) {
-                LOG.log(Level.SEVERE, "Queue '"+queue+"' has dissappeared.");
+                String msg = String.format("Queue [%s] has dissapeared: %s", queue, e.getMessage());
+                LOG.warn(msg, e);
             }
         }
         return ret;
