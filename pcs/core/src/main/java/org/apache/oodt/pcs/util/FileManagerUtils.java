@@ -33,6 +33,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
@@ -43,8 +45,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -57,8 +57,7 @@ import java.util.logging.Logger;
  */
 public class FileManagerUtils implements PCSConfigMetadata {
   /* our log stream */
-  private static Logger LOG = Logger
-      .getLogger(FileManagerUtils.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(FileManagerUtils.class);
 
   private FileManagerClient fmgrClient = null;
 
@@ -68,8 +67,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       fmgrClient = RpcCommunicationFactory.createClient(fileMgrUrl);
     } catch (ConnectionException e) {
-      LOG.log(Level.SEVERE,
-          "Unable to connect to file manager: [" + fileMgrUrl.toString() + "]");
+      LOG.error("Unable to connect to file manager: [{}]: {}", fileMgrUrl, e.getMessage(), e);
       fmgrClient = null;
     }
 
@@ -90,8 +88,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       return this.fmgrClient.getTopNProducts(n);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Exception obtaining top" + n
-          + " products: message: " + e.getMessage());
+      LOG.warn("Exception obtaining top {} products: {}", n, e.getMessage(), e);
       return null;
     }
   }
@@ -209,11 +206,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       retProds = this.fmgrClient.query(query, type);
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "Exception issuing query: [" + query + "] to file manager at: ["
-              + this.fmgrClient.getFileManagerUrl() + "]: Message: "
-              + e.getMessage(),
-          e);
+      LOG.warn("Exception issuing query [{}] to filemgr at [{}]: {}", query, this.fmgrClient.getFileManagerUrl(), e.getMessage(), e);
     }
 
     return retProds;
@@ -228,9 +221,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       element = fmgrClient.getElementByName(elemName);
     } catch (ValidationLayerException e) {
-      LOG.log(Level.WARNING,
-          "Exception obtaining element definition for element: [" + elemName
-              + "]: Message: " + e.getMessage());
+      LOG.warn("ValidationLayerException obtaining element definition for element: [{}]: {}", elemName, e.getMessage(), e);
     }
 
     return element;
@@ -244,8 +235,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       type = fmgrClient.getProductTypeByName(productTypeName);
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.WARNING, "Exception obtaining product type definition"
-          + " for type: [" + productTypeName + "]: Message: " + e.getMessage());
+      LOG.warn("RepositoryManagerException obtaining product type definition for type [{}]: {}", productTypeName, e.getMessage(), e);
     }
 
     return type;
@@ -259,8 +249,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       type = fmgrClient.getProductTypeById(productTypeId);
     } catch (RepositoryManagerException e) {
-      LOG.log(Level.WARNING, "Exception obtaining product type definition"
-          + " for type: [" + productTypeId + "]: Message: " + e.getMessage());
+      LOG.warn("RepositoryManagerException obtaining product type definition for type [{}]: {}", productTypeId, e.getMessage(), e);
     }
 
     return type;
@@ -274,9 +263,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       refs = fmgrClient.getProductReferences(product);
     } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "Exception obtaining product references" + "for product: ["
-              + product.getProductName() + "]: Message: " + e.getMessage());
+      LOG.warn("Exception obtaining references for product [{}]: {}", product.getProductName(), e.getMessage(), e);
     }
 
     return refs;
@@ -290,9 +277,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       metadata = fmgrClient.getMetadata(product);
     } catch (CatalogException e) {
-      LOG.log(Level.WARNING, "Unable to obtain metadata for product: ["
-          + product.getProductName() + "] " + "from File Manager at: ["
-          + fmgrClient.getFileManagerUrl() + "]: Message: " + e.getMessage());
+      LOG.warn("CatalogException when obtaining metadata for product [{}] from filemgr at [{}]: {}", product.getProductName(), fmgrClient.getFileManagerUrl(), e.getMessage(), e);
     }
 
     return metadata;
@@ -306,9 +291,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       types = fmgrClient.getProductTypes();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Unable to retrieve product types from filemgr: ["
-          + fmgrClient.getFileManagerUrl() + "]: reason: " + e.getMessage());
+      LOG.warn("Unable to retrieve product types from filemgr: [{}]: {}", fmgrClient.getFileManagerUrl(), e.getMessage(), e);
     }
 
     return types;
@@ -327,8 +310,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
         return p;
       }
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, "Unable to obtain products: query: [" + query
-          + "]: Message: " + e.getMessage(), e);
+      LOG.error("Unable to obtain products: query: [{}]: {}", query, e.getMessage(), e);
     }
 
     return null;
@@ -343,8 +325,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       p = this.fmgrClient.getProductByName(prodName);
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Error obtaining product: [" + prodName
-          + "]: Message: " + e.getMessage(), e);
+      LOG.warn("Error obtaining product [{}]: {}", prodName, e.getMessage(), e);
     }
 
     return p;
@@ -364,9 +345,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       numProducts = this.fmgrClient.getNumProducts(type);
     } catch (Exception e) {
-      e.printStackTrace();
-      LOG.warning("Exception getting num products by type: [" + type.getName()
-          + "]: " + "Message: " + e.getLocalizedMessage());
+      LOG.warn("Exception getting num products by type [{}]: {}", type.getName(), e.getMessage(), e);
     }
 
     return numProducts;
@@ -426,7 +405,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
   public static boolean check(String propName, String propValue,
       Metadata metadata) {
     if (propValue == null) {
-      LOG.log(Level.SEVERE, "PCS: " + propName + ": value: " + null);
+      LOG.error("PCS: {} value is null", propName);
       metadata.replaceMetadata("ApplicationSuccess", "false");
       return false;
     } else {
@@ -440,8 +419,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       url = new URL(urlStr);
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE, "PCS: Unable to generate url from url string: ["
-          + urlStr + "]: Message: " + e.getMessage());
+      LOG.error("PCS: MalformedURLException when generating URL from URL string [{}]: {}", urlStr, e.getMessage(), e);
     }
 
     return url;
@@ -453,8 +431,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       f = new File(new URI(uri));
     } catch (URISyntaxException e) {
-      LOG.log(Level.WARNING,
-          "URI syntax exception obtaining file object from uri: [" + uri + "]");
+      LOG.warn("PCS: URISyntaxException when obtaining file object from uri [{}]: {}", uri, e.getMessage(), e);
     }
 
     return f;
@@ -522,8 +499,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
 
   private boolean isConnected() {
     if (this.fmgrClient == null) {
-      LOG.warning(
-          "Not connected to File Manager: Default Products, References, Metadata and other objects will be returned.");
+      LOG.warn("Not connected to filemgr: Default Products, References, Metadata and other objects will be returned.");
       return false;
     } else
       return true;
