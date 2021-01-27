@@ -22,9 +22,8 @@ package org.apache.oodt.product.handlers.ofsn.util;
 import org.apache.oodt.product.handlers.ofsn.OFSNGetHandler;
 import org.apache.oodt.product.handlers.ofsn.OFSNListHandler;
 
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -36,8 +35,7 @@ import java.util.logging.Logger;
  */
 public final class OFSNObjectFactory {
 
-  private static final Logger LOG = Logger.getLogger(OFSNObjectFactory.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(OFSNObjectFactory.class);
 
   /**
    * <p>
@@ -55,20 +53,11 @@ public final class OFSNObjectFactory {
           .forName(className);
       return listHandler.newInstance();
     } catch (ClassNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "ClassNotFoundException when loading list handler class " + className
-              + " Message: " + e.getMessage());
+      LOG.warn("ClassNotFoundException when loading list handler class {}: {}", className, e.getMessage(), e);
     } catch (InstantiationException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "InstantiationException when loading list handler class " + className
-              + " Message: " + e.getMessage());
+      LOG.warn("InstantiationException when loading list handler class {}: {}", className, e.getMessage(), e);
     } catch (IllegalAccessException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "IllegalAccessException when loading list handler class " + className
-              + " Message: " + e.getMessage());
+      LOG.warn("IllegalAccessException when loading list handler class {}: {}", className, e.getMessage(), e);
     }
 
     return null;
@@ -90,20 +79,11 @@ public final class OFSNObjectFactory {
           .forName(className);
       return getHandler.newInstance();
     } catch (ClassNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "ClassNotFoundException when loading get handler class " + className
-              + " Message: " + e.getMessage());
+      LOG.warn("ClassNotFoundException when loading get handler class {}: {}", className, e.getMessage(), e);
     } catch (InstantiationException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "InstantiationException when loading get handler class " + className
-              + " Message: " + e.getMessage());
+      LOG.warn("InstantiationException when loading get handler class {}: {}", className, e.getMessage(), e);
     } catch (IllegalAccessException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "IllegalAccessException when loading get handler class " + className
-              + " Message: " + e.getMessage());
+      LOG.warn("IllegalAccessException when loading get handler class {}: {}", className, e.getMessage(), e);
     }
 
     return null;

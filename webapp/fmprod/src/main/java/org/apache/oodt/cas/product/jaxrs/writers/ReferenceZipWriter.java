@@ -25,8 +25,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -57,8 +57,7 @@ import org.apache.oodt.cas.product.jaxrs.resources.ReferenceResource;
 @Produces("application/zip")
 public class ReferenceZipWriter implements MessageBodyWriter<ReferenceResource>
 {
-  private static final Logger LOGGER = Logger.getLogger(ReferenceZipWriter.class
-    .getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceZipWriter.class);
 
 
 
@@ -92,7 +91,7 @@ public class ReferenceZipWriter implements MessageBodyWriter<ReferenceResource>
     {
       String message = "Unable to create the working directory ("
         + workingDir.getAbsolutePath() + ") to build the zip file.";
-      LOGGER.log(Level.FINE, message);
+      LOGGER.info(message);
       throw new InternalServerErrorException(message);
     }
 
@@ -116,7 +115,7 @@ public class ReferenceZipWriter implements MessageBodyWriter<ReferenceResource>
         String message = "Unable to delete an existing zip file ("
           + file.getAbsolutePath()
           + ") before creating a new zip file with the same name.";
-        LOGGER.log(Level.FINE, message);
+        LOGGER.info(message);
         throw new InternalServerErrorException(message);
       }
 
@@ -136,17 +135,15 @@ public class ReferenceZipWriter implements MessageBodyWriter<ReferenceResource>
     }
     catch (URISyntaxException e)
     {
-      String message =
-        "Problem with the data store URI for the reference source file(s).";
-      LOGGER.log(Level.FINE, message, e);
-      throw new NotFoundException(message + " " + e.getMessage());
+      String message = String.format("Problem with the data store URI for the reference source file(s): %s", e.getMessage());
+      LOGGER.info(message, e);
+      throw new NotFoundException(message);
     }
     catch (ZipException e)
     {
-      String message =
-        "Unable to create a zip archive of the reference source file(s).";
-      LOGGER.log(Level.FINE, message, e);
-      throw new InternalServerErrorException(message + " " + e.getMessage());
+      String message = String.format("Unable to create a zip archive of the reference source file(s): %s", e.getMessage());
+      LOGGER.info(message, e);
+      throw new InternalServerErrorException(message);
     }
   }
 }

@@ -40,8 +40,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,8 +62,7 @@ public class DataDeliveryServlet extends HttpServlet implements
   private FileManagerClient client;
 
   /** our log stream */
-  private static final Logger LOG = Logger.getLogger(DataDeliveryServlet.class
-          .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DataDeliveryServlet.class);
 
   /** our working dir path. */
   private String workingDirPath;
@@ -208,9 +207,7 @@ public class DataDeliveryServlet extends HttpServlet implements
         o2.write(buf, 0, n);
       }
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception delivering data!: Message: "
-          + e.getMessage());
+      LOG.warn("Exception delivering data: {}", e.getMessage(), e);
     } finally {
       if (in != null) {
         try {
@@ -243,8 +240,7 @@ public class DataDeliveryServlet extends HttpServlet implements
       refs = client.getProductReferences(product);      
     }
     catch(Exception e){
-      LOG.warning("Unable to deliver product: ID: ["+productID+"]: "
-          + "Message: "+e.getMessage()+" throwing 404.");
+      LOG.warn("Unable to deliver product [id={}]: {}. throwing 404", productID, e.getMessage(), e);
       res.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
@@ -260,9 +256,7 @@ public class DataDeliveryServlet extends HttpServlet implements
       res.addHeader(CONTENT_DISPOSITION_HDR, "attachment; filename=\""
           + new File(new URI(ref.getDataStoreReference())).getName() + "\"");
     } catch (URISyntaxException e) {
-      LOG.log(Level.WARNING,
-          "Unable to sense filename from data store URI: Message: "
-              + e.getMessage());
+      LOG.warn("Unable to sense filename from data store URI: {}", e.getMessage(), e);
     }
     URL url = new URL(ref.getDataStoreReference());
     URLConnection c = url.openConnection();

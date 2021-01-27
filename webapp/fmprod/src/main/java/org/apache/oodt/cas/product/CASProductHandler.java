@@ -41,8 +41,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.PRODUCT_ID;
 import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.CAS_PROFILE_ID;
@@ -58,7 +58,7 @@ import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.FILE_HEADER;
  */
 public class CASProductHandler implements LargeProductQueryHandler {
 
-  private static Logger LOG = Logger.getLogger(CASProductHandler.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(CASProductHandler.class);
     private FileManagerClient fm;
 
     public CASProductHandler() throws MalformedURLException,
@@ -151,7 +151,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
                         + numRead + "]");
             }
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new ProductException(
                     "IO exception retrieving chunk of product: [" + id
                             + "]: Message: " + e.getMessage());
