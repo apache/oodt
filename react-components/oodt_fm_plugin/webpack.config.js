@@ -17,5 +17,9 @@ module.exports = {
         publicPath: '',
         filename: 'build.js',
         libraryTarget: 'umd'
-    }
+    },
+    externals: {
+        'react': "commonjs react",
+        'react-dom': "commonjs react-dom"
+    },
 };
