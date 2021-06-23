@@ -69,13 +69,13 @@ class WorkflowList extends Component {
   }
 
   updateWorkflowStatus(workflowInstanceId, state) {
-    let result = confirm(
+    let result = window.confirm(
       "Are you sure to change workflow " +
         workflowInstanceId +
         " state to " +
         state
     );
-    if (result === true) {
+    if (result) {
       wmconnection
         .post(
           "/updatestatus/workflow?workflowInstanceId=" +
