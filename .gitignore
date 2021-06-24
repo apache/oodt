@@ -127,8 +127,3 @@ local.properties
 /react-components/oodt_wm_plugin/node_modules
 # npm build/Tarball ignores
 /react-components/oodt_fm_plugin/dist
-/react-components/oodt_wm_plugin/dist
-# Runtime package.json ignores
-/react-components/oodt_fm_plugin/package-lock.json
-/react-components/oodt_opsui_sample_app/package-lock.json
-/react-components/oodt_wm_plugin/package-lock.json

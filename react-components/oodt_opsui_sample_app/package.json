@@ -40,5 +40,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "ReactJs based OPSUI dashboard for Apache OODT",
+  "main": "index.js",
+  "author": "Apache Software Foundation",
+  "license": "Apache-2.0"
 }

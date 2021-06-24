@@ -247,10 +247,10 @@ class Product extends Component {
   }
 
   removeProduct() {
-    let result = confirm(
+    let result = window.confirm(
       "Are you Sure to Remove the Product ?" + this.state.productId
-    );
-    if (result == true) {
+    )
+    if (result) {
       fmconnection
         .delete("/removeProduct?productId=" + this.state.productId)
         .then(res => {
