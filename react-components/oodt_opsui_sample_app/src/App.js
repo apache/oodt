@@ -1,10 +1,10 @@
 import React, {Component} from "react";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
-import {Product, ProductIngest, ProductIngestWithMetaFile, ProductList} from "oodt_fm_plugin";
 import OPSUIHome from "./components/OPSUIHome";
 import SearchBar from "./components/SearchBar";
-import {WorkflowList} from "oodt_wm_plugin";
 import ComponentStatus from "./components/ComponentStatus";
+import {WorkflowList} from "./components/workflowManager";
+import {Product, ProductIngest, ProductIngestWithMetaFile, ProductList} from "./components/fileManager";
 
 class MyApp extends Component {
 
