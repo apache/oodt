@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import Product from "./Product"
+import ProductList from "./ProductList"
+import ProductIngest from "./ProductIngest"
+import ProductIngestWithMetaFile from "./ProductIngestWithMetaFile"
 
-// Export all the explicitly exported components, this file will contain our
-// components when built by webpack and sent off to the world.
-export * from "./components";
+export { Product,ProductList,ProductIngest,ProductIngestWithMetaFile } 

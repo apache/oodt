@@ -21,7 +21,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { fmconnection } from "../../constants/fmconnection";
+import { fmconnection } from "constants/connection";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import FormControl from "@material-ui/core/FormControl";

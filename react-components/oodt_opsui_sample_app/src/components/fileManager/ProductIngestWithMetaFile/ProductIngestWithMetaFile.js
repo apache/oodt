@@ -20,7 +20,7 @@ import { Paper, withStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
-import { fmconnection } from "../../constants/fmconnection";
+import { fmconnection } from "constants/connection";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = theme => ({
