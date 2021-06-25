@@ -20,7 +20,7 @@ import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Typography from "@material-ui/core/Typography";
 import {Paper, withStyles} from "@material-ui/core";
-import axios from "axios";
+import {fmconnection,wmconnection} from "../constants/connection"
 
 const styles = theme => ({
   root: {
@@ -56,11 +56,7 @@ class ComponentStatus extends Component {
 
   constructor(props) {
     super(props);
-
     this.handleChange = this.handleChange.bind(this);
-
-    this.fmRestApiUrl = this.props.fmRestApiUrl;
-    this.wmRestApiUrl = this.props.wmRestApiUrl;
   }
 
   componentDidMount() {
@@ -68,9 +64,8 @@ class ComponentStatus extends Component {
   }
 
   handleChange() {
-    axios.get(this.fmRestApiUrl + "/fmprodstatus")
+    fmconnection.get("/fmprodstatus")
     .then(result => {
-      console.log(result.data);
       if (result.data.FMStatus.serverUp) {
         this.setState({fmAvailable: true});
       } else {
@@ -81,9 +76,8 @@ class ComponentStatus extends Component {
       console.log("Unable to get file manager status", error);
     });
 
-    axios.get(this.wmRestApiUrl + "/workflow/status")
+    wmconnection.get("/workflow/status")
     .then(result => {
-      console.log(result.data);
       if (result.data.WorkflowManagerStatus.serverUp) {
         this.setState({wmAvailable: true});
       } else {
@@ -139,4 +133,3 @@ class ComponentStatus extends Component {
 }
 
 export default withStyles(styles)(ComponentStatus);
-
