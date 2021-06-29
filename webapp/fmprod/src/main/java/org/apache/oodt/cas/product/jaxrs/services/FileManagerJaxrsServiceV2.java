@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.activation.DataHandler;
@@ -141,7 +143,7 @@ public class FileManagerJaxrsServiceV2 {
           client.getNextPage(client.getProductTypeByName(productTypeName), firstpage);
 
       // Searching for the current page
-      while (nextPage.getPageNum() != currentProductPage - 1) {
+      while (nextPage.getPageNum() < currentProductPage - 1) {
         nextPage = client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
       }
 
@@ -408,7 +410,10 @@ public class FileManagerJaxrsServiceV2 {
     OutputStream outputStream = null;
     File file = new File("ingestedFiles/" + fileName);
     try {
-      outputStream = new FileOutputStream(file);
+      java.nio.file.Path ingestedDir = Paths.get("ingestedFiles");
+      Files.createDirectories(ingestedDir);
+      java.nio.file.Path ingestedFile = ingestedDir.resolve(fileName);
+      outputStream = new FileOutputStream(ingestedFile.toFile());
       int read = 0;
       byte[] bytes = new byte[1024];
       while ((read = inputStream.read(bytes)) != -1) {

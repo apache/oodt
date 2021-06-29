@@ -15,12 +15,7 @@
  * limitations under the License.
  */
 
-// Export all the explicitly exported components, this file will contain our
-// components when built by webpack and sent off to the world.
-<<<<<<< HEAD
-import WorkflowList from "./WorkflowList";
+// Import the Product component from this folder and send it down to ./components/index.js
+import ProductIngest from "./ProductIngest";
 
-export { WorkflowList };
-=======
-export * from "./components";
->>>>>>> development
+export default ProductIngest;

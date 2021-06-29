@@ -15,12 +15,8 @@
  * limitations under the License.
  */
 
-// Export all the explicitly exported components, this file will contain our
-// components when built by webpack and sent off to the world.
-<<<<<<< HEAD
-import WorkflowList from "./WorkflowList";
+import axios from "axios";
 
-export { WorkflowList };
-=======
-export * from "./components";
->>>>>>> development
+export const fmconnection = axios.create({
+  baseURL: "http://"+window.location.hostname+":8080/cas_product_war/jaxrs/v2"
+});

@@ -15,12 +15,4 @@
  * limitations under the License.
  */
 
-// Export all the explicitly exported components, this file will contain our
-// components when built by webpack and sent off to the world.
-<<<<<<< HEAD
-import WorkflowList from "./WorkflowList";
-
-export { WorkflowList };
-=======
-export * from "./components";
->>>>>>> development
+export { default as WorkflowList } from "./WorkflowList";
