@@ -73,10 +73,73 @@ class Product extends Component {
     noResultsText: "No products"
   };
 
+  componentDidMount() {
+    // Make a request for a product with a given ID
+    fmconnection
+      .get("/product?productId=" + this.props.productId)
+      .then(res => {
+        this.setState({
+          productData: res.data.product,
+          productMetaDataFileLocation: Object.values(
+            res.data.product.metadata
+          )[0][0],
+          productMetaDataFileType: Object.values(
+            res.data.product.metadata
+          )[0][1],
+          productMetaDataMimeType: Object.values(
+            res.data.product.metadata
+          )[0][7]["val"],
+          productReferencesData: res.data.product.references.reference
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  
   componentDidUpdate(prevProps){
     if(this.props.productId !== prevProps.productId){
       this.loadProduct();
     }
+  }
+
+  removeProduct() {
+    let result = window.confirm("Are you Sure to Remove the Product ?" + this.props.productId)
+    if (result) {
+      fmconnection
+        .delete("/removeProduct?productId=" + this.props.productId)
+        .then(res => {
+          alert(
+            "Product sucessfully removed productID: " + this.props.productId
+          );
+        });
+    } else {
+    }
+  }
+
+  loadProduct() {
+    this.setState({noResultsText: "Searching..."})
+    fmconnection
+      .get("/product?productId=" + this.props.productId)
+      .then(res => {
+        this.setState({
+          productData: res.data.product,
+          productMetaDataFileLocation: Object.values(
+            res.data.product.metadata
+          )[0][0],
+          productMetaDataFileType: Object.values(
+            res.data.product.metadata
+          )[0][1],
+          productMetaDataMimeType: Object.values(
+            res.data.product.metadata
+          )[0][7]["val"],
+          productReferencesData: res.data.product.references.reference
+        });
+      })
+      .catch(err => {
+        this.setState({noResultsText: "No products"})
+        console.error(err);
+      });
   }
 
   getProdDataBySection = (sectionTitle) => {
@@ -194,77 +257,6 @@ class Product extends Component {
         )}
       </div>
     );
-  }
-
-  removeProduct() {
-    let result = window.confirm(
-      "Are you Sure to Remove the Product ?" + this.props.productId
-    )
-    if (result) {
-      fmconnection
-        .delete("/removeProduct?productId=" + this.props.productId)
-        .then(res => {
-          alert(
-            "Product sucessfully removed productID: " + this.props.productId
-          );
-        });
-    } else {
-    }
-  }
-
-  loadProduct() {
-    this.setState({noResultsText: "Searching..."})
-    fmconnection
-      .get("/product?productId=" + this.props.productId)
-      .then(res => {
-        this.setState({
-          productData: res.data.product,
-          productMetaDataFileLocation: Object.values(
-            res.data.product.metadata
-          )[0][0],
-          productMetaDataFileType: Object.values(
-            res.data.product.metadata
-          )[0][1],
-          productMetaDataMimeType: Object.values(
-            res.data.product.metadata
-          )[0][7]["val"],
-          productReferencesData: res.data.product.references.reference
-        });
-        console.log(this.state.productMetaDataFileLocation["val"]);
-        console.log(this.state.productMetaDataFileType["val"]);
-        console.log(this.state.productMetaDastaMimeType[0]);
-      })
-      .catch(err => {
-        this.setState({noResultsText: "No products"})
-        console.log(err);
-      });
-  }
-
-  componentDidMount() {
-    // Make a request for a product with a given ID
-    fmconnection
-      .get("/product?productId=" + this.props.productId)
-      .then(res => {
-        this.setState({
-          productData: res.data.product,
-          productMetaDataFileLocation: Object.values(
-            res.data.product.metadata
-          )[0][0],
-          productMetaDataFileType: Object.values(
-            res.data.product.metadata
-          )[0][1],
-          productMetaDataMimeType: Object.values(
-            res.data.product.metadata
-          )[0][7]["val"],
-          productReferencesData: res.data.product.references.reference
-        });
-        console.log(this.state.productMetaDataFileLocation["val"]);
-        console.log(this.state.productMetaDataFileType["val"]);
-        console.log(this.state.productMetaDastaMimeType[0]);
-      })
-      .catch(err => {
-        console.log(err);
-      });
   }
 }
 
