@@ -14,9 +14,7 @@ class MyApp extends Component {
   }
 
   state = {
-    selectedProductId: "",
-    fmAvailable: false,
-    wmAvailable: false
+    selectedProductId: ""
   };
 
   setSelectedProductId(productId) {
