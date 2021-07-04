@@ -70,6 +70,10 @@ class SearchBar extends Component {
         }
     }
 
+    handleSearchIconClick = () => {
+        this.props.setSelectedProductId(this.state.selectedProductId)
+    }
+
     // click() {
     //     this.props.loadProducts();
     // }
@@ -84,7 +88,9 @@ class SearchBar extends Component {
                     inputProps={{ 'aria-label': 'Search Products' }}
                     onKeyDown={this.keyPress} onChange={this.handleChange}
                 />
-                <IconButton className={classes.iconButton} aria-label="Search" >
+                <IconButton className={classes.iconButton} aria-label="Search"
+                    onClick={this.handleSearchIconClick}
+                >
                     <SearchIcon />
                 </IconButton>
             </Paper>
