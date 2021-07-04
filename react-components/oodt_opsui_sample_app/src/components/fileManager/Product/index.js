@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import axios from "axios";
+// Import the Product component from this folder and send it down to ./components/index.js
+import Product from "./Product";
 
-export const fmconnection = axios.create({
-  baseURL: "http://"+window.location.hostname+":8080/cas_product_war/jaxrs/v2"
-});
+export {Product};

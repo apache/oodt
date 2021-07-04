@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// Export all the explicitly exported components, this file will contain our
-// components when built by webpack and sent off to the world.
-export * from "./components";
+export {Product} from './Product'
+export {ProductIngest} from './ProductIngest'
+export {ProductIngestWithMetaFile} from './ProductIngestWithMetaFile'
+export {ProductList} from './ProductList'
