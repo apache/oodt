@@ -11,41 +11,16 @@ class MyApp extends Component {
   constructor(props) {
     super(props);
     this.setSelectedProductId = this.setSelectedProductId.bind(this);
-    // this.timeOut = this.timeOut.bind(this);
-
-    this.fmRestApiUrl = process.env.REACT_APP_FM_REST_API_URL;
-    this.wmRestApiUrl = process.env.REACT_APP_WM_REST_API_URL;
   }
 
   state = {
-    selectedProductId: "",
-    fmAvailable: false,
-    wmAvailable: false
+    selectedProductId: ""
   };
 
   setSelectedProductId(productId) {
     this.setState({ selectedProductId: productId });
-    console.log(this.state.selectedProductId);
   }
 
-  componentDidMount() {
-    // this.timeOut()
-  }
-
-  // timeOut() {
-  //   setInterval(function () {
-  //     axios
-  //     .get("http://localhost:8080/cas_product_war/jaxrs/v2/fmprodstatus")
-  //     .then(result => {
-  //       console.log(result.data.FMStatus.serverUp);
-  //       if (result.data.FMStatus.serverUp) {
-  //         this.setState({ checkedA: true });
-  //       }
-  //     })
-  //     .catch(error => {});
-  //
-  //   }, 10000);
-  // }
   render() {
     return (
       <BrowserRouter>
@@ -57,10 +32,7 @@ class MyApp extends Component {
               render={() => (
                 <div>
                   <h1>Dashboard</h1>
-                  <ComponentStatus
-                      fmRestApiUrl={this.fmRestApiUrl}
-                      wmRestApiUrl={this.wmRestApiUrl}>
-                  </ComponentStatus>
+                  <ComponentStatus />
                 </div>
               )}
             />
