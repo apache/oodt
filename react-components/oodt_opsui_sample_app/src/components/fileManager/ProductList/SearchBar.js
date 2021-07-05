@@ -16,9 +16,11 @@
  */
 
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
-import InputBase from "@material-ui/core/InputBase";
-import IconButton from "@material-ui/core/IconButton";
+import { OutlinedInput,Button } from "@material-ui/core";
+import Select from "@material-ui/core/Select";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
 import SearchIcon from "@material-ui/icons/Search";
 import { withStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
@@ -29,6 +31,16 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center",
     width: 400
+  },
+  row: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  formControl: {
+    margin: 1,
+    minWidth: 120
   },
   input: {
     marginLeft: 8,
@@ -47,52 +59,177 @@ const styles = theme => ({
 class SearchBar extends Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.keyPress = this.keyPress.bind(this);
-    this.click = this.click.bind(this);
   }
 
   state = {
-    productTypeName: ""
+    selectedProductType: "",
+    selectedProductStructure: "FLAT",
+    selectedMIMEType: "",
+    selectedTransferStatus: "RECEIVED",
+    isSearching: false
   };
 
-  handleChange(e) {
-    this.setState({ productTypeName: e.target.value });
-  }
-
-  keyPress(e) {
-    if (e.keyCode === 13) {
-      console.log(e.target.value);
-      this.props.productTypeNameProp(this.state.productTypeName);
-      this.click();
+  componentDidMount(){
+    if(this.props) {
+      this.setState({selectedProductType: this.props.availableProductTypes[0]})
     }
   }
 
-  click() {
-    this.props.loadProducts();
+  componentDidUpdate(prevProps){
+    if(prevProps !== this.props){
+      this.setState({selectedProductType: this.props.availableProductTypes[0]})
+    }
+  }
+
+  handleChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onSearch = () => {
+    setTimeout(() => {
+        this.props.onQueryTimeout({ isQueryTimedOut: true });
+    },3000);
+    this.setState({isSearching: true})
+    this.props.onSearch()
   }
 
   render() {
     const { classes } = this.props;
     return (
-      <Paper className={classes.root}>
-        <InputBase
-          className={classes.input}
-          placeholder="Search Products by Product Type Name"
-          inputProps={{ "aria-label": "Search Products" }}
-          onKeyDown={this.keyPress}
-          onChange={this.handleChange}
-        />
-        <IconButton className={classes.iconButton} aria-label="Search">
+      <div className={classes.row}>
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          style={{ width: "200px" }}
+        >
+          <InputLabel htmlFor="outlined-product-Type-simple">
+            Product Type
+          </InputLabel>
+          <Select
+            value={this.state.selectedProductType}
+            onChange={this.handleChange}
+            input={
+              <OutlinedInput
+                labelWidth={100}
+                name="selectedProductType"
+                id="outlined-product-Type-simple"
+              />
+            }
+          >
+            {
+              this.props.availableProductTypes.map((productType,index) => (
+                <MenuItem selected={index === 0} value={productType}>
+                  {productType}
+                </MenuItem>
+              ))
+            } 
+          </Select>
+        </FormControl>
+
+        
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          style={{ width: "200px" }}
+        >
+          <InputLabel htmlFor="outlined-product-Type-simple">
+            Structure
+          </InputLabel>
+          <Select
+           value={this.state.selectedProductStructure}
+            onChange={this.handleChange}
+            input={
+              <OutlinedInput
+                labelWidth={100}
+                name="selectedProductStructure"
+                id="outlined-product-structure-simple"
+              />
+            }
+          >
+            <MenuItem value="FLAT">
+            Flat
+          </MenuItem>
+          <MenuItem value="HIERARCHICAL">
+            Hierarchical
+          </MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          style={{ width: "200px" }}
+        >
+          <InputLabel htmlFor="outlined-product-Type-simple">
+            MIME type
+          </InputLabel>
+          <Select
+            value={this.state.selectedMIMEType}
+            onChange={this.handleChange}
+            input={
+              <OutlinedInput
+                labelWidth={100}
+                name="selectedMIMEType"
+                id="outlined-mime-type-simple"
+              />
+            }
+          >
+            {this.props && this.props.availableMIMETypes.map(MIMEType => (
+            <MenuItem selected={true} value={MIMEType}>
+            {MIMEType}
+          </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          style={{ width: "200px" }}
+        >
+          <InputLabel htmlFor="outlined-product-Type-simple">
+            Transfer status
+          </InputLabel>
+          <Select
+            value={this.state.selectedTransferStatus}
+            onChange={this.handleChange}
+            input={
+              <OutlinedInput
+                labelWidth={100}
+                name="selectedTransferStatus"
+                id="outlined-transfer-status-simple"
+              />
+            }
+          >
+            <MenuItem value="TRANSFERING">
+            Tranfering
+            </MenuItem>
+            <MenuItem selected={true} value="RECEIVED">
+              Received
+            </MenuItem>
+          </Select>
+        </FormControl>
+
+
+        <Button
+          variant="contained"
+          size="medium"
+          color="primary"
+          onClick={this.onSearch}
+        >
           <SearchIcon />
-        </IconButton>
-      </Paper>
+        </Button>
+      </div>
     );
   }
 }
 
 SearchBar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  onSearch: PropTypes.func.isRequired,
+  onQueryTimeout:PropTypes.func,
+  availableProductTypes: PropTypes.array.isRequired,
+  availableMIMETypes: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles)(SearchBar);
