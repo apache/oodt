@@ -30,6 +30,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
+import SearchBar from "./SearchBar"
 
 const styles = theme => ({
   root: {
@@ -83,8 +84,6 @@ class Product extends Component {
     this.loadNextProducts = this.loadNextProducts.bind(this);
     this.loadPrevProducts = this.loadPrevProducts.bind(this);
     this.onClick = this.onClick.bind(this);
-    this.handleProductType = this.handleProductType.bind(this);
-    this.searchProducts = this.searchProducts.bind(this);
   }
 
   state = {
@@ -96,8 +95,7 @@ class Product extends Component {
     selectedProductId: "",
     currentProductPage: 1,
     productTypeArray: [],
-    isSearchButtonClicked: true,
-    isTimedOut: true
+    isQueryTimedOut: false
   };
 
   setProductTypeName(productTypeName) {
@@ -226,23 +224,6 @@ class Product extends Component {
     this.props.selectedProductId(this.state.selectedProductId);
   }
 
-  handleProductType(e) {
-    let productTypeName = e.target.value;
-    this.setState({ productTypeName: productTypeName });
-    this.setState({ isSearchButtonClicked: false });
-    this.setState({ isTimedOut: false });
-  }
-
-  searchProducts() {
-    setTimeout(
-      function() {
-        this.setState({ isTimedOut: true });
-      }.bind(this),
-      3000
-    );
-    this.setState({ isSearchButtonClicked: true });
-    this.loadProducts();
-  }
   render() {
     const { classes } = this.props;
 
@@ -274,59 +255,17 @@ class Product extends Component {
       </div>
     ));
 
-    // List Product Types
-    let listProductTypes = this.state.productTypeArray.map(productType => (
-      <MenuItem selected={false} value={productType}>
-        {productType}
-      </MenuItem>
-    ));
-
     return (
       <div className={classes.root}>
         <Paper className={clsx(classes.paper, classes.fixedHeight)}>
           {/*Success/Error Snackbar*/}
-          <SimpleSnackBar onRef={ref => (this.child = ref)} />
-
-          {/*SearchBar component for productTypeName Search*/}
-          {/*<SearchBar*/}
-          {/*  productTypeNameProp={this.setProductTypeName}*/}
-          {/*  loadProducts={this.loadProducts}*/}
-          {/*/>*/}
-
-          {/*Product Type Listing Component*/}
-
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="outlined-product-Type-simple">
-              Product Type
-            </InputLabel>
-            <Select
-              value={this.state.productTypeName}
-              onChange={this.handleProductType}
-              input={
-                <OutlinedInput
-                  labelWidth={100}
-                  name="Product Type"
-                  id="outlined-product-Type-simple"
-                />
-              }
-              style={{ width: "400px" }}
-            >
-              <MenuItem selected={false} value={"Hello"}>
-                Hello
-              </MenuItem>
-              {listProductTypes}
-            </Select>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={this.searchProducts}
-            >
-              Search Products
-            </Button>
-          </FormControl>
-
-          {/*Load Folder Products*/}
+          <SimpleSnackBar onRef={(ref) => (this.child = ref)} />
+          <SearchBar
+            availableProductTypes={this.state.productTypeArray}
+            availableMIMETypes={[]}
+            onSearch={() => {}}
+            onQueryTimeout={({isQueryTimedOut}) => this.setState({isQueryTimedOut})}
+          />
           <h4>Folders</h4>
 
           {this.state.productFoldersArray.length === 0 &&
