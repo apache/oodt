@@ -18,16 +18,12 @@
 import React, { Component } from "react";
 import { fmconnection } from "constants/connection";
 import PropTypes from "prop-types";
-import { OutlinedInput, withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
 import clsx from "clsx";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import SimpleSnackBar from "./SimpleSnackBar";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import SearchBar from "./SearchBar"
@@ -79,7 +75,6 @@ const styles = theme => ({
 class Product extends Component {
   constructor(props) {
     super(props);
-    this.setProductTypeName = this.setProductTypeName.bind(this);
     this.loadProducts = this.loadProducts.bind(this);
     this.loadNextProducts = this.loadNextProducts.bind(this);
     this.loadPrevProducts = this.loadPrevProducts.bind(this);
@@ -91,15 +86,14 @@ class Product extends Component {
     productDetailsArray: [],
     productFilesArray: [],
     productFoldersArray: [],
-    productTypeName: "GenericFile",
     selectedProductId: "",
     currentProductPage: 1,
     productTypeArray: [],
-    isQueryTimedOut: false
+    isQueryTimedOut: true
   };
 
-  setProductTypeName(productTypeName) {
-    this.setState({ productTypeName: productTypeName });
+  componentDidMount() {
+    this.loadProducts();
   }
 
   onClick(message) {
@@ -112,7 +106,7 @@ class Product extends Component {
     this.setState({ productFilesArray: [] });
     this.setState({ productFoldersArray: [] });
     fmconnection
-      .get("/products?productTypeName=" + this.state.productTypeName)
+      .get("/products?productTypeName=GenericFile")
 
       .then(res => {
         this.setState({
@@ -144,8 +138,7 @@ class Product extends Component {
     this.setState({ productFoldersArray: [] });
     fmconnection
       .get(
-        "/products?productTypeName=" +
-          this.state.productTypeName +
+        "/products?productTypeName=GenericFile" +
           "&currentProductPage=" +
           this.state.currentProductPage
       )
@@ -269,23 +262,21 @@ class Product extends Component {
           <h4>Folders</h4>
 
           {this.state.productFoldersArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === false && (
+            this.state.isQueryTimedOut === false && (
               <div align={"center"}>
                 <CircularProgress />
               </div>
             )}
 
           {this.state.productFoldersArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === true && (
+            this.state.isQueryTimedOut === true && (
               <div align={"center"}>
-                <Typography variant={"h5"}>No Product Files Found !</Typography>
+                <Typography variant="subtitle1">No Product Folders Found</Typography>
               </div>
             )}
 
           {this.state.productFoldersArray.length > 0 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               {listFolderItems}
             </Grid>
           )}
@@ -294,23 +285,21 @@ class Product extends Component {
           <h4>Files</h4>
 
           {this.state.productFilesArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === false && (
+            this.state.isQueryTimedOut === false && (
               <div align={"center"}>
                 <CircularProgress />
               </div>
             )}
 
           {this.state.productFilesArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === true && (
+            this.state.isQueryTimedOut === true && (
               <div align={"center"}>
-                <Typography variant={"h5"}>No Product Files Found !</Typography>
+                <Typography variant="subtitle1">No Product Files Found</Typography>
               </div>
             )}
 
           {this.state.productFilesArray.length > 0 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               {listFileItems}
             </Grid>
           )}
@@ -327,11 +316,6 @@ class Product extends Component {
         </Paper>
       </div>
     );
-  }
-
-  // Load productType = GenericFile on component Mounting
-  componentDidMount() {
-    this.loadProducts();
   }
 }
 
