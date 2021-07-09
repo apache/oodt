@@ -98,32 +98,40 @@ class ProductIngest extends Component {
   }
 
   ingestProduct() {
-    this.setState({ isIngested: false });
-    this.setState({ isIngestButtonClicked: true });
+    this.setState({ isIngested: false, isIngestButtonClicked: true });
 
-    let product = this.state.ingestedFile;
     let formData = new FormData();
-    formData.append("productFile", product);
+    formData.append("productFile", this.state.ingestedFile);
+
+    let config = {
+      onUploadProgress: (progressEvent) => {
+        let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+        this.setState({ingestedPercentage: percentCompleted})
+      }
+    };
+
     fmconnection
       .post(
         "productWithFile?productType=" +
           this.state.productType +
           "&productStructure=" +
           this.state.productStructure,
-        formData
+        formData,
+        config
       )
       .then(result => {
-        console.log(result);
         this.setState({ 
           productId: result.data,
+          isIngestButtonClicked: false,
           isIngested: true 
         },() => {
           alert("Successfully Ingested Product ID :" + this.state.productId)
+          this.setState({ingestedFile: null, ingestedPercentage: 0})
         });
       })
       .catch(error => {
         console.log(error);
-        this.setState({ isIngested: false });
+        this.setState({ isIngested: false,ingestedPercentage: 0,isIngestButtonClicked: false });
         alert("Product Ingestion Failed : " + error);
       });
   }
@@ -208,7 +216,7 @@ class ProductIngest extends Component {
           >
             Ingest Product
           </Button>
-          <ProgressBar value={this.state.ingestedPercentage} />
+          {this.state.isIngestButtonClicked && <ProgressBar value={this.state.ingestedPercentage} />}
         </div>
       </Paper>
     );
