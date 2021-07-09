@@ -16,7 +16,7 @@
  */
 
 import React, { Component } from "react";
-import { fmconnection } from "../../constants/fmconnection";
+import { fmconnection } from "constants/connection";
 import PropTypes from "prop-types";
 import { OutlinedInput, withStyles } from "@material-ui/core";
 import clsx from "clsx";

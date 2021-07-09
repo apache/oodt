@@ -15,4 +15,7 @@
  * limitations under the License.
  */
 
-export { default as WorkflowList } from "./WorkflowList";
+// Import the Product component from this folder and send it down to ./components/index.js
+import ProductIngest from "./ProductIngest";
+
+export {ProductIngest};

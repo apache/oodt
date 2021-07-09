@@ -16,6 +16,6 @@
  */
 
 // Import the Product component from this folder and send it down to ./components/index.js
-import ProductIngestWithMetaFile from "./ProductIngestWithMetaFile";
+import ProductList from "./ProductList";
 
-export default ProductIngestWithMetaFile;
+export {ProductList};

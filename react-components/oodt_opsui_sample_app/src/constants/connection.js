@@ -14,8 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import axios from "axios";
 
-// Import the WorkflowList component from this folder and send it down to ./components/index.js
-import WorkflowList from "./WorkflowList";
+export const fmconnection = axios.create({
+  baseURL: "http://"+window.location.hostname+":8080/cas_product_war/jaxrs/v2"
+});
 
-export default WorkflowList;
+export const wmconnection = axios.create({
+    baseURL: process.env.REACT_APP_WM_REST_API_URL
+});

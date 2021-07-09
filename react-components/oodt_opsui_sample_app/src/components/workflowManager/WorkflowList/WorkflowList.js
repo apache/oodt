@@ -24,7 +24,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
-import { wmconnection } from "../../constants/wmconnection";
+import { wmconnection } from "constants/connection";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = theme => ({

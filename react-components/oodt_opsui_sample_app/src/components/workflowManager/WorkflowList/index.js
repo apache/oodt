@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// Import the Product component from this folder and send it down to ./components/index.js
-import ProductList from "./ProductList";
+// Import the WorkflowList component from this folder and send it down to ./components/index.js
+import WorkflowList from "./WorkflowList";
 
-export default ProductList;
+export {WorkflowList};
