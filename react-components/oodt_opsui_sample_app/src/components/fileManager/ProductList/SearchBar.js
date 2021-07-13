@@ -23,6 +23,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import SearchIcon from "@material-ui/icons/Search";
 import { withStyles } from "@material-ui/core";
+import { fmconnection } from "constants/connection";
 import PropTypes from "prop-types";
 
 const styles = theme => ({
@@ -63,6 +64,7 @@ class SearchBar extends Component {
 
   state = {
     selectedProductType: "",
+    productTypes: [],
     selectedProductStructure: "FLAT",
     selectedMIMEType: "",
     selectedTransferStatus: "RECEIVED",
@@ -70,16 +72,14 @@ class SearchBar extends Component {
   };
 
   componentDidMount(){
-    if(this.props) {
-      this.setState({selectedProductType: this.props.availableProductTypes[0]})
-    }
+    fmconnection.get("/productTypes").then(res => {
+      const {productTypes} = res.data.productTypeList 
+      this.setState({
+        productTypes: productTypes,
+        selectedProductType: productTypes[0].name})
+    }).catch(err => console.error(err))
   }
 
-  componentDidUpdate(prevProps){
-    if(prevProps !== this.props){
-      this.setState({selectedProductType: this.props.availableProductTypes[0]})
-    }
-  }
 
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
@@ -116,13 +116,11 @@ class SearchBar extends Component {
               />
             }
           >
-            {
-              this.props.availableProductTypes.map((productType,index) => (
-                <MenuItem selected={index === 0} value={productType}>
-                  {productType}
-                </MenuItem>
-              ))
-            } 
+            {this.state.productTypes.map((productType, index) => (
+              <MenuItem selected={index === 0} value={productType.name}>
+                {productType.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
@@ -228,8 +226,6 @@ SearchBar.propTypes = {
   classes: PropTypes.object.isRequired,
   onSearch: PropTypes.func.isRequired,
   onQueryTimeout:PropTypes.func,
-  availableProductTypes: PropTypes.array.isRequired,
-  availableMIMETypes: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles)(SearchBar);

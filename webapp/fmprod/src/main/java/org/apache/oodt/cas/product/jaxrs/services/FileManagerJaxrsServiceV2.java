@@ -48,6 +48,7 @@ import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
@@ -64,6 +65,7 @@ import org.apache.oodt.cas.product.jaxrs.filters.CORSFilter;
 import org.apache.oodt.cas.product.jaxrs.resources.FMStatusResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductPageResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
+import org.apache.oodt.cas.product.jaxrs.resources.ProductTypeListResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,6 +108,30 @@ public class FileManagerJaxrsServiceV2 {
 
       return getProductPageResource(client, genericFile);
 
+    } catch (Exception e) {
+      throw new NotFoundException(e.getMessage());
+    }
+  }
+
+  /**
+   * Gets an HTTP request that represents a {@link ProductTypeListResource} from the file manager.
+   *
+   * @return an HTTP response that represents a {@link ProductTypeListResource} from the file manager
+   */
+  @GET
+  @Path("productTypes")
+  @Produces({
+          "application/xml",
+          "application/json",
+          "application/atom+xml",
+          "application/rdf+xml",
+          "application/rss+xml"
+  })
+  public ProductTypeListResource getProductTypes() throws WebApplicationException {
+    try {
+      FileManagerClient client = getContextClient();
+      List<ProductType> productTypes = client.getProductTypes();
+      return new ProductTypeListResource(productTypes);
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
     }
