@@ -137,6 +137,20 @@ public class FileManagerJaxrsServiceV2 {
     }
   }
 
+  public int getTotalNumOfProducts() throws WebApplicationException {
+    try {
+      int totalFiles = 0;
+      FileManagerClient client = getContextClient();
+      List<ProductType> productTypes = client.getProductTypes();
+      for(ProductType productType: productTypes){
+        totalFiles += client.getNumProducts(productType);
+      }
+      return totalFiles;
+    } catch (Exception e) {
+      throw new InternalServerErrorException(e.getMessage());
+    }
+  }
+
   /**
    * Gets an HTTP request that represents a {@link ProductPage} from the file manager.
    *
@@ -164,13 +178,21 @@ public class FileManagerJaxrsServiceV2 {
       // Get the first ProductPage
       ProductPage firstpage = client.getFirstPage(client.getProductTypeByName(productTypeName));
 
+      if (currentProductPage == 1) {
+        return getProductPageResource(client,firstpage);
+      }
+
       // Get the next ProductPage
       ProductPage nextPage =
           client.getNextPage(client.getProductTypeByName(productTypeName), firstpage);
 
       // Searching for the current page
-      while (nextPage.getPageNum() < currentProductPage - 1) {
+      while (nextPage.getPageNum() != currentProductPage) {
+        int prevNextPageNum = nextPage.getPageNum();
         nextPage = client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
+        if(nextPage.getPageNum() == prevNextPageNum) {
+          throw new NotFoundException("No products");
+        }
       }
 
       // Get the next page from the current page
@@ -209,8 +231,10 @@ public class FileManagerJaxrsServiceV2 {
       proReferencesList.add(productReferences);
     }
 
-    return new ProductPageResource(
-        genericFile, proMetaDataList, proReferencesList, getContextWorkingDir());
+    ProductPageResource pageResource = new ProductPageResource(
+            genericFile, proMetaDataList, proReferencesList, getContextWorkingDir());
+    pageResource.setTotalProducts(getTotalNumOfProducts());
+    return pageResource;
   }
 
   /**
