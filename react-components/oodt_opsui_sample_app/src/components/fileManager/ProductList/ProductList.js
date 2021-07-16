@@ -16,7 +16,7 @@
  */
 
 import React, { Component } from "react";
-import { fmconnection } from "constants/connection";
+import * as fmservice  from "services/fmservice";
 import PropTypes from "prop-types";
 import { withStyles,TablePagination } from "@material-ui/core";
 import clsx from "clsx";
@@ -87,7 +87,9 @@ class Product extends Component {
     currentProductPage: 0,
     totalProductCount: 0,
     productTypeArray: [],
-    isQueryTimedOut: true
+    isQueryTimedOut: true,
+    noFilesText: "Searching...",
+    noFoldersText: "Searching..."
   };
 
   componentDidMount() {
@@ -105,30 +107,27 @@ class Product extends Component {
     this.setState({ productDetailsArray: [] });
     this.setState({ productFilesArray: [] });
     this.setState({ productFoldersArray: [] });
-    fmconnection
-      .get(
-        "/products?productTypeName=GenericFile" +
-          "&currentProductPage=" +
-          this.state.currentProductPage + 1
-      )
 
-      .then(res => {
+    fmservice
+      .getProductPage("GenericFile", this.state.currentProductPage + 1)
+      .then((productPage) => {
         this.setState({
-          productData: res.data.productPage,
-          totalProductCount: res.data.productPage.totalProducts
-        });
-        this.setState({
-          productDetailsArray: this.state.productData.products.product
+          productData: productPage,
+          totalProductCount: productPage.totalProducts,
+          productDetailsArray: productPage.products.product,
         });
 
         this.getFiles();
         this.getFolders();
-        // Snackbar for Request Success
         this.onClick("Request Successful !!");
       })
       .catch(error => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
+          this.setState({
+            noFilesText: "No product files found",
+            noFoldersText: "No product folders found"
+          })
           this.onClick("404 - Couldn't Find Resource");
         }
       });
@@ -143,6 +142,9 @@ class Product extends Component {
         fileTypesArray.push(this.state.productDetailsArray[i].type);
       }
     }
+    if(fileArray.length === 0){
+      this.setState({noFilesText: "No product files found"})
+    }
     this.setState({ productFilesArray: fileArray });
   }
 
@@ -152,6 +154,9 @@ class Product extends Component {
       if (this.state.productDetailsArray[i].structure === "Hierarchical") {
         folderArray.push(this.state.productDetailsArray[i]);
       }
+    }
+    if(folderArray.length === 0){
+      this.setState({noFoldersText: "No product folders found"})
     }
     this.setState({ productFoldersArray: folderArray });
   }
@@ -205,7 +210,9 @@ class Product extends Component {
             availableMIMETypes={[]}
             onSearch={() => {}}
             onQueryTimeout={({ isQueryTimedOut }) =>
-              this.setState({ isQueryTimedOut })
+              this.setState({ isQueryTimedOut,
+              noFilesText: "No product files found",
+              noFoldersText: "No product folders found" })
             }
           />
           <h4>Folders</h4>
@@ -221,7 +228,7 @@ class Product extends Component {
             this.state.isQueryTimedOut === true && (
               <div align={"center"}>
                 <Typography variant="subtitle1">
-                  No Product Folders Found
+                  {this.state.noFoldersText}
                 </Typography>
               </div>
             )}
@@ -246,7 +253,7 @@ class Product extends Component {
             this.state.isQueryTimedOut === true && (
               <div align={"center"}>
                 <Typography variant="subtitle1">
-                  No Product Files Found
+                  {this.state.noFilesText}
                 </Typography>
               </div>
             )}

@@ -20,7 +20,7 @@ import { OutlinedInput, Paper, withStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
-import { fmconnection } from "constants/connection";
+import * as fmservice from "services/fmservice"
 import ProgressBar from "components/ProgressBar"
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -67,12 +67,22 @@ class ProductIngest extends Component {
   state = {
     ingestedFile: null,
     productId: "",
-    productType: "GenericFile",
+    productType: "",
     productStructure: "Flat",
     isIngested: false,
     isIngestButtonClicked: false,
-    ingestedPercentage: 0
+    ingestedPercentage: 0,
+    productTypes: [],
   };
+
+  componentDidMount() {
+    fmservice
+      .getAllProductTypes()
+      .then((productTypes) =>
+        this.setState({ productTypes, productType: productTypes[0].name })
+      )
+      .catch((err) => console.error(err));
+  }
 
   handleFile(e) {
     let file = e.target.files[0];
@@ -103,35 +113,37 @@ class ProductIngest extends Component {
     let formData = new FormData();
     formData.append("productFile", this.state.ingestedFile);
 
-    let config = {
-      onUploadProgress: (progressEvent) => {
-        let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-        this.setState({ingestedPercentage: percentCompleted})
-      }
+    let onUploadProgress = (progressEvent) => {
+      let percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      this.setState({ ingestedPercentage: percentCompleted });
     };
 
-    fmconnection
-      .post(
-        "productWithFile?productType=" +
-          this.state.productType +
-          "&productStructure=" +
-          this.state.productStructure,
+    fmservice
+      .ingestProduct(
         formData,
-        config
+        this.state.productType,
+        this.state.productStructure,
+        onUploadProgress
       )
-      .then(result => {
-        this.setState({ 
-          productId: result.data,
+      .then((res) => {
+        this.setState({
+          productId: res.productId,
           isIngestButtonClicked: false,
-          isIngested: true 
-        },() => {
-          alert("Successfully Ingested Product ID :" + this.state.productId)
-          this.setState({ingestedFile: null, ingestedPercentage: 0})
+          isIngested: true,
+          ingestedFile: null,
+          ingestedPercentage: 0,
         });
+        alert("Successfully Ingested Product ID :" + res.productId);
       })
-      .catch(error => {
-        console.log(error);
-        this.setState({ isIngested: false,ingestedPercentage: 0,isIngestButtonClicked: false });
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          isIngested: false,
+          ingestedPercentage: 0,
+          isIngestButtonClicked: false,
+        });
         alert("Product Ingestion Failed : " + error);
       });
   }
@@ -167,12 +179,13 @@ class ProductIngest extends Component {
                 />
               }
             >
-              <MenuItem selected={true} value={"GenericFile"}>
-                GenericFile
-              </MenuItem>
-              <MenuItem value={"LocationAwareProduct"}>
-                LocationAwareProduct
-              </MenuItem>
+              {this.state.productTypes.map((productType) => {
+                return (
+                  <MenuItem value={productType.name}>
+                    {productType.name}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
 
@@ -206,7 +219,7 @@ class ProductIngest extends Component {
             type={"file"}
             name={"fileToUpload"}
             id={"fileToUpload"}
-            onChange={e => this.handleFile(e)}
+            onChange={(e) => this.handleFile(e)}
           />
 
           <Button
@@ -216,7 +229,9 @@ class ProductIngest extends Component {
           >
             Ingest Product
           </Button>
-          {this.state.isIngestButtonClicked && <ProgressBar value={this.state.ingestedPercentage} />}
+          {this.state.isIngestButtonClicked && (
+            <ProgressBar value={this.state.ingestedPercentage} />
+          )}
         </div>
       </Paper>
     );

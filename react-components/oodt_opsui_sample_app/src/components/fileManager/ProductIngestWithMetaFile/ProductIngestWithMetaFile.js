@@ -20,7 +20,7 @@ import { Paper, withStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
-import { fmconnection } from "constants/connection";
+import * as fmservice from "services/fmservice"
 import ProgressBar from "components/ProgressBar"
 
 const styles = theme => ({
@@ -78,24 +78,25 @@ class ProductIngestWithMetaFile extends Component {
     formData.append("productFile", this.state.ingestedFile);
     formData.append("metadataFile", this.state.metaFile);
 
-    let config = {
-      onUploadProgress: (progressEvent) => {
-        let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-        this.setState({ingestedPercentage: percentCompleted})
-      }
+    let onUploadProgress = (progressEvent) => {
+      let percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      this.setState({ ingestedPercentage: percentCompleted });
     };
 
-    fmconnection
-      .post("productWithMeta", formData, config)
-      .then((result) => {
+    fmservice
+      .ingestProductWithMetaFile(formData, onUploadProgress)
+      .then((res) => {
+        const { productId } = res;
         this.setState({
           isIngested: true,
-          productId: result.data,
+          productId: productId,
           ingestedFile: null,
           metaFile: null,
           isIngestButtonClicked: false,
         });
-        alert("Sucessfully Ingested :ProductId " + result.data);
+        alert("Sucessfully Ingested :ProductId " + productId);
       })
       .catch((error) => {
         console.error(error);
