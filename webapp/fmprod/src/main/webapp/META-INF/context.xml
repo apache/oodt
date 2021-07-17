@@ -32,6 +32,9 @@ the License.
   <Parameter name="filemgr.url"
     value="[FILEMGR_URL]" override="false"/>
 
+  <Parameter name="filemgr.datatransfer.factory"
+    value="[FILEMGR_DATATRANSFER_FACTORY]" override="false"/>
+
   <Parameter name="filemgr.working.dir"
     value="[FILEMGR_WORKINGDIR]" override="false"/>
 
