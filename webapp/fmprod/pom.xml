@@ -139,6 +139,9 @@
       <resource>
         <directory>${basedir}/src/main/dtd</directory>
       </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+      </resource>
     </resources>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
@@ -159,6 +162,9 @@
                 <include>CHANGES.txt</include>
               </includes>
               <targetPath>META-INF/</targetPath>
+            </resource>
+            <resource>
+              <directory>src/main/resources</directory>
             </resource>
           </webResources>
         </configuration>

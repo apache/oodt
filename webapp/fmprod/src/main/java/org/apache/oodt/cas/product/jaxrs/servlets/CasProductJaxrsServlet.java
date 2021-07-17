@@ -155,7 +155,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet {
         if (values.length == CONFIG_PARAM_LENGTH) {
           String format = values[CONFIG_PARAM_FORMAT];
           String name = values[CONFIG_PARAM_NAME];
-          String value = PathUtils.replaceEnvVariables(context.getInitParameter(parameterName));
+          String value = PathUtils.recursivelyReplaceEnvVariables(context.getInitParameter(parameterName));
 
           try {
             if ("rdf".equals(format)) {

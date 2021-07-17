@@ -55,12 +55,12 @@ import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.extractors.MetReaderExtractor;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
 import org.apache.oodt.cas.product.jaxrs.enums.ErrorType;
 import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
 import org.apache.oodt.cas.product.jaxrs.exceptions.InternalServerErrorException;
 import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
-import org.apache.oodt.cas.product.jaxrs.filters.CORSFilter;
 import org.apache.oodt.cas.product.jaxrs.resources.FMStatusResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductPageResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
@@ -75,10 +75,16 @@ import org.slf4j.LoggerFactory;
  */
 public class FileManagerJaxrsServiceV2 {
 
-  private static Logger logger = LoggerFactory.getLogger(CORSFilter.class);
+  private static Logger logger = LoggerFactory.getLogger(FileManagerJaxrsServiceV2.class);
 
   // The servlet context, which is used to retrieve context parameters.
   @Context private ServletContext context;
+  
+  private java.nio.file.Path tmpDir;
+  
+  public FileManagerJaxrsServiceV2() throws IOException {
+    tmpDir = Files.createTempDirectory("oodt");
+  }
 
   /**
    * Gets an HTTP request that represents a {@link ProductPage} from the file manager.
@@ -262,8 +268,7 @@ public class FileManagerJaxrsServiceV2 {
     } catch (Exception e) {
       // Just for Logging Purposes
       String message = "Unable to find the requested resource.";
-      logger.debug("Exception Thrown: {}", message);
-
+      logger.error(message, e);
       throw new NotFoundException(e.getMessage());
     }
   }
@@ -286,9 +291,6 @@ public class FileManagerJaxrsServiceV2 {
       @QueryParam("productType") String productType,
       @QueryParam("productStructure") String productStructure) {
     try {
-      String transferServiceFacClass =
-          "org.apache.oodt.cas." + "filemgr.datatransfer.LocalDataTransferFactory";
-
       // Take Data Handlers for Product and Metadata Files
       DataHandler productFileDataHandler = productFile.getDataHandler();
 
@@ -312,7 +314,7 @@ public class FileManagerJaxrsServiceV2 {
       URL fmURL = client.getFileManagerUrl();
 
       // Use StdIngester for Simple File Ingesting
-      StdIngester ingester = new StdIngester(transferServiceFacClass);
+      StdIngester ingester = new StdIngester(getDataTransferFactoryClass());
 
       /*
        * Use MetaReaderExtracter to extract File Metadata from Product File
@@ -337,6 +339,7 @@ public class FileManagerJaxrsServiceV2 {
       String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
       return Response.ok(ingest).build();
     } catch (Exception e) {
+      logger.error("Failed to ingest product", e);
       throw new InternalServerErrorException(e.getMessage());
     }
   }
@@ -356,9 +359,6 @@ public class FileManagerJaxrsServiceV2 {
       @Multipart("productFile") Attachment productFile,
       @Multipart("metadataFile") Attachment metadataFile) {
     try {
-      String transferServiceFacClass =
-          "org.apache.oodt.cas." + "filemgr.datatransfer.LocalDataTransferFactory";
-
       // Take Data Handlers for Product and Metadata Files
       DataHandler productFileDataHandler = productFile.getDataHandler();
       DataHandler metadataFileDataHandler = metadataFile.getDataHandler();
@@ -377,7 +377,7 @@ public class FileManagerJaxrsServiceV2 {
       URL fmURL = client.getFileManagerUrl();
 
       // Use StdIngester for Simple File Ingesting
-      StdIngester ingester = new StdIngester(transferServiceFacClass);
+      StdIngester ingester = new StdIngester(getDataTransferFactoryClass());
 
       Metadata prodMeta = new SerializableMetadata(metadataFileInputStream);
 
@@ -395,6 +395,7 @@ public class FileManagerJaxrsServiceV2 {
       String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
       return Response.ok(ingest).build();
     } catch (Exception e) {
+      logger.error("Failed to ingest product", e);
       throw new InternalServerErrorException(e.getMessage());
     }
   }
@@ -405,27 +406,18 @@ public class FileManagerJaxrsServiceV2 {
    * @param inputStream
    * @param fileName
    */
-  private File writeToFileServer(InputStream inputStream, String fileName) {
-
-    OutputStream outputStream = null;
-    File file = new File("ingestedFiles/" + fileName);
-    try {
-      java.nio.file.Path ingestedDir = Paths.get("ingestedFiles");
-      Files.createDirectories(ingestedDir);
-      java.nio.file.Path ingestedFile = ingestedDir.resolve(fileName);
-      outputStream = new FileOutputStream(ingestedFile.toFile());
+  private File writeToFileServer(InputStream inputStream, String fileName) throws IOException {
+    java.nio.file.Path ingestedFile = tmpDir.resolve(fileName);
+    try (OutputStream outputStream = new FileOutputStream(ingestedFile.toFile())) {
       int read = 0;
       byte[] bytes = new byte[1024];
       while ((read = inputStream.read(bytes)) != -1) {
         outputStream.write(bytes, 0, read);
       }
       outputStream.flush();
-      outputStream.close();
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    } finally {
-      return file;
     }
+    
+    return ingestedFile.toFile();
   }
 
   /**
@@ -470,6 +462,18 @@ public class FileManagerJaxrsServiceV2 {
     } catch (Exception e) {
       throw new InternalServerErrorException(e.getMessage());
     }
+  }
+  
+  private String getDataTransferFactoryClass() {
+    String factoryClass = context.getInitParameter("filemgr.datatransfer.factory");
+    if(factoryClass == null) {
+      factoryClass = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
+    } else {
+      factoryClass = PathUtils.replaceEnvVariables(factoryClass);
+    }
+    
+    logger.debug("Using data transfer factory: {}", factoryClass);
+    return factoryClass;
   }
 
   //  /**

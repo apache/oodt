@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
 
+import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -268,9 +269,10 @@ public class StdIngester implements Ingester, CoreMetKeys {
                     + url + "]");
             // instantiate the client transfer object
             // the crawler will have the client perform the transfer
-            fmClient
-                    .setDataTransfer(GenericFileManagerObjectFactory
-                            .getDataTransferServiceFromFactory(this.clientTransferServiceFactory));
+            DataTransfer dataTransfer = GenericFileManagerObjectFactory
+                    .getDataTransferServiceFromFactory(this.clientTransferServiceFactory);
+            dataTransfer.setFileManagerUrl(url);
+            fmClient.setDataTransfer(dataTransfer);
         } catch (ConnectionException e) {
             LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Unable to connect to file manager: [" + url

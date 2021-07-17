@@ -17,7 +17,7 @@
 -->
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
   <type id="urn:oodt:TraceableFile" name="TraceableFile">
-    <repository path="file://[HOME]/files"/>
+    <repository path="file://[FILEMGR_HOME]/data/files"/>
     <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
     <!--                                                                                                                                                            
      You can optionally specify a 'trim' tag to identify whether                                                                                                    

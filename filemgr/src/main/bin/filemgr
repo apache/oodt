@@ -36,7 +36,7 @@ fi
 export JAVA_HOME
 FILEMGR_HOME=`cd ..; pwd`
 export FILEMGR_HOME
-RUN_HOME=${FILEMGR_HOME}/../run
+RUN_HOME=${FILEMGR_HOME}/run
 export RUN_HOME
 CAS_FILEMGR_PROPS=../etc/filemgr.properties
 export CAS_FILEMGR_PROPS
@@ -66,11 +66,27 @@ else
     echo "Using standalone configuration management"
 fi
 
+if [ ! -z $DEBUG ]; then
+    echo "Running in debug mode on port: ${DEBUG}"
+    JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUG}"
+fi
+
 # See how we were called.
 case "$1" in
+  run)
+        echo -n "Starting cas file manager: "
+        $JAVA_HOME/bin/java ${JAVA_OPTS} \
+        	-cp ${LIB_DEPS} \
+        	${DISTRIBUTED_CONF_PROPERTIES} \
+        	-Dlog4j.configurationFile="${FILEMGR_HOME}/etc/log4j2.xml" \
+        	-Djava.util.logging.config.file="${FILEMGR_HOME}/etc/logging.properties" \
+    	    -Dorg.apache.oodt.cas.filemgr.properties=${CAS_FILEMGR_PROPS} \
+        	org.apache.oodt.cas.filemgr.system.FileManagerServerMain \
+        	--portNum $SERVER_PORT
+        ;;
   start)
         echo -n "Starting cas file manager: "
-        $JAVA_HOME/bin/java \
+        $JAVA_HOME/bin/java ${JAVA_OPTS} \
         	-cp ${LIB_DEPS} \
         	${DISTRIBUTED_CONF_PROPERTIES} \
         	-Dlog4j.configurationFile="${FILEMGR_HOME}/etc/log4j2.xml" \
@@ -101,7 +117,7 @@ case "$1" in
         fi
         ;;
   *)
-        echo "Usage: $0 {start|stop|restart|status}"
+        echo "Usage: $0 {run|start|stop|restart|status}"
         exit 1
 esac
 

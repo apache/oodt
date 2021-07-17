@@ -184,6 +184,10 @@ public class LocalDataTransferer implements DataTransfer {
          u = URI.create("file://"+ref.getDataStoreReference()).toURL().getPath();
        }
        File dataFile = new File(u);
+       if (!dataFile.exists()) {
+         LOG.warning("Couldn't file file to be deleted: " + dataFile.getAbsolutePath());
+         return;
+       }
        if (!dataFile.delete()) {
         throw new IOException(String.format("Failed to delete file %s - delete returned false",
             dataFile));
