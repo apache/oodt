@@ -22,7 +22,7 @@ import Box from "@material-ui/core/Box";
 class ProgressBar extends Component {
   render() {
     return (
-      <Box display="flex" alignItems="center" style={{ marginLeft: 20 }}>
+      <Box display="flex" alignItems="center" ml={3}>
         <Box width="100%" mr={1}>
           <LinearProgress
             variant="determinate"
