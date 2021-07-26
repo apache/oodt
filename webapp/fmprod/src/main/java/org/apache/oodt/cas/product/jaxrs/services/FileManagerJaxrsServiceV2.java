@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.activation.DataHandler;
@@ -55,7 +54,6 @@ import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.extractors.MetReaderExtractor;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.exceptions.CasProductException;
 import org.apache.oodt.cas.product.jaxrs.enums.ErrorType;
 import org.apache.oodt.cas.product.jaxrs.exceptions.BadRequestException;
@@ -76,6 +74,9 @@ import org.slf4j.LoggerFactory;
 public class FileManagerJaxrsServiceV2 {
 
   private static Logger logger = LoggerFactory.getLogger(FileManagerJaxrsServiceV2.class);
+
+  private static final String DATA_TRANSFER_FACTORY = 
+          "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
   // The servlet context, which is used to retrieve context parameters.
   @Context private ServletContext context;
@@ -465,13 +466,7 @@ public class FileManagerJaxrsServiceV2 {
   }
   
   private String getDataTransferFactoryClass() {
-    String factoryClass = context.getInitParameter("filemgr.datatransfer.factory");
-    if(factoryClass == null) {
-      factoryClass = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
-    } else {
-      factoryClass = PathUtils.replaceEnvVariables(factoryClass);
-    }
-    
+    String factoryClass = DATA_TRANSFER_FACTORY;
     logger.debug("Using data transfer factory: {}", factoryClass);
     return factoryClass;
   }

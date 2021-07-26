@@ -54,6 +54,7 @@ the License.
     <module>pcs/core</module>
     <module>pcs/opsui</module>
     <module>pcs/services</module>
+    <module>deployment</module>
   </modules>
 
   <scm>

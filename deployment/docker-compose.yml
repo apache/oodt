@@ -11,6 +11,8 @@ services:
     environment:
       - SOLR_URL=http://solr:8983
       - DEBUG=5005
+    volumes:
+      - filemgr-data:/filemgr/data
 
   opsui:
     image: oodt/opsui:latest
@@ -26,5 +28,9 @@ services:
     environment:
       FILEMGR_URL: http://filemgr:9000
       WORKFLOW_URL: http://wmgr:9001
-      FILEMGR_DATATRANSFER_FACTORY: org.apache.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory
       FILEMGR_WORKINGDIR: /tmp
+    volumes:
+      - filemgr-data:/filemgr/data
+
+volumes: 
+  filemgr-data:
