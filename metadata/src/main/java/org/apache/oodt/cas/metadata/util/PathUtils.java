@@ -88,6 +88,14 @@ public final class PathUtils {
 
         return finalPath.toString();
     }
+    
+    public static String recursivelyReplaceEnvVariables(String origPath) {
+        while (origPath != null && origPath.contains("[") && origPath.contains("]")) {
+            origPath = replaceEnvVariables(origPath);
+        }
+        
+        return origPath;
+    }
 
     public static String doDynamicReplacement(String string)
         throws ParseException, CommonsException, CasMetadataException {
