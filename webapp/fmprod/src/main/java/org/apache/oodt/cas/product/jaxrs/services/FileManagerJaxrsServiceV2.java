@@ -137,6 +137,11 @@ public class FileManagerJaxrsServiceV2 {
     }
   }
 
+  /**
+   * This method is for calculating the total number of products in the file manager and return it
+   *
+   * @return the total number of products in the file manager
+   */
   public int getTotalNumOfProducts() throws WebApplicationException {
     try {
       int totalFiles = 0;
