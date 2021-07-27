@@ -17,7 +17,7 @@
 import axios from "axios";
 
 export const fmconnection = axios.create({
-  baseURL: "http://"+window.location.hostname+":8080/cas_product_war/jaxrs/v2"
+  baseURL: process.env.REACT_APP_FM_REST_API_URL
 });
 
 export const wmconnection = axios.create({

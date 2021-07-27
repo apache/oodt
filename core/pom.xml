@@ -386,6 +386,12 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
+        <artifactId>workflow-services</artifactId>
+        <version>${project.parent.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
         <artifactId>cas-resource</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
