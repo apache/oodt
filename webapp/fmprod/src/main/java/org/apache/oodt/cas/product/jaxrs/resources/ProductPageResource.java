@@ -99,7 +99,12 @@ public class ProductPageResource {
           new ProductResource(product, metadata, productReferencesList.get(0), workingDir));
     }
   }
-
+    
+  /**
+   * Sets the total no. of products in the repository
+   *
+   * @param total no. of products to be set
+   */
   public void setTotalProducts(int totalProducts){
     this.totalProducts = totalProducts;
   }
@@ -136,7 +141,12 @@ public class ProductPageResource {
   public int getTotalPages() {
     return totalPages;
   }
-
+    
+  /**
+   * Gets the total no. of products in the repository
+   *
+   * @return the total no. of products 
+   */
   @XmlElement(name = "totalProducts")
   public int getTotalProducts() {
     return totalProducts;
