@@ -24,30 +24,22 @@
         <version>1.9-SNAPSHOT</version>
         <relativePath>../core/pom.xml</relativePath>
     </parent>
-    <artifactId>oodt-deployment</artifactId>
+    <artifactId>oodt-webapps</artifactId>
     <packaging>pom</packaging>
-    <name>OODT Deployment</name>
-    <description>Contains the docker based deployments for OODT</description>
+    <name>OODT Webapps</name>
+    <description>OODT Webapps</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>cas-filemgr</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>cas-product</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>workflow-services</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>oodt-reactjs-opsui</artifactId>
-            <type>pom</type>
-        </dependency>
-    </dependencies>
+    <properties>
+        <docker.build.disabled>false</docker.build.disabled>
+        <docker.image.name>oodt/tomcat:latest</docker.image.name>
+    </properties>
+
+    <modules>
+        <module>components</module>
+        <module>fmbrowser</module>
+        <module>fmprod</module>
+        <module>wmonitor</module>
+        <module>wmservices</module>
+    </modules>
+
 </project>
