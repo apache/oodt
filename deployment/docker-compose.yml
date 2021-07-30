@@ -14,6 +14,14 @@ services:
     volumes:
       - filemgr-data:/filemgr/data
 
+  workflowmgr:
+    image: oodt/workflowmgr:latest
+    restart: "no"
+    ports:
+      - 9001:9001
+    environment:
+      - SOLR_URL=http://solr:8983
+
   opsui:
     image: oodt/opsui:latest
     restart: "no"
@@ -27,10 +35,10 @@ services:
       - 8080:8080
     environment:
       FILEMGR_URL: http://filemgr:9000
-      WORKFLOW_URL: http://wmgr:9001
+      WORKFLOW_URL: http://workflowmgr:9001
       FILEMGR_WORKINGDIR: /tmp
     volumes:
       - filemgr-data:/filemgr/data
 
-volumes: 
+volumes:
   filemgr-data:
