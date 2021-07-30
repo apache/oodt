@@ -19,17 +19,13 @@ import React, { Component } from "react";
 import { OutlinedInput, Paper, withStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { fmconnection } from "constants/connection";
-import CircularProgress from "@material-ui/core/CircularProgress";
-
+import * as fmservice from "services/fmservice"
+import ProgressBar from "components/ProgressBar"
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Input from "@material-ui/core/Input";
 
 const styles = theme => ({
   root: {
@@ -38,8 +34,7 @@ const styles = theme => ({
     padding: 20
   },
   button: {
-    padding: 10,
-    margin: 20
+    marginLeft: 20
   },
   textField: {
     marginLeft: 2,
@@ -48,6 +43,8 @@ const styles = theme => ({
   layout: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
+    height: "15vh",
     padding: 0
   },
   progress: {
@@ -55,7 +52,6 @@ const styles = theme => ({
   },
   formControl: {
     margin: 1,
-    minWidth: 120
   }
 });
 
@@ -71,11 +67,22 @@ class ProductIngest extends Component {
   state = {
     ingestedFile: null,
     productId: "",
-    productType: "GenericFile",
+    productType: "",
     productStructure: "Flat",
     isIngested: false,
-    isIngestButtonClicked: false
+    isIngestButtonClicked: false,
+    ingestedPercentage: 0,
+    productTypes: [],
   };
+
+  componentDidMount() {
+    fmservice
+      .getAllProductTypes()
+      .then((productTypes) =>
+        this.setState({ productTypes, productType: productTypes[0].name })
+      )
+      .catch((err) => console.error(err));
+  }
 
   handleFile(e) {
     let file = e.target.files[0];
@@ -101,28 +108,42 @@ class ProductIngest extends Component {
   }
 
   ingestProduct() {
-    this.setState({ isIngested: false });
-    this.setState({ isIngestButtonClicked: true });
+    this.setState({ isIngested: false, isIngestButtonClicked: true });
 
-    let product = this.state.ingestedFile;
     let formData = new FormData();
-    formData.append("productFile", product);
-    fmconnection
-      .post(
-        "productWithFile?productType=" +
-          this.state.productType +
-          "&productStructure=" +
-          this.state.productStructure,
-        formData
+    formData.append("productFile", this.state.ingestedFile);
+
+    let onUploadProgress = (progressEvent) => {
+      let percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      this.setState({ ingestedPercentage: percentCompleted });
+    };
+
+    fmservice
+      .ingestProduct(
+        formData,
+        this.state.productType,
+        this.state.productStructure,
+        onUploadProgress
       )
-      .then(result => {
-        console.log(result);
-        this.setState({ productId: result.data });
-        this.setState({ isIngested: true });
+      .then((res) => {
+        this.setState({
+          productId: res.productId,
+          isIngestButtonClicked: false,
+          isIngested: true,
+          ingestedFile: null,
+          ingestedPercentage: 0,
+        });
+        alert("Successfully Ingested Product ID :" + res.productId);
       })
-      .catch(error => {
-        console.log(error);
-        this.setState({ isIngested: false });
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          isIngested: false,
+          ingestedPercentage: 0,
+          isIngestButtonClicked: false,
+        });
         alert("Product Ingestion Failed : " + error);
       });
   }
@@ -139,82 +160,78 @@ class ProductIngest extends Component {
         <br />
 
         <div className={classes.layout}>
-          <form>
-            <FormControl
-              variant="outlined"
-              className={classes.formControl}
-              style={{ width: "200px" }}
+          <FormControl
+            variant="outlined"
+            className={classes.formControl}
+            style={{ width: "180px" }}
+          >
+            <InputLabel htmlFor="outlined-product-Type-simple">
+              Product Type
+            </InputLabel>
+            <Select
+              value={this.state.productType}
+              onChange={this.handleProductType}
+              input={
+                <OutlinedInput
+                  labelWidth={100}
+                  name="Product Type"
+                  id="outlined-product-Type-simple"
+                />
+              }
             >
-              <InputLabel htmlFor="outlined-product-Type-simple">
-                Product Type
-              </InputLabel>
-              <Select
-                value={this.state.productType}
-                onChange={this.handleProductType}
-                input={
-                  <OutlinedInput
-                    labelWidth={100}
-                    name="Product Type"
-                    id="outlined-product-Type-simple"
-                  />
-                }
-              >
-                <MenuItem selected={true} value={"GenericFile"}>
-                  GenericFile
-                </MenuItem>
-                <MenuItem value={"LocationAwareProduct"}>
-                  LocationAwareProduct
-                </MenuItem>
-              </Select>
-            </FormControl>
+              {this.state.productTypes.map((productType) => {
+                return (
+                  <MenuItem value={productType.name}>
+                    {productType.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
 
-            <FormControl
-              variant="outlined"
-              className={classes.formControl}
-              style={{ width: "200px" }}
+          <FormControl
+            variant="outlined"
+            className={classes.formControl}
+            style={{ width: "180px" }}
+          >
+            <InputLabel htmlFor="outlined-product-structure-simple">
+              Product Structure
+            </InputLabel>
+            <Select
+              value={this.state.productStructure}
+              onChange={this.handleProductStructure}
+              input={
+                <OutlinedInput
+                  labelWidth={130}
+                  name="Product Structure"
+                  id="outlined-product-structure-simple"
+                />
+              }
             >
-              <InputLabel htmlFor="outlined-product-structure-simple">
-                Product Structure
-              </InputLabel>
-              <Select
-                value={this.state.productStructure}
-                onChange={this.handleProductStructure}
-                input={
-                  <OutlinedInput
-                    labelWidth={130}
-                    name="Product Structure"
-                    id="outlined-product-structure-simple"
-                  />
-                }
-              >
-                <MenuItem selected={true} value={"Flat"}>
-                  Flat
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </form>
+              <MenuItem selected={true} value={"Flat"}>
+                Flat
+              </MenuItem>
+            </Select>
+          </FormControl>
 
           <input
             className={classes.button}
             type={"file"}
             name={"fileToUpload"}
             id={"fileToUpload"}
-            onChange={e => this.handleFile(e)}
+            onChange={(e) => this.handleFile(e)}
           />
 
           <Button
             variant="contained"
             color="primary"
-            className={classes.button}
             onClick={this.ingestProduct}
           >
             Ingest Product
           </Button>
-
-          {this.state.isIngested === false &&
-            this.state.isIngestButtonClicked == true && <CircularProgress />}
-          {this.state.isIngested == true &&
-            alert("Successfully Ingested Product ID :" + this.state.productId)}
+          {this.state.isIngestButtonClicked && (
+            <ProgressBar value={this.state.ingestedPercentage} />
+          )}
         </div>
       </Paper>
     );

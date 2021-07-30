@@ -47,6 +47,7 @@ import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
@@ -62,6 +63,7 @@ import org.apache.oodt.cas.product.jaxrs.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.jaxrs.resources.FMStatusResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductPageResource;
 import org.apache.oodt.cas.product.jaxrs.resources.ProductResource;
+import org.apache.oodt.cas.product.jaxrs.resources.ProductTypeListResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,6 +121,49 @@ public class FileManagerJaxrsServiceV2 {
   }
 
   /**
+   * Gets an HTTP request that represents a {@link ProductTypeListResource} from the file manager.
+   *
+   * @return an HTTP response that represents a {@link ProductTypeListResource} from the file manager
+   */
+  @GET
+  @Path("productTypes")
+  @Produces({
+          "application/xml",
+          "application/json",
+          "application/atom+xml",
+          "application/rdf+xml",
+          "application/rss+xml"
+  })
+  public ProductTypeListResource getProductTypes() throws WebApplicationException {
+    try {
+      FileManagerClient client = getContextClient();
+      List<ProductType> productTypes = client.getProductTypes();
+      return new ProductTypeListResource(productTypes);
+    } catch (Exception e) {
+      throw new NotFoundException(e.getMessage());
+    }
+  }
+
+  /**
+   * This method is for calculating the total number of products in the file manager and return it
+   *
+   * @return the total number of products in the file manager
+   */
+  public int getTotalNumOfProducts() throws WebApplicationException {
+    try {
+      int totalFiles = 0;
+      FileManagerClient client = getContextClient();
+      List<ProductType> productTypes = client.getProductTypes();
+      for(ProductType productType: productTypes){
+        totalFiles += client.getNumProducts(productType);
+      }
+      return totalFiles;
+    } catch (Exception e) {
+      throw new InternalServerErrorException(e.getMessage());
+    }
+  }
+
+  /**
    * Gets an HTTP request that represents a {@link ProductPage} from the file manager.
    *
    * @param productTypeName the Name of a productType
@@ -145,13 +190,21 @@ public class FileManagerJaxrsServiceV2 {
       // Get the first ProductPage
       ProductPage firstpage = client.getFirstPage(client.getProductTypeByName(productTypeName));
 
+      if (currentProductPage == 1) {
+        return getProductPageResource(client,firstpage);
+      }
+
       // Get the next ProductPage
       ProductPage nextPage =
           client.getNextPage(client.getProductTypeByName(productTypeName), firstpage);
 
       // Searching for the current page
-      while (nextPage.getPageNum() < currentProductPage - 1) {
+      while (nextPage.getPageNum() != currentProductPage) {
+        int prevNextPageNum = nextPage.getPageNum();
         nextPage = client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
+        if(nextPage.getPageNum() == prevNextPageNum) {
+          throw new NotFoundException("No products");
+        }
       }
 
       // Get the next page from the current page
@@ -190,8 +243,10 @@ public class FileManagerJaxrsServiceV2 {
       proReferencesList.add(productReferences);
     }
 
-    return new ProductPageResource(
-        genericFile, proMetaDataList, proReferencesList, getContextWorkingDir());
+    ProductPageResource pageResource = new ProductPageResource(
+            genericFile, proMetaDataList, proReferencesList, getContextWorkingDir());
+    pageResource.setTotalProducts(getTotalNumOfProducts());
+    return pageResource;
   }
 
   /**

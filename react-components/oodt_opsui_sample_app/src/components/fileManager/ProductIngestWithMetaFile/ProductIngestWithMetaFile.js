@@ -20,8 +20,8 @@ import { Paper, withStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
-import { fmconnection } from "constants/connection";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import * as fmservice from "services/fmservice"
+import ProgressBar from "components/ProgressBar"
 
 const styles = theme => ({
   root: {
@@ -31,7 +31,7 @@ const styles = theme => ({
   },
   button: {
     padding: 10,
-    margin: 20
+    margin: 5
   },
   textField: {
     marginLeft: 2,
@@ -57,7 +57,8 @@ class ProductIngestWithMetaFile extends Component {
     metaFile: null,
     productId: "",
     isIngested: false,
-    isIngestButtonClicked: false
+    isIngestButtonClicked: false,
+    ingestedPercentage: 0
   };
 
   handleFile(e) {
@@ -71,25 +72,35 @@ class ProductIngestWithMetaFile extends Component {
   }
 
   ingestProduct() {
-    this.setState({ isIngested: false });
-    this.setState({ isIngestButtonClicked: true });
+    this.setState({ isIngested: false,isIngestButtonClicked: true });
 
-    let product = this.state.ingestedFile;
-    let metaProduct = this.state.metaFile;
     let formData = new FormData();
-    formData.append("productFile", product);
-    formData.append("metadataFile", metaProduct);
-    fmconnection
-      .post("productWithMeta", formData)
-      .then(result => {
-        console.log(result);
-        this.setState({ productId: result.data });
-        this.setState({ isIngested: true });
-        alert("Sucessfully Ingested :ProductId " + result.data);
+    formData.append("productFile", this.state.ingestedFile);
+    formData.append("metadataFile", this.state.metaFile);
+
+    let onUploadProgress = (progressEvent) => {
+      let percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      this.setState({ ingestedPercentage: percentCompleted });
+    };
+
+    fmservice
+      .ingestProductWithMetaFile(formData, onUploadProgress)
+      .then((res) => {
+        const { productId } = res;
+        this.setState({
+          isIngested: true,
+          productId: productId,
+          ingestedFile: null,
+          metaFile: null,
+          isIngestButtonClicked: false,
+        });
+        alert("Sucessfully Ingested :ProductId " + productId);
       })
-      .catch(error => {
-        console.log(error);
-        this.setState({ isIngested: false });
+      .catch((error) => {
+        console.error(error);
+        this.setState({ isIngested: false, isIngestButtonClicked: false });
         alert("Exception Thrown " + error);
       });
   }
@@ -102,10 +113,9 @@ class ProductIngestWithMetaFile extends Component {
         <Typography variant="h5" component="h3">
           Product Ingest with Meta File
         </Typography>
-
+        <br />
         <div className={classes.layout}>
-          <div>
-            <div>
+          
               <div>
                 <label>File</label>
                 <input
@@ -124,8 +134,7 @@ class ProductIngestWithMetaFile extends Component {
                   onChange={e => this.handleMetaFile(e)}
                 />
               </div>
-            </div>
-          </div>
+
 
           <Button
             variant="contained"
@@ -135,11 +144,7 @@ class ProductIngestWithMetaFile extends Component {
           >
             Ingest Product
           </Button>
-
-          {this.state.isIngested === false &&
-            this.state.isIngestButtonClicked == true && <CircularProgress />}
-          {this.state.isIngested == true &&
-            alert("Sucessfully Ingested :ProductId  :" + this.state.productId)}
+          {this.state.isIngestButtonClicked && <ProgressBar value={this.state.ingestedPercentage} />}
         </div>
       </Paper>
     );

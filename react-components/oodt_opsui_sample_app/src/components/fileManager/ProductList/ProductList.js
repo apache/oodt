@@ -16,20 +16,17 @@
  */
 
 import React, { Component } from "react";
-import { fmconnection } from "constants/connection";
+import * as fmservice  from "services/fmservice";
 import PropTypes from "prop-types";
-import { OutlinedInput, withStyles } from "@material-ui/core";
+import { withStyles,TablePagination } from "@material-ui/core";
 import clsx from "clsx";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import SimpleSnackBar from "./SimpleSnackBar";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
+import SearchBar from "./SearchBar"
 
 const styles = theme => ({
   root: {
@@ -78,13 +75,7 @@ const styles = theme => ({
 class Product extends Component {
   constructor(props) {
     super(props);
-    this.setProductTypeName = this.setProductTypeName.bind(this);
-    this.loadProducts = this.loadProducts.bind(this);
-    this.loadNextProducts = this.loadNextProducts.bind(this);
-    this.loadPrevProducts = this.loadPrevProducts.bind(this);
     this.onClick = this.onClick.bind(this);
-    this.handleProductType = this.handleProductType.bind(this);
-    this.searchProducts = this.searchProducts.bind(this);
   }
 
   state = {
@@ -92,109 +83,54 @@ class Product extends Component {
     productDetailsArray: [],
     productFilesArray: [],
     productFoldersArray: [],
-    productTypeName: "GenericFile",
     selectedProductId: "",
-    currentProductPage: 1,
+    currentProductPage: 0,
+    totalProductCount: 0,
     productTypeArray: [],
-    isSearchButtonClicked: true,
-    isTimedOut: true
+    isQueryTimedOut: true,
+    noFilesText: "Searching...",
+    noFoldersText: "Searching..."
   };
 
-  setProductTypeName(productTypeName) {
-    this.setState({ productTypeName: productTypeName });
+  componentDidMount() {
+    this.loadNextProducts();
   }
 
   onClick(message) {
     this.child.handleClick(message); // do stuff
   }
 
-  loadProducts() {
+
+
+  loadNextProducts = () => {
     this.setState({ productData: [] });
     this.setState({ productDetailsArray: [] });
     this.setState({ productFilesArray: [] });
     this.setState({ productFoldersArray: [] });
-    fmconnection
-      .get("/products?productTypeName=" + this.state.productTypeName)
 
-      .then(res => {
+    fmservice
+      .getProductPage("GenericFile", this.state.currentProductPage + 1)
+      .then((productPage) => {
         this.setState({
-          productData: res.data.productPage
-        });
-        this.setState({
-          productDetailsArray: this.state.productData.products.product
-        });
-
-        this.getFiles();
-        this.getFolders();
-
-        // Snackbar for Request Success
-        this.onClick("Request Successful !!");
-      })
-      .catch(error => {
-        if (error.response) {
-          console.log(error.response.data);
-          this.onClick("404 - Couldn't Find Resource");
-        }
-      });
-  }
-
-  loadNextProducts() {
-    this.setState({ currentProductPage: this.state.currentProductPage + 1 });
-    this.setState({ productData: [] });
-    this.setState({ productDetailsArray: [] });
-    this.setState({ productFilesArray: [] });
-    this.setState({ productFoldersArray: [] });
-    fmconnection
-      .get(
-        "/products?productTypeName=" +
-          this.state.productTypeName +
-          "&currentProductPage=" +
-          this.state.currentProductPage
-      )
-
-      .then(res => {
-        this.setState({
-          productData: res.data.productPage
-        });
-        this.setState({
-          productDetailsArray: this.state.productData.products.product
+          productData: productPage,
+          totalProductCount: productPage.totalProducts,
+          productDetailsArray: productPage.products.product,
         });
 
         this.getFiles();
         this.getFolders();
-        // Snackbar for Request Success
         this.onClick("Request Successful !!");
       })
       .catch(error => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
+          this.setState({
+            noFilesText: "No product files found",
+            noFoldersText: "No product folders found"
+          })
           this.onClick("404 - Couldn't Find Resource");
         }
       });
-  }
-
-  // Have to Implement
-  loadPrevProducts() {
-    this.setState({ currentProductPage: this.state.currentProductPage - 1 });
-    // this.setState({productData: []});
-    // this.setState({productDetailsArray: []});
-    // this.setState({productFilesArray: []});
-    // this.setState({productFoldersArray: []});
-    // fmconnection.get("/products?productTypeName=" + this.state.productTypeName+"&currentProductPage="+this.state.currentProductPage)
-    //
-    //     .then(res => {
-    //         this.setState({
-    //             productData: res.data.productPage,
-    //         });
-    //         this.setState({productDetailsArray: this.state.productData.products.product});
-    //
-    //         this.getFiles();
-    //         this.getFolders();
-    //         console.log(this.state.productDetailsArray);
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     });
   }
 
   getFiles() {
@@ -206,9 +142,10 @@ class Product extends Component {
         fileTypesArray.push(this.state.productDetailsArray[i].type);
       }
     }
+    if(fileArray.length === 0){
+      this.setState({noFilesText: "No product files found"})
+    }
     this.setState({ productFilesArray: fileArray });
-    let uniqueFileTypes = [...new Set(fileTypesArray)];
-    this.setState({ productTypeArray: uniqueFileTypes });
   }
 
   getFolders() {
@@ -218,6 +155,9 @@ class Product extends Component {
         folderArray.push(this.state.productDetailsArray[i]);
       }
     }
+    if(folderArray.length === 0){
+      this.setState({noFoldersText: "No product folders found"})
+    }
     this.setState({ productFoldersArray: folderArray });
   }
 
@@ -226,23 +166,10 @@ class Product extends Component {
     this.props.selectedProductId(this.state.selectedProductId);
   }
 
-  handleProductType(e) {
-    let productTypeName = e.target.value;
-    this.setState({ productTypeName: productTypeName });
-    this.setState({ isSearchButtonClicked: false });
-    this.setState({ isTimedOut: false });
+  handleChangePage = (event,newPageNo) => {
+    this.setState({currentProductPage: newPageNo},() => this.loadNextProducts())
   }
 
-  searchProducts() {
-    setTimeout(
-      function() {
-        this.setState({ isTimedOut: true });
-      }.bind(this),
-      3000
-    );
-    this.setState({ isSearchButtonClicked: true });
-    this.loadProducts();
-  }
   render() {
     const { classes } = this.props;
 
@@ -274,79 +201,40 @@ class Product extends Component {
       </div>
     ));
 
-    // List Product Types
-    let listProductTypes = this.state.productTypeArray.map(productType => (
-      <MenuItem selected={false} value={productType}>
-        {productType}
-      </MenuItem>
-    ));
-
     return (
       <div className={classes.root}>
         <Paper className={clsx(classes.paper, classes.fixedHeight)}>
           {/*Success/Error Snackbar*/}
-          <SimpleSnackBar onRef={ref => (this.child = ref)} />
-
-          {/*SearchBar component for productTypeName Search*/}
-          {/*<SearchBar*/}
-          {/*  productTypeNameProp={this.setProductTypeName}*/}
-          {/*  loadProducts={this.loadProducts}*/}
-          {/*/>*/}
-
-          {/*Product Type Listing Component*/}
-
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="outlined-product-Type-simple">
-              Product Type
-            </InputLabel>
-            <Select
-              value={this.state.productTypeName}
-              onChange={this.handleProductType}
-              input={
-                <OutlinedInput
-                  labelWidth={100}
-                  name="Product Type"
-                  id="outlined-product-Type-simple"
-                />
-              }
-              style={{ width: "400px" }}
-            >
-              <MenuItem selected={false} value={"Hello"}>
-                Hello
-              </MenuItem>
-              {listProductTypes}
-            </Select>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={this.searchProducts}
-            >
-              Search Products
-            </Button>
-          </FormControl>
-
-          {/*Load Folder Products*/}
+          <SimpleSnackBar onRef={(ref) => (this.child = ref)} />
+          <SearchBar
+            availableMIMETypes={[]}
+            onSearch={() => {}}
+            onQueryTimeout={({ isQueryTimedOut }) =>
+              this.setState({ isQueryTimedOut,
+              noFilesText: "No product files found",
+              noFoldersText: "No product folders found" })
+            }
+          />
           <h4>Folders</h4>
 
           {this.state.productFoldersArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === false && (
+            this.state.isQueryTimedOut === false && (
               <div align={"center"}>
                 <CircularProgress />
               </div>
             )}
 
           {this.state.productFoldersArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === true && (
+            this.state.isQueryTimedOut === true && (
               <div align={"center"}>
-                <Typography variant={"h5"}>No Product Files Found !</Typography>
+                <Typography variant="subtitle1">
+                  {this.state.noFoldersText}
+                </Typography>
               </div>
             )}
 
           {this.state.productFoldersArray.length > 0 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               {listFolderItems}
             </Grid>
           )}
@@ -355,44 +243,48 @@ class Product extends Component {
           <h4>Files</h4>
 
           {this.state.productFilesArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === false && (
+            this.state.isQueryTimedOut === false && (
               <div align={"center"}>
                 <CircularProgress />
               </div>
             )}
 
           {this.state.productFilesArray.length === 0 &&
-            this.state.isSearchButtonClicked === true &&
-            this.state.isTimedOut === true && (
+            this.state.isQueryTimedOut === true && (
               <div align={"center"}>
-                <Typography variant={"h5"}>No Product Files Found !</Typography>
+                <Typography variant="subtitle1">
+                  {this.state.noFilesText}
+                </Typography>
               </div>
             )}
 
           {this.state.productFilesArray.length > 0 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               {listFileItems}
             </Grid>
           )}
 
-          <Grid item xs={12} md={6}>
-            <Grid container spacing={1} direction="column" alignItems="center">
-              <Grid item>
-                <Button onClick={this.loadPrevProducts}>{"<<"}</Button>
-                <Button>{this.state.currentProductPage}</Button>
-                <Button onClick={this.loadNextProducts}>{">>"}</Button>
-              </Grid>
+          <Grid
+            style={{ width: "100%" }}
+            container
+            spacing={1}
+            direction="column"
+            alignItems="center"
+          >
+            <Grid item>
+              <TablePagination
+                component="div"
+                count={this.state.totalProductCount}
+                page={this.state.currentProductPage}
+                onChangePage={this.handleChangePage}
+                rowsPerPage={this.state.productDetailsArray.length}
+                rowsPerPageOptions={[]}
+              />
             </Grid>
           </Grid>
         </Paper>
       </div>
     );
-  }
-
-  // Load productType = GenericFile on component Mounting
-  componentDidMount() {
-    this.loadProducts();
   }
 }
 

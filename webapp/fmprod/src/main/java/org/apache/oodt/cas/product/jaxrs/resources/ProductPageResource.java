@@ -42,6 +42,7 @@ import org.apache.oodt.cas.metadata.Metadata;
       "pageSize",
       "pageNum",
       "totalPages",
+      "totalProducts",
       "numOfHits",
       "metadataResource",
       "productResources"
@@ -54,6 +55,7 @@ public class ProductPageResource {
   private int pageSize;
   private int pageNum;
   private int totalPages;
+  private int totalProducts;
   private long numOfHits;
 
   /* The file manager's working directory for this resource, used for example
@@ -97,6 +99,15 @@ public class ProductPageResource {
           new ProductResource(product, metadata, productReferencesList.get(0), workingDir));
     }
   }
+    
+  /**
+   * Sets the total no. of products in the repository
+   *
+   * @param total no. of products to be set
+   */
+  public void setTotalProducts(int totalProducts){
+    this.totalProducts = totalProducts;
+  }
 
   /**
    * Adds a {@link ProductResource} to the list of product resources for the dataset.
@@ -129,6 +140,16 @@ public class ProductPageResource {
   @XmlElement(name = "totalPages")
   public int getTotalPages() {
     return totalPages;
+  }
+    
+  /**
+   * Gets the total no. of products in the repository
+   *
+   * @return the total no. of products 
+   */
+  @XmlElement(name = "totalProducts")
+  public int getTotalProducts() {
+    return totalProducts;
   }
 
   @XmlElement(name = "numOfHits")

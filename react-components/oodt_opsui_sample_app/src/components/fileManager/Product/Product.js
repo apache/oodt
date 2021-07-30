@@ -22,7 +22,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
-import { fmconnection } from "constants/connection";
+import * as fmservice from "services/fmservice"
 import Grid from "@material-ui/core/Grid";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -65,40 +65,20 @@ class Product extends Component {
   }
 
   state = {
-    productData: [],
-    productMetaDataFileLocation: [],
-    productMetaDataFileType: [],
-    productMetaDataMimeType: [],
-    productReferencesData: [],
+    productData: {},
+    productMetaData: {},
+    productRefData: {},
     noResultsText: "No products"
   };
 
   componentDidMount() {
-    // Make a request for a product with a given ID
-    fmconnection
-      .get("/product?productId=" + this.props.productId)
-      .then(res => {
-        this.setState({
-          productData: res.data.product,
-          productMetaDataFileLocation: Object.values(
-            res.data.product.metadata
-          )[0][0],
-          productMetaDataFileType: Object.values(
-            res.data.product.metadata
-          )[0][1],
-          productMetaDataMimeType: Object.values(
-            res.data.product.metadata
-          )[0][7]["val"],
-          productReferencesData: res.data.product.references.reference
-        });
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    if (this.props.productId) {
+      this.loadProduct();
+    }
   }
-  
-  componentDidUpdate(prevProps){
-    if(this.props.productId !== prevProps.productId){
+
+  componentDidUpdate(prevProps) {
+    if (this.props.productId !== prevProps.productId) {
       this.loadProduct();
     }
   }
@@ -106,38 +86,38 @@ class Product extends Component {
   removeProduct() {
     let result = window.confirm("Are you Sure to Remove the Product ?" + this.props.productId)
     if (result) {
-      fmconnection
-        .delete("/removeProduct?productId=" + this.props.productId)
-        .then(res => {
+      fmservice
+        .removeProductById(this.props.productId)
+        .then((isDeleted) => {
           alert(
             "Product sucessfully removed productID: " + this.props.productId
           );
+          this.setState({
+            productData: {},
+            productMetaData: {},
+            productRefData: {},
+          });
+        })
+        .catch((err) => {
+          console.error(err);
         });
-    } else {
     }
   }
 
   loadProduct() {
-    this.setState({noResultsText: "Searching..."})
-    fmconnection
-      .get("/product?productId=" + this.props.productId)
-      .then(res => {
+    this.setState({ noResultsText: "Searching..." });
+    fmservice
+      .getProductById(this.props.productId)
+      .then((productData) => {
+        console.log(productData)
         this.setState({
-          productData: res.data.product,
-          productMetaDataFileLocation: Object.values(
-            res.data.product.metadata
-          )[0][0],
-          productMetaDataFileType: Object.values(
-            res.data.product.metadata
-          )[0][1],
-          productMetaDataMimeType: Object.values(
-            res.data.product.metadata
-          )[0][7]["val"],
-          productReferencesData: res.data.product.references.reference
+          productData: productData,
+          productMetaData: productData.metadata,
+          productRefData: productData.references,
         });
       })
-      .catch(err => {
-        this.setState({noResultsText: "No products"})
+      .catch((err) => {
+        this.setState({ noResultsText: "No products" });
         console.error(err);
       });
   }
@@ -145,23 +125,24 @@ class Product extends Component {
   getProdDataBySection = (sectionTitle) => {
     let productData = {
       "File info": {
-        "File name": this.state.productData["name"],
-        "Product ID": this.state.productData["id"],
-        "Structure": this.state.productData["structure"],
-        "Transfer Status": this.state.productData["transferStatus"]
+        "File name": this.state.productData?.name,
+        "Product ID": this.state.productData?.id,
+        "Structure": this.state.productData?.structure,
+        "Transfer Status": this.state.productData?.transferStatus
       },
       "Metadata info": {
-        "File location": this.state.productMetaDataFileLocation["val"],
-        "Product type": this.state.productMetaDataFileType["val"],
-        "MIME type": this.state.productMetaDataMimeType[0]
+        "File location": this.state.productMetaData?.FileLocation,
+        "Product type": this.state.productMetaData?.ProductType,
+        "MIME type": this.state.productMetaData?.MimeType[0],
       },
       "Reference info": {
-        "Data store ref. location": this.state.productReferencesData["dataStoreReference"],
-        "File size": this.state.productReferencesData["fileSize"],
-        "Original reference": this.state.productReferencesData["originalReference"]
-      }
-    }
-    return Object.entries(productData[sectionTitle]).map(([key,val]) => (
+        "Data store ref. location": this.state.productRefData?.dataStoreReference,
+        "File size": this.state.productRefData?.fileSize,
+        "Original reference": this.state.productRefData?.originalReference,
+      },
+    };
+
+    return Object.entries(productData[sectionTitle]).map(([key, val]) => (
       <React.Fragment key={key}>
       <Typography
         variant="subtitle1"
@@ -180,13 +161,17 @@ class Product extends Component {
       </Typography>
     </React.Fragment>
     ))
+  };
+
+  isObjEmpty = (obj) => {
+    return Object.keys(obj).length === 0
   }
 
   render() {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        {this.state.productData.length !== 0 ? (
+        {!this.isObjEmpty(this.state.productData) ? (
           <Card className={classes.card}>
             <Grid>
               <div
