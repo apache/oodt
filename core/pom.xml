@@ -40,6 +40,10 @@ the License.
     <wicket.version>1.4.17</wicket.version>
     <jetty.version>6.1.25</jetty.version>
     <sonar.language>java</sonar.language>
+    <!-- Docker -->
+    <docker.build.disabled>true</docker.build.disabled>
+    <docker.image.name/>
+    <docker.working.dir>${project.basedir}</docker.working.dir>
   </properties>
   <distributionManagement>
     <site>
@@ -386,6 +390,12 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
+        <artifactId>workflow-services</artifactId>
+        <version>${project.parent.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
         <artifactId>cas-resource</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
@@ -419,6 +429,12 @@ the License.
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-profile</artifactId>
         <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>oodt-reactjs-opsui</artifactId>
+        <version>${project.parent.version}</version>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
@@ -1073,6 +1089,43 @@ mm
             </execution>
           </executions>
         </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>docker</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+              <skip>${docker.build.disabled}</skip>
+            </configuration>
+            <executions>
+              <execution>
+                <id>docker-clean</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>docker</executable>
+                  <workingDirectory>${docker.working.dir}</workingDirectory>
+                  <arguments>
+                    <argument>build</argument>
+                    <argument>-t</argument>
+                    <argument>${docker.image.name}</argument>
+                    <argument>.</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>

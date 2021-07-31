@@ -19,9 +19,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
-    <artifactId>oodt-core</artifactId>
+    <artifactId>oodt-webapps</artifactId>
     <version>1.9-SNAPSHOT</version>
-    <relativePath>../../core/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cas-product</artifactId>
   <packaging>war</packaging>
@@ -31,6 +31,11 @@
     component. All-in-all, this project contributes an OODT LargeProductHandler
     component, that can be used to deliver and format a CAS product structure
     into an OODT XML Query Result Set.</description>
+  
+  <properties>
+    <docker.build.disabled>true</docker.build.disabled>
+  </properties>
+  
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
      Once the dependency is in the core pom, it can then be used in other modules without the version tags.
      For example, within core/pom.xml:
@@ -139,6 +144,9 @@
       <resource>
         <directory>${basedir}/src/main/dtd</directory>
       </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+      </resource>
     </resources>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
@@ -159,6 +167,9 @@
                 <include>CHANGES.txt</include>
               </includes>
               <targetPath>META-INF/</targetPath>
+            </resource>
+            <resource>
+              <directory>src/main/resources</directory>
             </resource>
           </webResources>
         </configuration>

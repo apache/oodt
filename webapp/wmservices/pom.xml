@@ -13,9 +13,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
-    <artifactId>oodt-core</artifactId>
+    <artifactId>oodt-webapps</artifactId>
     <version>1.9-SNAPSHOT</version>
-    <relativePath>../../core/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>workflow-services</artifactId>
   <packaging>war</packaging>
@@ -23,6 +23,9 @@
   <description>
     A set of REST-ful services for the Workflow Manager.
   </description>
+  <properties>
+    <docker.build.disabled>true</docker.build.disabled>
+  </properties>
   <build>
     <plugins>
       <plugin>

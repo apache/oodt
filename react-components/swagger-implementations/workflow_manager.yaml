@@ -60,7 +60,7 @@ paths:
         404:
           description: Workflow not Found
 
-  /workflows/firstpage:
+  /workflow/firstpage:
     get:
       tags:
         - Workflows
