@@ -38,7 +38,7 @@ FILEMGR_HOME=`cd ..; pwd`
 export FILEMGR_HOME
 RUN_HOME=${FILEMGR_HOME}/run
 export RUN_HOME
-CAS_FILEMGR_PROPS=../etc/filemgr.properties
+CAS_FILEMGR_PROPS=${FILEMGR_HOME}/etc/filemgr.properties
 export CAS_FILEMGR_PROPS
 
 PATH=${JAVA_HOME}/bin:${FILEMGR_HOME}/bin:/usr/bin:/bin:/usr/sbin:/sbin

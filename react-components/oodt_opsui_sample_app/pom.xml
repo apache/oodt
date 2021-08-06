@@ -22,32 +22,16 @@
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
         <version>1.9-SNAPSHOT</version>
-        <relativePath>../core/pom.xml</relativePath>
+        <relativePath>../../core/pom.xml</relativePath>
     </parent>
-    <artifactId>oodt-deployment</artifactId>
+    <artifactId>oodt-reactjs-opsui</artifactId>
     <packaging>pom</packaging>
-    <name>OODT Deployment</name>
-    <description>Contains the docker based deployments for OODT</description>
+    <name>OODT ReactJs OPSUI</name>
+    <description>OODT OPSUI implemented with ReactJs</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>cas-filemgr</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>cas-product</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>workflow-services</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>oodt-reactjs-opsui</artifactId>
-            <type>pom</type>
-        </dependency>
-    </dependencies>
+    <properties>
+        <docker.build.disabled>false</docker.build.disabled>
+        <docker.image.name>oodt/opsui:latest</docker.image.name>
+    </properties>
+
 </project>

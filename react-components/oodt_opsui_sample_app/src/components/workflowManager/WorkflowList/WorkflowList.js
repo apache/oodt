@@ -55,7 +55,7 @@ class WorkflowList extends Component {
 
   componentWillMount() {
     wmconnection
-      .get("/workflows/firstpage")
+      .get("/workflow/firstpage")
       .then(result => {
         this.setState({
           rows: result.data.workflowPageInstance.pageWorkflows
@@ -96,7 +96,7 @@ class WorkflowList extends Component {
 
   reloadWorkflow() {
     wmconnection
-      .get("/workflows/firstpage")
+      .get("/workflow/firstpage")
       .then(result => {
         this.setState({
           rows: result.data.workflowPageInstance.pageWorkflows
