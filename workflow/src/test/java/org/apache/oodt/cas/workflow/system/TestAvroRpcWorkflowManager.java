@@ -17,10 +17,14 @@
 
 package org.apache.oodt.cas.workflow.system;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.util.AvroTypeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +35,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TestAvroRpcWorkflowManager extends TestCase {
+public class TestAvroRpcWorkflowManager extends TestCase{
 
     private static final int WM_PORT = 65527;
 
@@ -41,7 +45,12 @@ public class TestAvroRpcWorkflowManager extends TestCase {
 
     private static final Logger LOG = Logger
             .getLogger(TestXmlRpcWorkflowManager.class.getName());
-
+    
+    /**
+     * {@link #startWorkflow()} fires an event of type "long". This event is associated with 2 instances of "LongWorkflow". Therefore, we should check if the
+     * number of workflow instances are 2 when asserting.
+     */
+    @Test
     public void testGetWorkflowInstances() {
 
         Vector workflowInsts = null;
@@ -62,19 +71,24 @@ public class TestAvroRpcWorkflowManager extends TestCase {
         assertEquals(2, workflowInsts.size());
     }
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         startAvroRpcWorkflowManager();
         startWorkflow();
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         wmgr.shutdown();
     }
 
     private void startWorkflow() {
         try (WorkflowManagerClient client =
                      new AvroRpcWorkflowManagerClient(new URL("http://localhost:" + WM_PORT))) {
-            client.sendEvent("long", new Metadata());
+            Metadata metadata = new Metadata();
+            // Hold the task for 20 seconds at least            
+            metadata.addMetadata("numSeconds", String.valueOf(20));
+            client.sendEvent("long", metadata);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -117,11 +131,9 @@ public class TestAvroRpcWorkflowManager extends TestCase {
             }
         }
 
-        System
-                .setProperty("workflow.engine.instanceRep.factory",
+        System.setProperty("workflow.engine.instanceRep.factory",
                         "org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepositoryFactory");
-        System
-                .setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
+        System.setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
                         luceneCatLoc);
 
         try {

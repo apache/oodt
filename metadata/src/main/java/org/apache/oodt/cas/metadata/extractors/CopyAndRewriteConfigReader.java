@@ -46,7 +46,7 @@ public class CopyAndRewriteConfigReader implements MetExtractorConfigReader {
             throws MetExtractorConfigReaderException {
         try {
             CopyAndRewriteConfig config = new CopyAndRewriteConfig();
-            config.load(configFile.toURL().openStream());
+            config.load(configFile.toURI().toURL().openStream());
             return config;
         } catch (Exception e) {
             throw new MetExtractorConfigReaderException("Failed to parse '"

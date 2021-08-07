@@ -19,27 +19,30 @@ package org.apache.oodt.cas.resource.system.rpc;
 
 import org.apache.oodt.cas.resource.system.ResourceManager;
 import org.apache.oodt.cas.resource.system.ResourceManagerClient;
+import org.apache.oodt.cas.resource.system.XmlRpcResourceManager;
+import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 
 public class ResourceManagerFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceManagerFactory.class);
-
+    
     private static void loadProperties() {
         // set up the configuration, if there is any
-        if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
-            String configFile = System.getProperty("org.apache.oodt.cas.resource.properties");
+        if (System.getProperty(ResourceManager.RESMGR_PROPERTIES_FILE_SYSTEM_PROPERTY) != null) {
+            String configFile = System.getProperty(ResourceManager.RESMGR_PROPERTIES_FILE_SYSTEM_PROPERTY);
 
-            logger.info("Loading File Manager Configuration Properties from: [{}]", configFile);
+            logger.info("Loading resource manager configuration properties from: [{}]", configFile);
             try {
                 System.getProperties().load(new FileInputStream(new File(configFile)));
-            } catch (Exception e) {
+            } catch (IOException e) {
                 logger.error("Error loading configuration properties from: [{}]", configFile);
             }
         }
@@ -47,8 +50,8 @@ public class ResourceManagerFactory {
 
     public static ResourceManager getResourceManager(int port) throws Exception {
         loadProperties();
-        String resourceManagerClass = System.getProperty("resmgr.manager",
-                "org.apache.oodt.cas.resource.system.AvroRpcResourceManager");
+        String resourceManagerClass = System.getProperty(ResourceManager.RESMGR_SYSTEM_PROPERTY,
+                XmlRpcResourceManager.class.getName());
 
         logger.info("Creating resource manager {} at port: {}", resourceManagerClass, port);
 
@@ -66,8 +69,8 @@ public class ResourceManagerFactory {
 
     public static ResourceManagerClient getResourceManagerClient(URL url) throws IllegalStateException {
         loadProperties();
-        String resMgrClientClass = System.getProperty("resmgr.manager.client",
-                "org.apache.oodt.cas.resource.system.AvroRpcResourceManagerClient");
+        String resMgrClientClass = System.getProperty(ResourceManager.RESMGR_CLIENT_SYSTEM_PROPERTY,
+                XmlRpcResourceManagerClient.class.getName());
 
         logger.info("Creating resource manager client {}", resMgrClientClass);
 

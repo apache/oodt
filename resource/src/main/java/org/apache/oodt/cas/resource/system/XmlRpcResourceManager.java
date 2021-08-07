@@ -63,7 +63,7 @@ import java.util.logging.Logger;
 public class XmlRpcResourceManager implements ResourceManager{
 
     /** our log stream */
-    private Logger LOG = Logger.getLogger(XmlRpcResourceManager.class.getName());
+    private static Logger LOG = Logger.getLogger(XmlRpcResourceManager.class.getName());
 
     private int port;
     /** our xml rpc web server */
@@ -77,8 +77,8 @@ public class XmlRpcResourceManager implements ResourceManager{
         this.port = port;
         List<String> propertiesFiles = new ArrayList<>();
         // set up the configuration, if there is any
-        if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
-            propertiesFiles.add(System.getProperty("org.apache.oodt.cas.resource.properties"));
+        if (System.getProperty(ResourceManager.RESMGR_PROPERTIES_FILE_SYSTEM_PROPERTY) != null) {
+            propertiesFiles.add(System.getProperty(ResourceManager.RESMGR_PROPERTIES_FILE_SYSTEM_PROPERTY));
         }
 
         configurationManager = ConfigurationManagerFactory.getConfigurationManager(Component.RESOURCE_MANAGER, propertiesFiles);
@@ -453,10 +453,16 @@ public class XmlRpcResourceManager implements ResourceManager{
             System.err.println(usage);
             System.exit(1);
         }
-
-        new XmlRpcResourceManager(portNum);
-
-        for (;;) {
+	
+		XmlRpcResourceManager resourceManager = new XmlRpcResourceManager(portNum);
+		try {
+			resourceManager.startUp();
+		} catch (Exception e) {
+			LOG.log(Level.SEVERE, "An error occurred while starting resource manager", e);
+			return;
+		}
+	
+		for (;;) {
             try {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {

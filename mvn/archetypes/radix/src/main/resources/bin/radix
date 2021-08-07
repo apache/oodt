@@ -18,6 +18,6 @@ mvn archetype:generate \
     -DarchetypeArtifactId=radix-archetype \
     -DarchetypeVersion=1.9 \
     -Doodt=1.9 \
-    -DgroupId=org.apache.oodt \
+    -DgroupId=com.mycompany \
     -DartifactId=radix-build \
     -Dversion=1.0-SNAPSHOT
