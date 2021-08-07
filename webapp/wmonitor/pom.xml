@@ -20,9 +20,9 @@ the License.
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
-    <artifactId>oodt-webapps</artifactId>
+    <artifactId>oodt-core</artifactId>
     <version>1.10-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <artifactId>wmonitor</artifactId>
   <packaging>war</packaging>
