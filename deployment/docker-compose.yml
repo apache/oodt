@@ -12,7 +12,8 @@ services:
       - SOLR_URL=http://solr:8983
       - DEBUG=5005
     volumes:
-      - filemgr-data:/filemgr/data
+      - ./filemgr/data:/filemgr/data
+      - ./filemgr/policy:/filemgr/policy
 
   workflowmgr:
     image: oodt/workflowmgr:latest
@@ -21,6 +22,8 @@ services:
       - 9001:9001
     environment:
       - SOLR_URL=http://solr:8983
+    volumes:
+      - ./workflowmgr/policy:/workflowmgr/policy
 
   opsui:
     image: oodt/opsui:latest
@@ -38,7 +41,7 @@ services:
       WORKFLOW_URL: http://workflowmgr:9001
       FILEMGR_WORKINGDIR: /tmp
     volumes:
-      - filemgr-data:/filemgr/data
+      - ./filemgr/data:/filemgr/data
 
 volumes:
   filemgr-data:
