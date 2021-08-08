@@ -85,6 +85,9 @@ public class ProductPageResourceTest {
             + "<totalPages>"
             + resource.getTotalPages()
             + "</totalPages>"
+            + "<totalProducts>"
+            + resource.getTotalProducts()
+            + "</totalProducts>"
             + "<numOfHits>"
             + resource.getNumOfHits()
             + "</numOfHits>"
