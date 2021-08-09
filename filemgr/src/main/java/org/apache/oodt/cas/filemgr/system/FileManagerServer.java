@@ -27,7 +27,11 @@ import org.apache.oodt.cas.filemgr.catalog.Catalog;
  *
  */
 public interface FileManagerServer {
-
+    
+    String FILEMGR_PROPERTIES_FILE_SYSTEM_PROPERTY = "org.apache.oodt.cas.filemgr.properties";
+    String FILEMGR_SERVER_SYSTEM_PROPERTY = "filemgr.server";
+    String FILEMGR_CLIENT_SYSTEM_PROPERTY = "filemgr.client";
+    
     /**
      *
      * <p>Preparing and starting up the rpc server.</p>

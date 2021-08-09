@@ -53,7 +53,7 @@ public class ConfigurationTest extends TestCase {
 
 	/** Test the various property methods. */
 	public void testConfiguration() throws IOException, SAXException {
-		Configuration c = new Configuration(tmpFile.toURL());
+		Configuration c = new Configuration(tmpFile.toURI().toURL());
 		Properties props = new Properties();
 		props.setProperty("globalKey1", "preset-value");
 		c.mergeProperties(props);

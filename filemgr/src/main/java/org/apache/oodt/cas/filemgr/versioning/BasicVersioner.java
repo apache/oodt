@@ -84,7 +84,7 @@ public class BasicVersioner implements Versioner {
             String dataStoreRef;
 
             try {
-                dataStoreRef = new File(new URI(productRepoPath)).toURL()
+                dataStoreRef = new File(new URI(productRepoPath)).toURI().toURL()
                         .toExternalForm();
                 if(!dataStoreRef.endsWith("/")){
                   dataStoreRef+="/";

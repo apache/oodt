@@ -19,6 +19,11 @@ package org.apache.oodt.cas.resource.system;
 
 public interface ResourceManager {
 
+    String RESMGR_PROPERTIES_FILE_SYSTEM_PROPERTY = "org.apache.oodt.cas.resource.properties";
+    String RESMGR_SYSTEM_PROPERTY = "resmgr.manager";
+    String RESMGR_CLIENT_SYSTEM_PROPERTY = "resmgr.manager.client";
+    
+    
     void startUp() throws Exception;
 
     boolean isAlive();

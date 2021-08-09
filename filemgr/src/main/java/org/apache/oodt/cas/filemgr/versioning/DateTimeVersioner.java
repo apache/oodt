@@ -109,7 +109,7 @@ public class DateTimeVersioner implements Versioner {
 
             try {
               dataStoreRef = new File(new URI(product.getProductType()
-                                                     .getProductRepositoryPath())).toURL()
+                                                     .getProductRepositoryPath())).toURI().toURL()
                                                                                   .toExternalForm()
                              + "/"
                              + product.getProductName()
@@ -154,7 +154,7 @@ public class DateTimeVersioner implements Versioner {
 
             try {
                 String dataStoreRef = new File(new URI(product.getProductType()
-                        .getProductRepositoryPath())).toURL().toExternalForm()
+                        .getProductRepositoryPath())).toURI().toURL().toExternalForm()
                         + URLEncoder.encode(product.getProductName(), "UTF-8")
                         + "/";
                 LOG.log(Level.INFO,

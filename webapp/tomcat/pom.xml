@@ -22,26 +22,19 @@
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
         <version>1.10-SNAPSHOT</version>
-        <relativePath>../core/pom.xml</relativePath>
+        <relativePath>../../core/pom.xml</relativePath>
     </parent>
-    <artifactId>oodt-deployment</artifactId>
+    <artifactId>oodt-webapps</artifactId>
     <packaging>pom</packaging>
-    <name>OODT Deployment</name>
-    <description>Contains the docker based deployments for OODT</description>
+    <name>OODT Webapps</name>
+    <description>OODT Webapps</description>
 
+    <properties>
+        <docker.build.disabled>false</docker.build.disabled>
+        <docker.image.name>oodt/tomcat:latest</docker.image.name>
+    </properties>
+    
     <dependencies>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>cas-filemgr</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>cas-workflow</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
         <dependency>
             <groupId>org.apache.oodt</groupId>
             <artifactId>cas-product</artifactId>
@@ -52,13 +45,8 @@
             <artifactId>workflow-services</artifactId>
             <type>war</type>
         </dependency>
-        <dependency>
-            <groupId>org.apache.oodt</groupId>
-            <artifactId>oodt-reactjs-opsui</artifactId>
-            <type>pom</type>
-        </dependency>
     </dependencies>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -70,48 +58,30 @@
                         <id>unpack</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>copy</goal>
                         </goals>
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.oodt</groupId>
-                                    <artifactId>cas-filemgr</artifactId>
+                                    <artifactId>cas-product</artifactId>
                                     <version>${project.version}</version>
-                                    <type>zip</type>
+                                    <type>war</type>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/docker-compose</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/webapps</outputDirectory>
                                     <includes>*/policy/**</includes>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.oodt</groupId>
-                                    <artifactId>cas-workflow</artifactId>
+                                    <artifactId>workflow-services</artifactId>
                                     <version>${project.version}</version>
-                                    <type>zip</type>
+                                    <type>war</type>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/docker-compose</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/webapps</outputDirectory>
                                     <includes>*/policy/**</includes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <phase>install</phase>
                     </execution>
                 </executions>
             </plugin>
