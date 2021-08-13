@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.server.RemoteObject;
@@ -231,7 +232,7 @@ public class AvroExecServer {
                 } else {
                     org.omg.PortableServer.Servant servant=(org.omg.PortableServer.Servant)server.getServant();
                     org.omg.CORBA.ORB orb = servant._orb();
-                    System.out.println(orb.object_to_string(servant._this_object(orb)));
+                    System.out.println(orb.object_to_string(servant._this_object(orb)));         
                 }
                 System.out.flush();
             }
@@ -332,13 +333,18 @@ public class AvroExecServer {
         } catch (NamingException ignore) {}
 
         // Kill the ORB.  YEAH!  KILL IT, KILL IT, KIIIIIIIIIIIIIIL IIIIIIIIT!!!!!!!1
+        // Replace org.omg dependent code with reflection (to make it compatible with Java 11 (LTS))
         try {
-            if (servant instanceof org.omg.PortableServer.Servant) {
-                org.omg.PortableServer.Servant s = (org.omg.PortableServer.Servant) servant;
-                org.omg.CORBA.ORB orb = s._orb();
-                orb.shutdown(false/*=>terminate without waiting for reqs to complete*/);
+            Class<?> servantClass = Class.forName("org.omg.PortableServer.Servant");
+            Class<?> orbClass = Class.forName("org.omg.CORBA.ORB");
+            if (servantClass.isInstance(servant)) {
+                Object s = servantClass.cast(servant);
+                Object orb = orbClass.cast(servantClass.getDeclaredMethod("_orb").invoke(s));
+                orbClass.getDeclaredMethod("shutdown", boolean.class)
+                        .invoke(orb, false/*=>terminate without waiting for reqs to complete*/);
             }
-        } catch (Throwable ignore) {}
+        } catch (Exception ignore) {
+        }
     }
 
     /** Get my name.

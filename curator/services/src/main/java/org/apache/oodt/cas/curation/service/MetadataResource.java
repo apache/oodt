@@ -662,7 +662,7 @@ public class MetadataResource extends CurationService {
       InstantiationException, RepositoryManagerException {
     String rootPolicyPath = this.cleanse(CurationService.config
         .getPolicyUploadPath());
-    String policyPath = new File(rootPolicyPath + policy).toURL()
+    String policyPath = new File(rootPolicyPath + policy).toURI().toURL()
         .toExternalForm();
     String[] policies = { policyPath };
     XMLRepositoryManager repMgr = new XMLRepositoryManager(Arrays
@@ -678,7 +678,7 @@ public class MetadataResource extends CurationService {
             CurationException {
         String rootPolicyPath = this.cleanse(CurationService.config
                 .getPolicyUploadPath());
-        String policyPath = new File(rootPolicyPath + policy).toURL()
+        String policyPath = new File(rootPolicyPath + policy).toURI().toURL()
                 .toExternalForm();
         String[] policies = {policyPath};
         XMLRepositoryManager repMgr = new XMLRepositoryManager(Arrays

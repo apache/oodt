@@ -84,7 +84,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
       try {
           met = new SerializableMetadata(new File(PathUtils
                   .replaceEnvVariables(((CopyAndRewriteConfig) this.config)
-                          .getProperty("orig.met.file.path"))).toURL()
+                          .getProperty("orig.met.file.path"))).toURI().toURL()
                   .openStream());
       } catch (Exception e) {
           LOG.log(Level.SEVERE, e.getMessage());

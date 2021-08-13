@@ -469,7 +469,7 @@ public class XMLValidationLayer implements ValidationLayer {
         InputStream xmlInputStream;
 
         try {
-            xmlInputStream = new File(xmlFile).toURL().openStream();
+            xmlInputStream = new File(xmlFile).toURI().toURL().openStream();
         } catch (IOException e) {
             LOG.log(Level.WARNING,
                     "IOException when getting input stream from [" + xmlFile
