@@ -66,17 +66,12 @@ class SearchBar extends Component {
         if(e.keyCode === 13){
             console.log(e.target.value);
             this.props.setSelectedProductId(this.state.selectedProductId);
-            // this.click();
         }
     }
 
     handleSearchIconClick = () => {
         this.props.setSelectedProductId(this.state.selectedProductId)
     }
-
-    // click() {
-    //     this.props.loadProducts();
-    // }
 
     render(){
         const { classes } = this.props;

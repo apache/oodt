@@ -1,26 +1,11 @@
 import React, {Component} from "react";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import OPSUIHome from "./components/OPSUIHome";
-import SearchBar from "./components/SearchBar";
 import ComponentStatus from "./components/ComponentStatus";
 import {WorkflowList} from "./components/workflowManager";
 import {Product, ProductIngest, ProductIngestWithMetaFile, ProductList} from "./components/fileManager";
 
 class MyApp extends Component {
-
-  constructor(props) {
-    super(props);
-    this.setSelectedProductId = this.setSelectedProductId.bind(this);
-  }
-
-  state = {
-    selectedProductId: ""
-  };
-
-  setSelectedProductId(productId) {
-    this.setState({ selectedProductId: productId });
-  }
-
   render() {
     return (
       <BrowserRouter>
@@ -39,8 +24,8 @@ class MyApp extends Component {
 
             <Route
               path={"/products"}
-              render={() => (
-                <ProductList selectedProductId={this.setSelectedProductId} />
+              render={(props) => (
+                <ProductList selectedProductId={this.setSelectedProductId} {...props}/>
               )}
             />
 
@@ -59,9 +44,7 @@ class MyApp extends Component {
               path={"/product"}
               render={() => (
                 <div>
-                  <SearchBar setSelectedProductId={this.setSelectedProductId} />
-                  <br />
-                  <Product productId={this.state.selectedProductId} />
+                  <Product />
                 </div>
               )}
             />

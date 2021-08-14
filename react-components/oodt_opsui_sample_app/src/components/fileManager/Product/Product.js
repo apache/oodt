@@ -26,6 +26,7 @@ import * as fmservice from "services/fmservice"
 import Grid from "@material-ui/core/Grid";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import DeleteIcon from '@material-ui/icons/Delete';
+import SingleProductSearchBar from "./SearchBar"
 
 const styles = theme => ({
   root: {
@@ -65,6 +66,7 @@ class Product extends Component {
   }
 
   state = {
+    selectedProductId: null,
     productData: {},
     productMetaData: {},
     productRefData: {},
@@ -72,14 +74,12 @@ class Product extends Component {
   };
 
   componentDidMount() {
-    if (this.props.productId) {
-      this.loadProduct();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.productId !== prevProps.productId) {
-      this.loadProduct();
+    const productIdFromParams = new URLSearchParams(window.location.search).get("id")
+    if (this.state.selectedProductId) {
+      this.loadProduct(this.state.selectedProductId);
+    } else if (productIdFromParams) {
+      this.setState({selectedProductId: productIdFromParams}) 
+      this.loadProduct(productIdFromParams)
     }
   }
 
@@ -104,12 +104,11 @@ class Product extends Component {
     }
   }
 
-  loadProduct() {
+  loadProduct(productId) {
     this.setState({ noResultsText: "Searching..." });
     fmservice
-      .getProductById(this.props.productId)
+      .getProductById(productId)
       .then((productData) => {
-        console.log(productData)
         this.setState({
           productData: productData,
           productMetaData: productData.metadata,
@@ -120,6 +119,11 @@ class Product extends Component {
         this.setState({ noResultsText: "No products" });
         console.error(err);
       });
+  }
+
+  setSelectedProductId = (productId) => {
+    this.setState({selectedProductId: productId})
+    this.loadProduct(productId)
   }
 
   getProdDataBySection = (sectionTitle) => {
@@ -171,6 +175,8 @@ class Product extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
+        <SingleProductSearchBar setSelectedProductId={this.setSelectedProductId} productId={this.state.selectedProductId}/>
+        <br />
         {!this.isObjEmpty(this.state.productData) ? (
           <Card className={classes.card}>
             <Grid>
