@@ -76,6 +76,7 @@ class Product extends Component {
   componentDidMount() {
     const productIdFromParams = new URLSearchParams(window.location.search).get("id")
     if (this.state.selectedProductId) {
+      this.props.history.push("/product")
       this.loadProduct(this.state.selectedProductId);
     } else if (productIdFromParams) {
       this.setState({selectedProductId: productIdFromParams}) 
@@ -122,6 +123,7 @@ class Product extends Component {
   }
 
   setSelectedProductId = (productId) => {
+    this.props.history.push("/product")
     this.setState({selectedProductId: productId})
     this.loadProduct(productId)
   }

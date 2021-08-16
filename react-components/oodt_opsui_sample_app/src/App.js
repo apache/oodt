@@ -42,9 +42,9 @@ class MyApp extends Component {
 
             <Route
               path={"/product"}
-              render={() => (
+              render={(props) => (
                 <div>
-                  <Product />
+                  <Product {...props}/>
                 </div>
               )}
             />
