@@ -25,7 +25,9 @@ import ProgressBar from "components/ProgressBar"
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
+import SimpleSnackBar from "components/SimpleSnackBar"
 import Select from "@material-ui/core/Select";
+import {shrinkString} from "utils/utils"
 
 const styles = theme => ({
   root: {
@@ -45,19 +47,23 @@ const styles = theme => ({
     flexDirection: "row",
     alignItems: "center",
     height: "15vh",
+    justifyContent: "space-between",
     padding: 0
   },
   progress: {
     margin: 2
   },
-  formControl: {
-    margin: 1,
-  }
+  formControlContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "40%",
+  },
 });
 
 class ProductIngest extends Component {
   constructor(props) {
     super(props);
+    this.snackBarRef = React.createRef();
     this.handleFile = this.handleFile.bind(this);
     this.handleProductStructure = this.handleProductStructure.bind(this);
     this.handleProductType = this.handleProductType.bind(this);
@@ -66,6 +72,7 @@ class ProductIngest extends Component {
 
   state = {
     ingestedFile: null,
+    ingestedFileName: "",
     productId: "",
     productType: "",
     productStructure: "Flat",
@@ -81,12 +88,15 @@ class ProductIngest extends Component {
       .then((productTypes) =>
         this.setState({ productTypes, productType: productTypes[0].name })
       )
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err)
+        this.openSnackBar("Couldn't get the available product types","warning")
+      });
   }
 
   handleFile(e) {
     let file = e.target.files[0];
-    this.setState({ ingestedFile: file });
+    this.setState({ ingestedFile: file,ingestedFileName: shrinkString(file.name,25,6) });
   }
 
   handleProductStructure(e) {
@@ -97,19 +107,26 @@ class ProductIngest extends Component {
   handleProductType(e) {
     let productType = e.target.value;
     this.setState({ productType: productType });
-    console.log(this.state.productType);
   }
 
   keyPress(e) {
     if (e.keyCode === 13) {
-      console.log(e.target.value);
       this.handleProductStructure();
     }
   }
 
   ingestProduct() {
     this.setState({ isIngested: false, isIngestButtonClicked: true });
-
+    if(!this.state.ingestedFile){
+      this.openSnackBar("No product selected","error")
+      this.setState({isIngestButtonClicked: false})
+      return;
+    }
+    if(!this.state.productType){
+      this.openSnackBar("Product type is not selected","error")
+      this.setState({isIngestButtonClicked: false})
+      return;
+    }
     let formData = new FormData();
     formData.append("productFile", this.state.ingestedFile);
 
@@ -133,9 +150,10 @@ class ProductIngest extends Component {
           isIngestButtonClicked: false,
           isIngested: true,
           ingestedFile: null,
+          ingestedFileName: "",
           ingestedPercentage: 0,
         });
-        alert("Successfully Ingested Product ID :" + res.productId);
+        this.openSnackBar("Successfully Ingested Product "+res.productId,"success")
       })
       .catch((error) => {
         console.error(error);
@@ -144,8 +162,12 @@ class ProductIngest extends Component {
           ingestedPercentage: 0,
           isIngestButtonClicked: false,
         });
-        alert("Product Ingestion Failed : " + error);
+        this.openSnackBar("Product Ingestion Failed","error")
       });
+  }
+
+  openSnackBar = (message,severity) => {
+    this.snackBarRef.current?.handleOpen(message,severity);
   }
 
   render() {
@@ -153,16 +175,22 @@ class ProductIngest extends Component {
 
     return (
       <Paper className={classes.root}>
-        <Typography variant="h5" component="h3">
-          Product Ingest with Single File
+        <SimpleSnackBar ref={this.snackBarRef} />
+        <div style={{display: "flex",justifyContent: "space-between"}}>
+        <Typography variant="subtitle1">
+          <strong>Product Ingest with Single File</strong>
         </Typography>
+        {this.state.isIngestButtonClicked && (
+            <ProgressBar value={this.state.ingestedPercentage} />
+          )}
+        </div>
 
         <br />
 
         <div className={classes.layout}>
+          <div className={classes.formControlContainer}>
           <FormControl
             variant="outlined"
-            className={classes.formControl}
             style={{ width: "180px" }}
           >
             <InputLabel htmlFor="outlined-product-Type-simple">
@@ -191,7 +219,6 @@ class ProductIngest extends Component {
 
           <FormControl
             variant="outlined"
-            className={classes.formControl}
             style={{ width: "180px" }}
           >
             <InputLabel htmlFor="outlined-product-structure-simple">
@@ -213,14 +240,23 @@ class ProductIngest extends Component {
               </MenuItem>
             </Select>
           </FormControl>
+          </div>
 
-          <input
-            className={classes.button}
-            type={"file"}
-            name={"fileToUpload"}
-            id={"fileToUpload"}
-            onChange={(e) => this.handleFile(e)}
-          />
+          <Button variant="contained" component="label">
+            Upload File
+            <input
+              className={classes.button}
+              type="file"
+              name="fileToUpload"
+              id="fileToUpload"
+              onChange={(e) => this.handleFile(e)}
+              hidden
+            />
+          </Button>
+
+          <div style={{width: "18%"}}>
+          {this.state.ingestedFileName}
+          </div>
 
           <Button
             variant="contained"
@@ -229,9 +265,6 @@ class ProductIngest extends Component {
           >
             Ingest Product
           </Button>
-          {this.state.isIngestButtonClicked && (
-            <ProgressBar value={this.state.ingestedPercentage} />
-          )}
         </div>
       </Paper>
     );

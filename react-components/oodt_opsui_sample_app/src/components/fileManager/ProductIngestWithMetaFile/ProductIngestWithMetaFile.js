@@ -21,7 +21,9 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import * as fmservice from "services/fmservice"
+import SimpleSnackBar from "components/SimpleSnackBar"
 import ProgressBar from "components/ProgressBar"
+import {shrinkString} from "utils/utils"
 
 const styles = theme => ({
   root: {
@@ -29,9 +31,12 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     padding: 20
   },
-  button: {
-    padding: 10,
-    margin: 5
+  filename: {
+    width: "20%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textAlign: "left",
+    textOverflow: "ellipsis",
   },
   textField: {
     marginLeft: 2,
@@ -40,13 +45,22 @@ const styles = theme => ({
   layout: {
     display: "flex",
     flexDirection: "row",
-    padding: 0
-  }
+    padding: 0,
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 });
 
 class ProductIngestWithMetaFile extends Component {
   constructor(props) {
     super(props);
+    this.snackBarRef = React.createRef();
     this.handleFile = this.handleFile.bind(this);
     this.handleMetaFile = this.handleMetaFile.bind(this);
     this.ingestProduct = this.ingestProduct.bind(this);
@@ -54,7 +68,9 @@ class ProductIngestWithMetaFile extends Component {
 
   state = {
     ingestedFile: null,
+    ingestedFileName: "",
     metaFile: null,
+    metaFileName: "",
     productId: "",
     isIngested: false,
     isIngestButtonClicked: false,
@@ -63,17 +79,30 @@ class ProductIngestWithMetaFile extends Component {
 
   handleFile(e) {
     let file = e.target.files[0];
-    this.setState({ ingestedFile: file });
+    this.setState({ ingestedFile: file,ingestedFileName: shrinkString(file.name,25,6) });
   }
 
   handleMetaFile(e) {
     let metaFile = e.target.files[0];
-    this.setState({ metaFile: metaFile });
+    this.setState({ metaFile: metaFile,metaFileName: shrinkString(metaFile.name,25,6) });
+  }
+
+  openSnackBar = (message,severity) => {
+    this.snackBarRef.current.handleOpen(message,severity);
   }
 
   ingestProduct() {
     this.setState({ isIngested: false,isIngestButtonClicked: true });
-
+    if (!this.state.ingestedFile) {
+      this.openSnackBar("No product selected","error")
+      this.setState({isIngestButtonClicked: false})
+      return;
+    }
+    if(!this.state.metaFile){
+      this.openSnackBar("No metadata file selected","error")
+      this.setState({isIngestButtonClicked: false})
+      return;
+    }
     let formData = new FormData();
     formData.append("productFile", this.state.ingestedFile);
     formData.append("metadataFile", this.state.metaFile);
@@ -94,14 +123,16 @@ class ProductIngestWithMetaFile extends Component {
           productId: productId,
           ingestedFile: null,
           metaFile: null,
+          ingestedFileName: "",
+          metaFileName: "",
           isIngestButtonClicked: false,
         });
-        alert("Sucessfully Ingested :ProductId " + productId);
+        this.openSnackBar("Sucessfully Ingested product "+productId,"success")
       })
       .catch((error) => {
         console.error(error);
         this.setState({ isIngested: false, isIngestButtonClicked: false });
-        alert("Exception Thrown " + error);
+        this.openSnackBar("Error while ingesting product with metadata","error")
       });
   }
 
@@ -110,41 +141,61 @@ class ProductIngestWithMetaFile extends Component {
 
     return (
       <Paper className={classes.root}>
-        <Typography variant="h5" component="h3">
-          Product Ingest with Meta File
-        </Typography>
+        <SimpleSnackBar ref={this.snackBarRef} />
+        <div className={classes.titleContainer}>
+          <Typography variant="subtitle1">
+            <strong>Product Ingest with Meta File</strong>
+          </Typography>
+          {this.state.isIngestButtonClicked && (
+            <ProgressBar value={this.state.ingestedPercentage} />
+          )}
+        </div>
         <br />
         <div className={classes.layout}>
-          
-              <div>
-                <label>File</label>
-                <input
-                  className={classes.button}
-                  type={"file"}
-                  name={"fileToUpload"}
-                  id={"fileToUpload"}
-                  onChange={e => this.handleFile(e)}
-                />
-                <label>MetadataFile</label>
-                <input
-                  className={classes.button}
-                  type={"file"}
-                  name={"metaFileToUpload"}
-                  id={"metaFileToUpload"}
-                  onChange={e => this.handleMetaFile(e)}
-                />
-              </div>
+          <div>
+            <Typography variant="body1">File</Typography>
+            <Button variant="contained" component="label">
+              Upload File
+              <input
+                type="file"
+                name={"fileToUpload"}
+                id={"fileToUpload"}
+                onChange={(e) => this.handleFile(e)}
+                hidden
+              />
+            </Button>
+          </div>
+          <Typography variant="body1" className={classes.filename}>
+            {this.state.ingestedFileName}
+          </Typography>
 
+          <div>
+            <Typography variant="body1">Metadata File</Typography>
+            <Button variant="contained" component="label">
+              Select Metadata File
+              <input
+                type="file"
+                name={"metaFileToUpload"}
+                id={"metaFileToUpload"}
+                onChange={(e) => this.handleMetaFile(e)}
+                hidden
+              />
+            </Button>
+          </div>
 
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={this.ingestProduct}
-          >
-            Ingest Product
-          </Button>
-          {this.state.isIngestButtonClicked && <ProgressBar value={this.state.ingestedPercentage} />}
+          <Typography variant="body1" className={classes.filename}>
+            {this.state.metaFileName}
+          </Typography>
+
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.ingestProduct}
+            >
+              Ingest Product with metadata
+            </Button>
+          </div>
         </div>
       </Paper>
     );
