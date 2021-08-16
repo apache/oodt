@@ -72,6 +72,7 @@ import org.slf4j.LoggerFactory;
  * returns file manager entities JAX-RS resources converted to different formats.
  *
  * @author ngimhana (Nadeeshan Gimhana)
+ * @author pavinduLakshan (Pavindu Lakshan)
  */
 public class FileManagerJaxrsServiceV2 {
 
@@ -87,37 +88,6 @@ public class FileManagerJaxrsServiceV2 {
   
   public FileManagerJaxrsServiceV2() throws IOException {
     tmpDir = Files.createTempDirectory("oodt");
-  }
-
-  /**
-   * Gets an HTTP request that represents a {@link ProductPage} from the file manager.
-   *
-   * @param productTypeName the Name of a productType
-   * @return an HTTP response that represents a {@link ProductPage} from the file manager
-   */
-  @GET
-  @Path("products")
-  @Produces({
-    "application/xml",
-    "application/json",
-    "application/atom+xml",
-    "application/rdf+xml",
-    "application/rss+xml"
-  })
-  public ProductPageResource getFirstPage(@QueryParam("productTypeName") String productTypeName)
-      throws WebApplicationException {
-
-    try {
-      FileManagerClient client = getContextClient();
-
-      // Get the first ProductPage
-      ProductPage genericFile = client.getFirstPage(client.getProductTypeByName(productTypeName));
-
-      return getProductPageResource(client, genericFile);
-
-    } catch (Exception e) {
-      throw new NotFoundException(e.getMessage());
-    }
   }
 
   /**
@@ -186,33 +156,10 @@ public class FileManagerJaxrsServiceV2 {
 
     try {
       FileManagerClient client = getContextClient();
-
-      // Get the first ProductPage
-      ProductPage firstpage = client.getFirstPage(client.getProductTypeByName(productTypeName));
-
-      if (currentProductPage == 1) {
-        return getProductPageResource(client,firstpage);
-      }
-
-      // Get the next ProductPage
-      ProductPage nextPage =
-          client.getNextPage(client.getProductTypeByName(productTypeName), firstpage);
-
-      // Searching for the current page
-      while (nextPage.getPageNum() != currentProductPage) {
-        int prevNextPageNum = nextPage.getPageNum();
-        nextPage = client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
-        if(nextPage.getPageNum() == prevNextPageNum) {
-          throw new NotFoundException("No products");
-        }
-      }
-
-      // Get the next page from the current page
-      ProductPage genericFile =
-          client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
-
+      Query query = new Query();
+      ProductPage productPage = client.pagedQuery(query,client.getProductTypeByName(productTypeName),currentProductPage);
       // Return ProductPage resource
-      return getProductPageResource(client, genericFile);
+      return getProductPageResource(client, productPage);
 
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
@@ -390,7 +337,7 @@ public class FileManagerJaxrsServiceV2 {
           CoreMetKeys.FILE_LOCATION,
           (inputProductFile
               .getAbsolutePath()
-              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf("/"))));
+              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf(System.getProperty("file.separator")))));
 
       String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
       return Response.ok(ingest).build();

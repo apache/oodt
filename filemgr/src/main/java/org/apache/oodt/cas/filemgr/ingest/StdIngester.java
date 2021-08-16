@@ -189,8 +189,8 @@ public class StdIngester implements Ingester, CoreMetKeys {
         product.setProductType(getProductType(productType));
 
         List<String> references = new Vector<String>();
-        if (!fileLocation.endsWith("/")) {
-            fileLocation += "/";
+        if (!fileLocation.endsWith(System.getProperty("file.separator"))) {
+            fileLocation += System.getProperty("file.separator");
         }
 
         String fullFilePath = fileLocation + fileName;
