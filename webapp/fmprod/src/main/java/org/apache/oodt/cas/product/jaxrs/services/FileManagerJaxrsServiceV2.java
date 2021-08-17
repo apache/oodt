@@ -41,6 +41,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
@@ -158,20 +159,18 @@ public class FileManagerJaxrsServiceV2 {
       FileManagerClient client = getContextClient();
       Query query = new Query();
 
-      if (productStructureName != null) {
+      if (!StringUtils.isEmpty(productStructureName)) {
         query.addCriterion(new TermQueryCriteria("product_structure",productStructureName));
       }
-      if (productTransferStatus != null) {
+      if (!StringUtils.isEmpty(productTransferStatus)) {
         query.addCriterion(new TermQueryCriteria("product_transfer_status",productTransferStatus));
       }
-      if (productName != null) {
+      if (!StringUtils.isEmpty(productName)) {
         query.addCriterion(new TermQueryCriteria("product_name",productName));
       }
 
       ProductPage productPage = client.pagedQuery(query,client.getProductTypeByName(productTypeName),currentProductPage);
-      // Return ProductPage resource
       return getProductPageResource(client, productPage);
-
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
     }
