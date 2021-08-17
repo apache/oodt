@@ -51,7 +51,6 @@ class SearchBar extends Component {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.keyPress = this.keyPress.bind(this);
-        // this.click = this.click.bind(this);
     }
 
     state = {
@@ -64,7 +63,6 @@ class SearchBar extends Component {
 
     keyPress(e){
         if(e.keyCode === 13){
-            console.log(e.target.value);
             this.props.setSelectedProductId(this.state.selectedProductId);
         }
     }

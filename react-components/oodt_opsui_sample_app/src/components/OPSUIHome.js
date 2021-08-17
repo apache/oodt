@@ -31,7 +31,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import {fmMenuListItems,wmMenuListItems} from './listItems';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {Link} from "react-router-dom";
-
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
@@ -45,7 +44,7 @@ const styles = (theme => ({
         display: 'flex',
     },
     toolbar: {
-        paddingRight: 24, // keep right padding when drawer closed
+        paddingRight: 24
     },
     toolbarIcon: {
         display: 'flex',
@@ -60,6 +59,7 @@ const styles = (theme => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        backgroundColor: "#1a1a59"
     },
     appBarShift: {
         marginLeft: drawerWidth,

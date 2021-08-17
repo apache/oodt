@@ -22,6 +22,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import StorageIcon from '@material-ui/icons/Storage';
+import WorkIcon from "@material-ui/icons/Work"
 import FindInPage from '@material-ui/icons/FindInPage';
 import {Link} from "react-router-dom";
 
@@ -58,7 +59,7 @@ export const wmMenuListItems = (
 
     <ListItem button component={Link} to={"/workflows"}>
       <ListItemIcon>
-        <StorageIcon />
+        <WorkIcon />
       </ListItemIcon>
       <ListItemText primary="Workflow Browser" />
     </ListItem>
