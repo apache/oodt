@@ -152,12 +152,26 @@ public class FileManagerJaxrsServiceV2 {
   })
   public ProductPageResource getNextPage(
       @QueryParam("productTypeName") String productTypeName,
+      @QueryParam("productStructureName") String productStructureName,
+      @QueryParam("productTransferStatus") String productTransferStatus,
+      @QueryParam("productName") String productName,
       @QueryParam("currentProductPage") int currentProductPage)
       throws WebApplicationException {
 
     try {
       FileManagerClient client = getContextClient();
       Query query = new Query();
+
+      if (productStructureName != null) {
+        query.addCriterion(new TermQueryCriteria("product_structure",productStructureName));
+      }
+      if (productTransferStatus != null) {
+        query.addCriterion(new TermQueryCriteria("product_transfer_status",productTransferStatus));
+      }
+      if (productName != null) {
+        query.addCriterion(new TermQueryCriteria("product_name",productName));
+      }
+
       ProductPage productPage = client.pagedQuery(query,client.getProductTypeByName(productTypeName),currentProductPage);
       // Return ProductPage resource
       return getProductPageResource(client, productPage);

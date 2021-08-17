@@ -16,7 +16,7 @@
  */
 
 import React, { Component } from "react";
-import { OutlinedInput,Button } from "@material-ui/core";
+import { OutlinedInput,Button,TextField } from "@material-ui/core";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -40,7 +40,6 @@ const styles = theme => ({
     justifyContent: "space-between"
   },
   formControl: {
-    margin: 1,
     minWidth: 120
   },
   input: {
@@ -58,16 +57,13 @@ const styles = theme => ({
 });
 
 class SearchBar extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   state = {
-    selectedProductType: "",
+    productTypeName: "",
     productTypes: [],
-    selectedProductStructure: "FLAT",
-    selectedMIMEType: "",
-    selectedTransferStatus: "RECEIVED",
+    productStructure: "FLAT",
+    productName: "",
+    transferStatus: "RECEIVED",
     isSearching: false
   };
 
@@ -76,7 +72,7 @@ class SearchBar extends Component {
       const {productTypes} = res.data.productTypeList 
       this.setState({
         productTypes: productTypes,
-        selectedProductType: productTypes[0].name})
+        productTypeName: productTypes[0].name})
     }).catch(err => console.error(err))
   }
 
@@ -90,7 +86,7 @@ class SearchBar extends Component {
         this.props.onQueryTimeout({ isQueryTimedOut: true });
     },3000);
     this.setState({isSearching: true})
-    this.props.onSearch()
+    this.props.onSearch(this.state)
   }
 
   render() {
@@ -106,25 +102,24 @@ class SearchBar extends Component {
             Product Type
           </InputLabel>
           <Select
-            value={this.state.selectedProductType}
+            value={this.state.productTypeName}
             onChange={this.handleChange}
             input={
               <OutlinedInput
                 labelWidth={100}
-                name="selectedProductType"
+                name="productTypeName"
                 id="outlined-product-Type-simple"
               />
             }
           >
             {this.state.productTypes.map((productType, index) => (
-              <MenuItem selected={index === 0} value={productType.name}>
+              <MenuItem key={index} value={productType.name}>
                 {productType.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        
         <FormControl
           variant="outlined"
           className={classes.formControl}
@@ -134,49 +129,18 @@ class SearchBar extends Component {
             Structure
           </InputLabel>
           <Select
-           value={this.state.selectedProductStructure}
+            value={this.state.productStructure}
             onChange={this.handleChange}
             input={
               <OutlinedInput
                 labelWidth={100}
-                name="selectedProductStructure"
+                name="productStructure"
                 id="outlined-product-structure-simple"
               />
             }
           >
-            <MenuItem value="FLAT">
-            Flat
-          </MenuItem>
-          <MenuItem value="HIERARCHICAL">
-            Hierarchical
-          </MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl
-          variant="outlined"
-          className={classes.formControl}
-          style={{ width: "200px" }}
-        >
-          <InputLabel htmlFor="outlined-product-Type-simple">
-            MIME type
-          </InputLabel>
-          <Select
-            value={this.state.selectedMIMEType}
-            onChange={this.handleChange}
-            input={
-              <OutlinedInput
-                labelWidth={100}
-                name="selectedMIMEType"
-                id="outlined-mime-type-simple"
-              />
-            }
-          >
-            {this.props && this.props.availableMIMETypes.map(MIMEType => (
-            <MenuItem selected={true} value={MIMEType}>
-            {MIMEType}
-          </MenuItem>
-            ))}
+            <MenuItem value="FLAT">Flat</MenuItem>
+            <MenuItem value="HIERARCHICAL">Hierarchical</MenuItem>
           </Select>
         </FormControl>
 
@@ -189,25 +153,31 @@ class SearchBar extends Component {
             Transfer status
           </InputLabel>
           <Select
-            value={this.state.selectedTransferStatus}
+            value={this.state.transferStatus}
             onChange={this.handleChange}
             input={
               <OutlinedInput
                 labelWidth={100}
-                name="selectedTransferStatus"
+                name="transferStatus"
                 id="outlined-transfer-status-simple"
               />
             }
           >
-            <MenuItem value="TRANSFERING">
-            Tranfering
-            </MenuItem>
+            <MenuItem value="TRANSFERING">Transfering</MenuItem>
             <MenuItem selected={true} value="RECEIVED">
               Received
             </MenuItem>
           </Select>
         </FormControl>
 
+        <TextField
+          id="outlined-basic"
+          label="Product name"
+          value={this.state.productName}
+          onChange={this.handleChange}
+          name="productName"
+          variant="outlined"
+        />
 
         <Button
           variant="contained"
