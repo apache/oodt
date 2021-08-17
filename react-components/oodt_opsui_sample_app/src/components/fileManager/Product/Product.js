@@ -25,6 +25,7 @@ import PropTypes from "prop-types";
 import * as fmservice from "services/fmservice"
 import Grid from "@material-ui/core/Grid";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import SimpleSnackBar from "components/SimpleSnackBar"
 import DeleteIcon from '@material-ui/icons/Delete';
 import SingleProductSearchBar from "./SearchBar"
 
@@ -61,6 +62,7 @@ const styles = theme => ({
 class Product extends Component {
   constructor(props) {
     super(props);
+    this.snackBarRef = React.createRef();
     this.loadProduct = this.loadProduct.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
   }
@@ -84,16 +86,20 @@ class Product extends Component {
     }
   }
 
+  openSnackBar = (message,severity) => {
+    this.snackBarRef.current.handleOpen(message,severity);
+  }
+
   removeProduct() {
-    let result = window.confirm("Are you Sure to Remove the Product ?" + this.props.productId)
+    let result = window.confirm("Are you Sure to Remove the Product " +this.state.selectedProductId + "?")
     if (result) {
       fmservice
-        .removeProductById(this.props.productId)
+        .removeProductById(this.state.selectedProductId)
         .then((isDeleted) => {
-          alert(
-            "Product sucessfully removed productID: " + this.props.productId
-          );
+          this.openSnackBar("Sucessfully removed productID: " + this.state.selectedProductId,"success")
+          this.props.history.push("/product")
           this.setState({
+            selectedProductId: "",
             productData: {},
             productMetaData: {},
             productRefData: {},
@@ -177,6 +183,7 @@ class Product extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
+        <SimpleSnackBar ref={this.snackBarRef} />
         <SingleProductSearchBar setSelectedProductId={this.setSelectedProductId} productId={this.state.selectedProductId}/>
         <br />
         {!this.isObjEmpty(this.state.productData) ? (
