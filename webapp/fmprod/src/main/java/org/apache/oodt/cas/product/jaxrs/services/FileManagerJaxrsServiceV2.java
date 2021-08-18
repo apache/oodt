@@ -347,7 +347,7 @@ public class FileManagerJaxrsServiceV2 {
           CoreMetKeys.FILE_LOCATION,
           (inputProductFile
               .getAbsolutePath()
-              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf(System.getProperty("file.separator")))));
+              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf(File.separator))));
 
       String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
       return Response.ok(ingest).build();
@@ -403,7 +403,7 @@ public class FileManagerJaxrsServiceV2 {
           CoreMetKeys.FILE_LOCATION,
           (inputProductFile
               .getAbsolutePath()
-              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf("/"))));
+              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf(File.separator))));
 
       String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
       return Response.ok(ingest).build();

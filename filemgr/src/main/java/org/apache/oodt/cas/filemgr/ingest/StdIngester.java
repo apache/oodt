@@ -52,7 +52,7 @@ import java.util.logging.Logger;
  * @version $Revision$
  *
  * <p>
- * An implementation of the {@link Ingster} interface that uses the following
+ * An implementation of the {@link Ingester} interface that uses the following
  * pieces of {@link Metadata} information to determine how to ingest a
  * {@link Product}:
  *
@@ -189,8 +189,8 @@ public class StdIngester implements Ingester, CoreMetKeys {
         product.setProductType(getProductType(productType));
 
         List<String> references = new Vector<String>();
-        if (!fileLocation.endsWith(System.getProperty("file.separator"))) {
-            fileLocation += System.getProperty("file.separator");
+        if (!fileLocation.endsWith(File.separator)) {
+            fileLocation += File.separator;
         }
 
         String fullFilePath = fileLocation + fileName;
