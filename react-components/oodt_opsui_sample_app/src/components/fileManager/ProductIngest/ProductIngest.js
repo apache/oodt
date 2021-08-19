@@ -25,9 +25,9 @@ import ProgressBar from "components/ProgressBar"
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
-import SimpleSnackBar from "components/SimpleSnackBar"
 import Select from "@material-ui/core/Select";
 import {shrinkString} from "utils/utils"
+import { withSnackbar } from 'notistack';
 
 const styles = theme => ({
   root: {
@@ -63,7 +63,6 @@ const styles = theme => ({
 class ProductIngest extends Component {
   constructor(props) {
     super(props);
-    this.snackBarRef = React.createRef();
     this.handleFile = this.handleFile.bind(this);
     this.handleProductStructure = this.handleProductStructure.bind(this);
     this.handleProductType = this.handleProductType.bind(this);
@@ -90,7 +89,9 @@ class ProductIngest extends Component {
       )
       .catch((err) => {
         console.error(err)
-        this.openSnackBar("Couldn't get the available product types","warning")
+        this.props.enqueueSnackbar("Couldn't get the available product types",{
+          variant: "warning"
+        })
       });
   }
 
@@ -118,12 +119,16 @@ class ProductIngest extends Component {
   ingestProduct() {
     this.setState({ isIngested: false, isIngestButtonClicked: true });
     if(!this.state.ingestedFile){
-      this.openSnackBar("No product selected","error")
+      this.props.enqueueSnackbar("No product selected", { 
+        variant: 'error',
+    });
       this.setState({isIngestButtonClicked: false})
       return;
     }
     if(!this.state.productType){
-      this.openSnackBar("Product type is not selected","error")
+      this.props.enqueueSnackbar("Product type is not selected",{
+        variant: "error"
+      })
       this.setState({isIngestButtonClicked: false})
       return;
     }
@@ -153,7 +158,9 @@ class ProductIngest extends Component {
           ingestedFileName: "",
           ingestedPercentage: 0,
         });
-        this.openSnackBar("Successfully Ingested Product "+res.productId,"success")
+        this.props.enqueueSnackbar("Successfully Ingested Product "+res.productId,{
+          variant: "success"
+        })
       })
       .catch((error) => {
         console.error(error);
@@ -162,12 +169,10 @@ class ProductIngest extends Component {
           ingestedPercentage: 0,
           isIngestButtonClicked: false,
         });
-        this.openSnackBar("Product Ingestion Failed","error")
+        this.props.enqueueSnackbar("Product Ingestion Failed",{
+          variant: "error"
+        })
       });
-  }
-
-  openSnackBar = (message,severity) => {
-    this.snackBarRef.current?.handleOpen(message,severity);
   }
 
   render() {
@@ -175,7 +180,6 @@ class ProductIngest extends Component {
 
     return (
       <Paper className={classes.root}>
-        <SimpleSnackBar ref={this.snackBarRef} />
         <div style={{display: "flex",justifyContent: "space-between"}}>
         <Typography variant="subtitle1">
           <strong>Product Ingest with Single File</strong>
@@ -260,6 +264,7 @@ class ProductIngest extends Component {
 
           <Button
             variant="contained"
+            disabled={this.state.isIngestButtonClicked}
             color="primary"
             onClick={this.ingestProduct}
           >
@@ -275,4 +280,4 @@ ProductIngest.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ProductIngest);
+export default withStyles(styles)(withSnackbar(ProductIngest));

@@ -28,11 +28,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from "@material-ui/core/Paper";
-import SimpleSnackBar from "components/SimpleSnackBar"
 import CircularProgress from "@material-ui/core/CircularProgress";
 import SearchBar from "./SearchBar"
 import {shrinkString} from "utils/utils"
 import { NavLink } from "react-router-dom";
+import { withSnackbar } from 'notistack';
 
 const styles = (theme) => ({
   root: {
@@ -109,10 +109,6 @@ class Product extends Component {
     this.loadNextProducts();
   }
 
-  openSnackBar = (message,severity) => {
-    this.snackBarRef.current.handleOpen(message,severity);
-  }
-
   // TODO
   onProductSearch = (formData) => {
     const { productTypeName, productStructure, transferStatus, productName } = formData;
@@ -137,7 +133,7 @@ class Product extends Component {
         // and returns an array of products when the object count is more than 1.
         // This check converts object to array to avoid this problem
         // Need to fix this in the backend
-        if (typeof productsArr === "object") {
+        if (!Array.isArray(productsArr)) {
           productsArr = [productsArr]
         }
         this.setState({
@@ -149,7 +145,9 @@ class Product extends Component {
       .catch(error => {
         if (error.response) {
           console.error("err: ",error.response.data);
-          this.openSnackBar("Couldn't fetch products","error");
+          this.props.enqueueSnackbar("Couldn't fetch products",{
+            variant: "error"
+          })
         }
       });
   }
@@ -164,7 +162,6 @@ class Product extends Component {
     return (
       <div className={classes.root}>
         <Paper className={clsx(classes.paper, classes.fixedHeight)}>
-          <SimpleSnackBar ref={this.snackBarRef} />
           <SearchBar
             onSearch={this.onProductSearch}
             onQueryTimeout={({ isQueryTimedOut }) =>
@@ -190,7 +187,7 @@ class Product extends Component {
               <TableBody>
                 {this.state.productDetailsArray.length > 0 && 
                   this.state.productDetailsArray.map((product) => {
-                    const productReceivedTime = product.metadata.keyval.find(
+                    const productReceivedTime = product.metadata?.keyval.find(
                       (meta) => meta.key === "CAS.ProductReceivedTime"
                     ).val;
                     return (
@@ -249,4 +246,4 @@ Product.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Product);
+export default withStyles(styles)(withSnackbar(Product));

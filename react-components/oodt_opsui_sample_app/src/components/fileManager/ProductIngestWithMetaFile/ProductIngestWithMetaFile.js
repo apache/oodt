@@ -21,9 +21,9 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import * as fmservice from "services/fmservice"
-import SimpleSnackBar from "components/SimpleSnackBar"
 import ProgressBar from "components/ProgressBar"
 import {shrinkString} from "utils/utils"
+import { withSnackbar } from 'notistack';
 
 const styles = theme => ({
   root: {
@@ -60,7 +60,6 @@ const styles = theme => ({
 class ProductIngestWithMetaFile extends Component {
   constructor(props) {
     super(props);
-    this.snackBarRef = React.createRef();
     this.handleFile = this.handleFile.bind(this);
     this.handleMetaFile = this.handleMetaFile.bind(this);
     this.ingestProduct = this.ingestProduct.bind(this);
@@ -87,19 +86,19 @@ class ProductIngestWithMetaFile extends Component {
     this.setState({ metaFile: metaFile,metaFileName: shrinkString(metaFile.name,25,6) });
   }
 
-  openSnackBar = (message,severity) => {
-    this.snackBarRef.current.handleOpen(message,severity);
-  }
-
   ingestProduct() {
     this.setState({ isIngested: false,isIngestButtonClicked: true });
     if (!this.state.ingestedFile) {
-      this.openSnackBar("No product selected","error")
+      this.props.enqueueSnackbar("No product selected",{
+        variant: "error"
+      })
       this.setState({isIngestButtonClicked: false})
       return;
     }
     if(!this.state.metaFile){
-      this.openSnackBar("No metadata file selected","error")
+      this.props.enqueueSnackbar("No metadata file selected",{
+        variant: "error"
+      })
       this.setState({isIngestButtonClicked: false})
       return;
     }
@@ -127,12 +126,16 @@ class ProductIngestWithMetaFile extends Component {
           metaFileName: "",
           isIngestButtonClicked: false,
         });
-        this.openSnackBar("Sucessfully Ingested product "+productId,"success")
+        this.props.enqueueSnackbar("Sucessfully Ingested product "+productId,{
+          variant: "success"
+        })
       })
       .catch((error) => {
         console.error(error);
         this.setState({ isIngested: false, isIngestButtonClicked: false });
-        this.openSnackBar("Error while ingesting product with metadata","error")
+        this.props.enqueueSnackbar("Error while ingesting product with metadata",{
+          variant: "error"
+        })
       });
   }
 
@@ -141,7 +144,6 @@ class ProductIngestWithMetaFile extends Component {
 
     return (
       <Paper className={classes.root}>
-        <SimpleSnackBar ref={this.snackBarRef} />
         <div className={classes.titleContainer}>
           <Typography variant="subtitle1">
             <strong>Product Ingest with Meta File</strong>
@@ -189,6 +191,7 @@ class ProductIngestWithMetaFile extends Component {
 
           <div>
             <Button
+              disabled={this.state.isIngestButtonClicked}
               variant="contained"
               color="primary"
               onClick={this.ingestProduct}
@@ -206,4 +209,4 @@ ProductIngestWithMetaFile.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ProductIngestWithMetaFile);
+export default withStyles(styles)(withSnackbar(ProductIngestWithMetaFile));
