@@ -16,11 +16,7 @@
  */
 
 import React, { Component } from "react";
-import { OutlinedInput,Button,TextField } from "@material-ui/core";
-import Select from "@material-ui/core/Select";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
+import {Button,TextField } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import { withStyles } from "@material-ui/core";
 import { fmconnection } from "constants/connection";
@@ -34,13 +30,12 @@ const styles = theme => ({
     width: 400
   },
   row: {
-    width: "100%",
+    width: "60%",
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    flexDirection: "row"
   },
   formControl: {
-    minWidth: 120
+    minWidth: 180
   },
   input: {
     marginLeft: 8,
@@ -53,17 +48,16 @@ const styles = theme => ({
     width: 1,
     height: 28,
     margin: 4
+  },
+  button: {
+    marginLeft: theme.spacing(1)
   }
 });
 
 class SearchBar extends Component {
 
   state = {
-    productTypeName: "",
-    productTypes: [],
-    productStructure: "FLAT",
     productName: "",
-    transferStatus: "RECEIVED",
     isSearching: false
   };
 
@@ -86,106 +80,35 @@ class SearchBar extends Component {
         this.props.onQueryTimeout({ isQueryTimedOut: true });
     },3000);
     this.setState({isSearching: true})
-    this.props.onSearch(this.state)
+    this.props.onSearch(this.state.productName)
   }
 
   render() {
     const { classes } = this.props;
     return (
       <div className={classes.row}>
-        <FormControl
-          variant="outlined"
-          className={classes.formControl}
-          style={{ width: "200px" }}
-        >
-          <InputLabel htmlFor="outlined-product-Type-simple">
-            Product Type
-          </InputLabel>
-          <Select
-            value={this.state.productTypeName}
-            onChange={this.handleChange}
-            input={
-              <OutlinedInput
-                labelWidth={100}
-                name="productTypeName"
-                id="outlined-product-Type-simple"
-              />
-            }
-          >
-            {this.state.productTypes.map((productType, index) => (
-              <MenuItem key={index} value={productType.name}>
-                {productType.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl
-          variant="outlined"
-          className={classes.formControl}
-          style={{ width: "200px" }}
-        >
-          <InputLabel htmlFor="outlined-product-Type-simple">
-            Structure
-          </InputLabel>
-          <Select
-            value={this.state.productStructure}
-            onChange={this.handleChange}
-            input={
-              <OutlinedInput
-                labelWidth={100}
-                name="productStructure"
-                id="outlined-product-structure-simple"
-              />
-            }
-          >
-            <MenuItem value="FLAT">Flat</MenuItem>
-            <MenuItem value="HIERARCHICAL">Hierarchical</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl
-          variant="outlined"
-          className={classes.formControl}
-          style={{ width: "200px" }}
-        >
-          <InputLabel htmlFor="outlined-product-Type-simple">
-            Transfer status
-          </InputLabel>
-          <Select
-            value={this.state.transferStatus}
-            onChange={this.handleChange}
-            input={
-              <OutlinedInput
-                labelWidth={100}
-                name="transferStatus"
-                id="outlined-transfer-status-simple"
-              />
-            }
-          >
-            <MenuItem value="TRANSFERING">Transfering</MenuItem>
-            <MenuItem selected={true} value="RECEIVED">
-              Received
-            </MenuItem>
-          </Select>
-        </FormControl>
-
+        <div style={{width: "60%"}}>
         <TextField
           id="outlined-basic"
           label="Product name"
+          fullWidth
+          className={classes.formControl}
           value={this.state.productName}
           onChange={this.handleChange}
           name="productName"
           variant="outlined"
         />
-
+        </div>
+      
         <Button
+          startIcon={<SearchIcon />}
           variant="contained"
-          size="medium"
-          color="primary"
+          size="large"
+          className={classes.button}
           onClick={this.onSearch}
+          color="primary"
         >
-          <SearchIcon />
+          Search products
         </Button>
       </div>
     );

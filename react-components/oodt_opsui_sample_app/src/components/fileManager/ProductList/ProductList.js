@@ -110,8 +110,25 @@ class Product extends Component {
   }
 
   // TODO
-  onProductSearch = (formData) => {
-    const { productTypeName, productStructure, transferStatus, productName } = formData;
+  onProductSearch = (productName) => {
+    fmservice.getProductPage({
+      productName: productName
+    }).then(productPage => {
+        let productsArr = productPage.products.product
+        if (!Array.isArray(productsArr)) {
+          productsArr = [productsArr]
+        }
+        
+        this.setState({
+          productData: productPage,
+          totalProductCount: productPage.totalProducts,
+          productDetailsArray: productsArr || [],
+        });
+    }).catch(err => {
+      this.props.enqueueSnackbar("Product search failed",{
+        variant: "error"
+      })
+    })
   } 
 
   loadNextProducts = () => {

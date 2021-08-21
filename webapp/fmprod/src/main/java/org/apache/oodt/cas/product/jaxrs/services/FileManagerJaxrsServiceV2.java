@@ -149,8 +149,6 @@ public class FileManagerJaxrsServiceV2 {
   })
   public ProductPageResource getNextPage(
       @QueryParam("productTypeName") String productTypeName,
-      @QueryParam("productStructureName") String productStructureName,
-      @QueryParam("productTransferStatus") String productTransferStatus,
       @QueryParam("productName") String productName,
       @QueryParam("currentProductPage") int currentProductPage)
       throws WebApplicationException {
@@ -158,18 +156,16 @@ public class FileManagerJaxrsServiceV2 {
     try {
       FileManagerClient client = getContextClient();
       Query query = new Query();
-
-      if (!StringUtils.isEmpty(productStructureName)) {
-        query.addCriterion(new TermQueryCriteria("product_structure",productStructureName));
-      }
-      if (!StringUtils.isEmpty(productTransferStatus)) {
-        query.addCriterion(new TermQueryCriteria("product_transfer_status",productTransferStatus));
-      }
+      ProductPage productPage;
       if (!StringUtils.isEmpty(productName)) {
-        query.addCriterion(new TermQueryCriteria("product_name",productName));
+        Product product = client.getProductByName(productName);
+        List<Product> products = new ArrayList<Product>();
+        products.add(product);
+        productPage = new ProductPage(1, 1, 1, products);
       }
-
-      ProductPage productPage = client.pagedQuery(query,client.getProductTypeByName(productTypeName),currentProductPage);
+      else {
+        productPage = client.pagedQuery(query,client.getProductTypeByName(productTypeName),currentProductPage);
+      }
       return getProductPageResource(client, productPage);
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
@@ -202,7 +198,8 @@ public class FileManagerJaxrsServiceV2 {
 
     ProductPageResource pageResource = new ProductPageResource(
             genericFile, proMetaDataList, proReferencesList, getContextWorkingDir());
-    pageResource.setTotalProducts(getTotalNumOfProducts());
+    int totalProducts = genericFile.getPageProducts().size() == 1 ? 1 : getTotalNumOfProducts();
+    pageResource.setTotalProducts(totalProducts);
     return pageResource;
   }
 

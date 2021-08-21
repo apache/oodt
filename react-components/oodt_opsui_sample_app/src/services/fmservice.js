@@ -39,14 +39,12 @@ export const getProductById = (productId) => {
 };
 
 export const getProductPage = (productParams) => {
-  const {productType, productStructureName,productTransferStatus,productName, productPageNo} = productParams;
+  const {productType,productName, productPageNo} = productParams;
   return new Promise((resolve, reject) => {
     fmconnection
       .get("/products", {
         params: {
           productTypeName: productType,
-          productStructureName,
-          productTransferStatus,
           productName,
           currentProductPage: productPageNo
         },
