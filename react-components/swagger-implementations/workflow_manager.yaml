@@ -76,6 +76,65 @@ paths:
         404:
           description: workflows not Found
 
+  /workflow/page:
+    get:
+      tags:
+        - Workflows
+      summary: get workflow instance page
+      description: Retrieve the specified page of running/finished/paused Workflow Instances
+      operationId: findWorkflows
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: workflowPage
+          schema:
+            type: integer
+          description: The page number of the desired workflow list page
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: workflows not Found
+
+  /workflow/event:
+    post:
+      tags:
+        - Workflows
+      summary: Trigger workflow by event
+      description: Trigger the tasks in a configured workflow by a registered event 
+      operationId: triggerEvent
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: eventName
+          schema:
+            type: string
+          description: The workflow event name to trigger workflow
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Error triggering the event
+
+  /workflow/events:
+    get:
+      tags:
+        - Workflows
+      summary: get events
+      description: Get all registered workflow events
+      operationId: findAllEvents
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: getting events failed
 
   /stop/workflow:
     post:
