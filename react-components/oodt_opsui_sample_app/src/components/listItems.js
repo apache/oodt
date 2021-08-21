@@ -20,75 +20,41 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import DashboardIcon from '@material-ui/icons/Dashboard';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import StorageIcon from '@material-ui/icons/Storage';
+import WorkIcon from "@material-ui/icons/Work"
 import FindInPage from '@material-ui/icons/FindInPage';
 import {Link} from "react-router-dom";
 
-
-
-export const mainListItems = (
-
-
-
-    <div>
-        {/*Status of OPSUI*/}
-        <ListItem button>
-            <ListItemIcon>
-                <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-        </ListItem>
-    </div>
-);
-
-
-
 export const fmMenuListItems = (
-    <div>
+  <div>
+    <ListSubheader>File Manager</ListSubheader>
 
-        <ListSubheader>File Manager</ListSubheader>
+    <ListItem button component={Link} to={"/productIngest"}>
+      <ListItemIcon>
+        <NoteAddIcon />
+      </ListItemIcon>
+      <ListItemText primary="Product Ingest" />
+    </ListItem>
 
-        {/*Product Ingesting*/}
-        <ListItem button component={Link} to={"/productIngest"}>
-            <ListItemIcon>
-                <NoteAddIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Product Ingest" />
-        </ListItem>
-
-        {/*Product Browser*/}
-        <ListItem button component={Link} to={"/products"}>
-            <ListItemIcon>
-                <StorageIcon />
-            </ListItemIcon>
-            <ListItemText primary="Product Browser" />
-        </ListItem>
-
-        {/*Product Search*/}
-        <ListItem button component={Link} to={"/product"}>
-            <ListItemIcon>
-                <FindInPage/>
-            </ListItemIcon>
-            <ListItemText primary="Product Search" />
-        </ListItem>
-
-    </div>
-
+    <ListItem button component={Link} to={"/products"}>
+      <ListItemIcon>
+        <StorageIcon />
+      </ListItemIcon>
+      <ListItemText primary="Product Browser" />
+    </ListItem>
+  </div>
 );
-
 
 export const wmMenuListItems = (
-    <div>
-        <ListSubheader>WorkFlow Manager</ListSubheader>
+  <div>
+    <ListSubheader>WorkFlow Manager</ListSubheader>
 
-      {/*Workflow Browser*/}
-      <ListItem button component={Link} to={"/workflows"}>
-        <ListItemIcon>
-          <StorageIcon />
-        </ListItemIcon>
-        <ListItemText primary="Workflow Browser" />
-      </ListItem>
-    </div>
+    <ListItem button component={Link} to={"/workflows"}>
+      <ListItemIcon>
+        <WorkIcon />
+      </ListItemIcon>
+      <ListItemText primary="Workflow Browser" />
+    </ListItem>
+  </div>
 );

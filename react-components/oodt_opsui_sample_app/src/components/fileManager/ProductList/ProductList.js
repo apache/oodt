@@ -20,15 +20,22 @@ import * as fmservice  from "services/fmservice";
 import PropTypes from "prop-types";
 import { withStyles,TablePagination } from "@material-ui/core";
 import clsx from "clsx";
-import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Paper from "@material-ui/core/Paper";
-import SimpleSnackBar from "./SimpleSnackBar";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
 import SearchBar from "./SearchBar"
+import {shrinkString} from "utils/utils"
+import { NavLink } from "react-router-dom";
+import { withSnackbar } from 'notistack';
+import { Product as ProductDrawer } from "components/fileManager/Product"
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper
@@ -67,103 +74,113 @@ const styles = theme => ({
     minWidth: 120
   },
   button: {
-    padding: 10,
+    padding: 5,
     margin: 20
-  }
+  },
+  progress: {
+    width: "inherit",
+    display: "flex",
+    justifyContent: "center",
+    minHeight: "10vh",
+    alignItems: "center",
+  },
+  nameCell: {
+    cursor: "pointer",
+    textDecoration: "underline",
+  },
 });
 
-class Product extends Component {
+class ProductBrowser extends Component {
   constructor(props) {
     super(props);
-    this.onClick = this.onClick.bind(this);
+    this.snackBarRef = React.createRef();
   }
 
   state = {
     productData: [],
     productDetailsArray: [],
-    productFilesArray: [],
-    productFoldersArray: [],
     selectedProductId: "",
     currentProductPage: 0,
     totalProductCount: 0,
     productTypeArray: [],
     isQueryTimedOut: true,
-    noFilesText: "Searching...",
-    noFoldersText: "Searching..."
   };
 
   componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    this.setState({selectedProductId: params.get("id")})
     this.loadNextProducts();
   }
 
-  onClick(message) {
-    this.child.handleClick(message); // do stuff
+  componentDidUpdate(prevProps){
+    if(this.props !== prevProps) {
+      const params = new URLSearchParams(window.location.search);
+      this.setState({selectedProductId: params.get("id")})
+    }
   }
 
+  onProductDrawerClose = () => {
+    this.props.history.push("/products")
+  }
 
-
-  loadNextProducts = () => {
-    this.setState({ productData: [] });
-    this.setState({ productDetailsArray: [] });
-    this.setState({ productFilesArray: [] });
-    this.setState({ productFoldersArray: [] });
-
-    fmservice
-      .getProductPage("GenericFile", this.state.currentProductPage + 1)
-      .then((productPage) => {
+  // TODO
+  onProductSearch = (productName) => {
+    fmservice.getProductPage({
+      productName: productName
+    }).then(productPage => {
+        let productsArr = productPage.products.product
+        if (!Array.isArray(productsArr)) {
+          productsArr = [productsArr]
+        }
+        
         this.setState({
           productData: productPage,
           totalProductCount: productPage.totalProducts,
-          productDetailsArray: productPage.products.product,
+          productDetailsArray: productsArr || [],
         });
+    }).catch(err => {
+      this.props.enqueueSnackbar("Product search failed",{
+        variant: "error"
+      })
+    })
+  } 
 
-        this.getFiles();
-        this.getFolders();
-        this.onClick("Request Successful !!");
+  loadNextProducts = () => {
+    this.setState({
+      productFoldersArray: [],
+      productData: [],
+      productFilesArray: [],
+      productDetailsArray: [],
+    });
+ 
+    fmservice
+      .getProductPage({
+        productType: "GenericFile",
+        productPageNo: this.state.currentProductPage + 1
+      })
+      .then((productPage) => {
+        let productsArr = productPage.products.product
+        // Backend returns a product object when the object count is 1
+        // and returns an array of products when the object count is more than 1.
+        // This check converts object to array to avoid this problem
+        // Need to fix this in the backend
+        if (!Array.isArray(productsArr)) {
+          productsArr = [productsArr]
+        }
+        this.setState({
+          productData: productPage,
+          totalProductCount: productPage.totalProducts,
+          productDetailsArray: productsArr || [],
+        });
       })
       .catch(error => {
         if (error.response) {
-          console.error(error.response.data);
-          this.setState({
-            noFilesText: "No product files found",
-            noFoldersText: "No product folders found"
+          console.error("err: ",error.response.data);
+          this.props.enqueueSnackbar("Couldn't fetch products",{
+            variant: "error"
           })
-          this.onClick("404 - Couldn't Find Resource");
         }
       });
-  }
-
-  getFiles() {
-    let fileArray = [];
-    let fileTypesArray = [];
-    for (let i = 0; i < this.state.productDetailsArray.length; i++) {
-      if (this.state.productDetailsArray[i].structure === "Flat") {
-        fileArray.push(this.state.productDetailsArray[i]);
-        fileTypesArray.push(this.state.productDetailsArray[i].type);
-      }
-    }
-    if(fileArray.length === 0){
-      this.setState({noFilesText: "No product files found"})
-    }
-    this.setState({ productFilesArray: fileArray });
-  }
-
-  getFolders() {
-    let folderArray = [];
-    for (let i = 0; i < this.state.productDetailsArray.length; i++) {
-      if (this.state.productDetailsArray[i].structure === "Hierarchical") {
-        folderArray.push(this.state.productDetailsArray[i]);
-      }
-    }
-    if(folderArray.length === 0){
-      this.setState({noFoldersText: "No product folders found"})
-    }
-    this.setState({ productFoldersArray: folderArray });
-  }
-
-  selectedItem(selectedProductId) {
-    this.setState({ selectedProductId: selectedProductId });
-    this.props.selectedProductId(this.state.selectedProductId);
   }
 
   handleChangePage = (event,newPageNo) => {
@@ -173,96 +190,64 @@ class Product extends Component {
   render() {
     const { classes } = this.props;
 
-    // Mapping Folder-products
-    let listFolderItems = this.state.productFoldersArray.map(product => (
-      <div className={classes.root}>
-        <Grid item xs={12} style={{ padding: 3 }}>
-          <Button variant={"outlined"} color={"inherit"}>
-            {product.name}
-          </Button>
-        </Grid>
-      </div>
-    ));
-
-    // Mapping File-products
-    let listFileItems = this.state.productFilesArray.map(product => (
-      <div className={classes.root}>
-        <Grid item xs={6} style={{ padding: 3 }}>
-          <Button
-            variant={"outlined"}
-            color={"inherit"}
-            onClick={() => {
-              this.selectedItem(product.id);
-            }}
-          >
-            {product.name}
-          </Button>
-        </Grid>
-      </div>
-    ));
-
     return (
       <div className={classes.root}>
         <Paper className={clsx(classes.paper, classes.fixedHeight)}>
-          {/*Success/Error Snackbar*/}
-          <SimpleSnackBar onRef={(ref) => (this.child = ref)} />
           <SearchBar
-            availableMIMETypes={[]}
-            onSearch={() => {}}
+            onSearch={this.onProductSearch}
             onQueryTimeout={({ isQueryTimedOut }) =>
-              this.setState({ isQueryTimedOut,
-              noFilesText: "No product files found",
-              noFoldersText: "No product folders found" })
+              this.setState({ isQueryTimedOut })
             }
           />
-          <h4>Folders</h4>
 
-          {this.state.productFoldersArray.length === 0 &&
-            this.state.isQueryTimedOut === false && (
-              <div align={"center"}>
-                <CircularProgress />
-              </div>
-            )}
-
-          {this.state.productFoldersArray.length === 0 &&
-            this.state.isQueryTimedOut === true && (
-              <div align={"center"}>
-                <Typography variant="subtitle1">
-                  {this.state.noFoldersText}
-                </Typography>
-              </div>
-            )}
-
-          {this.state.productFoldersArray.length > 0 && (
-            <Grid container spacing={1}>
-              {listFolderItems}
-            </Grid>
-          )}
-
-          {/*Load File Products*/}
-          <h4>Files</h4>
-
-          {this.state.productFilesArray.length === 0 &&
-            this.state.isQueryTimedOut === false && (
-              <div align={"center"}>
-                <CircularProgress />
-              </div>
-            )}
-
-          {this.state.productFilesArray.length === 0 &&
-            this.state.isQueryTimedOut === true && (
-              <div align={"center"}>
-                <Typography variant="subtitle1">
-                  {this.state.noFilesText}
-                </Typography>
-              </div>
-            )}
-
-          {this.state.productFilesArray.length > 0 && (
-            <Grid container spacing={1}>
-              {listFileItems}
-            </Grid>
-          )}
+          <TableContainer style={{ marginTop: "2%",width: "100%" }}>
+            <Table className={classes.productTable} aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">
+                    <strong>Product ID</strong>
+                  </TableCell>
+                  <TableCell align="left">
+                    <strong>Name</strong>
+                  </TableCell>
+                  <TableCell align="left">
+                    <strong>Received at</strong>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.productDetailsArray.length > 0 && 
+                  this.state.productDetailsArray.map((product) => {
+                    const productReceivedTime = product.metadata?.keyval.find(
+                      (meta) => meta.key === "CAS.ProductReceivedTime"
+                    ).val;
+                    return (
+                      <TableRow key={product.id}>
+                        <TableCell>{product.id}</TableCell>
+                        <TableCell className={classes.nameCell}>
+                        <NavLink to={"/products?id=" + product.id}>
+                            {shrinkString(product.name, 40, 10)}
+                        </NavLink>
+                        </TableCell>
+                        <TableCell>{productReceivedTime}</TableCell>
+                      </TableRow>
+                    );
+                  } 
+              )}
+                {this.state.productDetailsArray.length === 0 && (
+                   <TableRow>
+                   <TableCell></TableCell>
+                   <TableCell>
+                   <div className={classes.progress}>
+                    <CircularProgress />
+                  </div>
+                   </TableCell>
+                   <TableCell></TableCell>
+                 </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
           <Grid
             style={{ width: "100%" }}
@@ -283,13 +268,17 @@ class Product extends Component {
             </Grid>
           </Grid>
         </Paper>
+        <ProductDrawer 
+          productId={this.state.selectedProductId}
+          onClose={this.onProductDrawerClose}
+        />
       </div>
     );
   }
 }
 
-Product.propTypes = {
+ProductBrowser.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Product);
+export default withStyles(styles)(withSnackbar(ProductBrowser));

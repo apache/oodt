@@ -26,6 +26,8 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
+import {shrinkString} from "utils/utils"
+import { withSnackbar } from 'notistack';
 
 const styles = theme => ({
   root: {
@@ -45,14 +47,17 @@ const styles = theme => ({
     flexDirection: "row",
     alignItems: "center",
     height: "15vh",
+    justifyContent: "space-between",
     padding: 0
   },
   progress: {
     margin: 2
   },
-  formControl: {
-    margin: 1,
-  }
+  formControlContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "40%",
+  },
 });
 
 class ProductIngest extends Component {
@@ -66,6 +71,7 @@ class ProductIngest extends Component {
 
   state = {
     ingestedFile: null,
+    ingestedFileName: "",
     productId: "",
     productType: "",
     productStructure: "Flat",
@@ -81,12 +87,17 @@ class ProductIngest extends Component {
       .then((productTypes) =>
         this.setState({ productTypes, productType: productTypes[0].name })
       )
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err)
+        this.props.enqueueSnackbar("Couldn't get the available product types",{
+          variant: "warning"
+        })
+      });
   }
 
   handleFile(e) {
     let file = e.target.files[0];
-    this.setState({ ingestedFile: file });
+    this.setState({ ingestedFile: file,ingestedFileName: shrinkString(file.name,25,6) });
   }
 
   handleProductStructure(e) {
@@ -97,19 +108,30 @@ class ProductIngest extends Component {
   handleProductType(e) {
     let productType = e.target.value;
     this.setState({ productType: productType });
-    console.log(this.state.productType);
   }
 
   keyPress(e) {
     if (e.keyCode === 13) {
-      console.log(e.target.value);
       this.handleProductStructure();
     }
   }
 
   ingestProduct() {
     this.setState({ isIngested: false, isIngestButtonClicked: true });
-
+    if(!this.state.ingestedFile){
+      this.props.enqueueSnackbar("No product selected", { 
+        variant: 'error',
+    });
+      this.setState({isIngestButtonClicked: false})
+      return;
+    }
+    if(!this.state.productType){
+      this.props.enqueueSnackbar("Product type is not selected",{
+        variant: "error"
+      })
+      this.setState({isIngestButtonClicked: false})
+      return;
+    }
     let formData = new FormData();
     formData.append("productFile", this.state.ingestedFile);
 
@@ -133,9 +155,12 @@ class ProductIngest extends Component {
           isIngestButtonClicked: false,
           isIngested: true,
           ingestedFile: null,
+          ingestedFileName: "",
           ingestedPercentage: 0,
         });
-        alert("Successfully Ingested Product ID :" + res.productId);
+        this.props.enqueueSnackbar("Successfully Ingested Product "+res.productId,{
+          variant: "success"
+        })
       })
       .catch((error) => {
         console.error(error);
@@ -144,7 +169,9 @@ class ProductIngest extends Component {
           ingestedPercentage: 0,
           isIngestButtonClicked: false,
         });
-        alert("Product Ingestion Failed : " + error);
+        this.props.enqueueSnackbar("Product Ingestion Failed",{
+          variant: "error"
+        })
       });
   }
 
@@ -153,16 +180,21 @@ class ProductIngest extends Component {
 
     return (
       <Paper className={classes.root}>
-        <Typography variant="h5" component="h3">
-          Product Ingest with Single File
+        <div style={{display: "flex",justifyContent: "space-between"}}>
+        <Typography variant="subtitle1">
+          <strong>Product Ingest with Single File</strong>
         </Typography>
+        {this.state.isIngestButtonClicked && (
+            <ProgressBar value={this.state.ingestedPercentage} />
+          )}
+        </div>
 
         <br />
 
         <div className={classes.layout}>
+          <div className={classes.formControlContainer}>
           <FormControl
             variant="outlined"
-            className={classes.formControl}
             style={{ width: "180px" }}
           >
             <InputLabel htmlFor="outlined-product-Type-simple">
@@ -191,7 +223,6 @@ class ProductIngest extends Component {
 
           <FormControl
             variant="outlined"
-            className={classes.formControl}
             style={{ width: "180px" }}
           >
             <InputLabel htmlFor="outlined-product-structure-simple">
@@ -213,25 +244,32 @@ class ProductIngest extends Component {
               </MenuItem>
             </Select>
           </FormControl>
+          </div>
 
-          <input
-            className={classes.button}
-            type={"file"}
-            name={"fileToUpload"}
-            id={"fileToUpload"}
-            onChange={(e) => this.handleFile(e)}
-          />
+          <Button variant="contained" component="label">
+            Upload File
+            <input
+              className={classes.button}
+              type="file"
+              name="fileToUpload"
+              id="fileToUpload"
+              onChange={(e) => this.handleFile(e)}
+              hidden
+            />
+          </Button>
+
+          <div style={{width: "18%"}}>
+          {this.state.ingestedFileName}
+          </div>
 
           <Button
             variant="contained"
+            disabled={this.state.isIngestButtonClicked}
             color="primary"
             onClick={this.ingestProduct}
           >
             Ingest Product
           </Button>
-          {this.state.isIngestButtonClicked && (
-            <ProgressBar value={this.state.ingestedPercentage} />
-          )}
         </div>
       </Paper>
     );
@@ -242,4 +280,4 @@ ProductIngest.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ProductIngest);
+export default withStyles(styles)(withSnackbar(ProductIngest));

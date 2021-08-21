@@ -26,15 +26,14 @@ import * as fmservice from "services/fmservice"
 import Grid from "@material-ui/core/Grid";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { withSnackbar } from 'notistack';
+import CloseIcon from "@material-ui/icons/Close"
+import Drawer from '@material-ui/core/Drawer';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper
-  },
-  card: {
-    minWidth: 275,
-    backgroundColor: "#dcdcdc"
   },
   bullet: {
     display: "inline-block",
@@ -54,12 +53,24 @@ const styles = theme => ({
     width: "100%",
     display: "flex",
     justifyContent: "center"
+  },
+  drawerCloseIcon: {
+    cursor: "pointer",
+    float: "right",
+    margin: "1%",
+    fontSize: 25
+  },
+  productDrawerContent: {
+    width: "75vw",
+    overflowX: "hidden",
+    minHeight: "100%"
   }
 });
 
 class Product extends Component {
   constructor(props) {
     super(props);
+    this.snackBarRef = React.createRef();
     this.loadProduct = this.loadProduct.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
   }
@@ -73,26 +84,28 @@ class Product extends Component {
 
   componentDidMount() {
     if (this.props.productId) {
-      this.loadProduct();
-    }
+      this.loadProduct(this.props.productId);
+    } 
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.productId !== prevProps.productId) {
-      this.loadProduct();
-    }
+    if (this.props !== prevProps) {
+      this.loadProduct(this.props.productId);
+    } 
   }
 
   removeProduct() {
-    let result = window.confirm("Are you Sure to Remove the Product ?" + this.props.productId)
+    let result = window.confirm("Are you Sure to Remove the Product " +this.state.selectedProductId + "?")
     if (result) {
       fmservice
-        .removeProductById(this.props.productId)
+        .removeProductById(this.state.selectedProductId)
         .then((isDeleted) => {
-          alert(
-            "Product sucessfully removed productID: " + this.props.productId
-          );
+          this.props.enqueueSnackbar("Sucessfully removed productID: " + this.state.selectedProductId,{
+            variant: "success"
+          })
+          this.props.history.push("/product")
           this.setState({
+            selectedProductId: "",
             productData: {},
             productMetaData: {},
             productRefData: {},
@@ -104,12 +117,11 @@ class Product extends Component {
     }
   }
 
-  loadProduct() {
+  loadProduct(productId) {
     this.setState({ noResultsText: "Searching..." });
     fmservice
-      .getProductById(this.props.productId)
+      .getProductById(productId)
       .then((productData) => {
-        console.log(productData)
         this.setState({
           productData: productData,
           productMetaData: productData.metadata,
@@ -121,6 +133,7 @@ class Product extends Component {
         console.error(err);
       });
   }
+
 
   getProdDataBySection = (sectionTitle) => {
     let productData = {
@@ -170,39 +183,50 @@ class Product extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.root}>
-        {!this.isObjEmpty(this.state.productData) ? (
-          <Card className={classes.card}>
-            <Grid>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Button
-                  startIcon={<CloudDownloadIcon />}
-                  variant="contained"
-                  size="large"
-                  className={classes.button}
-                  color="primary"
-                >
-                  Download File
-                </Button>
+      <Drawer
+        anchor="right"
+        open={this.props.productId}
+        onClose={this.props.onClose}
+      >
+        <div className={classes.productDrawerContent}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              height: "8vh",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              startIcon={<CloudDownloadIcon />}
+              variant="contained"
+              size="large"
+              className={classes.button}
+              color="primary"
+            >
+              Download File
+            </Button>
 
-                <Button
-                  startIcon={<DeleteIcon />}
-                  onClick={this.removeProduct}
-                  variant="contained"
-                  size="large"
-                  className={classes.button}
-                  color="secondary"
-                >
-                  Remove Record
-                </Button>
-              </div>
-
+            <Button
+              startIcon={<DeleteIcon />}
+              onClick={this.removeProduct}
+              variant="contained"
+              size="large"
+              className={classes.button}
+              color="secondary"
+            >
+              Remove Record
+            </Button>
+            <div style={{ flexGrow: 1 }}></div>
+            <CloseIcon
+              onClick={this.props.onClose}
+              className={classes.drawerCloseIcon}
+            />
+          </div>
+          <div className={classes.root}>
+            <br />
+            {!this.isObjEmpty(this.state.productData) ? (
               <Grid container spacing={10}>
                 <Grid item lg="4">
                   <CardContent>
@@ -231,16 +255,16 @@ class Product extends Component {
                   </CardContent>
                 </Grid>
               </Grid>
-            </Grid>
-          </Card>
-        ) : (
-          <div className={classes.noResultsText}>
-            <Typography variant="h6" gutterBottom>
-              {this.state.noResultsText}
-            </Typography>
+            ) : (
+              <div className={classes.noResultsText}>
+                <Typography variant="h6" gutterBottom>
+                  {this.state.noResultsText}
+                </Typography>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      </Drawer>
     );
   }
 }
@@ -249,4 +273,4 @@ Product.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Product);
+export default withStyles(styles)(withSnackbar(Product));

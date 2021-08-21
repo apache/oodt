@@ -95,8 +95,24 @@ paths:
         500:
           description:  Internal Server Error
 
-
-
+  /productTypes:
+    get:
+      tags:
+        - Products
+      summary: Get product types
+      description: Get all available product types
+      operationId: findAllProductTypes
+      produces:
+        - application/json
+        - application/atom+xml
+        - application/rdf+xml
+        - application/rss+xml
+        - application/zip
+      responses:
+        200:
+          description: Successful operation
+        404:
+          description: No product type was found
 
   /product:
     get:
@@ -122,8 +138,6 @@ paths:
           description: Successful operation
         404:
           description: Product not Found
-
-
 
   /products:
     get:
@@ -154,7 +168,6 @@ paths:
           description: successful operation
         404:
           description: Product not Found
-
 
   /fmprodstatus:
     get:

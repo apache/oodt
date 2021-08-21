@@ -38,16 +38,17 @@ export const getProductById = (productId) => {
   });
 };
 
-export const getProductPage = (productType, productPageNo) => {
+export const getProductPage = (productParams) => {
+  const {productType,productName, productPageNo} = productParams;
   return new Promise((resolve, reject) => {
     fmconnection
       .get("/products", {
         params: {
           productTypeName: productType,
-          currentProductPage: productPageNo,
+          productName,
+          currentProductPage: productPageNo
         },
       })
-
       .then((res) => {
         resolve(res.data.productPage);
       })

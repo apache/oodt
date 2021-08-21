@@ -31,13 +31,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import {fmMenuListItems,wmMenuListItems} from './listItems';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {Link} from "react-router-dom";
-
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ListItemText from "@material-ui/core/ListItemText";
 import PropTypes from "prop-types";
-
 
 const drawerWidth = 240;
 
@@ -46,7 +44,7 @@ const styles = (theme => ({
         display: 'flex',
     },
     toolbar: {
-        paddingRight: 24, // keep right padding when drawer closed
+        paddingRight: 24
     },
     toolbarIcon: {
         display: 'flex',
@@ -61,6 +59,7 @@ const styles = (theme => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        backgroundColor: "#1a1a59"
     },
     appBarShift: {
         marginLeft: drawerWidth,
@@ -134,9 +133,7 @@ class OPSUIHome extends React.Component {
         super(props);
         this.state = {
             open: true,
-            selectedProductId: '',
         };
-        this.setSelectedProductId=this.setSelectedProductId.bind(this);
     }
 
     handleDrawerOpen = () => {
@@ -146,17 +143,6 @@ class OPSUIHome extends React.Component {
     handleDrawerClose = () => {
         this.setState({open: false});
     };
-
-
-    testFunction = () => {
-        console.log("Hello");
-    };
-
-
-    setSelectedProductId(productId) {
-        this.setState({selectedProductId: productId});
-    };
-
 
     render() {
         const {classes} = this.props;
@@ -178,7 +164,6 @@ class OPSUIHome extends React.Component {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Apache OODT - OPSUI
                         </Typography>
-
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" className={classes.logo}
@@ -191,18 +176,11 @@ class OPSUIHome extends React.Component {
                             </div>
                             <ChevronLeftIcon/>
                         </IconButton>
-
                     </div>
 
-                    {/*Main Menu List*/}
-                    {/*<List>{mainListItems}</List>*/}
                     <List>
                         <div>
-
-
-                            {/*Status of OPSUI*/}
                             <ListItem button component={Link} to={"/"} >
-                                {/*onClick={this.testFunction.bind(this)}*/}
                                 <ListItemIcon>
                                     <DashboardIcon/>
                                 </ListItemIcon>
@@ -210,9 +188,7 @@ class OPSUIHome extends React.Component {
                             </ListItem>
                         </div>
                     </List>
-
                     <Divider/>
-
 
                     {/*FileManager Menu List*/}
                     <List>{fmMenuListItems}</List>
@@ -220,22 +196,17 @@ class OPSUIHome extends React.Component {
 
                     {/*Workflow Manager Menu List*/}
                     <List>{wmMenuListItems}</List>
-
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer}/>
                     <Container maxWidth="lg" className={classes.container}>
                         {this.props.children}
-
                     </Container>
-
                 </main>
-
             </div>
         );
     }
 }
-
 
 OPSUIHome.propTypes = {
     classes: PropTypes.object.isRequired,

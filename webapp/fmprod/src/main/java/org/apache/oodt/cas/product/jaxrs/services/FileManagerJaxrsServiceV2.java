@@ -41,14 +41,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.*;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.MetExtractor;
@@ -72,6 +70,7 @@ import org.slf4j.LoggerFactory;
  * returns file manager entities JAX-RS resources converted to different formats.
  *
  * @author ngimhana (Nadeeshan Gimhana)
+ * @author pavinduLakshan (Pavindu Lakshan)
  */
 public class FileManagerJaxrsServiceV2 {
 
@@ -87,37 +86,6 @@ public class FileManagerJaxrsServiceV2 {
   
   public FileManagerJaxrsServiceV2() throws IOException {
     tmpDir = Files.createTempDirectory("oodt");
-  }
-
-  /**
-   * Gets an HTTP request that represents a {@link ProductPage} from the file manager.
-   *
-   * @param productTypeName the Name of a productType
-   * @return an HTTP response that represents a {@link ProductPage} from the file manager
-   */
-  @GET
-  @Path("products")
-  @Produces({
-    "application/xml",
-    "application/json",
-    "application/atom+xml",
-    "application/rdf+xml",
-    "application/rss+xml"
-  })
-  public ProductPageResource getFirstPage(@QueryParam("productTypeName") String productTypeName)
-      throws WebApplicationException {
-
-    try {
-      FileManagerClient client = getContextClient();
-
-      // Get the first ProductPage
-      ProductPage genericFile = client.getFirstPage(client.getProductTypeByName(productTypeName));
-
-      return getProductPageResource(client, genericFile);
-
-    } catch (Exception e) {
-      throw new NotFoundException(e.getMessage());
-    }
   }
 
   /**
@@ -181,39 +149,24 @@ public class FileManagerJaxrsServiceV2 {
   })
   public ProductPageResource getNextPage(
       @QueryParam("productTypeName") String productTypeName,
+      @QueryParam("productName") String productName,
       @QueryParam("currentProductPage") int currentProductPage)
       throws WebApplicationException {
 
     try {
       FileManagerClient client = getContextClient();
-
-      // Get the first ProductPage
-      ProductPage firstpage = client.getFirstPage(client.getProductTypeByName(productTypeName));
-
-      if (currentProductPage == 1) {
-        return getProductPageResource(client,firstpage);
+      Query query = new Query();
+      ProductPage productPage;
+      if (!StringUtils.isEmpty(productName)) {
+        Product product = client.getProductByName(productName);
+        List<Product> products = new ArrayList<Product>();
+        products.add(product);
+        productPage = new ProductPage(1, 1, 1, products);
       }
-
-      // Get the next ProductPage
-      ProductPage nextPage =
-          client.getNextPage(client.getProductTypeByName(productTypeName), firstpage);
-
-      // Searching for the current page
-      while (nextPage.getPageNum() != currentProductPage) {
-        int prevNextPageNum = nextPage.getPageNum();
-        nextPage = client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
-        if(nextPage.getPageNum() == prevNextPageNum) {
-          throw new NotFoundException("No products");
-        }
+      else {
+        productPage = client.pagedQuery(query,client.getProductTypeByName(productTypeName),currentProductPage);
       }
-
-      // Get the next page from the current page
-      ProductPage genericFile =
-          client.getNextPage(client.getProductTypeByName(productTypeName), nextPage);
-
-      // Return ProductPage resource
-      return getProductPageResource(client, genericFile);
-
+      return getProductPageResource(client, productPage);
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
     }
@@ -245,7 +198,8 @@ public class FileManagerJaxrsServiceV2 {
 
     ProductPageResource pageResource = new ProductPageResource(
             genericFile, proMetaDataList, proReferencesList, getContextWorkingDir());
-    pageResource.setTotalProducts(getTotalNumOfProducts());
+    int totalProducts = genericFile.getPageProducts().size() == 1 ? 1 : getTotalNumOfProducts();
+    pageResource.setTotalProducts(totalProducts);
     return pageResource;
   }
 
@@ -390,7 +344,7 @@ public class FileManagerJaxrsServiceV2 {
           CoreMetKeys.FILE_LOCATION,
           (inputProductFile
               .getAbsolutePath()
-              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf("/"))));
+              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf(File.separator))));
 
       String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
       return Response.ok(ingest).build();
@@ -446,7 +400,7 @@ public class FileManagerJaxrsServiceV2 {
           CoreMetKeys.FILE_LOCATION,
           (inputProductFile
               .getAbsolutePath()
-              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf("/"))));
+              .substring(0, inputProductFile.getAbsolutePath().lastIndexOf(File.separator))));
 
       String ingest = ingester.ingest(fmURL, inputProductFile, prodMeta);
       return Response.ok(ingest).build();
