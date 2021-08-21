@@ -4,7 +4,7 @@ import { SnackbarProvider } from 'notistack';
 import OPSUIHome from "./components/OPSUIHome";
 import ComponentStatus from "./components/ComponentStatus";
 import {WorkflowList} from "./components/workflowManager";
-import {Product, ProductIngest, ProductIngestWithMetaFile, ProductList} from "./components/fileManager";
+import {ProductIngest, ProductIngestWithMetaFile, ProductList} from "./components/fileManager";
 
 class MyApp extends Component {
   render() {
@@ -47,15 +47,6 @@ class MyApp extends Component {
                     <ProductIngest />
                     <br />
                     <ProductIngestWithMetaFile />
-                  </div>
-                )}
-              />
-
-              <Route
-                path={"/product"}
-                render={(props) => (
-                  <div>
-                    <Product {...props} />
                   </div>
                 )}
               />

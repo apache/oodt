@@ -33,6 +33,7 @@ import SearchBar from "./SearchBar"
 import {shrinkString} from "utils/utils"
 import { NavLink } from "react-router-dom";
 import { withSnackbar } from 'notistack';
+import { Product as ProductDrawer } from "components/fileManager/Product"
 
 const styles = (theme) => ({
   root: {
@@ -89,7 +90,7 @@ const styles = (theme) => ({
   },
 });
 
-class Product extends Component {
+class ProductBrowser extends Component {
   constructor(props) {
     super(props);
     this.snackBarRef = React.createRef();
@@ -106,7 +107,20 @@ class Product extends Component {
   };
 
   componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    this.setState({selectedProductId: params.get("id")})
     this.loadNextProducts();
+  }
+
+  componentDidUpdate(prevProps){
+    if(this.props !== prevProps) {
+      const params = new URLSearchParams(window.location.search);
+      this.setState({selectedProductId: params.get("id")})
+    }
+  }
+
+  onProductDrawerClose = () => {
+    this.props.history.push("/products")
   }
 
   // TODO
@@ -211,7 +225,7 @@ class Product extends Component {
                       <TableRow key={product.id}>
                         <TableCell>{product.id}</TableCell>
                         <TableCell className={classes.nameCell}>
-                        <NavLink to={"/product?id=" + product.id}>
+                        <NavLink to={"/products?id=" + product.id}>
                             {shrinkString(product.name, 40, 10)}
                         </NavLink>
                         </TableCell>
@@ -254,13 +268,17 @@ class Product extends Component {
             </Grid>
           </Grid>
         </Paper>
+        <ProductDrawer 
+          productId={this.state.selectedProductId}
+          onClose={this.onProductDrawerClose}
+        />
       </div>
     );
   }
 }
 
-Product.propTypes = {
+ProductBrowser.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withSnackbar(Product));
+export default withStyles(styles)(withSnackbar(ProductBrowser));

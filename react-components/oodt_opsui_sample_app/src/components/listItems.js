@@ -43,13 +43,6 @@ export const fmMenuListItems = (
       </ListItemIcon>
       <ListItemText primary="Product Browser" />
     </ListItem>
-
-    <ListItem button component={Link} to={"/product"}>
-      <ListItemIcon>
-        <FindInPage />
-      </ListItemIcon>
-      <ListItemText primary="Product Search" />
-    </ListItem>
   </div>
 );
 

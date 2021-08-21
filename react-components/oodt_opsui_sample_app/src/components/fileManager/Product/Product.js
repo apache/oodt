@@ -26,17 +26,14 @@ import * as fmservice from "services/fmservice"
 import Grid from "@material-ui/core/Grid";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import DeleteIcon from '@material-ui/icons/Delete';
-import SingleProductSearchBar from "./SearchBar"
 import { withSnackbar } from 'notistack';
+import CloseIcon from "@material-ui/icons/Close"
+import Drawer from '@material-ui/core/Drawer';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper
-  },
-  card: {
-    minWidth: 275,
-    backgroundColor: "#dcdcdc"
   },
   bullet: {
     display: "inline-block",
@@ -56,6 +53,17 @@ const styles = theme => ({
     width: "100%",
     display: "flex",
     justifyContent: "center"
+  },
+  drawerCloseIcon: {
+    cursor: "pointer",
+    float: "right",
+    margin: "1%",
+    fontSize: 25
+  },
+  productDrawerContent: {
+    width: "75vw",
+    overflowX: "hidden",
+    minHeight: "100%"
   }
 });
 
@@ -68,7 +76,6 @@ class Product extends Component {
   }
 
   state = {
-    selectedProductId: null,
     productData: {},
     productMetaData: {},
     productRefData: {},
@@ -76,14 +83,15 @@ class Product extends Component {
   };
 
   componentDidMount() {
-    const productIdFromParams = new URLSearchParams(window.location.search).get("id")
-    if (this.state.selectedProductId) {
-      this.props.history.push("/product")
-      this.loadProduct(this.state.selectedProductId);
-    } else if (productIdFromParams) {
-      this.setState({selectedProductId: productIdFromParams}) 
-      this.loadProduct(productIdFromParams)
-    }
+    if (this.props.productId) {
+      this.loadProduct(this.props.productId);
+    } 
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props !== prevProps) {
+      this.loadProduct(this.props.productId);
+    } 
   }
 
   removeProduct() {
@@ -126,11 +134,6 @@ class Product extends Component {
       });
   }
 
-  setSelectedProductId = (productId) => {
-    this.props.history.push("/product")
-    this.setState({selectedProductId: productId})
-    this.loadProduct(productId)
-  }
 
   getProdDataBySection = (sectionTitle) => {
     let productData = {
@@ -180,41 +183,50 @@ class Product extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.root}>
-        <SingleProductSearchBar setSelectedProductId={this.setSelectedProductId} productId={this.state.selectedProductId}/>
-        <br />
-        {!this.isObjEmpty(this.state.productData) ? (
-          <Card className={classes.card}>
-            <Grid>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Button
-                  startIcon={<CloudDownloadIcon />}
-                  variant="contained"
-                  size="large"
-                  className={classes.button}
-                  color="primary"
-                >
-                  Download File
-                </Button>
+      <Drawer
+        anchor="right"
+        open={this.props.productId}
+        onClose={this.props.onClose}
+      >
+        <div className={classes.productDrawerContent}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              height: "8vh",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              startIcon={<CloudDownloadIcon />}
+              variant="contained"
+              size="large"
+              className={classes.button}
+              color="primary"
+            >
+              Download File
+            </Button>
 
-                <Button
-                  startIcon={<DeleteIcon />}
-                  onClick={this.removeProduct}
-                  variant="contained"
-                  size="large"
-                  className={classes.button}
-                  color="secondary"
-                >
-                  Remove Record
-                </Button>
-              </div>
-
+            <Button
+              startIcon={<DeleteIcon />}
+              onClick={this.removeProduct}
+              variant="contained"
+              size="large"
+              className={classes.button}
+              color="secondary"
+            >
+              Remove Record
+            </Button>
+            <div style={{ flexGrow: 1 }}></div>
+            <CloseIcon
+              onClick={this.props.onClose}
+              className={classes.drawerCloseIcon}
+            />
+          </div>
+          <div className={classes.root}>
+            <br />
+            {!this.isObjEmpty(this.state.productData) ? (
               <Grid container spacing={10}>
                 <Grid item lg="4">
                   <CardContent>
@@ -243,16 +255,16 @@ class Product extends Component {
                   </CardContent>
                 </Grid>
               </Grid>
-            </Grid>
-          </Card>
-        ) : (
-          <div className={classes.noResultsText}>
-            <Typography variant="h6" gutterBottom>
-              {this.state.noResultsText}
-            </Typography>
+            ) : (
+              <div className={classes.noResultsText}>
+                <Typography variant="h6" gutterBottom>
+                  {this.state.noResultsText}
+                </Typography>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      </Drawer>
     );
   }
 }
