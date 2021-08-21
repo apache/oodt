@@ -12,18 +12,19 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.wmservices.enums.ErrorType;
 import org.apache.oodt.cas.wmservices.exceptions.InternalServerErrorException;
 import org.apache.oodt.cas.wmservices.exceptions.NotFoundException;
-import org.apache.oodt.cas.wmservices.resources.WMRequestStatusResource;
-import org.apache.oodt.cas.wmservices.resources.WorkflowInstancePageResource;
-import org.apache.oodt.cas.wmservices.resources.WorkflowInstanceResource;
-import org.apache.oodt.cas.wmservices.resources.WorkflowManagerStatus;
+import org.apache.oodt.cas.wmservices.resources.*;
 import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Service class for Proposing Apache OODT-2.0 WorkflowManager REST-APIs This handles HTTP requests
@@ -79,6 +80,50 @@ public class WMJaxrsServiceV2 {
   }
 
   /**
+   * returns all registered events
+   *
+   * @return events
+   */
+  @GET
+  @Path("events")
+  @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public WorkflowEventListResource getRegisteredEvents() {
+    try {
+      WorkflowManagerClient wmclient = getContextClient();
+      List events = wmclient.getRegisteredEvents();
+      WorkflowEventListResource eventResource = new WorkflowEventListResource(events);
+      return eventResource;
+    } catch (WorkflowException e) {
+      logger.error("Error occurred when getting WM client", e);
+      throw new InternalServerErrorException("Unable to get WM client");
+    } catch (Exception e) {
+      logger.error("Error occurred when getting WM client", e);
+      throw new InternalServerErrorException("Unable to get WM client");
+    }
+  }
+
+  /**
+   * trigger workflow by event
+   *
+   * @return isOk
+   */
+  @POST
+  @Path("event")
+  @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public Response handleEvent(
+          @QueryParam("eventName") String eventName
+  ) throws Exception {
+    try {
+      WorkflowManagerClient wmclient = getContextClient();
+      wmclient.sendEvent(eventName, new Metadata());
+      return Response.ok(true,MediaType.TEXT_PLAIN).build();
+    } catch (WorkflowException e) {
+      logger.error("Error occurred when getting WM client", e);
+      throw new InternalServerErrorException("Unable to get WM client");
+    }
+  }
+
+  /**
    * Gets an HTTP response that represents a {@link WorkflowInstance} from the workflow manager.
    *
    * @param workflowInstId the ID of the workflow Instance
@@ -116,8 +161,33 @@ public class WMJaxrsServiceV2 {
     try {
       WorkflowManagerClient wmclient = getContextClient();
       WorkflowInstancePage firstPage = wmclient.getFirstPage();
-      WorkflowInstancePageResource firstPageResource = new WorkflowInstancePageResource(firstPage);
+      int totalWorkflowCount = wmclient.getNumWorkflowInstances();
+      WorkflowInstancePageResource firstPageResource = new WorkflowInstancePageResource(firstPage,totalWorkflowCount);
       return firstPageResource;
+    } catch (Exception e) {
+      throw new NotFoundException(e.getMessage());
+    }
+  }
+
+  /**
+   * Gets an HTTP response that represents a {@link WorkflowInstancePage} from the workflow manager.
+   * Gives the specified Page of WorkFlow Instances
+   *
+   * @return an HTTP response that represents a {@link WorkflowInstancePage} from the workflow
+   *     manager
+   */
+  @GET
+  @Path("page")
+  @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+  public WorkflowInstancePageResource getWorkflowPage(
+    @QueryParam("workflowPage") int pageNo
+  ) throws WebApplicationException {
+    try {
+      WorkflowManagerClient wmclient = getContextClient();
+      WorkflowInstancePage workflowPage = wmclient.paginateWorkflowInstances(pageNo);
+      int totalWorkflowCount = wmclient.getNumWorkflowInstances();
+      WorkflowInstancePageResource workflowPageResource = new WorkflowInstancePageResource(workflowPage,totalWorkflowCount);
+      return workflowPageResource;
     } catch (Exception e) {
       throw new NotFoundException(e.getMessage());
     }

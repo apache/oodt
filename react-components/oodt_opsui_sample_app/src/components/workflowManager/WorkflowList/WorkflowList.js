@@ -16,7 +16,7 @@
  */
 
 import React, { Component } from "react";
-import { Button, withStyles } from "@material-ui/core";
+import { Button, withStyles, TablePagination, Typography, Grid } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -24,14 +24,15 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
-import { wmconnection } from "constants/connection";
+import * as wmservice from "services/wmservice"
+import {NewWorkflow} from "components/workflowManager/NewWorkflow"
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = theme => ({
   root: {
     width: "100%",
     marginTop: 0,
-    overflowX: "auto"
+    padding: 20
   },
   table: {
     minWidth: 650
@@ -40,98 +41,90 @@ const styles = theme => ({
     margin: 2
   },
   loading: {
-    textAlign: "center",
-    display: "block",
-    position: "relative"
+    display: "flex",
+    width: "100%",
+    justifyContent: "center"
   }
 });
 
 class WorkflowList extends Component {
-  constructor(props) {
-    super(props);
-    this.updateWorkflowStatus = this.updateWorkflowStatus.bind(this);
-    this.reloadWorkflow = this.reloadWorkflow.bind(this);
+  state = {
+    rows: [],
+    currentPage: 1,
+    totalPages: 0,
+    totalCount: 0,
+    workflowState: []
+  };
+
+  componentDidMount() {
+    this.loadNextWorkflows()
   }
 
-  componentWillMount() {
-    wmconnection
-      .get("/workflow/firstpage")
-      .then(result => {
+  loadNextWorkflows = () => {
+    wmservice.getWorkflowList(this.state.currentPage).then(
+      workflowData => {
+        console.log(workflowData)
+        let workflowArr = workflowData.pageWorkflows
+        // Backend returns a product object when the object count is 1
+        // and returns an array of products when the object count is more than 1.
+        // This check converts object to array to avoid this problem
+        // Need to fix this in the backend
+        if (!Array.isArray(workflowArr)) {
+          workflowArr = [workflowArr]
+        }
         this.setState({
-          rows: result.data.workflowPageInstance.pageWorkflows
-        });
-        // console.log(this.state.rows)
-        console.log(this.state.rows[0].sharedContext.keyval[0].val);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+          rows: workflowArr || [],
+          totalPages: workflowData.totalPages,
+          totalCount: workflowData.totalCount
+        })
+      }
+    ).catch(err => {
+      console.error(err)
+    })
   }
 
-  updateWorkflowStatus(workflowInstanceId, state) {
-    let result = window.confirm(
-      "Are you sure to change workflow " +
-        workflowInstanceId +
-        " state to " +
-        state
-    );
-    if (result) {
-      wmconnection
-        .post(
-          "/updatestatus/workflow?workflowInstanceId=" +
-            workflowInstanceId +
-            "&status=" +
-            state
-        )
-        .then(result => {
-          console.log("Success");
-          this.reloadWorkflow();
+  updateWorkflowStatus = (workflowInstanceId, state) => {
+    let result = window.confirm("Are you sure to change workflow " + workflowInstanceId + " state to " + state);
+    if(result){
+      wmservice.updateWorkflowStatus(workflowInstanceId, state)
+      .then((result) => {
+        wmservice.getWorkflowList().then(
+          workflows => {
+            this.setState({rows: workflows})
+          }
+        ).catch(err => {
+          console.error(err)
         })
-        .catch(error => {
-          console.log(error);
-        });
-    } else {
+      })
+      .catch((err) => console.error(err));
     }
   }
 
-  reloadWorkflow() {
-    wmconnection
-      .get("/workflow/firstpage")
-      .then(result => {
-        this.setState({
-          rows: result.data.workflowPageInstance.pageWorkflows
-        });
-        // console.log(this.state.rows)
-        console.log(this.state.rows[0].sharedContext.keyval[0].val);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  handleChangePage = (event,newPageNo) => {
+    this.setState({currentPage: newPageNo+1},() => this.loadNextWorkflows())
   }
-
-  state = {
-    rows: [],
-    workflowState: []
-  };
 
   render() {
     const { classes } = this.props;
     return (
       <Paper className={classes.root}>
+        <Typography variant="h6">New workflow</Typography>
+        <NewWorkflow />
+        
+        <Typography variant="h6">Past workflows</Typography>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>Workflow Instance Id</TableCell>
-              <TableCell align="center">Workflow Name</TableCell>
-              <TableCell align="center">Task Id</TableCell>
-              <TableCell align="center">Workflow State</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell><strong>Workflow Instance Id</strong></TableCell>
+              <TableCell align="center"><strong>Workflow Name</strong></TableCell>
+              <TableCell align="center"><strong>Task Id</strong></TableCell>
+              <TableCell align="center"><strong>Workflow State</strong></TableCell>
+              <TableCell align="center"><strong>Actions</strong></TableCell>
             </TableRow>
           </TableHead>
 
-          {this.state.rows.length > 0 && (
             <TableBody>
-              {this.state.rows.map(row => (
+              {this.state.rows.length > 0 && this.state.rows.map(row => (
                 <TableRow key={row.workflowInstanceId}>
                   <TableCell component="th" scope="row">
                     {row.workflowInstanceId}
@@ -189,13 +182,30 @@ class WorkflowList extends Component {
                 </TableRow>
               ))}
             </TableBody>
-          )}
-          {this.state.rows.length === 0 && (
-            <TableBody className={classes.loading}>
-              <CircularProgress className={classes.progress} />
-            </TableBody>
-          )}
         </Table>
+        {this.state.rows.length === 0 && (
+                <div className={classes.loading}>
+                  <CircularProgress className={classes.progress} />
+                </div>                  
+          )}
+                  <Grid
+            style={{ width: "100%" }}
+            container
+            spacing={1}
+            direction="column"
+            alignItems="center"
+          >
+            <Grid item>
+              <TablePagination
+                component="div"
+                count={this.state.totalCount }
+                page={this.state.currentPage - 1}
+                onChangePage={this.handleChangePage}
+                rowsPerPage={20}
+                rowsPerPageOptions={[]}
+              />
+            </Grid>
+          </Grid>
       </Paper>
     );
   }

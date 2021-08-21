@@ -16,7 +16,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
  * @author ngimhana (Nadeeshan Gimhana)
  */
 @XmlRootElement(name = "workflowPageInstance")
-@XmlType(propOrder = {"pageNum", "totalPages", "pageSize", "pageWorkflows"})
+@XmlType(propOrder = {"pageNum", "totalPages","totalWorkflowCount", "pageSize", "pageWorkflows"})
 @XmlAccessorType(XmlAccessType.NONE)
 public class WorkflowInstancePageResource {
 
@@ -24,6 +24,7 @@ public class WorkflowInstancePageResource {
   private int totalPages;
   private int pageSize;
   private List pageWorkflows;
+  private int totalWorkflowCount;
 
   /** Default constructor required by JAXB. */
   public WorkflowInstancePageResource() {}
@@ -33,11 +34,12 @@ public class WorkflowInstancePageResource {
    *
    * @param workflowInstancePage the workflowInstancePage associated with the resource
    */
-  public WorkflowInstancePageResource(WorkflowInstancePage workflowInstancePage) {
+  public WorkflowInstancePageResource(WorkflowInstancePage workflowInstancePage,int totalWorkflowCount) {
     this.pageNum = workflowInstancePage.getPageNum();
     this.totalPages = workflowInstancePage.getTotalPages();
     this.pageSize = workflowInstancePage.getPageSize();
     this.pageWorkflows = workflowInstancePage.getPageWorkflows();
+    this.totalWorkflowCount = totalWorkflowCount;
   }
 
   @XmlElement(name = "pageNum")
@@ -48,6 +50,11 @@ public class WorkflowInstancePageResource {
   @XmlElement(name = "totalPages")
   public int getTotalPages() {
     return totalPages;
+  }
+
+  @XmlElement(name = "totalCount")
+  public int getTotalWorkflowCount() {
+    return totalWorkflowCount;
   }
 
   @XmlElement(name = "pageSize")
