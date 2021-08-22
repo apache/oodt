@@ -4,6 +4,10 @@ Apache OODT Change Log
 =======
 Release 2.0 - In Progress
 
+NOTE: Avro RPC becomes the default method of communication from this version. XML RPC is made deprecated.
+
+* OODT-1006 Introduce docker images for file manager, resource manager, ReactJs based OPSUI and file manager/workflow manager REST APIs
+
 * OODT-1006 Add Dockerfile for OODT deployment
 
 =======
