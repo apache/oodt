@@ -104,6 +104,7 @@ class ProductBrowser extends Component {
     totalProductCount: 0,
     productTypeArray: [],
     isQueryTimedOut: true,
+    noProductsText: "Loading..."
   };
 
   componentDidMount() {
@@ -121,14 +122,18 @@ class ProductBrowser extends Component {
 
   onProductDrawerClose = () => {
     this.props.history.push("/products")
+    this.loadNextProducts()
   }
 
-  // TODO
   onProductSearch = (productName) => {
     fmservice.getProductPage({
       productName: productName
     }).then(productPage => {
         let productsArr = productPage.products.product
+        if (typeof(productsArr) === "undefined"){
+          this.setState({noProductsText: "No products"})
+          return;
+        }
         if (!Array.isArray(productsArr)) {
           productsArr = [productsArr]
         }
@@ -164,6 +169,10 @@ class ProductBrowser extends Component {
         // and returns an array of products when the object count is more than 1.
         // This check converts object to array to avoid this problem
         // Need to fix this in the backend
+        if (typeof(productsArr) === "undefined"){
+          this.setState({noProductsText: "No products"})
+          return;
+        }
         if (!Array.isArray(productsArr)) {
           productsArr = [productsArr]
         }
@@ -239,7 +248,7 @@ class ProductBrowser extends Component {
                    <TableCell></TableCell>
                    <TableCell>
                    <div className={classes.progress}>
-                    <CircularProgress />
+                   <p>{this.state.noProductsText}</p>
                   </div>
                    </TableCell>
                    <TableCell></TableCell>
@@ -262,7 +271,7 @@ class ProductBrowser extends Component {
                 count={this.state.totalProductCount}
                 page={this.state.currentProductPage}
                 onChangePage={this.handleChangePage}
-                rowsPerPage={this.state.productDetailsArray.length}
+                rowsPerPage={20}
                 rowsPerPageOptions={[]}
               />
             </Grid>

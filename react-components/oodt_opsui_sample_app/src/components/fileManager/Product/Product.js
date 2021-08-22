@@ -70,7 +70,6 @@ const styles = theme => ({
 class Product extends Component {
   constructor(props) {
     super(props);
-    this.snackBarRef = React.createRef();
     this.loadProduct = this.loadProduct.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
   }
@@ -95,21 +94,21 @@ class Product extends Component {
   }
 
   removeProduct() {
-    let result = window.confirm("Are you Sure to Remove the Product " +this.state.selectedProductId + "?")
+    let result = window.confirm("Are you Sure to Remove the Product " +this.props.productId + "?")
     if (result) {
       fmservice
-        .removeProductById(this.state.selectedProductId)
+        .removeProductById(this.props.productId)
         .then((isDeleted) => {
-          this.props.enqueueSnackbar("Sucessfully removed productID: " + this.state.selectedProductId,{
+          this.props.enqueueSnackbar("Sucessfully removed productID: " + this.props.productId,{
             variant: "success"
           })
-          this.props.history.push("/product")
           this.setState({
-            selectedProductId: "",
             productData: {},
             productMetaData: {},
             productRefData: {},
           });
+          this.props.onClose()
+          this.props.history.push("/products")
         })
         .catch((err) => {
           console.error(err);

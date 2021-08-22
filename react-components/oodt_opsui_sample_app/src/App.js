@@ -12,6 +12,7 @@ class MyApp extends Component {
       <BrowserRouter>
         <SnackbarProvider
           maxSnack={3}
+          autoHideDuration={3000}
           anchorOrigin={{
             vertical: "top",
             horizontal: "center",
