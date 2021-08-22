@@ -53,7 +53,8 @@ class WorkflowList extends Component {
     currentPage: 1,
     totalPages: 0,
     totalCount: 0,
-    workflowState: []
+    workflowState: [],
+    noWorkflowsText: "Loading..."
   };
 
   componentDidMount() {
@@ -63,8 +64,11 @@ class WorkflowList extends Component {
   loadNextWorkflows = () => {
     wmservice.getWorkflowList(this.state.currentPage).then(
       workflowData => {
-        console.log(workflowData)
         let workflowArr = workflowData.pageWorkflows
+        if (typeof(workflowArr) === "undefined"){
+          this.setState({noWorkflowsText: "No workflows found"})
+          return;
+        }
         // Backend returns a product object when the object count is 1
         // and returns an array of products when the object count is more than 1.
         // This check converts object to array to avoid this problem

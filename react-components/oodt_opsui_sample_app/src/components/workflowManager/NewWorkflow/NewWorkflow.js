@@ -58,7 +58,6 @@ class NewWorkflow extends Component {
     wmservice
       .getRegisteredEvents()
       .then((eventsArr) => {
-        console.log(eventsArr);
         this.setState({
           selectedEvent: eventsArr[0],
           workflowEvents: eventsArr || [],
