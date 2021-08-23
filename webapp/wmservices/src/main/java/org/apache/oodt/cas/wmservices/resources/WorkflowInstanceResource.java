@@ -56,10 +56,12 @@ public class WorkflowInstanceResource {
     this.workflowInstanceId = workflowInstance.getId();
     this.currentTaskId = workflowInstance.getCurrentTaskId();
     this.startDate = workflowInstance.getStartDate().toString();
-    this.endDate = workflowInstance.getEndDate().toString();
     this.timesBlocked = workflowInstance.getTimesBlocked();
     this.sharedContext = new MetadataResource(workflowInstance.getSharedContext());
     this.workflowState = new WorkflowStateResource(workflowInstance.getState());
+    if (workflowInstance.getEndDate() != null){
+      this.endDate = workflowInstance.getEndDate().toString();
+    }
   }
 
   @XmlElement(name = "workflowInstanceId")
