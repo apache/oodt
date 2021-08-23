@@ -93,13 +93,10 @@ public class WMJaxrsServiceV2 {
       List events = wmclient.getRegisteredEvents();
       WorkflowEventListResource eventResource = new WorkflowEventListResource(events);
       return eventResource;
-    } catch (WorkflowException e) {
-      logger.error("Error occurred when getting WM client", e);
-      throw new InternalServerErrorException("Unable to get WM client");
     } catch (Exception e) {
       logger.error("Error occurred when getting WM client", e);
       throw new InternalServerErrorException("Unable to get WM client");
-    }
+    } 
   }
 
   /**
