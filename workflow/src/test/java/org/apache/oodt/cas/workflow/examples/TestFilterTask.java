@@ -21,8 +21,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  */
 public class TestFilterTask extends TestCase {
 
-  private static Logger LOG = Logger.getLogger(TestFilterTask.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(TestFilterTask.class);
 	private FilterTask task;
 	private Metadata dynMet;
 	private WorkflowTaskConfiguration config;
@@ -73,7 +73,7 @@ public class TestFilterTask extends TestCase {
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		assertNotNull(dynMet);
@@ -86,7 +86,7 @@ public class TestFilterTask extends TestCase {
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		assertNotNull(dynMet);
@@ -104,7 +104,7 @@ public class TestFilterTask extends TestCase {
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		assertNotNull(dynMet);
@@ -117,7 +117,7 @@ public class TestFilterTask extends TestCase {
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		assertNotNull(dynMet);
@@ -131,7 +131,7 @@ public class TestFilterTask extends TestCase {
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		assertNotNull(dynMet);
@@ -143,7 +143,7 @@ public class TestFilterTask extends TestCase {
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		assertNotNull(dynMet);
@@ -158,7 +158,7 @@ public class TestFilterTask extends TestCase {
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
+			LOG.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		assertNotNull(dynMet);

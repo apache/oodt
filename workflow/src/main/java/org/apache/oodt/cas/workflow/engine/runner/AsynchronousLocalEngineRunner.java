@@ -25,14 +25,14 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 
@@ -44,8 +44,7 @@ import java.util.logging.Logger;
  */
 public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
 
-  private static final Logger LOG = Logger
-      .getLogger(AsynchronousLocalEngineRunner.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(AsynchronousLocalEngineRunner.class);
 
   public static final int DEFAULT_NUM_THREADS = 25;
 
@@ -86,15 +85,15 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
               + "] for instance id: ["
               + taskProcessor.getWorkflowInstance().getId()
               + "] completed successfully";
-          LOG.log(Level.INFO, msg);
+          LOG.info(msg);
           WorkflowState state = lifecycle.createState("ExecutionComplete", "transition", msg);
           taskProcessor.getWorkflowInstance().setState(state);
           persist(taskProcessor.getWorkflowInstance());
         } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
+          LOG.error(e.getMessage(), e);
           String msg = "Exception executing task: ["
               + workflowTask.getTaskName() + "]: Message: " + e.getMessage();
-          LOG.log(Level.WARNING, msg);
+          LOG.error(e.getMessage(), e);
           WorkflowState state = lifecycle.createState("Failure", "done", msg);
           taskProcessor.getWorkflowInstance().setState(state);
           persist(taskProcessor.getWorkflowInstance());

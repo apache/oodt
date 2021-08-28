@@ -21,17 +21,17 @@ import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TestAvroFileManagerServer extends AbstractFileManagerServerTest {
 
-    private static Logger LOG = Logger.getLogger(TestAvroFileManagerServer.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TestAvroFileManagerServer.class);
 
     public void testExpandProductMet() {
         AvroFileManagerClient fmc = null;
@@ -45,7 +45,7 @@ public class TestAvroFileManagerServer extends AbstractFileManagerServerTest {
         try {
             met = fmc.getMetadata(fmc.getProductByName("test.txt"));
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 
@@ -93,7 +93,7 @@ public class TestAvroFileManagerServer extends AbstractFileManagerServerTest {
             met = fmc.getReducedMetadata(fmc.getProductByName("test.txt"),
                     Collections.EMPTY_LIST);
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             fail(e.getMessage());
         }
 

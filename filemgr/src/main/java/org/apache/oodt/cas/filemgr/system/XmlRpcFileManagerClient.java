@@ -52,6 +52,8 @@ import org.apache.xmlrpc.XmlRpcClientException;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcTransport;
 import org.apache.xmlrpc.XmlRpcTransportFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,8 +63,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -80,8 +80,7 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
   private XmlRpcClient client = null;
 
   /* our log stream */
-  private static Logger LOG = Logger.getLogger(XmlRpcFileManagerClient.class
-          .getName());
+  private static Logger LOG = LoggerFactory.getLogger(XmlRpcFileManagerClient.class);
 
   /* file manager url */
   private URL fileManagerUrl = null;
@@ -105,14 +104,14 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
     if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
       String configFile = System
               .getProperty("org.apache.oodt.cas.filemgr.properties");
-      LOG.log(Level.INFO,
+      LOG.info(
               "Loading File Manager Configuration Properties from: ["
                       + configFile + "]");
       try {
         System.getProperties().load(
                 new FileInputStream(new File(configFile)));
       } catch (Exception e) {
-        LOG.log(Level.INFO,
+        LOG.info(
                 "Error loading configuration properties from: ["
                         + configFile + "]");
       }
@@ -197,12 +196,12 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
       success = (Boolean) client.execute("filemgr.refreshConfigAndPolicy",
               argList);
     } catch (XmlRpcException e) {
-      LOG.log(Level.WARNING, "XmlRpcException when connecting to filemgr: ["
-              + this.fileManagerUrl + "]");
+      LOG.warn("XmlRpcException when connecting to filemgr: ["
+              + this.fileManagerUrl + "]", e);
       success = false;
     } catch (IOException e) {
-      LOG.log(Level.WARNING, "IOException when connecting to filemgr: ["
-              + this.fileManagerUrl + "]");
+      LOG.warn("IOException when connecting to filemgr: ["
+              + this.fileManagerUrl + "]", e);
       success = false;
     }
 
@@ -216,13 +215,13 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
     try {
       connected = (Boolean) client.execute("filemgr.isAlive", argList);
     } catch (XmlRpcException e) {
-      LOG.log(Level.WARNING,
+      LOG.warn(
               "XmlRpcException when connecting to filemgr: ["
-                      + this.fileManagerUrl + "]");
+                      + this.fileManagerUrl + "]", e);
       connected = false;
     } catch (IOException e) {
-      LOG.log(Level.WARNING, "IOException when connecting to filemgr: ["
-              + this.fileManagerUrl + "]");
+      LOG.warn("IOException when connecting to filemgr: ["
+              + this.fileManagerUrl + "]", e);
       connected = false;
     }
 
@@ -1009,7 +1008,7 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
       return XmlRpcStructFactory
               .getQueryResultsFromXmlRpc(queryResultHashVector);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new CatalogException(e);
     }
   }
@@ -1031,11 +1030,11 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
       productVector = (Vector<Map<String, Object>>) client.execute(
               "filemgr.query", argList);
     } catch (XmlRpcException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage());
       throw new CatalogException(e);
 
     } catch (IOException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new CatalogException(e);
     }
 
@@ -1206,7 +1205,7 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
               argList);
 
       if (clientTransfer) {
-        LOG.log(Level.FINEST,
+        LOG.info(
                 "File Manager Client: clientTransfer enabled: "
                         + "transfering product ["
                         + product.getProductName() + "]");
@@ -1242,15 +1241,13 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
           try {
             addProductReferences(product);
           } catch (CatalogException e) {
-            LOG
-                    .log(
-                            Level.SEVERE,
-                            "ingestProduct: RepositoryManagerException "
-                                    + "when adding Product References for Product : "
-                                    + product.getProductName()
-                                    + " to RepositoryManager: Message: "
-                                    + e);
-            throw e;
+            String msg = "ingestProduct: RepositoryManagerException "
+                    + "when adding Product References for Product : "
+                    + product.getProductName()
+                    + " to RepositoryManager: Message: "
+                    + e.getMessage();
+            LOG.error(msg, e);
+            throw new CatalogException(msg, e);
           }
         } else {
           product.setProductReferences(getProductReferences(product));
@@ -1266,21 +1263,19 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
           try {
             setProductTransferStatus(product);
           } catch (CatalogException e) {
-            LOG
-                    .log(
-                            Level.SEVERE,
-                            "ingestProduct: RepositoryManagerException "
-                                    + "when updating product transfer status for Product: "
-                                    + product.getProductName()
-                                    + " Message: " + e);
-            throw e;
+            String msg = "ingestProduct: RepositoryManagerException "
+                    + "when updating product transfer status for Product: "
+                    + product.getProductName()
+                    + " Message: " + e.getMessage();
+            LOG.error(msg, e);
+            throw new CatalogException(msg, e);
           }
         } catch (Exception e) {
-          LOG.log(Level.SEVERE,
-                  "ingestProduct: DataTransferException when transfering Product: "
-                          + product.getProductName() + ": Message: "
-                          + e);
-          throw new DataTransferException(e);
+          String msg = "ingestProduct: DataTransferException when transfering Product: "
+                  + product.getProductName() + ": Message: "
+                  + e.getMessage();
+          LOG.error(msg, e);
+          throw new DataTransferException(msg, e);
         }
 
       }
@@ -1288,16 +1283,16 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
 
       // error versioning file
     } catch (VersioningException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.SEVERE,
-              "ingestProduct: VersioningException when versioning Product: "
-                      + product.getProductName() + " with Versioner "
-                      + product.getProductType().getVersioner()
-                      + ": Message: " + e);
-      throw new VersioningException(e);
+      String msg = "ingestProduct: VersioningException when versioning Product: "
+              + product.getProductName() + " with Versioner "
+              + product.getProductType().getVersioner()
+              + ": Message: " + e.getMessage();
+      LOG.error(msg, e);
+      throw new VersioningException(msg, e);
     } catch (XmlRpcException e2) {
-      LOG.log(Level.SEVERE, "Failed to ingest product [ name:" + product.getProductName() + "] :" + e2.getMessage()
-              + " -- rolling back ingest");
+      String msg = "Failed to ingest product [ name:" + product.getProductName() + "] :" + e2.getMessage()
+              + " -- rolling back ingest";
+      LOG.error(msg, e2);
       try {
         Vector<Object> argList = new Vector<Object>();
         Map<String, Object> productHash = XmlRpcStructFactory
@@ -1305,13 +1300,13 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
         argList.add(productHash);
         client.execute("filemgr.removeProduct", argList);
       } catch (Exception e1) {
-        LOG.log(Level.SEVERE, "Failed to rollback ingest of product ["
-                + product + "] : " + e2.getMessage());
+        LOG.error("Failed to rollback ingest of product ["
+                + product + "] : " + e1.getMessage(), e1);
       }
-      throw e2;
+      throw new XmlRpcException(e2.code, msg, e2);
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, "Failed to ingest product [ id: " + product.getProductId() +
-              "/ name:" + product.getProductName() + "] :" + e + " -- rolling back ingest");
+      String msg = "Failed to ingest product [ id: " + product.getProductId() + "/ name:" + product.getProductName() + "] :" + e.getMessage() + " -- rolling back ingest";
+      LOG.error(msg, e);
       try {
         Vector<Object> argList = new Vector<Object>();
         Map<String, Object> productHash = XmlRpcStructFactory
@@ -1319,11 +1314,9 @@ public class XmlRpcFileManagerClient implements FileManagerClient {
         argList.add(productHash);
         client.execute("filemgr.removeProduct", argList);
       } catch (Exception e1) {
-        LOG.log(Level.SEVERE, "Failed to rollback ingest of product ["
-                + product + "] : " + e);
+        LOG.error("Failed to rollback ingest of product [" + product + "] : " + e1.getMessage(), e1);
       }
-      throw new FileManagerException("Failed to ingest product [" + product + "] : "
-              + e);
+      throw new FileManagerException(msg);
     }
 
   }

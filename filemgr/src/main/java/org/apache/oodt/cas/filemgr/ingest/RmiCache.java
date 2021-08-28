@@ -20,13 +20,13 @@ package org.apache.oodt.cas.filemgr.ingest;
 //OODT imports
 
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 
@@ -41,17 +41,16 @@ import java.util.logging.Logger;
  * </p>.
  */
 public class RmiCache implements Cache {
-    private static Logger LOG = Logger.getLogger(RmiCache.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(RmiCache.class);
     private RemoteableCache rmiCacheServer;
 
     public RmiCache(String rmiCacheServerUrn) throws InstantiationException {
         try {
             rmiCacheServer = (RemoteableCache) Naming.lookup(rmiCacheServerUrn);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new InstantiationException(
-                    "Unable to connect to Rmi Cache Server at: ["
-                            + rmiCacheServerUrn + "]");
+            String msg = String.format("Unable to connect to RmiCache Server at: [%s]: %s", rmiCacheServerUrn, e.getMessage());
+            LOG.error(msg, e);
+            throw new InstantiationException(msg);
         }
     }
 

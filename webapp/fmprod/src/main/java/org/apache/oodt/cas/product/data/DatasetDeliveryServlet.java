@@ -33,8 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -54,8 +54,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DatasetDeliveryServlet extends HttpServlet implements DataDeliveryKeys {
 
   /* our log stream */
-  private static final Logger LOG = Logger
-      .getLogger(DatasetDeliveryServlet.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(DatasetDeliveryServlet.class);
 
   /* serial version UID */
   private static final long serialVersionUID = -6692665690674186105L;
@@ -119,9 +118,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements DataDeliveryK
     // create a temporary product dir: we'll use working dir + typeName
     String productDirPath = workingDirPath + type.getName();
     if (!new File(productDirPath).mkdirs()) {
-      LOG.log(Level.WARNING,
-          "mkdirs returned false for temporary dataset dir: [" + productDirPath
-              + "]: errors may follow");
+      LOG.warn("mkdirs returned false for temporary dataset dir: [{}]: errors may follow", productDirPath);
     }
 
     // use the pagination API to iterate over each product
@@ -157,7 +154,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements DataDeliveryK
       } while ((page != null && !page.isLastPage())
           && (page.getPageProducts() != null && page.getPageProducts().size() > 0));
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       throw new ServletException(e.getMessage());
     }
 
@@ -200,9 +197,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements DataDeliveryK
       }
 
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING, "Exception delivering dataset: Message: "
-          + e.getMessage());
+      LOG.warn("Exception delivering dataset: {}", e.getMessage(), e);
     } finally {
       if (in != null) {
         try {

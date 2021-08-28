@@ -25,8 +25,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.io.DirectorySelector;
@@ -45,7 +45,7 @@ public class XMLWorkflowRepositoryFactory implements WorkflowRepositoryFactory {
 	private List<String> workflowDirList = null;
 	
 	/* our log stream */
-	private static Logger LOG = Logger.getLogger(XMLWorkflowRepositoryFactory.class.getName());
+	private static Logger LOG = LoggerFactory.getLogger(XMLWorkflowRepositoryFactory.class);
 	
 	/**
 	 * <p>Default Constructor</p>.
@@ -80,7 +80,7 @@ public class XMLWorkflowRepositoryFactory implements WorkflowRepositoryFactory {
             			workflowDirList.addAll( dirsel.traverseDir(new File(new URI(rootDir))) );
             			
             		} catch (URISyntaxException e) {
-            			LOG.log(Level.WARNING, "URISyntaxException when traversing directory: "+rootDir);
+            			LOG.warn("URISyntaxException when traversing directory [{}]: {}", rootDir, e.getMessage(), e);
             		}
             	}        
 			
@@ -89,9 +89,9 @@ public class XMLWorkflowRepositoryFactory implements WorkflowRepositoryFactory {
 				workflowDirList = Arrays.asList(dirUris);
 			}
 			
-            LOG.log(Level.FINE,"Collecting XML workflows from the following directories:");
+            LOG.info("Collecting XML workflows from the following directories:");
             for (String pdir : workflowDirList) {
-            	LOG.log(Level.FINE, pdir);
+            	LOG.info(pdir);
             }
 			
 		}
@@ -106,7 +106,8 @@ public class XMLWorkflowRepositoryFactory implements WorkflowRepositoryFactory {
 			return new XMLWorkflowRepository(workflowDirList);
 		}
 		else{
-			LOG.log(Level.WARNING, "Cannot create XML Workflow Repository: no workflow dir uris specified: value: "+System.getProperty("org.apache.oodt.cas.workflow.repo.dirs"));
+			String KEY = "org.apache.oodt.cas.workflow.repo.dirs";
+			LOG.warn("Cannot create XML Workflow Repository: no workflow dir uris specified in [{}] (value:[{}])", KEY, System.getProperty(KEY));
 			return null;
 		}
 	}

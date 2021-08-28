@@ -18,13 +18,14 @@ package org.apache.oodt.commons.exec;
 
 //OODT imports
 import org.apache.oodt.commons.io.LoggerOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 //JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Utilities for executing programs.
@@ -33,7 +34,7 @@ import java.util.logging.Logger;
  * @author bfoster (Brian Foster)
  */
 public final class ExecUtils {
-   private static Logger LOG = Logger.getLogger(ExecUtils.class.getName());
+   private static Logger LOG = LoggerFactory.getLogger(ExecUtils.class);
    private ExecUtils() throws InstantiationException {
       throw new InstantiationException("Don't construct utility classes!");
    }
@@ -69,7 +70,7 @@ public final class ExecUtils {
          return callProgram(
                commandLine,
                loggerInfoStream = new LoggerOutputStream(logger, Level.INFO),
-               loggerSevereStream = new LoggerOutputStream(logger, Level.SEVERE),
+               loggerSevereStream = new LoggerOutputStream(logger, Level.ERROR),
                workDir);
       } catch (Exception e) {
          throw new IOException(e);
@@ -105,7 +106,7 @@ public final class ExecUtils {
          returnVal = progProcess.waitFor();
          return returnVal;
       } catch (Exception e) {
-         LOG.log(Level.SEVERE, e.getMessage());
+         LOG.error(e.getMessage(), e);
          throw new IOException("Failed to run '" + commandLine
                + "' -- return val = " + returnVal + " : " + e.getMessage());
       } finally {

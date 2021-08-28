@@ -23,19 +23,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WorkflowManagerStarter {
 
-    private static final Logger LOG = Logger.getLogger(WorkflowManagerStarter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(WorkflowManagerStarter.class);
 
     public static void loadProperties() throws FileNotFoundException, IOException {
         String configFile = System.getProperty(WorkflowManager.PROPERTIES_FILE_PROPERTY);
         if (configFile != null) {
-            LOG.log(Level.INFO,
-                    "Loading Workflow Manager Configuration Properties from: ["
-                            + configFile + "]");
+            LOG.info("Loading Workflow Manager Configuration Properties from: [" + configFile + "]");
             System.getProperties().load(new FileInputStream(new File(
                     configFile)));
         }
@@ -70,7 +68,7 @@ public class WorkflowManagerStarter {
         try {
             Thread.currentThread().join();
         } catch (InterruptedException e) {
-            LOG.log(Level.SEVERE, String.format("Interrupted while executing: %s", e.getMessage()));
+            LOG.error("Interrupted while executing: {}", e.getMessage(), e);
             manager.shutdown();
         }
     }

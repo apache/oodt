@@ -45,13 +45,12 @@ import org.apache.oodt.config.ConfigurationManagerFactory;
 
 //JDK imports
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import com.google.common.collect.Lists;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * @author radu
@@ -61,10 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FileManager {
 
-    /** Our log stream. Should be replaced by SLF4J logger */
-    @Deprecated
-    private static final Logger LOG = Logger.getLogger(FileManager.class.getName());
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FileManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileManager.class);
 
     private Catalog catalog = null;
 
@@ -92,12 +88,12 @@ public class FileManager {
         }
       
         configurationManager = ConfigurationManagerFactory.getConfigurationManager(Component.FILE_MANAGER, propertiesFiles);
-        LOG.log(Level.INFO, "File Manager started by "
+        logger.info("File Manager started by "
                 + System.getProperty("user.name", "unknown"));
     }
 
     public void setCatalog(Catalog catalog) {
-        LOG.fine("Setting catalog: " + catalog.toString());
+        logger.debug("Setting catalog: " + catalog.toString());
         this.catalog = catalog;
     }
 
@@ -108,13 +104,11 @@ public class FileManager {
             this.loadConfiguration();
             status = true;
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG
-                    .log(
-                            Level.SEVERE,
+            logger
+                    .error(
                             "Unable to refresh configuration for file manager " +
                                     "server: server may be in inoperable state: Message: "
-                                    + e.getMessage());
+                                    + e.getMessage(), e);
         }
 
         return status;
@@ -146,11 +140,11 @@ public class FileManager {
         try {
             pct = transferStatusTracker.getPctTransferred(reference);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
+            logger
+                    .warn(
                     "Exception getting transfer percentage for ref: ["
                             + reference.getOrigReference() + "]: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
         }
         return pct;
     }
@@ -184,11 +178,11 @@ public class FileManager {
                 setProductType(prodPage.getPageProducts());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
+            logger
+                    .warn(
                     "Catalog exception performing paged query for product type: ["
                             + type.getProductTypeId() + "] query: [" + query
-                            + "]: Message: " + e.getMessage());
+                            + "]: Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
 
@@ -201,53 +195,52 @@ public class FileManager {
         try {
             setProductType(page.getPageProducts());
         } catch (Exception e) {
-            logger.error("Unable to set product type for product page: {}", page, e);
+            logger.warn("Unable to set product type for product page: {}", page, e);
         }
         return page;
     }
 
     public ProductPage getLastPage(ProductType type) {
-        LOG.fine("Getting last page for : " + type.toString());
         logger.debug("Getting last page for : {}", type);
         ProductPage page = catalog.getLastProductPage(type);
         try {
             setProductType(page.getPageProducts());
         } catch (Exception e) {
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "Unable to set product types for product page list: ["
-                            + page + "]");
+                            + page + "]", e);
         }
         return page;
     }
 
     public ProductPage getNextPage(ProductType type , ProductPage currPage) {
-        LOG.fine("Getting next page for : " + type.toString());
+        logger.info("Getting next page for : " + type.toString());
         ProductPage page = catalog.getNextPage(type, currPage);
         try {
             setProductType(page.getPageProducts());
         } catch (Exception e) {
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "Unable to set product types for product page list: ["
-                            + page + "]");
+                            + page + "]", e);
         }
         return page;
     }
 
     public ProductPage getPrevPage(ProductType type, ProductPage currPage) {
-        LOG.fine("Getting previous page for : " + type.toString());
+        logger.info("Getting previous page for : " + type.toString());
         ProductPage page = catalog.getPrevPage(type, currPage);
         try {
             setProductType(page.getPageProducts());
         } catch (Exception e) {
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "Unable to set product types for product page list: ["
-                            + page + "]");
+                            + page + "]", e);
         }
         return page;
     }
 
     public String addProductType(ProductType productType) throws RepositoryManagerException {
-        LOG.fine("Adding product type : " + productType.toString());
+        logger.debug("Adding product type : " + productType.toString());
         repositoryManager.addProductType(productType);
         return productType.getProductTypeId();
     }
@@ -266,10 +259,9 @@ public class FileManager {
         try {
             numProducts = catalog.getNumProducts(type);
         } catch (CatalogException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "Exception when getting num products: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
 
@@ -284,10 +276,9 @@ public class FileManager {
             topNProducts = catalog.getTopNProducts(n);
             return topNProducts;
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "Exception when getting topN products: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
     }
@@ -300,11 +291,10 @@ public class FileManager {
             topNProducts = catalog.getTopNProducts(n, type);
             return topNProducts;
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
+            logger.warn(
                     "Exception when getting topN products by product type: ["
                             + type.getProductTypeId() + "]: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
 
@@ -321,10 +311,9 @@ public class FileManager {
         try {
             return repositoryManager.getProductTypes();
         } catch (RepositoryManagerException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "Unable to obtain product types from repository manager: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw new RepositoryManagerException(e.getMessage());
         }
     }
@@ -335,10 +324,9 @@ public class FileManager {
         try {
             return catalog.getProductReferences(product);
         } catch (CatalogException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Unable to obtain references for product: ["
+            logger.warn( "Unable to obtain references for product: ["
                     + product.getProductName() + "]: Message: "
-                    + e.getMessage());
+                    + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
 
@@ -359,15 +347,13 @@ public class FileManager {
                             .getProductTypeId()));
             return product;
         } catch (CatalogException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Unable to obtain product by id: ["
-                    + productId + "]: Message: " + e.getMessage());
+            logger.warn( "Unable to obtain product by id: ["
+                    + productId + "]: Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         } catch (RepositoryManagerException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Unable to obtain product type by id: ["
+            logger.warn( "Unable to obtain product type by id: ["
                     + product.getProductType().getProductTypeId()
-                    + "]: Message: " + e.getMessage());
+                    + "]: Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
 
@@ -388,15 +374,13 @@ public class FileManager {
                             .getProductTypeId()));
             return product;
         } catch (CatalogException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Unable to obtain product by name: ["
-                    + productName + "]: Message: " + e.getMessage());
+            logger.warn( "Unable to obtain product by name: ["
+                    + productName + "]: Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         } catch (RepositoryManagerException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Unable to obtain product type by id: ["
+            logger.warn( "Unable to obtain product type by id: ["
                     + product.getProductType().getProductTypeId()
-                    + "]: Message: " + e.getMessage());
+                    + "]: Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
     }
@@ -409,10 +393,9 @@ public class FileManager {
             return catalog.getProductsByProductType(type);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "Exception obtaining products by product type for type: ["
-                            + type.getName() + "]: Message: " + e.getMessage());
+                            + type.getName() + "]: Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
     }
@@ -423,10 +406,9 @@ public class FileManager {
         try {
             return catalog.getValidationLayer().getElements(type);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "Exception obtaining elements for product type: ["
-                            + type.getName() + "]: Message: " + e.getMessage());
+                            + type.getName() + "]: Message: " + e.getMessage(), e);
             throw new ValidationLayerException(e.getMessage());
         }
     }
@@ -436,9 +418,8 @@ public class FileManager {
         try {
             return catalog.getValidationLayer().getElementById(elementId);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "exception retrieving element by id: ["
-                    + elementId + "]: Message: " + e.getMessage());
+            logger.warn( "exception retrieving element by id: ["
+                    + elementId + "]: Message: " + e.getMessage(), e);
             throw new ValidationLayerException(e.getMessage());
         }
     }
@@ -449,9 +430,8 @@ public class FileManager {
             return catalog.getValidationLayer()
                     .getElementByName(elementName);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "exception retrieving element by name: ["
-                    + elementName + "]: Message: " + e.getMessage());
+            logger.warn( "exception retrieving element by name: ["
+                    + elementName + "]: Message: " + e.getMessage(), e);
             throw new ValidationLayerException(e.getMessage());
         }
     }
@@ -489,14 +469,14 @@ public class FileManager {
                 }
             }
 
-            LOG.log(Level.INFO, "Query returned " + queryResults.size()
+            logger.debug( "Query returned " + queryResults.size()
                     + " results");
 
             // filter query results
             if (complexQuery.getQueryFilter() != null) {
                 queryResults = applyFilterToResults(queryResults, complexQuery
                         .getQueryFilter());
-                LOG.log(Level.INFO, "Filter returned " + queryResults.size()
+                logger.debug( "Filter returned " + queryResults.size()
                         + " results");
             }
 
@@ -507,7 +487,7 @@ public class FileManager {
 
             return queryResults;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn( "Failed to perform complex query : " + e.getMessage(), e);
             throw new CatalogException("Failed to perform complex query : "
                     + e.getMessage());
         }
@@ -524,10 +504,9 @@ public class FileManager {
         try {
             return repositoryManager.getProductTypeById(productTypeId);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "Exception obtaining product type by id for product type: ["
-                            + productTypeId + "]: Message: " + e.getMessage());
+                            + productTypeId + "]: Message: " + e.getMessage(), e);
             throw new RepositoryManagerException(e.getMessage());
         }
     }
@@ -561,11 +540,11 @@ public class FileManager {
                             .getVersionerFromClassName(p.getProductType().getVersioner());
                     versioner.createDataStoreReferences(p, expandedMetdata);
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE,
+                    logger.warn(
                             "ingestProduct: VersioningException when versioning Product: "
                                     + p.getProductName() + " with Versioner "
                                     + p.getProductType().getVersioner() + ": Message: "
-                                    + e.getMessage());
+                                    + e.getMessage(), e);
                     throw new VersioningException(e);
                 }
 
@@ -574,7 +553,7 @@ public class FileManager {
             }
 
             if (!clientTransfer) {
-                LOG.log(Level.FINEST,
+                logger.debug(
                         "File Manager: ingest: no client transfer enabled, "
                                 + "server transfering product: [" + p.getProductName() + "]");
 
@@ -587,15 +566,15 @@ public class FileManager {
                     try {
                         catalog.setProductTransferStatus(p);
                     } catch (CatalogException e) {
-                        LOG.log(Level.SEVERE, "ingestProduct: CatalogException "
+                        logger.warn( "ingestProduct: CatalogException "
                                 + "when updating product transfer status for Product: "
-                                + p.getProductName() + " Message: " + e.getMessage());
+                                + p.getProductName() + " Message: " + e.getMessage(), e);
                         throw e;
                     }
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE,
+                    logger.warn(
                             "ingestProduct: DataTransferException when transfering Product: "
-                                    + p.getProductName() + ": Message: " + e.getMessage());
+                                    + p.getProductName() + ": Message: " + e.getMessage(), e);
                     throw new DataTransferException(e);
                 }
             }
@@ -605,7 +584,8 @@ public class FileManager {
             return p.getProductId();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Error ingesting product [" + p + "] : "
+                    + e.getMessage(), e);
             throw new CatalogException("Error ingesting product [" + p + "] : "
                     + e.getMessage());
         }
@@ -627,7 +607,7 @@ public class FileManager {
                 return new byte[0];
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to read '" + numBytes
+            logger.warn( "Failed to read '" + numBytes
                     + "' bytes from file '" + filePath + "' at index '" + offset
                     + "' : " + e.getMessage(), e);
             throw new DataTransferException("Failed to read '" + numBytes
@@ -649,27 +629,25 @@ public class FileManager {
             try {
                 fOut = new FileOutputStream(outFile, true);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                LOG.log(Level.SEVERE,
+                logger.warn(
                         "FileNotFoundException when trying to use RandomAccess file on "
-                                + filePath + ": Message: " + e.getMessage());
+                                + filePath + ": Message: " + e.getMessage(), e);
                 success = false;
             }
         } else {
             // create the output directory
             String outFileDirPath = outFile.getAbsolutePath().substring(0,
                     outFile.getAbsolutePath().lastIndexOf("/"));
-            LOG.log(Level.INFO, "Outfile directory: " + outFileDirPath);
+            logger.info( "Outfile directory: " + outFileDirPath);
             File outFileDir = new File(outFileDirPath);
             outFileDir.mkdirs();
 
             try {
                 fOut = new FileOutputStream(outFile, false);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                LOG.log(Level.SEVERE,
+                logger.warn(
                         "FileNotFoundException when trying to use RandomAccess file on "
-                                + filePath + ": Message: " + e.getMessage());
+                                + filePath + ": Message: " + e.getMessage(), e);
                 success = false;
             }
         }
@@ -678,9 +656,8 @@ public class FileManager {
             try {
                 fOut.write(fileData, (int) offset, (int) numBytes);
             } catch (IOException e) {
-                e.printStackTrace();
-                LOG.log(Level.SEVERE, "IOException when trying to write file "
-                        + filePath + ": Message: " + e.getMessage());
+                logger.warn( "IOException when trying to write file "
+                        + filePath + ": Message: " + e.getMessage(), e);
                 success = false;
             } finally {
                 if (fOut != null) {
@@ -737,17 +714,20 @@ public class FileManager {
             try {
                 this.dataTransfer.transferProduct(p);
             } catch (IOException e) {
+                logger.warn("error moving product: " + e.getMessage(), e);
                 throw new DataTransferException(e.getMessage());
             }
 
             // now delete the original copy
             try {
                 if (!new File(new URI(copyRef.getOrigReference())).delete()) {
-                    LOG.log(Level.WARNING, "Deletion of original file: ["
+                    logger.warn( "Deletion of original file: ["
                             + r.getDataStoreReference()
                             + "] on product move returned false");
                 }
             } catch (URISyntaxException e) {
+                logger.warn("URI Syntax exception trying to remove original product ref: Message: "
+                        + e.getMessage(), e);
                 throw new DataTransferException(
                         "URI Syntax exception trying to remove original product ref: Message: "
                                 + e.getMessage());
@@ -758,11 +738,14 @@ public class FileManager {
                 this.catalog.modifyProduct(p);
                 return true;
             } catch (CatalogException e) {
+                logger.warn("error moving product: " + e.getMessage(), e);
                 throw new DataTransferException(e.getMessage());
             }
-        } else
+        } else {
+            logger.warn("Moving of hierarchical and stream products not supported yet");
             throw new UnsupportedOperationException(
-                    "Moving of heirarhical and stream products not supported yet");
+                    "Moving of hierarchical and stream products not supported yet");
+        }
     }
 
     public boolean removeFile(String filePath) throws DataTransferException, IOException {
@@ -779,7 +762,7 @@ public class FileManager {
         try {
             catalog.modifyProduct(p);
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING, "Exception modifying product: ["
+            logger.warn( "Exception modifying product: ["
                     + p.getProductId() + "]: Message: " + e.getMessage(), e);
             throw e;
         }
@@ -791,7 +774,7 @@ public class FileManager {
         try {
             catalog.removeProduct(p);
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING, "Exception modifying product: ["
+            logger.warn( "Exception modifying product: ["
                     + p.getProductId() + "]: Message: " + e.getMessage(), e);
             throw e;
         }
@@ -804,10 +787,10 @@ public class FileManager {
         try {
             catalog.addProduct(p);
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "ingestProduct: CatalogException when adding Product: "
                             + p.getProductName() + " to Catalog: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw e;
         }
 
@@ -821,8 +804,8 @@ public class FileManager {
         try {
             m = this.getCatalogValues(m, p.getProductType());
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to get handlers for product '" + p
-                    + "' : " + e.getMessage());
+            logger.warn( "Failed to get handlers for product '" + p
+                    + "' : " + e.getMessage(), e);
         }
 
         // first do server side metadata extraction
@@ -831,17 +814,16 @@ public class FileManager {
         try {
             catalog.addMetadata(metadata, p);
         } catch (CatalogException e) {
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "ingestProduct: CatalogException when adding metadata "
                             + metadata + " for product: " + p.getProductName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "ingestProduct: General Exception when adding metadata "
                             + metadata + " for product: " + p.getProductName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
 
@@ -854,7 +836,7 @@ public class FileManager {
             product.setProductType(repositoryManager.getProductTypeById(product
                     .getProductType().getProductTypeId()));
         } catch (RepositoryManagerException e) {
-            LOG.log(Level.SEVERE, "Failed to load ProductType " + product
+            logger.warn( "Failed to load ProductType " + product
                     .getProductType().getProductTypeId(), e);
             return null;
         }
@@ -867,14 +849,14 @@ public class FileManager {
                 FilemgrMetExtractor extractor = GenericFileManagerObjectFactory
                         .getExtractorFromClassName(spec.getClassName());
                 extractor.configure(spec.getConfiguration());
-                LOG.log(Level.INFO, "Running Met Extractor: ["
+                logger.info( "Running Met Extractor: ["
                         + extractor.getClass().getName()
                         + "] for product type: ["
                         + product.getProductType().getName() + "]");
                 try {
                     met = extractor.extractMetadata(product, met);
                 } catch (MetExtractionException e) {
-                    LOG.log(Level.SEVERE,
+                    logger.warn(
                             "Exception extractor metadata from product: ["
                                     + product.getProductName()
                                     + "]: using extractor: ["
@@ -902,7 +884,7 @@ public class FileManager {
                     p.setProductType(repositoryManager.getProductTypeById(p
                             .getProductType().getProductTypeId()));
                 } catch (RepositoryManagerException e) {
-                    logger.error("Unable to set product type for product: {}", p, e);
+                    logger.warn("Unable to set product type for product: {}", p, e);
                     throw new Exception(e.getMessage());
                 }
             }
@@ -935,10 +917,9 @@ public class FileManager {
                 return new Vector<Product>(); // null values not supported by XML-RPC
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "Exception performing query against catalog for product type: ["
-                            + productType.getName() + "] Message: " + e.getMessage());
+                            + productType.getName() + "] Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
     }
@@ -954,11 +935,10 @@ public class FileManager {
             if(this.expandProductMet) m = this.buildProductMetadata(product, m);
             return this.getOrigValues(m, product.getProductType());
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "Exception obtaining metadata from catalog for product: ["
                             + product.getProductId() + "]: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
     }
@@ -969,11 +949,10 @@ public class FileManager {
             if(this.expandProductMet) m = this.buildProductMetadata(product, m);
             return this.getOrigValues(m, product.getProductType());
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE,
+            logger.warn(
                     "Exception obtaining metadata from catalog for product: ["
                             + product.getProductId() + "]: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
             throw new CatalogException(e.getMessage());
         }
     }
@@ -1095,35 +1074,49 @@ public class FileManager {
     public void loadConfiguration() throws FileNotFoundException, IOException {
         
         try{
+          logger.debug("Loading file manager configuration");
           this.configurationManager.loadConfiguration();
         }
         catch(Exception e){
-          e.printStackTrace();
-          throw new IOException(e.getLocalizedMessage());
+          logger.error("Error loading file manager configuration : " + e.getMessage(), e);
+          throw new IOException(e.getMessage(), e);
         }
         
         String metaFactory = null, dataFactory = null;
 
+        logger.debug("getting catalog factory from properties");
         metaFactory = System.getProperty("filemgr.catalog.factory",
                 "org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory");
+        logger.info("filemgr.catalog.factory: " + metaFactory);
+
+        logger.debug("getting repository factory from properties");
         dataFactory = System
                 .getProperty("filemgr.repository.factory",
                         "org.apache.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory");
+        logger.info("filemgr.repository.factory: " + dataFactory);
 
+        logger.debug("creating catalog service from factory");
         catalog = GenericFileManagerObjectFactory
                 .getCatalogServiceFromFactory(metaFactory);
+        logger.debug("Catalog created");
+
+        logger.debug("creating repository manager service from factory");
         repositoryManager = GenericFileManagerObjectFactory
                 .getRepositoryManagerServiceFromFactory(dataFactory);
+        logger.debug("Repository Manager created");
 
-
+        logger.debug("creating transfer status tracker from catalog");
         transferStatusTracker = new TransferStatusTracker(catalog);
+        logger.debug("transfer status tracker created");
 
         // got to start the server before setting up the transfer client since
         // it
         // checks for a live server
 
+        logger.debug("metadata.expandProduct from properties");
         expandProductMet = Boolean
                 .getBoolean("org.apache.oodt.cas.filemgr.metadata.expandProduct");
+        logger.info("org.apache.oodt.cas.filemgr.metadata.expandProduct: " + expandProductMet);
     }
 
     public void setDataTransfer(DataTransfer dataTransfer){

@@ -19,6 +19,8 @@
 package org.apache.oodt.commons.xml;
 
 //JDK imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -28,8 +30,6 @@ import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,8 +50,7 @@ import javax.xml.transform.stream.StreamResult;
 
 public class XMLUtils {
     /* our log stream */
-    private final static Logger LOG = Logger
-            .getLogger(XMLUtils.class.getName());
+    private final static Logger LOG = LoggerFactory.getLogger(XMLUtils.class);
 
     /**
      * <p>
@@ -85,7 +84,7 @@ public class XMLUtils {
             xformer.setOutputProperty(OutputKeys.INDENT, "yes");
             xformer.transform(source, result);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
 
     }
@@ -107,10 +106,7 @@ public class XMLUtils {
                         DOMUtil.getSimpleElementText(valElem), encoding);
                 values.add(value);
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                LOG.log(Level.WARNING, "Error decoding tag: [" + elt
-                        + "]: val: [" + DOMUtil.getSimpleElementText(valElem)
-                        + "] from metadata. Message: " + e.getMessage());
+                LOG.warn("Error decoding tag: [{}]: val: [{}] from metadata: {}", elt, DOMUtil.getSimpleElementText(valElem), e.getMessage(), e);
             }
         }
 
@@ -128,8 +124,7 @@ public class XMLUtils {
             value = URLDecoder.decode(DOMUtil.getSimpleElementText(root, elt),
                     encoding);
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Error decoding " + elt + "from metadata. "
-                    + "Message: " + e.getMessage());
+            LOG.warn("Error decoding {} from metadata: {}", elt, e.getMessage(), e);
         }
         return value;
     }
@@ -190,8 +185,7 @@ public class XMLUtils {
             parser = factory.newDocumentBuilder();
             document = parser.parse(inputSource);
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Unable to parse xml stream"
-                    + ": Reason is [" + e + "]");
+            LOG.warn("Unable to parse xml stream: {}", e.getMessage(), e);
             return null;
         }
 

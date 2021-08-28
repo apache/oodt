@@ -28,8 +28,8 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 //JAVA imports
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -52,7 +52,7 @@ public class JobStack implements JobQueue {
   private JobRepository repo;
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(JobStack.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(JobStack.class);
 
   public JobStack(int maxSize, JobRepository repo) {
     queue = new Vector();
@@ -68,9 +68,7 @@ public class JobStack implements JobQueue {
   public String addJob(JobSpec spec) throws JobQueueException {
     String jobId = safeAddJob(spec);
     if (queue.size() != maxQueueSize) {
-      LOG
-          .log(Level.INFO, "Added Job: [" + spec.getJob().getId()
-              + "] to queue");
+      LOG.info("Added Job [{}] to queue", spec.getJob().getId());
       queue.add(spec);
       spec.getJob().setStatus(JobStatus.QUEUED);
       safeUpdateJob(spec);
@@ -150,8 +148,7 @@ public class JobStack implements JobQueue {
     try {
       this.repo.updateJob(spec);
     } catch (JobRepositoryException e) {
-      LOG.log(Level.WARNING, "Exception updating job: ["
-          + spec.getJob().getId() + "]: Message: " + e.getMessage());
+      LOG.warn("Exception updating job [{}]: {}", spec.getJob().getId(), e.getMessage(), e);
     }
   }
   
@@ -159,9 +156,7 @@ public class JobStack implements JobQueue {
     try {
       return this.repo.addJob(spec);
     } catch (JobRepositoryException e) {
-      LOG
-          .log(Level.WARNING, "Exception adding job: Message: "
-              + e.getMessage());
+      LOG.warn("Exception adding job [{}]: {}", spec.getJob().getId(), e.getMessage(), e);
       return null;
     }
   }

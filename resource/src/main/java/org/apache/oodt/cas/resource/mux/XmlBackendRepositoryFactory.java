@@ -20,9 +20,8 @@ package org.apache.oodt.cas.resource.mux;
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class XmlBackendRepositoryFactory implements BackendRepositoryFactory {
 
-	private static final Logger LOG = Logger.getLogger(XmlBackendRepositoryFactory.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(XmlBackendRepositoryFactory.class);
 	/**
 	 * Create the backend repository (xml)
 	 * @return the newly minted backend repository
@@ -47,7 +46,7 @@ public class XmlBackendRepositoryFactory implements BackendRepositoryFactory {
 			uri = PathUtils.replaceEnvVariables(uri);
 			return new XmlBackendRepository(uri);
 		} catch (NullPointerException e) {
-			LOG.log(	Level.SEVERE,"Failed to create XmlBackendRepository: "+ e.getMessage(), e);
+			LOG.error("Failed to create XmlBackendRepository: {}", e.getMessage(), e);
 			return null;
 		}
 	}

@@ -27,8 +27,6 @@ import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -47,7 +45,6 @@ public class TestThreadPoolWorkflowEngine extends TestCase {
         // suppress WARNING level and below because we don't want
         // the warning message where we test if start date time is AFTER
         // end date time below
-        LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE);
     }
 
     public void testCurrentTaskWallClockTime() {

@@ -18,8 +18,6 @@ package org.apache.oodt.cas.resource.scheduler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos.CommandInfo;
@@ -33,6 +31,8 @@ import org.apache.oodt.cas.resource.batchmgr.MesosBatchManager;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class to setup the resource manager's mesos framework.
@@ -42,7 +42,7 @@ import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
  */
 public class ResourceMesosSchedulerFactory implements SchedulerFactory {
 
-    private static final Logger LOG = Logger.getLogger(ResourceMesosSchedulerFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceMesosSchedulerFactory.class);
 
     private Monitor mon = null;
     private MesosBatchManager batch = null;
@@ -76,8 +76,7 @@ public class ResourceMesosSchedulerFactory implements SchedulerFactory {
             batch.setDriver(driver);
             batch.setJobRepository(queue.getJobRepository());
 
-            LOG.log(Level.INFO,"Connecting to Mesos Master at: "+ip);
-            System.out.println("Connecting to Mesos Master at: "+ip);
+            LOG.info("Connecting to Mesos Master at: {}", ip);
             ResourceMesosScheduler scheduler = new ResourceMesosScheduler(batch, executor, queue, mon);
 
             final MesosSchedulerDriver mesos = new MesosSchedulerDriver(scheduler, framework, ip);
@@ -90,8 +89,7 @@ public class ResourceMesosSchedulerFactory implements SchedulerFactory {
             }).start();
             return scheduler;
         } catch(IOException ioe) {
-            LOG.log(Level.SEVERE,"Exception detected: "+ioe.getMessage());
-            ioLOG.log(Level.SEVERE, e.getMessage());
+            LOG.error("Exception detected: {}", ioe.getMessage(), ioe);
             throw new RuntimeException(ioe);
         }
     }

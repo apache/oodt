@@ -25,7 +25,6 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.logging.Level;
 
 //OODT imports
 
@@ -85,7 +84,7 @@ public class MetReaderExtractor extends CmdLineMetExtractor {
                     this.metFileExt);
         }
         String metFileFullPath = file.getAbsolutePath() + "." + extension;
-    	LOG.log(Level.INFO, "Reading metadata from " + metFileFullPath);
+    	LOG.info("Reading metadata from " + metFileFullPath);
         // now read the met file and return it
         if (!new File(metFileFullPath).exists()) {
             throw new MetExtractionException("Met file: [" + metFileFullPath
@@ -97,8 +96,8 @@ public class MetReaderExtractor extends CmdLineMetExtractor {
             met.loadMetadataFromXmlStream(new FileInputStream(metFileFullPath));
             return met;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new MetExtractionException(e.getMessage());
+            LOG.error(e.getMessage(), e);
+            throw new MetExtractionException(e.getMessage(), e);
         }
     }
 

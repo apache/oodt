@@ -24,7 +24,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 import org.apache.oodt.product.ProductException;
@@ -47,7 +48,7 @@ import org.apache.oodt.product.handlers.ofsn.OFSNGetHandler;
  */
 public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler {
 
-	Logger LOG = Logger.getLogger(URLGetHandler.class.getName());
+	Logger LOG = LoggerFactory.getLogger(URLGetHandler.class);
 	
 	// Constants
 	private static final String PROD_SERVER_HOSTNAME = "prodServerHostname";
@@ -80,7 +81,7 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 			if (prop.getProperty(PROD_SERVER_HOSTNAME) != null) {
 			  this.prodServerHostname = prop.getProperty(PROD_SERVER_HOSTNAME);
 			} else {
-				LOG.warning("Configuration property ["+PROD_SERVER_HOSTNAME+"] not specified, using default");
+				LOG.warn("Configuration property ["+PROD_SERVER_HOSTNAME+"] not specified, using default");
 				this.prodServerHostname = DEFAULT_PROD_SERVER_HOSTNAME;
 			}
 			LOG.info("Property ["+PROD_SERVER_HOSTNAME+"] set with value ["+this.prodServerHostname+"]");
@@ -88,7 +89,7 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 			if (prop.getProperty(PROD_SERVER_PORT) != null) {
 			  this.prodServerPort = prop.getProperty(PROD_SERVER_PORT);
 			} else {
-				LOG.warning("Configuration property ["+PROD_SERVER_PORT+"] not specified, using default");
+				LOG.warn("Configuration property ["+PROD_SERVER_PORT+"] not specified, using default");
 				this.prodServerPort = DEFAULT_PROD_SERVER_PORT;
 			}
 			LOG.info("Property ["+PROD_SERVER_PORT+"] set with value ["+this.prodServerPort+"]");
@@ -96,7 +97,7 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 			if (prop.getProperty(PROD_SERVER_CONTEXT) != null) {
 			  this.prodServerContext = prop.getProperty(PROD_SERVER_CONTEXT);
 			} else {
-				LOG.warning("Configuration property ["+PROD_SERVER_CONTEXT+"] not specified, using default");
+				LOG.warn("Configuration property ["+PROD_SERVER_CONTEXT+"] not specified, using default");
 				this.prodServerContext = DEFAULT_PROD_SERVER_CONTEXT;
 			}
 			LOG.info("Property ["+PROD_SERVER_CONTEXT+"] set with value ["+this.prodServerContext+"]");
@@ -104,7 +105,7 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 			if (prop.getProperty(PRODUCT_ROOT) != null) {
 			  this.productRoot = prop.getProperty(PRODUCT_ROOT);
 			} else {
-				LOG.warning("Configuration property ["+PRODUCT_ROOT+"] not specified, using default");
+				LOG.warn("Configuration property ["+PRODUCT_ROOT+"] not specified, using default");
 				this.productRoot = DEFAULT_PRODUCT_ROOT;
 			}
 			LOG.info("Property ["+PRODUCT_ROOT+"] set with value ["+this.productRoot+"]");
@@ -112,13 +113,13 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 			if (prop.getProperty(RETURN_TYPE) != null) {
 			  this.returnType = prop.getProperty(RETURN_TYPE);
 			} else {
-				LOG.warning("Configuration property ["+RETURN_TYPE+"] not specified, using default");
+				LOG.warn("Configuration property ["+RETURN_TYPE+"] not specified, using default");
 				this.returnType = DEFAULT_RETURN_TYPE;
 			}
 			LOG.info("Property ["+RETURN_TYPE+"] set with value ["+this.returnType+"]");
 			
 		} else {
-			LOG.warning("Configuration properties could not be loaded");
+			LOG.warn("Configuration properties could not be loaded");
 		}
 		
 	}
@@ -136,16 +137,11 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 		String urlListing = DEFAULT_RETURN_VALUE;
 		try {
 			urlListing = getURLListing(filepath);
-		} catch (ProductException e) {
-			LOG.warning("Unable to obtain byte chunk ("+offset+" - "+(offset+length)+") " 
-					+ "for filepath listing ["+filepath+"]");
-			LOG.warning(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			LOG.warning("Unable to obtain byte chunk ("+offset+" - "+(offset+length)+") " 
-					+ "for filepath listing ["+filepath+"]");
-			LOG.warning(e.getMessage());
+		} catch (ProductException | IllegalArgumentException e) {
+			LOG.warn("Unable to obtain byte chunk ({}-{}) for filepath listing [{}]: {}",
+					offset, offset + length, filepath, e.getMessage(), e);
 		}
-		
+
         // Convert listing to bytes
         byte[] retBytes = new byte[length];
         byte[] metBytes = urlListing.getBytes();      
@@ -215,7 +211,7 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 		try {
 			url = new URL(ofsnPath);
 		} catch (MalformedURLException e) {
-			LOG.warning(e.getMessage());
+			LOG.warn(e.getMessage(), e);
 		}
 		
 		return url;
@@ -229,14 +225,10 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 		String urlListing = DEFAULT_RETURN_VALUE;
 		try {
 			urlListing = getURLListing(filepath);
-		} catch (ProductException e) {
-			LOG.warning("Unable to obtain size information for filepath listing ["+filepath+"]");
-			LOG.warning(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			LOG.warning("Unable to obtain size information for filepath listing ["+filepath+"]");
-			LOG.warning(e.getMessage());
+		} catch (ProductException | IllegalArgumentException e) {
+			LOG.warn("Unable to obtain size information for filepath listing [{}]: {}", filepath, e.getMessage(), e);
 		}
-		
+
 		return urlListing.getBytes().length;
 	}
 

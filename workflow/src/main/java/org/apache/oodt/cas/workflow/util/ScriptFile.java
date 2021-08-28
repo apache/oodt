@@ -29,9 +29,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * @author mattmann
  * @version $Revision$
@@ -43,7 +42,7 @@ import java.util.logging.Logger;
  * 
  */
 public class ScriptFile {
-    private static Logger LOG = Logger.getLogger(ScriptFile.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(ScriptFile.class);
     private String commandShell = null;
 
     private List commands = null;
@@ -117,7 +116,7 @@ public class ScriptFile {
                     new File(filePath))));
             pw.println(toString());
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new WorkflowException("Error writing script file!: " + e.getMessage());
         } finally {
             try {

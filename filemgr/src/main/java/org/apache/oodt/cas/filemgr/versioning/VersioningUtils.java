@@ -21,6 +21,8 @@ package org.apache.oodt.cas.filemgr.versioning;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.io.File;
@@ -33,8 +35,6 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -50,8 +50,7 @@ import java.util.logging.Logger;
 public final class VersioningUtils {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(VersioningUtils.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(VersioningUtils.class);
 
     // filter to only find directories when doing a listFiles
     private static FileFilter DIR_FILTER = new FileFilter() {
@@ -92,10 +91,7 @@ public final class VersioningUtils {
                     r.setFileSize(dir.length());
                     references.add(r);
                 } catch (MalformedURLException e) {
-                    LOG.log(Level.SEVERE, e.getMessage());
-                    LOG.log(Level.WARNING,
-                            "MalformedURLException when generating reference for dir: "
-                                    + dir);
+                    LOG.warn("MalformedURLException when generating reference for dir: {}: {}", dir, e.getMessage(), e);
                 }
             }
 
@@ -110,10 +106,7 @@ public final class VersioningUtils {
                         r.setFileSize(file.length());
                         references.add(r);
                     } catch (MalformedURLException e) {
-                        LOG.log(Level.SEVERE, e.getMessage());
-                        LOG.log(Level.WARNING,
-                            "MalformedURLException when generating reference for file: "
-                            + file);
+                        LOG.warn("MalformedURLException when generating reference for file: {}: {}", file, e.getMessage(), e);
                     }
 
                 }
@@ -203,11 +196,11 @@ public final class VersioningUtils {
                 origDirRefName);
             String tmpRef = r.getOrigReference().substring(
                 firstOccurenceOfOrigDir);
-            LOG.log(Level.FINER, "tmpRef: " + tmpRef);
+            LOG.info("tmpRef: " + tmpRef);
             int firstOccurenceSlash = tmpRef.indexOf("/");
             dataStoreRef += tmpRef.substring(firstOccurenceSlash + 1);
 
-            LOG.log(Level.FINE, "VersioningUtils: Generated data store ref: "
+            LOG.info("VersioningUtils: Generated data store ref: "
                                 + dataStoreRef + " from origRef: " + r.getOrigReference());
             r.setDataStoreReference(dataStoreRef);
         }
@@ -232,18 +225,12 @@ public final class VersioningUtils {
                                + URLEncoder.encode(productName, "UTF-8") + "/"
                                + new File(new URI(r.getOrigReference())).getName();
             } catch (IOException e) {
-                LOG.log(Level.WARNING,
-                    "VersioningUtils: Error generating dataStoreRef for "
-                    + r.getOrigReference() + ": Message: "
-                    + e.getMessage());
+                LOG.warn("VersioningUtils: IOException generating dataStoreRef for {}: {}", r.getOrigReference(), e.getMessage(), e);
             } catch (URISyntaxException e) {
-                LOG.log(Level.WARNING,
-                    "VersioningUtils: Error generating dataStoreRef for "
-                    + r.getOrigReference() + ": Message: "
-                    + e.getMessage());
+                LOG.warn("VersioningUtils: URISyntaxException generating dataStoreRef for {}: {}", r.getOrigReference(), e.getMessage(), e);
             }
 
-            LOG.log(Level.FINE, "VersioningUtils: Generated data store ref: "
+            LOG.info("VersioningUtils: Generated data store ref: "
                                 + dataStoreRef + " from origRef: " + r.getOrigReference());
             r.setDataStoreReference(dataStoreRef);
         }
@@ -278,9 +265,7 @@ public final class VersioningUtils {
             uri = new URI(uriStr);
             absPath = new File(uri).getAbsolutePath();
         } catch (URISyntaxException e) {
-            LOG.log(Level.WARNING,
-                    "URISyntaxException getting URI from URI str: [" + uriStr
-                            + "]");
+            LOG.warn("URISyntaxException when getting URI from URI str: [{}]: {}", uriStr, e.getMessage(), e);
         }
 
         return absPath;
@@ -292,9 +277,7 @@ public final class VersioningUtils {
         try {
             fileRef = new File(new URI(uri));
         } catch (URISyntaxException e) {
-            LOG.log(Level.WARNING,
-                    "URISyntaxException when getting file size from uri: ["
-                            + uri + "]: Message: " + e.getMessage());
+            LOG.warn("URISyntaxException when getting file size from uri: [{}]: {}", uri, e.getMessage(), e);
             return -1L;
         }
 

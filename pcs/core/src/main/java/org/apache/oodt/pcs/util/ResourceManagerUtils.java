@@ -21,8 +21,8 @@ package org.apache.oodt.pcs.util;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
@@ -30,10 +30,10 @@ import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 /**
  * A set of utility methods that can be used by PCS that need to
  * communicate with the Resource Manager.
- * 
+ *
  * @author mattmann
  * @version $Revision$
- * 
+ *
  */
 public class ResourceManagerUtils {
 
@@ -41,8 +41,7 @@ public class ResourceManagerUtils {
   private XmlRpcResourceManagerClient client;
 
   /* our log stream */
-  private static final Logger LOG = Logger.getLogger(ResourceManagerUtils.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(ResourceManagerUtils.class);
 
   private URL rmUrl;
 
@@ -82,15 +81,13 @@ public class ResourceManagerUtils {
     try {
       return this.client.getNodes();
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to obtain resource nodes "
-          + "while communicating with resource manager at: ["
-          + this.client.getResMgrUrl() + "]");
+      LOG.warn("PCS: Unable to obtain resource nodes while communicating with resource manager at [{}]: {}", this.client.getResMgrUrl(), e.getMessage(), e);
       return null;
     }
   }
 
   /**
-   * 
+   *
    * @return The {@link URL} for the Resource Manager that this
    *         ResourceManagerUtils communicates with.
    */
@@ -104,8 +101,7 @@ public class ResourceManagerUtils {
     try {
       url = new URL(urlStr);
     } catch (MalformedURLException e) {
-      LOG.log(Level.SEVERE, "PCS: Unable to generate url from url string: ["
-          + urlStr + "]: Message: " + e.getMessage());
+      LOG.error("PCS: MalformedURLException when generating url from url string [{}]: {}", urlStr, e.getMessage(), e);
     }
 
     return url;

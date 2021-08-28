@@ -32,10 +32,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TestAvroRpcWorkflowManager extends TestCase{
+public class TestAvroRpcWorkflowManager extends TestCase {
 
     private static final int WM_PORT = 65527;
 
@@ -43,9 +43,8 @@ public class TestAvroRpcWorkflowManager extends TestCase{
 
     private String luceneCatLoc;
 
-    private static final Logger LOG = Logger
-            .getLogger(TestXmlRpcWorkflowManager.class.getName());
-    
+    private static final Logger LOG = LoggerFactory.getLogger(TestXmlRpcWorkflowManager.class);
+
     /**
      * {@link #startWorkflow()} fires an event of type "long". This event is associated with 2 instances of "LongWorkflow". Therefore, we should check if the
      * number of workflow instances are 2 when asserting.
@@ -86,7 +85,7 @@ public class TestAvroRpcWorkflowManager extends TestCase{
         try (WorkflowManagerClient client =
                      new AvroRpcWorkflowManagerClient(new URL("http://localhost:" + WM_PORT))) {
             Metadata metadata = new Metadata();
-            // Hold the task for 20 seconds at least            
+            // Hold the task for 20 seconds at least
             metadata.addMetadata("numSeconds", String.valueOf(20));
             client.sendEvent("long", metadata);
         } catch (Exception e) {
@@ -115,14 +114,14 @@ public class TestAvroRpcWorkflowManager extends TestCase{
             luceneCatLoc = !luceneCatLoc.endsWith("/") ? luceneCatLoc + "/"
                     : luceneCatLoc;
             luceneCatLoc += "repo";
-            LOG.log(Level.INFO, "Lucene instance repository: [" + luceneCatLoc + "]");
+            LOG.info("Lucene instance repository: [" + luceneCatLoc + "]");
         } catch (Exception e) {
             fail(e.getMessage());
         }
 
         if (new File(luceneCatLoc).exists()) {
             // blow away lucene cat
-            LOG.log(Level.INFO, "Removing workflow instance repository: ["
+            LOG.info("Removing workflow instance repository: ["
                     + luceneCatLoc + "]");
             try {
                 FileUtils.deleteDirectory(new File(luceneCatLoc));

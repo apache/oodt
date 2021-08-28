@@ -29,8 +29,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to load BackendManager from XML file.
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  */
 public class XmlBackendRepository implements BackendRepository {
 
-    private static final Logger LOG = Logger.getLogger(XmlBackendRepository.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(XmlBackendRepository.class);
     private String uri;
 
     //Constants
@@ -64,7 +64,7 @@ public class XmlBackendRepository implements BackendRepository {
      */
     @Override
     public BackendManager load() throws RepositoryException {
-        LOG.log(Level.INFO,"Reading backend set manager from: "+this.uri);
+        LOG.info("Reading backend set manager from: {}", this.uri);
         BackendManager bm = new StandardBackendManager();
         String origMon = System.getProperty(MONITOR_PROPERTY);
         String origBat = System.getProperty(BATCHMGR_PROPERTY);
@@ -80,17 +80,17 @@ public class XmlBackendRepository implements BackendRepository {
                     //So scheduler builds as repository specifies
                     try {
                         String mfact = getMonitor(queue,node);
-                        LOG.log(Level.INFO,"Setting monitor factory property to: "+mfact);
+                        LOG.info("Setting monitor factory property to: {}", mfact);
                         System.setProperty(MONITOR_PROPERTY, mfact);
                     } catch (RepositoryException e) {
-                        LOG.log(Level.INFO, "No monitor factory for queue "+queue+", using system property.");
+                        LOG.info("No monitor factory for queue {}. using system property.", queue, e);
                     }
                     try {
                         String bfact = getBatchmgr(queue,node);
-                        LOG.log(Level.INFO,"Setting batchmgr factory property to: "+bfact);
+                        LOG.info("Setting batchmgr factory property to: {}", bfact);
                         System.setProperty(BATCHMGR_PROPERTY, bfact);
                     } catch (RepositoryException e) {
-                        LOG.log(Level.INFO, "No batchmgr factory for queue "+queue+", using system property.");
+                        LOG.info("No batchmgr factory for queue {}. using system property.", queue, e);
                     }
                     //Build scheduler
                     Scheduler sch = getScheduler(queue,node);
@@ -101,14 +101,17 @@ public class XmlBackendRepository implements BackendRepository {
                 }
             }
         } catch (URISyntaxException e) {
-            LOG.log(Level.SEVERE,"Malformed URI: "+this.uri);
-            throw new RepositoryException(e);
+            String msg = String.format("Malformed URI: %s", this.uri);
+            LOG.error(msg, e);
+            throw new RepositoryException(msg, e);
         } catch(FileNotFoundException e) {
-            LOG.log(Level.SEVERE,"File not found: "+this.uri+" from working dir: "+new File(".").getAbsolutePath());
-            throw new RepositoryException(e);
+            String msg = String.format("File [%s] not found in working dir [%s]", this.uri, new File(".").getAbsolutePath());
+            LOG.error(msg, e);
+            throw new RepositoryException(msg, e);
         } catch (ClassCastException e) {
-            LOG.log(Level.SEVERE,"Queue tag must represent XML element.");
-            throw new RepositoryException(e);
+            String msg = "Queue tag must represent XML element";
+            LOG.error(msg, e);
+            throw new RepositoryException(msg, e);
         } finally {
             resetAlteredProperty(MONITOR_PROPERTY,origMon);
             resetAlteredProperty(BATCHMGR_PROPERTY,origBat);
@@ -148,7 +151,7 @@ public class XmlBackendRepository implements BackendRepository {
      */
     private static Scheduler getScheduler(String queue,Element node) throws RepositoryException {
         String factory = getFactoryAttribute(queue, node, SCHEDULER);
-        LOG.log(Level.INFO,"Loading monitor from: "+factory);
+        LOG.info("Loading monitor from: {}", factory);
         Scheduler sch = GenericResourceManagerObjectFactory.getSchedulerServiceFromFactory(factory);
         if (sch != null) {
             return sch;

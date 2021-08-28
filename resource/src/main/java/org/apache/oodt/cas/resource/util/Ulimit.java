@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mattmann
@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * </p>.
  */
 public final class Ulimit implements UlimitMetKeys {
-    private static Logger LOG = Logger.getLogger(Ulimit.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(Ulimit.class);
     private static final String shell = "/bin/bash";
 
     private static final String runShellCmdOption = "-c";
@@ -56,7 +56,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     CORE_FILE_SIZE)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -67,7 +67,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     DATA_SEGMENT_SIZE)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -78,7 +78,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(FILE_SIZE))
                     .getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -89,7 +89,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_LOCKED_MEMORY)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -100,7 +100,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_MEMORY_SIZE)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -111,7 +111,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_OPEN_FILES)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -122,7 +122,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap()
                     .get(MAX_PIPE_SIZE)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -133,7 +133,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_STACK_SIZE)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -144,7 +144,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(MAX_CPU_TIME))
                     .getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -155,7 +155,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_USER_PROCESSES)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -166,7 +166,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_VIRTUAL_MEMORY)).getValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             return UNKNOWN_VALUE;
         }
 
@@ -178,7 +178,7 @@ public final class Ulimit implements UlimitMetKeys {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new ResourceException(
                     "IOException executing ulimit command: Message: "
                             + e.getMessage());
@@ -209,7 +209,7 @@ public final class Ulimit implements UlimitMetKeys {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
+            LOG.error(e.getMessage(), e);
             throw new ResourceException(
                     "IOException executing ulimit command: Message: "
                             + e.getMessage(), e);

@@ -21,7 +21,8 @@ package org.apache.oodt.cas.workflow.structs;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
@@ -40,8 +41,7 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
  */
 public class FILOPrioritySorter implements PrioritySorter {
 
-  private static final Logger LOG = Logger.getLogger(FILOPrioritySorter.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(FILOPrioritySorter.class);
 
   /*
    * (non-Javadoc)

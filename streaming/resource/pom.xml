@@ -159,5 +159,10 @@ the License.
       <version>0.21.0</version>
       <classifier>shaded-protobuf</classifier>
    </dependency>
+   <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+       <version>1.7.28</version>
+   </dependency>
   </dependencies>
 </project>

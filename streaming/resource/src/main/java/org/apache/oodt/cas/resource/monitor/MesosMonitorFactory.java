@@ -17,9 +17,8 @@
 
 package org.apache.oodt.cas.resource.monitor;
 
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author starchmd
@@ -32,8 +31,7 @@ import java.util.logging.Logger;
  */
 public class MesosMonitorFactory implements MonitorFactory {
 
-    private static final Logger LOG = Logger
-            .getLogger(MesosMonitorFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MesosMonitorFactory.class);
 
     /*
      * (non-Javadoc)
@@ -45,7 +43,7 @@ public class MesosMonitorFactory implements MonitorFactory {
         try {
             return new MesosMonitor();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to create Mesos Monitor : " + e.getMessage(), e);
+            LOG.error("Failed to create Mesos Monitor : {}", e.getMessage(), e);
             return null;
         }
     }

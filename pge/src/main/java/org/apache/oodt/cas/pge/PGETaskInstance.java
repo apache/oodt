@@ -72,8 +72,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.*;
@@ -98,12 +96,6 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
    protected Logger logger = LoggerFactory.getLogger(PGETaskInstance.class);
 
-   /**
-    * This JUL logger is kept for now to avoid large scale changes in logging dependencies.
-    * Should be removed in future with an alternative to address the logging dependencies.
-    */
-   protected java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger(PGETaskInstance.class.getName());
-
    private WorkflowManagerClient wmClient;
    private String workflowInstId;
    protected PgeMetadata pgeMetadata;
@@ -124,7 +116,6 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          // use workflow ID specific logger from now on
          logger = LoggerFactory.getLogger(PGETaskInstance.class.getName() + "." + workflowInstId);
          logger.debug("Workflow instance ID is [{}]", workflowInstId);
-         julLogger = createLogger();
 
          // Write out PgeMetadata.
          dumpMetadataIfRequested();
@@ -160,18 +151,13 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected java.util.logging.Logger createLogger() throws IOException, PGEException {
+   protected Logger createLogger() throws IOException, PGEException {
       File logDir = new File(pgeConfig.getExeDir(), "logs");
       if (!(logDir.exists() || logDir.mkdirs())) {
          throw new PGEException("mkdirs for logs directory return false");
       }
 
-      java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PGETaskInstance.class.getName() + "." + workflowInstId);
-      // TODO Need to find an alternative way to add a dynamic handler to write workflowInstance logs to a separate file
-      FileHandler handler = new FileHandler(new File(logDir, createLogFileName()).getAbsolutePath());
-      handler.setEncoding("UTF-8");
-      handler.setFormatter(new SimpleFormatter());
-      logger.addHandler(handler);
+      Logger logger = LoggerFactory.getLogger(PGETaskInstance.class.getName() + "." + workflowInstId);
       return logger;
    }
 
@@ -404,7 +390,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          updateStatus(RUNNING_PGE.getWorkflowStatusName());
          logger.debug("Starting execution of PGE: {}", sf.getCommands());
          if (!wasPgeSuccessful(ExecUtils.callProgram(
-               pgeConfig.getShellType() + " " + getScriptPath(), julLogger,
+               pgeConfig.getShellType() + " " + getScriptPath(), logger,
                new File(pgeConfig.getExeDir()).getAbsoluteFile()))) {
             logger.error("PGE didn't finish successfully: {}", sf);
             throw new RuntimeException("Pge didn't finish successfully");
@@ -552,7 +538,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected void verifyIngests(ProductCrawler crawler) throws PGEException {
-      julLogger.info("Verifying ingests successful...");
+      logger.info("Verifying ingests successful...");
       boolean ingestsSuccess = true;
       String exceptionMsg = "";
       for (IngestStatus status : crawler.getIngestStatus()) {
@@ -563,16 +549,15 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                   + status.getResult() + "',msg='" + status.getMessage() + "']";
             ingestsSuccess = false;
          } else if (!status.getResult().equals(IngestStatus.Result.SUCCESS)) {
-            julLogger.warning(String.format("Product was not ingested [file='%s',result='%s',msg='%s']",
-                    status.getProduct().getAbsolutePath(), status.getResult(),status.getMessage()));
+            logger.warn("Product was not ingested [file='{}',result='{}',msg='{}']", status.getProduct().getAbsolutePath(), status.getResult(),status.getMessage());
          }
       }
 
       if (!ingestsSuccess) {
-         julLogger.severe("Ingest wasn't successful: " + exceptionMsg);
+         logger.error("Ingest wasn't successful: {}", exceptionMsg);
          throw new PGEException(exceptionMsg);
       } else {
-         julLogger.info("Ingests were successful");
+         logger.info("Ingests were successful");
       }
    }
 

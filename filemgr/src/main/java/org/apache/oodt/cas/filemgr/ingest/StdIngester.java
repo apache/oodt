@@ -33,6 +33,8 @@ import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +42,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //JDK imports
 
@@ -78,8 +78,7 @@ import java.util.logging.Logger;
 public class StdIngester implements Ingester, CoreMetKeys {
 
     /* our log stream */
-    private final static Logger LOG = Logger.getLogger(StdIngester.class
-            .getName());
+    private final static Logger LOG = LoggerFactory.getLogger(StdIngester.class);
 
     /* our file manager client */
     private FileManagerClient fmClient = null;
@@ -104,9 +103,9 @@ public class StdIngester implements Ingester, CoreMetKeys {
         try {
             met = extractor.extractMetadata(prodFile, metConfFile);
         } catch (MetExtractionException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            throw new IngestException("Met extraction exception on product: ["
-                    + prodFile + "]: Message: " + e.getMessage(), e);
+            String msg = String.format("Met extraction exception on product: [%s]: %s", prodFile, e.getMessage());
+            LOG.error(msg, e);
+            throw new IngestException(msg, e);
         }
 
         return ingest(fmUrl, prodFile, met);
@@ -127,16 +126,9 @@ public class StdIngester implements Ingester, CoreMetKeys {
                 try {
                     productID = ingest(fmUrl, new File(prodFilePath),
                         extractor, metConfFile);
-                    LOG.log(Level.INFO, "Product: [" + prodFilePath
-                                        + "] ingested successfully! ID: [" + productID
-                                        + "]");
+                    LOG.info("Product: [{}] ingested successfully! ID: [{}]", prodFilePath, productID);
                 } catch (IngestException e) {
-                    LOG.log(Level.WARNING,
-                        "IngestException handling product: ["
-                        + prodFilePath
-                        + "]: Exception: ["
-                        + e.getMessage()
-                        + "]: Continuing ingest of remainder of products.");
+                    LOG.warn("IngestException when handling product: [{}]: {}. Proceeding to ingest remaining products", prodFilePath, e.getMessage());
                 }
 
             }
@@ -204,21 +196,16 @@ public class StdIngester implements Ingester, CoreMetKeys {
         // build refs and attach to product
         VersioningUtils.addRefsFromUris(product, references);
 
-        LOG.log(Level.INFO, "StdIngester: ingesting product: " + PRODUCT_NAME
-                + ": [" + productName + "]: " + PRODUCT_TYPE + ": ["
-                + productType + "]: " + FILE_LOCATION + ": [" + fileLocation
-                + "]");
+        LOG.info("StdIngester: ingesting product: ({}=[{}], {}=[{}], {}=[{}])", PRODUCT_NAME, productName, PRODUCT_TYPE, productType, FILE_LOCATION, fileLocation);
 
         String productID;
 
         try {
             productID = fmClient.ingestProduct(product, met, true);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "exception ingesting product: ["
-                    + productName + "]: Message: " + e.getMessage());
-            throw new IngestException("exception ingesting product: ["
-                    + productName + "]: Message: " + e.getMessage());
+            String msg = String.format("Exception ingesting product: [%s]: %s", productName, e.getMessage());
+            LOG.warn(msg, e);
+            throw new IngestException(msg, e);
         }
 
         return productID;
@@ -237,8 +224,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
     private boolean check(String property, String propName) {
         if (property == null) {
-            LOG.log(Level.WARNING, "Property: [" + propName
-                    + "] is not provided");
+            LOG.warn("Property: [{}] is not provided", propName);
             return false;
         } else {
             return true;
@@ -253,7 +239,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
                     setFileManager(url);
                 }
             } catch (URISyntaxException e) {
-                LOG.log(Level.SEVERE, "Could not convert URL to URI, Message :" +e.getMessage());
+                LOG.error("Could not convert URL to URI: {}", e.getMessage(), e);
             }
         } else {
             setFileManager(url);
@@ -264,17 +250,14 @@ public class StdIngester implements Ingester, CoreMetKeys {
         try {
             fmClient = RpcCommunicationFactory.createClient(url);
 
-            LOG.log(Level.INFO, "StdIngester: connected to file manager: ["
-                    + url + "]");
+            LOG.info("StdIngester: connected to file manager: [{}]", url);
             // instantiate the client transfer object
             // the crawler will have the client perform the transfer
             fmClient
                     .setDataTransfer(GenericFileManagerObjectFactory
                             .getDataTransferServiceFromFactory(this.clientTransferServiceFactory));
         } catch (ConnectionException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING, "Unable to connect to file manager: [" + url
-                    + "]: message: " + e.getMessage());
+            LOG.warn("ConnectionException for filemgr: [{}]: {}", url, e.getMessage(), e);
         }
 
     }
@@ -285,10 +268,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
         try {
             type = fmClient.getProductTypeByName(productTypeName);
         } catch (RepositoryManagerException e) {
-            LOG.log(Level.WARNING, "Unable to obtain product type: ["
-                    + productTypeName + "] from File Manager at: ["
-                    + fmClient.getFileManagerUrl() + "]: Message: "
-                    + e.getMessage());
+            LOG.warn("Unable to obtain product type: [{}] from filemgr at: [{}]: {}", productTypeName, fmClient.getFileManagerUrl(), e.getMessage(), e);
         }
 
         return type;
@@ -305,9 +285,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
         try {
             return fmClient.hasProduct(productName);
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING,
-                    "Unable to check for existance of product: [" + productName
-                            + "]: Message: " + e.getMessage(), e);
+            LOG.warn("Unable to check for existence of product: [{}]: {}", productName, e.getMessage(), e);
             throw e;
         }
     }

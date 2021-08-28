@@ -26,6 +26,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,8 +40,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,8 +62,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public final class XmlStructFactory {
 
     /* our log stream */
-    private static final Logger LOG = Logger.getLogger(XmlStructFactory.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(XmlStructFactory.class);
 
     private XmlStructFactory() throws InstantiationException {
         throw new InstantiationException("Don't construct XmlStructFactories!");
@@ -120,7 +119,7 @@ public final class XmlStructFactory {
 
             met.replaceMetadata(metHash);
         } else {
-        	LOG.warning("metadata node missing for product type : "+id);
+        	LOG.warn("metadata node missing for product type : {}", id);
         }
 
         // grab extractors
@@ -176,7 +175,7 @@ public final class XmlStructFactory {
 
             }
         } else {
-        	LOG.warning("metExtractors node missing from product type : "+id);
+        	LOG.warn("metExtractors node missing from product type : {}", id);
         }
         
         List<TypeHandler> handlers = null;
@@ -195,9 +194,7 @@ public final class XmlStructFactory {
                         typeHandler.setElementName(elementName);
                         handlers.add(typeHandler);
                     }catch (Exception e) {
-                        LOG.log(Level.SEVERE, e.getMessage());
-                        LOG.log(Level.WARNING, "Failed to load handler for ProductType [name = " + name 
-                                + "] and element [name = " + elementName + "] : " + e.getMessage());
+                        LOG.warn("Failed to load handler for ProductType [{}] and element [{}]: {}", name, elementName, e.getMessage(), e);
                     }
                 }
             }
@@ -287,9 +284,7 @@ public final class XmlStructFactory {
             return document;
 
         } catch (ParserConfigurationException pce) {
-            LOG.log(Level.WARNING,
-                    "Error generating product-type-element-map xml file!: "
-                            + pce.getMessage());
+            LOG.warn("ParserConfigurationException when generating product-type-element-map xml file: {}", pce.getMessage(), pce);
         }
 
         return null;
@@ -329,8 +324,7 @@ public final class XmlStructFactory {
             return document;
 
         } catch (ParserConfigurationException pce) {
-            LOG.log(Level.WARNING, "Error generating elements xml file!: "
-                    + pce.getMessage());
+            LOG.warn("ParserConfigurationException when generating elements xml file: {}", pce.getMessage(), pce);
         }
 
         return null;
@@ -427,8 +421,7 @@ public final class XmlStructFactory {
 
             return document;
         } catch (ParserConfigurationException pce) {
-            LOG.log(Level.WARNING, "Error generating producttypes xml file!: "
-                    + pce.getMessage());
+            LOG.warn("ParserConfigurationException when generating product-types xml file: {}", pce.getMessage(), pce);
         }
 
         return null;

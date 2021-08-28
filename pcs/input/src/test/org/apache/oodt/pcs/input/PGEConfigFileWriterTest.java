@@ -57,7 +57,7 @@ public class PGEConfigFileWriterTest extends TestCase {
     try {
       configFileDoc = configFileWriter.getConfigFileXml();
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       fail(e.getMessage());
     }
 

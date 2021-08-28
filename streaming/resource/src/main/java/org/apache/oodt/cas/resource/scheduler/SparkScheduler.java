@@ -18,8 +18,6 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
@@ -38,6 +36,8 @@ import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.streaming.Duration;
 import org.apache.spark.streaming.StreamingContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A scheduler that runs spark jobs on a spark cluster.
@@ -51,7 +51,7 @@ public class SparkScheduler implements Scheduler {
     StreamingContext ssc;
     JobQueue queue;
 
-    private static final Logger LOG = Logger.getLogger(SparkScheduler.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SparkScheduler.class);
 
     public SparkScheduler(JobQueue queue) {
         SparkConf conf = new SparkConf();
@@ -78,20 +78,20 @@ public class SparkScheduler implements Scheduler {
 
                 Class<?> clazz = Class.forName(spec.getJob().getJobInstanceClassName());
                 if (!(clazz.newInstance() instanceof SparkInstance)) {
-                    LOG.log(Level.WARNING,"Non-Spark job found ("+spec.getJob().getId()+") ignoring.");
+                    LOG.warn("Non-Spark job found ({}) ignoring.", spec.getJob().getId());
                     continue;
                 }
                 this.schedule(spec);
             } catch(SchedulerException e) {
-                LOG.log(Level.WARNING,"Scheduler exception detected: "+e.getMessage());
+                LOG.warn("Scheduler exception detected: {}", e.getMessage(), e);
             } catch (JobQueueException e) {
-                LOG.log(Level.WARNING,"Could not get next job from job-queue.");
+                LOG.warn("Could not get next job from job-queue: {}", e.getMessage(), e);
             } catch (ClassNotFoundException e) {
-                LOG.log(Level.WARNING,"Class not found: "+e.getMessage());
+                LOG.warn("Class not found: {}", e.getMessage(), e);
             } catch (InstantiationException e) {
-                LOG.log(Level.WARNING,"Could not instantiate: "+e.getMessage());
+                LOG.warn("Could not instantiate: {}", e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                LOG.log(Level.WARNING,"Could not access: "+e.getMessage());
+                LOG.warn("Could not access: {}", e.getMessage(), e);
             }
 
         }
@@ -106,17 +106,17 @@ public class SparkScheduler implements Scheduler {
             JobInstance instance = GenericResourceManagerObjectFactory.getJobInstanceFromClassName(spec.getJob().getJobInstanceClassName());
             //spec.getIn().
             SparkInstance sparkInstance = (SparkInstance) instance;
-            LOG.log(Level.INFO,"Setting SparkContext");
+            LOG.info("Setting SparkContext");
             sparkInstance.setSparkContext(this.sc);
             //Handle spark streaming
             if (sparkInstance instanceof StreamingInstance) {
-                LOG.log(Level.INFO,"Found streaming instance, setting StreamingContext");
+                LOG.info("Found streaming instance, setting StreamingContext");
                 ((StreamingInstance)sparkInstance).setStreamingContext(this.ssc);
             }
             sparkInstance.execute(spec.getIn());
 
         } catch (JobInputException e) {
-            LOG.log(Level.WARNING,"Job input exception detected.");
+            LOG.warn("Job input exception detected: {}", e.getMessage(), e);
             throw new SchedulerException(e);
         }
         return false;

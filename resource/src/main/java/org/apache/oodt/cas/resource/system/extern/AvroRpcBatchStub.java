@@ -42,8 +42,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AvroRpcBatchStub implements AvroIntrBatchmgr {
 
@@ -54,8 +54,7 @@ public class AvroRpcBatchStub implements AvroIntrBatchmgr {
     Server server;
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(AvroRpcBatchStub.class
-            .getName());
+    private static Logger LOG = LoggerFactory.getLogger(AvroRpcBatchStub.class);
 
     private static Map jobThreadMap = null;
 
@@ -70,7 +69,7 @@ public class AvroRpcBatchStub implements AvroIntrBatchmgr {
 
         jobThreadMap = new HashMap();
 
-        LOG.log(Level.INFO, "AvroRpc Batch Stub started by "
+        LOG.info("AvroRpc Batch Stub started by "
                 + System.getProperty("user.name", "unknown"));
     }
     
@@ -108,7 +107,7 @@ public class AvroRpcBatchStub implements AvroIntrBatchmgr {
         Job job = AvroTypeFactory.getJob(jobHash);
         Thread jobThread = (Thread) jobThreadMap.get(job.getId());
         if (jobThread == null) {
-            LOG.log(Level.WARNING, "Job: [" + job.getId()
+            LOG.warn("Job: [" + job.getId()
                     + "] not managed by this batch stub");
             return false;
         }
@@ -125,7 +124,7 @@ public class AvroRpcBatchStub implements AvroIntrBatchmgr {
         try {
             Job job = AvroTypeFactory.getJob(avroJob);
 
-            LOG.log(Level.INFO, "stub attempting to execute class: ["
+            LOG.info("stub attempting to execute class: ["
                     + job.getJobInstanceClassName() + "]");
 
             exec = GenericResourceManagerObjectFactory
@@ -145,7 +144,7 @@ public class AvroRpcBatchStub implements AvroIntrBatchmgr {
             try {
                 threadRunner.join();
             } catch (InterruptedException e) {
-                LOG.log(Level.INFO, "Current job: [" + job.getName()
+                LOG.info("Current job: [" + job.getName()
                         + "]: killed: exiting gracefully");
                 synchronized (jobThreadMap) {
                     Thread endThread = (Thread) jobThreadMap.get(job.getId());

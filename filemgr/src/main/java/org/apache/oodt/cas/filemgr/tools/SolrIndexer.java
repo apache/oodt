@@ -43,6 +43,8 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
@@ -59,7 +61,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  * Indexes products from the File Manager catalog to a Solr instance. Uses an
@@ -69,7 +70,7 @@ import java.util.logging.Logger;
  */
 public class SolrIndexer {
 
-    private static Logger LOG = Logger.getLogger(SolrIndexer.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(SolrIndexer.class);
 
 	private final static String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
 	private final static String SOLR_URL = "solr.url";
@@ -111,9 +112,9 @@ public class SolrIndexer {
 			}
 			config = new IndexerConfig(input);
 		} catch (IOException e) {
-			LOG
-			    .severe("Could not read in configuration for indexer from classpath or file");
-			throw new InstantiationException(e.getMessage());
+			String msg = String.format("Could not read in configuration for indexer from classpath or file: {}", e.getMessage());
+			LOG.error(msg, e);
+			throw new InstantiationException(msg);
 		} finally {
 			if (input != null) {
 				try {
@@ -140,8 +141,9 @@ public class SolrIndexer {
 		try {
 			server = new CommonsHttpSolrServer(this.solrUrl);
 		} catch (MalformedURLException e) {
-			LOG.severe("Could not connect to Solr server " + this.solrUrl);
-			throw new InstantiationException(e.getMessage());
+			String msg = String.format("MalformedURLException: could not connect to Solr server [%s]", this.solrUrl);
+			LOG.error(msg, e);
+			throw new InstantiationException(msg);
 		}
 
 	}
@@ -187,7 +189,7 @@ public class SolrIndexer {
 				for (String value : values) {
 					// Add each metadata value into the
 					if (value != null && !config.getIgnoreValues().contains(value.trim())) {
-						LOG.fine("Adding field: " + fieldName + " value: " + value);
+						LOG.info("Adding field: {}: value: {}", fieldName, value);
 						doc.addField(fieldName, value);
 					}
 				}
@@ -228,11 +230,11 @@ public class SolrIndexer {
 			LOG.info("Indexed product: "
 			    + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
 		} catch (InstantiationException e) {
-			LOG.severe("Could not instantiate metadata object: " + e.getMessage());
+			LOG.error("Could not instantiate metadata object: {}", e.getMessage(), e);
 		} catch (FileNotFoundException e) {
-			LOG.severe("Could not find metadata file: " + e.getMessage());
+			LOG.error("Could not find metadata file: {}", e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.severe("Could not delete product from index: " + e.getMessage());
+			LOG.error("Could not delete product from index: {}", e.getMessage(), e);
 		}
 	}
 
@@ -268,31 +270,28 @@ public class SolrIndexer {
 						try {
 							server.deleteById(type.getProductTypeId());
 						} catch (Exception e) {
-							LOG.severe("Could not delete product type " + type.getName()
-							    + " from index: " + e.getMessage());
+							LOG.error("Could not delete product type {} from index: {}", type.getName(), e.getMessage(), e);
 						}
 					}
 					try {
 						performSubstitution(metadata);
 						server.add(this.getSolrDocument(metadata));
-						LOG.info("Indexed product type: " + type.getName());
+						LOG.info("Indexed product type: {}", type.getName());
 					} catch (Exception e) {
-						LOG.severe("Could not index " + type.getName() + ": "
-						    + e.getMessage());
+						LOG.error("Could not index {}: {}", type.getName(), e.getMessage(), e);
 					}
 				} else {
 					LOG.info("Ignoring product type: " + type.getName());
 				}
 			}
 		} catch (MalformedURLException e) {
-			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+			LOG.error("File Manager URL is malformed: {}", e.getMessage(), e);
 		} catch (ConnectionException e) {
-			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+			LOG.error("Could not connect to File Manager: {}", e.getMessage(), e);
 		} catch (RepositoryManagerException e) {
-			LOG.severe("Could not retrieve product types from File Manager: "
-			    + e.getMessage());
+			LOG.error("Could not retrieve product types from File Manager: {}", e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.severe(String.format("Error occurred when indexing product types: %s", e.getMessage()));
+			LOG.error("Error occurred when indexing product types: {}", e.getMessage(), e);
 		}
 		LOG.info("Finished indexing product types.");
 	}
@@ -337,8 +336,7 @@ public class SolrIndexer {
 								this.indexProduct(product.getProductId(), fmClient
 								    .getMetadata(product), type.getTypeMetadata());
 							} catch (Exception e) {
-								LOG.severe("Could not index " + product.getProductId() + ": "
-								    + e.getMessage());
+								LOG.error("Could not index {}: {}", product.getProductId(), e.getMessage(), e);
 							}
 						}
 					    if (page.isLastPage()) {
@@ -350,17 +348,15 @@ public class SolrIndexer {
 			}
 			LOG.info("Finished indexing products.");
 		} catch (MalformedURLException e) {
-			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+			LOG.error("File Manager URL is malformed: {}", e.getMessage(), e);
 		} catch (ConnectionException e) {
-			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+			LOG.error("Could not connect to File Manager: {}", e.getMessage(), e);
 		} catch (CatalogException e) {
-			LOG.severe("Could not retrieve products from File Manager: "
-			    + e.getMessage());
+			LOG.error("Could not retrieve products from File Manager: {}", e.getMessage(), e);
 		} catch (RepositoryManagerException e) {
-			LOG.severe("Could not retrieve product types from File Manager: "
-			    + e.getMessage());
+			LOG.error("Could not retrieve product types from File Manager: {}", e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.severe(String.format("Error occurred when indexing: %s", e.getMessage()));
+			LOG.error("Error occurred when indexing: {}", e.getMessage(), e);
 		}
 	}
 
@@ -383,16 +379,15 @@ public class SolrIndexer {
 			indexProduct(product.getProductId(), productMetadata, product
 			    .getProductType().getTypeMetadata());
 		} catch (MalformedURLException e) {
-			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+			LOG.error("File Manager URL is malformed: {}", e.getMessage(), e);
 		} catch (ConnectionException e) {
-			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+			LOG.error("Could not connect to File Manager: {}", e.getMessage(), e);
 		} catch (CatalogException e) {
-			LOG.severe("Could not retrieve product from File Manager: "
-			    + e.getMessage());
+			LOG.error("Could not retrieve product from File Manager: {}", e.getMessage(), e);
 		} catch (java.text.ParseException e) {
-			LOG.severe("Could not format date: " + e.getMessage());
+			LOG.error("Could not format date: {}", e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.severe(String.format("Error occurred when indexing product types: %s", e.getMessage()));
+			LOG.error("Error occurred when indexing product types: {}", e.getMessage(), e);
 		}
 	}
 	
@@ -421,10 +416,10 @@ public class SolrIndexer {
 					if (StringUtils.hasText(productNameField)) {
 						server.deleteByQuery(productNameField+":"+productName);
 					} else {
-						LOG.warning("Metadata field "+PRODUCT_NAME+" is not mapped to any Solr field, cannot delete product by name");
+						LOG.warn("Metadata field {} is not mapped to any Solr field, cannot delete product by name", PRODUCT_NAME);
 					}
 				} catch(Exception e) {
-					LOG.warning("Could not delete product: "+productName+" from Solr index");
+					LOG.warn("Could not delete product: {} from Solr index: {}", productName, e.getMessage(), e);
 				}
 			}
 			Product product = fmClient.getProductByName(productName);
@@ -433,16 +428,15 @@ public class SolrIndexer {
 			indexProduct(product.getProductId(), productMetadata, product.getProductType().getTypeMetadata());
 			
 		} catch (MalformedURLException e) {
-			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+			LOG.error("File Manager URL is malformed: {}", e.getMessage(), e);
 		} catch (ConnectionException e) {
-			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+			LOG.error("Could not connect to File Manager: {}", e.getMessage(), e);
 		} catch (CatalogException e) {
-			LOG.severe("Could not retrieve product from File Manager: "
-			    + e.getMessage());
+			LOG.error("Could not retrieve product from File Manager: {}", e.getMessage(), e);
 		} catch (java.text.ParseException e) {
-			LOG.severe("Could not format date: " + e.getMessage());
+			LOG.error("Could not format date: {}", e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.severe(String.format("Error occurred when indexing product types: %s", e.getMessage()));
+			LOG.error("Error occurred when indexing product types: {}", e.getMessage(), e);
 		}
 	}
 
@@ -474,10 +468,10 @@ public class SolrIndexer {
 				server.add(this.getSolrDocument(metadata));
 				LOG.info("Indexed product: " + productId);
 			} catch (IOException e) {
-				LOG.severe("Could not index product: " + productId);
+				LOG.error("Could not index product: {}: {}", productId, e.getMessage(), e);
 			}
 		} else {
-			LOG.info("Could not find metadata for product: " + productId);
+			LOG.info("Could not find metadata for product: {}", productId);
 		}
 	}
 
@@ -508,10 +502,10 @@ public class SolrIndexer {
 			if (StringUtils.hasText(productNameField)) {
 				server.deleteByQuery(productNameField+":"+productName);
 			} else {
-				LOG.warning("Metadata field "+PRODUCT_NAME+" is not mapped to any Solr field, cannot delete product by name");
+				LOG.warn("Metadata field {} is not mapped to any Solr field, cannot delete product by name", PRODUCT_NAME);
 			}
 		} catch(Exception e) {
-			LOG.warning("Could not delete product: "+productName+" from Solr index");
+			LOG.warn("Could not delete product {} from Solr index: {}", productName, e.getMessage(), e);
 		}
 
 	}
@@ -631,7 +625,7 @@ public class SolrIndexer {
 		try {
 			line = parser.parse(options, args);
 		} catch (ParseException e) {
-			LOG.severe("Could not parse command line: " + e.getMessage());
+			LOG.error("Could not parse command line: {}", e.getMessage(), e);
 		}
 
 		if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
@@ -667,16 +661,15 @@ public class SolrIndexer {
 				} else if (line.hasOption("deleteAll")) {
 					indexer.delete();
 				} else {
-					LOG.severe("Option not supported.");
+					LOG.error("Option not supported.");
 				}
 				indexer.commit();
 				if (line.hasOption("optimize")) {
 					indexer.optimize();
 				}
 			} catch (Exception e) {
-				LOG.severe("An error occurred indexing: " + e.getMessage());
-				LOG
-				    .severe("If the above message is related to accessing the Solr instance, see the Application Server's log for additional information.");
+				LOG.error("An error occurred indexing: {}", e.getMessage(), e);
+				LOG.error("If the above message is related to accessing the Solr instance, see the Application Server's log for additional information.");
 			}
 		}
 	}
@@ -698,8 +691,7 @@ public class SolrIndexer {
 				productIds.add(line);
 			}
 		} catch (IOException e) {
-			LOG.severe("Error reading product id: line: [" + line + "]: Message: "
-			    + e.getMessage());
+			LOG.error("Error reading product id: line: [{}]: {}", line, e.getMessage(), e);
 		} finally {
 		  try {
               br.close();

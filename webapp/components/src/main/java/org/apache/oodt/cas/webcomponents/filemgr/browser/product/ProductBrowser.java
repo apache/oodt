@@ -23,8 +23,6 @@ import java.net.URI;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -39,6 +37,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.util.ListModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -57,8 +57,7 @@ public class ProductBrowser extends Panel {
 
   private static final long serialVersionUID = -1204491609423677032L;
 
-  private static final Logger LOG = Logger.getLogger(ProductBrowser.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(ProductBrowser.class);
   
   private FileManagerConn fm;
 
@@ -72,8 +71,7 @@ public class ProductBrowser extends Panel {
               product));
       add(new Label("product_pct_transfer", productPctTransferred));
     } catch (DataTransferException e) {
-      LOG.log(Level.WARNING, "Unable to determine pct transfer for product: ["
-          + product.getProductName() + "]: Reason: " + e.getMessage());
+      LOG.warn("Unable to determine pct transfer for product: [{}]: {}", product.getProductName(), e.getMessage(), e);
     }
 
     add(new Label("product_name", product.getProductName()));
@@ -171,9 +169,7 @@ public class ProductBrowser extends Panel {
                    fm.getFm()
                         .getRefPctTransferred(r))));
           } catch (DataTransferException e) {
-            LOG.log(Level.WARNING,
-                "Unable to determine product reference size: Reason: "
-                    + e.getMessage());
+            LOG.warn("Unable to determine product reference size: {}", e.getMessage(), e);
             refItem.add(new Label("ref_pct_transferred", "N/A"));
           }
 

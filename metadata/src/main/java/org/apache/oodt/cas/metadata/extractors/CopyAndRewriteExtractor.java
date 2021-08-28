@@ -20,8 +20,8 @@ package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
@@ -53,7 +53,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
  * </p>.
  */
 public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
-  private static Logger LOG = Logger.getLogger(CopyAndRewriteExtractor.class.getName());
+  private static Logger LOG = LoggerFactory.getLogger(CopyAndRewriteExtractor.class);
   private final static String FILENAME = "Filename";
 
   private final static String FILE_LOCATION = "FileLocation";
@@ -87,12 +87,9 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
                           .getProperty("orig.met.file.path"))).toURI().toURL()
                   .openStream());
       } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
-          throw new MetExtractionException(
-                  "error parsing original met file: ["
-                          + ((CopyAndRewriteConfig) this.config)
-                                  .getProperty("orig.met.file.path")
-                          + "]: Message: " + e.getMessage());
+          String msg = String.format("Exception parsing original met file [%s]: %s", ((CopyAndRewriteConfig) this.config).getProperty("orig.met.file.path"), e.getMessage());
+          LOG.error(msg, e);
+          throw new MetExtractionException(msg, e);
       }
 
       addDefaultFields(file, met);
@@ -102,7 +99,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
               .parseInt(((CopyAndRewriteConfig) this.config)
                       .getProperty("numRewriteFields"));
 
-      LOG.log(Level.FINE, "Extracting metadata: num rewrite fields: ["
+      LOG.info("Extracting metadata: num rewrite fields: ["
               + numOverrideFields + "]");
 
       for (int i = 0; i < numOverrideFields; i++) {
@@ -110,7 +107,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
                   .getProperty("rewriteField" + (i + 1));
           String rewriteFieldStr = ((CopyAndRewriteConfig) this.config)
                   .getProperty(rewriteFieldName + ".pattern");
-          LOG.log(Level.FINE, "Rewrite string: [" + rewriteFieldStr + "]");
+          LOG.info("Rewrite string: [" + rewriteFieldStr + "]");
           rewriteFieldStr = PathUtils.replaceEnvVariables(rewriteFieldStr,
                   met);
           met.replaceMetadata(rewriteFieldName, rewriteFieldStr);

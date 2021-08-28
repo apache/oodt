@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
 
 //APACHE imports
 import org.apache.commons.lang.StringUtils;
@@ -96,20 +95,18 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
         }
 
         // generate metadata file
-        LOG.log(Level.INFO, "Generating met file for product file: ["
+        LOG.info("Generating met file for product file: ["
                 + file.getAbsolutePath() + "]");
         int status;
         try {
-            LOG.log(Level.INFO, "Executing command line: ["
+            LOG.info("Executing command line: ["
                     + ExecUtils.printCommandLine(commandLineArgs)
                     + "] with workingDir: [" + workingDir
                     + "] to extract metadata");
             status = ExecUtils.callProgram(commandLineArgs, workingDir);
         } catch (IOException e) {
-            LOG.log(Level.WARNING,
-                    "IOException running met extraction: commandLine: ["
-                            + ExecUtils.printCommandLine(commandLineArgs)
-                            + "]: Message: " + e.getMessage());
+            LOG.warn("IOException running met extraction in commandLine [{}]: {}",
+                    ExecUtils.printCommandLine(commandLineArgs), e.getMessage(), e);
             return null;
         }
 
@@ -120,7 +117,7 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
             throw new MetExtractionException(
                     "Met extractor failed to create metadata file");
         } else {
-            LOG.log(Level.INFO, "Met extraction successful for product file: ["
+            LOG.info("Met extraction successful for product file: ["
                     + file.getAbsolutePath() + "]");
             try {
                 SerializableMetadata sm = new SerializableMetadata("UTF-8",
@@ -128,8 +125,8 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
                 sm.loadMetadataFromXmlStream(new FileInputStream(metFile));
                 return sm;
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e.getMessage());
-                throw new MetExtractionException(e.getMessage());
+                LOG.error(e.getMessage(), e);
+                throw new MetExtractionException(e.getMessage(), e);
             }
         }
     }

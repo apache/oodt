@@ -22,11 +22,12 @@ import org.apache.oodt.cas.workflow.engine.ChangeType;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //JDK imports
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 
 /**
@@ -46,8 +47,7 @@ import java.util.logging.Logger;
 public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     Comparable<WorkflowProcessor> {
 
-  private static final Logger LOG = Logger.getLogger(WorkflowProcessor.class
-      .getName());
+  private static final Logger LOG = LoggerFactory.getLogger(WorkflowProcessor.class);
 
   private WorkflowInstance workflowInstance;
   private WorkflowProcessor preConditions;

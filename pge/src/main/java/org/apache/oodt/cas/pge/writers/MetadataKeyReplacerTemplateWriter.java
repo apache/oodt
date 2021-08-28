@@ -21,11 +21,11 @@ package org.apache.oodt.cas.pge.writers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 //APACHE imports
 

@@ -31,14 +31,14 @@ import org.apache.wicket.*;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 import org.apache.wicket.util.file.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
@@ -54,7 +54,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
 
   private static final long serialVersionUID = 1403288657369282259L;
   
-  private static final Logger LOG = Logger.getLogger(OpsuiApp.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(OpsuiApp.class);
 
   public OpsuiApp() {
     MixedParamUrlCodingStrategy types = new MixedParamUrlCodingStrategy(
@@ -113,7 +113,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
     try {
       return (Class<? extends Page>) Class.forName(getHomePageClass());
     } catch (ClassNotFoundException e) {
-      LOG.log(Level.SEVERE, e.getMessage());
+      LOG.error(e.getMessage(), e);
       return HomePage.class;
     }
   }
@@ -270,8 +270,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
       for (String resource : resources) {
         String resName = new File(resource).getName();
         String resPath = "/images/" + resName;
-        LOG.log(Level.INFO, "Mounting: [" + resPath + "] origName: [" + resName
-            + "]: resource: [" + resource + "]");
+        LOG.info("Mounting: [{}]: origName: [{}]: resource: [{}]", resPath, resName, resource);
         mountSharedResource(resPath,
             new ResourceReference(clazz, resName).getSharedResourceKey());
       }
