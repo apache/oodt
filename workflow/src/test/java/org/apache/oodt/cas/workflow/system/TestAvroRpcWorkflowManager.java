@@ -51,7 +51,8 @@ public class TestAvroRpcWorkflowManager extends TestCase{
      * number of workflow instances are 2 when asserting.
      */
     @Test
-    public void testGetWorkflowInstances() {
+    public void testGetWorkflowInstances() throws InterruptedException {
+        Thread.sleep(5000);
 
         Vector workflowInsts = null;
 
@@ -87,7 +88,7 @@ public class TestAvroRpcWorkflowManager extends TestCase{
                      new AvroRpcWorkflowManagerClient(new URL("http://localhost:" + WM_PORT))) {
             Metadata metadata = new Metadata();
             // Hold the task for 20 seconds at least            
-            metadata.addMetadata("numSeconds", String.valueOf(20));
+            metadata.addMetadata("numSeconds", String.valueOf(30));
             client.sendEvent("long", metadata);
         } catch (Exception e) {
             fail(e.getMessage());
