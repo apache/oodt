@@ -2,7 +2,7 @@ Apache OODT Change Log
 ======================
 
 =======
-Release 1.9.1 - In Progress
+Release 1.9.1 - 25/09/2021
 
 * OODT-1031 OODT 1.9 should default to XMLRpc versions of FM/RESMGR/WMGR instead of Avro versions
 
