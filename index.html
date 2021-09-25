@@ -24,13 +24,6 @@
   <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
   <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
 </head>
 
 
@@ -58,7 +51,7 @@
       <a href="/">Home</a>
     </li>
     <li>
-      <a href="/blog">News</a>
+      <a href="/blog.html">News</a>
     <li>
       <a href="/site_docs/oodt/index.html">Components</a>
     </li>
@@ -67,6 +60,9 @@
     </li>
     <li>
       <a href="/community.html" >Community</a>
+    </li>
+    <li>
+      <a href="/users.html" >Users</a>
     </li>
       <li>
         <a href="/download.html" >Download</a>
@@ -88,29 +84,29 @@
     </div>
     <div class="col-md-3" >
        <h3>Latest News</h3>
-    <ul class="list-group">
-      
-      <li class="list-group-item">
-	<a href="/2017/08/28/oodt-112-released.html">Apache OODT 1.2 released</a>
-      </li>
-      
-      <li class="list-group-item">
-	<a href="/2017/07/27/oodt-110-released.html">Apache OODT 1.1 released</a>
-      </li>
-      
-      <li class="list-group-item">
-	<a href="/2016/06/26/oodt-10-released.html">Apache OODT 1.0 released</a>
-      </li>
-      
-      <li class="list-group-item">
-	<a href="/2016/02/26/oodt-012-released.html">Apache OODT 0.12 hits the shelves</a>
-      </li>
-      
-      <li class="list-group-item">
-	<a href="/2016/01/04/oodt-011-released.html">Apache OODT 0.11 Released</a>
-      </li>
-      
-    </ul>
+        <ul class="list-group">
+
+            <li class="list-group-item">
+                <a href="/2019/10/03/oodt-19-released.html">Apache OODT 1.9 released</a>
+            </li>
+            
+            <li class="list-group-item">
+                <a href="/2018/02/04/oodt-121-released.html">Apache OODT 1.2.1 released</a>
+            </li>
+
+            <li class="list-group-item">
+                <a href="/2017/08/28/oodt-112-released.html">Apache OODT 1.2 released</a>
+            </li>
+
+            <li class="list-group-item">
+                <a href="/2017/07/27/oodt-110-released.html">Apache OODT 1.1 released</a>
+            </li>
+
+            <li class="list-group-item">
+                <a href="/2016/06/26/oodt-10-released.html">Apache OODT 1.0 released</a>
+            </li>
+            
+        </ul>
     </div>
       </div>
 </div>
@@ -145,9 +141,39 @@
     <img class="img-responsive" src="img/oodt-diag.png"/>
   </div>
 </div>
+    
 <div class="row" >
 
-  <div class="col-md-6" >
+  <div class="col-md-12">
+    <h2>About Apache OODT</h2>
+    <div style="text-align: justify;">
+      <p>Having awarded in 2003 as the NASA Software of the Year, Apache Object Oriented Data Technology (OODT)
+        began at the Jet Propulsion Laboratory, in operations cataloging pictures of Mars and helping to detect
+        cancer. Apache OODT is smart, open source software for science, research, or otherwise.</p>
+
+      <p>Apache OODT is the superior way to integrate and archive your processes, your data, and its metadata. It
+        spans scientific and other disciplines and enable interoperability among data agnostic systems in the
+        varying fields. Using OODT's framework of distributed objects and databases, the data collected by
+        scientists and engineers in disparate disciplines can be jointly searched, stored, retrieved, and analyzed.
+        It facilitates the creation, acquisition, and growth of data management and archiving systems.</p>
+    </div>
+
+    <h2>Why Apache OODT?</h2>
+    <p>Processing pipelines are too often one-off custom solutions that fail to scale and evolve as systems evolve.
+      Moreover, archived data undergoes a kind of atrophy as the tools used to analyze and process it are themselves
+      one-off solutions with no maintenance. These haphazard approaches achieve only short term success, but are not
+      effective in data search, discovery, analysis, cataloging, processing, or archiving. OODT replaces these
+      manual, forgettable steps with reliable workflows through distributed data grids. OODT ensures the usability
+      and value of data even after original developers move on.</p>
+
+    <h2>How OODT does that?</h2>
+    <p>Haphazard processing pipelines are commonly made up of custom UNIX shell scripts and/or fragile custom
+      written glue code of Java, Python, and Perl. OODT uses structured XML-based capturing of the processing
+      pipeline that can be understood and modified by non-programmers to create, edit, manage and provision workflow
+      and task execution.</p>
+  </div>
+
+  <div class="col-md-6">
     <h1>Use Cases</h1>
     <ul class="list-group">
       <li class="list-group-item"><a href="/staging-usecase.html">Staging Area Storage Indexing</a></li>
@@ -155,28 +181,27 @@
       <li class="list-group-item"><a href="/streaming-usecase.html">Streaming data</a></li>
     </ul>
   </div>
+
   <div class="col-md-6">
     <h1>Distributed Data Environments</h1>
     <p>
-      Apache OODT facilitates the integration of highly distributed and heterogeneous data intensive systems enabling the integration of different, distributed software systems, metadata and data. OODT spans disciplines and enables interoperability among data agnostic systems in any field.
+      Apache OODT facilitates the integration of highly distributed and heterogeneous data intensive systems enabling
+      the integration of different, distributed software systems, metadata and data. OODT spans disciplines and enables
+      interoperability among data agnostic systems in any field.
     </p>
     <p>
       In a world of cloud computing Apache OODT can make the most of it. With support for:
-      <ul>
-	<li>Grid Computing</li>
-	<li>Apache Mesos</li>
-      </ul>
-      Developers can build highly distributed, scalable, data platforms that can process even the largest amounts of data, without breaking a sweat.
+    <ul>
+      <li>Grid Computing</li>
+      <li>Apache Mesos</li>
+    </ul>
+    Developers can build highly distributed, scalable, data platforms that can process even the largest amounts of data,
+    without breaking a sweat.
     </p>
   </div>
 
 </div>
-<div class="row col-md-12">
-  <h1>Some of our users <small>Award-winning software birthed at NASA's Jet Propulsion Laboratory</small></h1>
-  <div class="text-center" ><img src="img/nasa_logo.png"/>
-  <img src="img/darpa_logo.png"/>
-  <img src="img/nci_logo.png"/></div>
-</div>
+
 </div>
 
   <footer class="sitefooter">
