@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>1.9.1</version>
+    <version>1.10-SNAPSHOT</version>
     <relativePath>core/pom.xml</relativePath>
   </parent>
 
@@ -60,7 +60,7 @@ the License.
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/oodt.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/oodt.git</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk</url>
-    <tag>1.9.1</tag>
+    <tag>HEAD</tag>
   </scm>
   <profiles>
     <profile>
