@@ -82,10 +82,10 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container-fluid">
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-offset-2 col-md-6">
             <h1>Download</h1>
             <p>Thanks for checking out Apache OODT. On this page you can download our official release.<br/> <strong>N.B.
                 OODT is ONLY released as source code and NOT binary</strong>. This is because you will most likely want
@@ -122,41 +122,106 @@
                 <li>Java and/or Python (in order to customize and extend)</li>
             </ul>
 
-            <h2>Official Release</h2>
-            <p>OCT-2021: The Latest Apache™ OODT version 1.9.1 is now released and available for download.</p>
-            <p><a href="http://www.apache.org/dyn/closer.lua/oodt" class="btn btn-primary">Download OODT</a>
+            <div class="jumbotron">
+                <h2>Latest Release</h2>
+                <p>
+                    OCT-2021: The Latest Apache™ OODT version 1.9.1 is now released and available for download.
+                </p>
+                <p>
+                    <a href="http://www.apache.org/dyn/closer.lua/oodt" class="btn btn-primary">
+                        Download OODT
+                    </a>
+                </p>
+            </div>
 
             <h2>Mirrors</h2>
             <p>The link in the Mirrors column below should display a default mirror selection based on your inferred
                 location. If (when you browse to it) you do not see that page, try a different browser. The checksum and
                 signature are links to the originals on the main distribution server.</p>
 
-            <table class="table">
-                <tr>
-                    <th>Version</th>
-                    <th>Mirrors</th>
-                    <th>Signature</th>
-                    <th>SHA256 Checksum</th>
-                    <th>SHA512 Checksum</th>
-                </tr>
-                <tr>
-                    <td>
-                        Apache OODT 1.9.1 (zip)
-                    </td>
-                    <td>
-                        <a href="http://www.apache.org/dyn/closer.cgi/oodt/apache-oodt-1.9.1-src.zip">apache-oodt-1.9.1-src.zip</a>
-                    </td>
-                    <td>
-                        <a href="http://www.apache.org/dist/oodt/apache-oodt-1.9.1-src.zip.asc">apache-oodt-1.9.1-src.zip.asc</a>
-                    </td>
-                    <td>
-                        <a href="http://www.apache.org/dist/oodt/apache-oodt-1.9.1-src.zip.sha256">apache-oodt-1.9.1-src.zip.sha256</a>
-                    </td>
-                    <td>
-                        <a href="http://www.apache.org/dist/oodt/apache-oodt-1.9.1-src.zip.sha512">apache-oodt-1.9.1-src.zip.sha512</a>
-                    </td>
-                </tr>
-            </table>
+            <div class="panel panel-default">
+                <table class="table table-hover">
+                    <tr>
+                        <th>Version</th>
+                        <th>Mirrors</th>
+                        <th>Signature</th>
+                        <th>KEYS</th>
+                        <th>Checksum</th>
+                    </tr>
+                    <tr class="bg-success">
+                        <td>
+                            Apache OODT 1.9.1 (zip)
+                            <strong>(latest)</strong>
+                        </td>
+                        <td>
+                            <a href="http://www.apache.org/dyn/closer.cgi/oodt/apache-oodt-1.9.1-src.zip">apache-oodt-1.9.1-src.zip</a>
+                        </td>
+                        <td>
+                            <a href="http://www.apache.org/dist/oodt/apache-oodt-1.9.1-src.zip.asc">apache-oodt-1.9.1-src.zip.asc</a>
+                        </td>
+                        <td>
+                            <a href="http://www.apache.org/dist/oodt/KEYS">KEYS</a>
+                        </td>
+                        <td>
+                            <a href="http://www.apache.org/dist/oodt/apache-oodt-1.9.1-src.zip.sha256">SHA256</a>
+                            <a href="http://www.apache.org/dist/oodt/apache-oodt-1.9.1-src.zip.sha512">SHA512</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Apache OODT 1.9 (zip)
+                        </td>
+                        <td>
+                            <a href="http://www.apache.org/dyn/closer.cgi/oodt/apache-oodt-1.9-src.zip">apache-oodt-1.9-src.zip</a>
+                        </td>
+                        <td>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.9-src.zip.asc">apache-oodt-1.9-src.zip.asc</a>
+                        </td>
+                        <td>
+                            <a href="https://raw.githubusercontent.com/apache/oodt/1.9/KEYS">KEYS</a>
+                        </td>
+                        <td>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.9-src.zip.sha256">SHA256</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Apache OODT 1.2.1 (zip)
+                        </td>
+                        <td>
+                            <a href="http://www.apache.org/dyn/closer.cgi/oodt/apache-oodt-1.2.1-src.zip">apache-oodt-1.2.1-src.zip</a>
+                        </td>
+                        <td>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.2.1-src.zip.asc">apache-oodt-1.2.1-src.zip.asc</a>
+                        </td>
+                        <td>
+                            <a href="https://raw.githubusercontent.com/apache/oodt/1.2.1/KEYS">KEYS</a>
+                        </td>
+                        <td>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.2.1-src.zip.md5">MD5</a>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.2.1-src.zip.sha1">SHA1</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Apache OODT 1.2 (zip)
+                        </td>
+                        <td>
+                            <a href="http://www.apache.org/dyn/closer.cgi/oodt/apache-oodt-1.2-src.zip">apache-oodt-1.2-src.zip</a>
+                        </td>
+                        <td>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.2-src.zip.asc">apache-oodt-1.2-src.zip.asc</a>
+                        </td>
+                        <td>
+                            <a href="https://raw.githubusercontent.com/apache/oodt/1.2/KEYS">KEYS</a>
+                        </td>
+                        <td>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.2-src.zip.md5">MD5</a>
+                            <a href="http://archive.apache.org/dist/oodt/apache-oodt-1.2-src.zip.sha1">SHA1</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <h3>Verify Releases</h3>
             <p>It is essential that you verify the integrity of the downloaded files using the PGP, SHA256 and/or SHA512
                 signatures. published with every OODT release.</p>
@@ -169,7 +234,7 @@
 
             <h4>PGP Signature</h4>
             <p>The PGP signatures can be verified using PGP or GPG. First download the <a
-                    href="https://people.apache.org/keys/group/oodt.asc">KEYS</a> as well as the asc signature file for
+                    href="https://downloads.apache.org/oodt/KEYS">KEYS</a> as well as the asc signature file for
                 the relevant distribution.</p>
 
             <p>N.B.Make sure you get these files from the <a href="http://www.apache.org/dist/oodt/">main distribution
@@ -193,70 +258,42 @@
             <p>... output should match the string in apache-oodt-1.9.1-src.zip.sha512</p>
 
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
             <h1>Previous Releases</h1>
 
             <p>
                 Release Date: OCT-2019<br/>
                 Version: OODT 1.9<br/>
                 <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-1.9-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
+                <a href="https://raw.githubusercontent.com/apache/oodt/1.9/KEYS">Verification KEYS</a>
             </p>
 
             <p>
                 Release Date: AUG-2018<br/>
                 Version: OODT 1.2.1<br/>
                 <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-1.2.1-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
+                <a href="https://raw.githubusercontent.com/apache/oodt/1.2.1/KEYS">Verification KEYS</a>
             </p>
 
             <p>
                 Release Date: AUG-2017<br/>
                 Version: OODT 1.2<br/>
                 <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-1.2-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
+                <a href="https://raw.githubusercontent.com/apache/oodt/1.2/KEYS">Verification KEYS</a>
             </p>
 
             <p>
                 Release Date: JUL-2017<br/>
                 Version: OODT 1.1<br/>
                 <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-1.1-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
+                <a href="https://raw.githubusercontent.com/apache/oodt/1.1/KEYS">Verification KEYS</a>
             </p>
 
             <p>
                 Release Date: JUN-2016<br/>
                 Version: OODT 1.0<br/>
                 <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-1.0-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
-            </p>
-
-            <p>
-                Release Date: FEB-2016<br/>
-                Version: OODT 0.12<br/>
-                <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-0.12-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
-            </p>
-
-            <p>
-                Release Date: JAN-2016<br/>
-                Version: OODT 0.11<br/>
-                <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-0.11-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
-            </p>
-
-            <p>
-                Release Date: AUG-2015<br/>
-                Version: OODT 0.10<br/>
-                <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-0.10-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
-            </p>
-
-            <p>
-                Release Date: JUN-2015<br/>
-                Version: OODT 0.9<br/>
-                <a href="http://www.apache.org/dyn/closer.lua/oodt/apache-oodt-0.9-src.zip">Download</a><br/>
-                <a href="#">Verification KEYS</a>
+                <a href="https://raw.githubusercontent.com/apache/oodt/1.0/KEYS">Verification KEYS</a>
             </p>
 
         </div>
