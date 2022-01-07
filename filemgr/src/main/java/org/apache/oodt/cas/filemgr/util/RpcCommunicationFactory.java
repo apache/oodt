@@ -20,10 +20,10 @@ package org.apache.oodt.cas.filemgr.util;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.system.FileManagerServer;
+import org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerClientFactory;
+import org.apache.oodt.cas.filemgr.system.rpc.AvroFileManagerServerFactory;
 import org.apache.oodt.cas.filemgr.system.rpc.FileManagerClientFactory;
 import org.apache.oodt.cas.filemgr.system.rpc.FileManagerServerFactory;
-import org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerClientFactory;
-import org.apache.oodt.cas.filemgr.system.rpc.XmlRpcFileManagerServerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +47,7 @@ public class RpcCommunicationFactory {
     
     private static String getClientFactoryName() {
         return System.getProperty(FileManagerServer.FILEMGR_CLIENT_SYSTEM_PROPERTY,
-                XmlRpcFileManagerClientFactory.class.getName());
+                AvroFileManagerClientFactory.class.getName());
     }
 
     /**
@@ -129,7 +129,7 @@ public class RpcCommunicationFactory {
         setPror();
 
         String serverFactory = System.getProperty(FileManagerServer.FILEMGR_SERVER_SYSTEM_PROPERTY,
-                XmlRpcFileManagerServerFactory.class.getName());
+                AvroFileManagerServerFactory.class.getName());
 
         LOG.log(Level.INFO, "Init. server's factory class: " + serverFactory);
 

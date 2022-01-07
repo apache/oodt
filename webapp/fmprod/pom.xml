@@ -31,6 +31,11 @@
     component. All-in-all, this project contributes an OODT LargeProductHandler
     component, that can be used to deliver and format a CAS product structure
     into an OODT XML Query Result Set.</description>
+  
+  <properties>
+    <docker.build.disabled>true</docker.build.disabled>
+  </properties>
+  
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
      Once the dependency is in the core pom, it can then be used in other modules without the version tags.
      For example, within core/pom.xml:
@@ -81,6 +86,10 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-local</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -135,6 +144,9 @@
       <resource>
         <directory>${basedir}/src/main/dtd</directory>
       </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+      </resource>
     </resources>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
@@ -143,8 +155,8 @@
         groupId org.apache.maven.plugins is assumed by default.
       -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.4</version>
         <configuration>
           <webResources>
             <resource>
@@ -156,10 +168,14 @@
               </includes>
               <targetPath>META-INF/</targetPath>
             </resource>
+            <resource>
+              <directory>src/main/resources</directory>
+            </resource>
           </webResources>
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptorRefs>
@@ -168,6 +184,7 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <systemProperties>

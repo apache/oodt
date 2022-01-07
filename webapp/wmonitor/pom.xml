@@ -32,6 +32,7 @@ the License.
     <jetty.version>6.1.25</jetty.version>
     <slf4j.version>1.5.8</slf4j.version>
     <log4j.version>1.2.14</log4j.version>
+    <docker.build.disabled>true</docker.build.disabled>
   </properties>
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
      Once the dependency is in the core pom, it can then be used in other modules without the version tags.

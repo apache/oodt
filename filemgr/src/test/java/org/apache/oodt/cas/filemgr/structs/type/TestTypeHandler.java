@@ -462,7 +462,8 @@ public class TestTypeHandler extends TestCase {
                 boolean gotFirstClause = false;
                 int clauseNum = 0;
 
-                if (query.getCriteria() != null
+                if (this.getValidationLayer() != null
+                        && query.getCriteria() != null
                         && query.getCriteria().size() > 0) {
                     for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;
@@ -701,7 +702,8 @@ public class TestTypeHandler extends TestCase {
                 boolean gotFirstClause = false;
                 int clauseNum = 0;
 
-                if (query.getCriteria() != null
+                if (this.getValidationLayer() != null
+                        && query.getCriteria() != null
                         && query.getCriteria().size() > 0) {
                     for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;

@@ -27,6 +27,10 @@ the License.
   <artifactId>oodt-webapp-components</artifactId>
   <packaging>jar</packaging>
   <name>OODT Wicket Web Components</name>
+
+  <properties>
+    <docker.build.disabled>true</docker.build.disabled>
+  </properties>
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
      Once the dependency is in the core pom, it can then be used in other modules without the version tags.
      For example, within core/pom.xml:

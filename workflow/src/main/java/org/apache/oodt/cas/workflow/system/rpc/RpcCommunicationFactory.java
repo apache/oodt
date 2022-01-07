@@ -39,12 +39,12 @@ public class RpcCommunicationFactory {
 
     private static String getRpcServerFactoryClassName() {
         return loadProperties().getProperty(WorkflowManager.WORKFLOW_SERVER_FACTORY_PROPERTY,
-                XmlRpcWorkflowManagerFactory.class.getName());
+                AvroRpcWorkflowManagerFactory.class.getName());
     }
     
     private static String getRpcClientFactoryClassName() {
         return loadProperties().getProperty(WorkflowManager.WORKFLOW_CLIENT_FACTORY_PROPERTY,
-                XmlRpcWorkflowManagerFactory.class.getName());
+                AvroRpcWorkflowManagerFactory.class.getName());
     }
 
     public static WorkflowManager createServer(int port) {

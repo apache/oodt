@@ -29,6 +29,7 @@ import org.apache.tika.mime.MimeTypesFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
  * </p>
  * 
  */
-public class Reference {
+public class Reference implements Serializable {
     private static Logger LOG = Logger.getLogger(Reference.class.getName());
     /* the item's original location */
     private String origReference = null;

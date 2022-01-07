@@ -120,3 +120,12 @@ local.properties
 
 # Apple OS X folder attributes
 .DS_Store
+
+# node_modules
+/react-components/oodt_fm_plugin/node_modules
+/react-components/oodt_opsui_sample_app/node_modules
+
+# npm build/Tarball ignores
+/react-components/oodt_fm_plugin/dist
+
+

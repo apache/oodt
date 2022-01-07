@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
 
+import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -51,7 +52,7 @@ import java.util.logging.Logger;
  * @version $Revision$
  *
  * <p>
- * An implementation of the {@link Ingster} interface that uses the following
+ * An implementation of the {@link Ingester} interface that uses the following
  * pieces of {@link Metadata} information to determine how to ingest a
  * {@link Product}:
  *
@@ -188,8 +189,8 @@ public class StdIngester implements Ingester, CoreMetKeys {
         product.setProductType(getProductType(productType));
 
         List<String> references = new Vector<String>();
-        if (!fileLocation.endsWith("/")) {
-            fileLocation += "/";
+        if (!fileLocation.endsWith(File.separator)) {
+            fileLocation += File.separator;
         }
 
         String fullFilePath = fileLocation + fileName;
@@ -268,9 +269,10 @@ public class StdIngester implements Ingester, CoreMetKeys {
                     + url + "]");
             // instantiate the client transfer object
             // the crawler will have the client perform the transfer
-            fmClient
-                    .setDataTransfer(GenericFileManagerObjectFactory
-                            .getDataTransferServiceFromFactory(this.clientTransferServiceFactory));
+            DataTransfer dataTransfer = GenericFileManagerObjectFactory
+                    .getDataTransferServiceFromFactory(this.clientTransferServiceFactory);
+            dataTransfer.setFileManagerUrl(url);
+            fmClient.setDataTransfer(dataTransfer);
         } catch (ConnectionException e) {
             LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Unable to connect to file manager: [" + url

@@ -17,6 +17,8 @@
 
 package org.apache.oodt.pcs.health;
 
+import java.io.Serializable;
+
 /**
  * Information about a crawler: its <code>crawlerName</code> and
  * <code>crawlerPort</code>.
@@ -24,7 +26,7 @@ package org.apache.oodt.pcs.health;
  * @author mattmann
  * @version $Revision$
  */
-public class CrawlInfo {
+public class CrawlInfo implements Serializable {
 
   private String crawlerName;
 

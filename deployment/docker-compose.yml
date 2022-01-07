@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+
+  filemgr:
+    image: oodt/filemgr:latest
+    restart: "no"
+    ports:
+      - 9000:9000
+      - 5005:5005
+    environment:
+      - SOLR_URL=http://solr:8983
+      - DEBUG=5005
+    volumes:
+      - ./filemgr/data:/filemgr/data
+      - ./filemgr/policy:/filemgr/policy
+
+  workflowmgr:
+    image: oodt/workflowmgr:latest
+    restart: "no"
+    ports:
+      - 9001:9001
+    environment:
+      - SOLR_URL=http://solr:8983
+    volumes:
+      - ./workflowmgr/policy:/workflowmgr/policy
+
+  opsui:
+    image: oodt/opsui:latest
+    restart: "no"
+    ports:
+      - 5000:5000
+
+  tomcat:
+    image: oodt/tomcat:latest
+    restart: "no"
+    ports:
+      - 8080:8080
+    environment:
+      FILEMGR_URL: http://filemgr:9000
+      WORKFLOW_URL: http://workflowmgr:9001
+      FILEMGR_WORKINGDIR: /tmp
+    volumes:
+      - ./filemgr/data:/filemgr/data
+
+volumes:
+  filemgr-data:

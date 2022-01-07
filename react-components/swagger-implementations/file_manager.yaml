@@ -1,0 +1,206 @@
+#
+#    Licensed to the Apache Software Foundation (ASF) under one or more
+#    contributor license agreements.  See the NOTICE file distributed with
+#    this work for additional information regarding copyright ownership.
+#    The ASF licenses this file to You under the Apache License, Version 2.0
+#    (the "License"); you may not use this file except in compliance with
+#     the License.  You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+#
+
+swagger: '2.0'
+info:
+  description: |
+    This is a sandbox for  Apache OODT File Manager server. Find more on
+    [Apache OODT](https://oodt.apache.org/)
+  version: 1.0.0
+  title: Apache OODT File Manager Server
+  contact:
+    email: dev@oodt.apache.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: 13.76.225.151:8080
+basePath: /cas_product_war/jaxrs/v2
+tags:
+  - name: Products
+    description: Everything about your Products
+  - name: ServerStatus
+    description: Everything about File Manager Health
+
+schemes:
+  - http
+paths:
+  /productWithFile:
+    post:
+      tags:
+        - Products
+      summary: Ingest new Products to the File Mananger
+      operationId: ingestProducts
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: productType
+          type: string
+          description: Product Type of the File (eg:GenerticFile)
+          required: true
+        - in: query
+          name: productStructure
+          type: string
+          description: Product Structure of the File (eg:Flat)
+          required: true
+        - in: formData
+          name: productFile
+          type: file
+          description: File object that needs to be ingested to the Server
+          required: true
+      responses:
+        500:
+          description: Internal Server Error
+
+  /productWithMeta:
+    post:
+      tags:
+        - Products
+      summary: Ingest new Products with corresponding Metadata to the File Mananger
+      operationId: ingestProductsWithMetadata
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: formData
+          name: productFile
+          type: file
+          description: File object that needs to be ingested to the Server
+          required: true
+        - in: formData
+          name: metadataFile
+          type: file
+          description: Corresponding Metadata file object that needs to be ingested to the Server
+          required: true
+      responses:
+        500:
+          description:  Internal Server Error
+
+  /productTypes:
+    get:
+      tags:
+        - Products
+      summary: Get product types
+      description: Get all available product types
+      operationId: findAllProductTypes
+      produces:
+        - application/json
+        - application/atom+xml
+        - application/rdf+xml
+        - application/rss+xml
+        - application/zip
+      responses:
+        200:
+          description: Successful operation
+        404:
+          description: No product type was found
+
+  /product:
+    get:
+      tags:
+        - Products
+      summary: Finds Product by productId
+      description: Retrieve product to a given productId
+      operationId: findProductById
+      produces:
+        - application/json
+        - application/atom+xml
+        - application/rdf+xml
+        - application/rss+xml
+        - application/zip
+      parameters:
+        - name: productId
+          in: query
+          description: productId of the needed product.(eg:d66b281c-c679-11e9-adce-cbb1c44aedca)
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful operation
+        404:
+          description: Product not Found
+
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Finds Products by product Type name
+      description: Retrieve the first/next pages of ingested products by product Type name.
+      operationId: findProductssByProductName
+      produces:
+        - application/json
+        - application/atom+xml
+        - application/rdf+xml
+        - application/rss+xml
+      parameters:
+        - name: productTypeName
+          in: query
+          description: Product Type Name of needed products.(eg. GenericFile)
+          required: true
+          type: string
+        - name: currentProductPage
+          in: query
+          description: Product Type Name of needed products.(eg. GenericFile)
+          required: false
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Product not Found
+
+  /fmprodstatus:
+    get:
+      tags:
+        - ServerStatus
+      summary: Gives server status
+      description: Finds the server status,url,port of File Manager server
+      operationId: getFMServerStatus
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        200:
+          description: Successful operation
+
+  /removeProduct:
+    delete:
+      tags:
+        - Products
+      summary: Deletes a Product
+      operationId: deleteProducts
+      description: Removes a single Product by given productId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: productId
+          in: query
+          description: productId of the needed product.(eg:d66b281c-c679-11e9-adce-cbb1c44aedca)
+          required: true
+          type: string
+      responses:
+        200:
+          description: sucessfully removed
+        404:
+          description: Product not found

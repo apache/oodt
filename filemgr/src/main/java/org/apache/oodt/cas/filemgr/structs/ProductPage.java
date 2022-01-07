@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
+import java.io.Serializable;
 import java.util.Collections;
 //JDK imports
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.Vector;
  * </p>
  * 
  */
-public class ProductPage {
+public class ProductPage implements Serializable {
 
     /* the number of this page */
     private int pageNum = -1;

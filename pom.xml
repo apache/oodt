@@ -51,9 +51,12 @@ the License.
     <module>webapp/wmonitor</module>
     <module>webapp/fmprod</module>
     <module>webapp/wmservices</module>
+    <module>webapp/tomcat</module>
     <module>pcs/core</module>
     <module>pcs/opsui</module>
     <module>pcs/services</module>
+    <module>deployment</module>
+    <module>react-components/oodt_opsui_sample_app</module>
   </modules>
 
   <scm>

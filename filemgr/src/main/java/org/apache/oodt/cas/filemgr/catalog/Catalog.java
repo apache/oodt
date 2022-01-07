@@ -321,8 +321,6 @@ public interface Catalog extends Pagination {
     /**
      * 
      * @return The {@link ValidationLayer} that is used by this Catalog.
-     * @throws CatalogException
-     *             If any error occurs (e.g., the layer isn't initialized).
      */
     ValidationLayer getValidationLayer();
 

@@ -25,11 +25,19 @@
   </parent>
   <artifactId>cas-filemgr</artifactId>
   <name>Catalog and Archive File Management Component</name>
-  <description>The file management component of a Catalog and Archive Service. This component
+  <description>
+    The file management component of a Catalog and Archive Service. This component
      purposefully separates data stores and metadata stores as standard interfaces, and
      provides some out of the box backend implementations of them (including one based
      on the javax.sql.DataSource interface). This component provides everything that you need
-     to catalog, archive and manage files, and directories, and their associated metadata.</description>
+     to catalog, archive and manage files, and directories, and their associated metadata.
+  </description>
+  
+  <properties>
+    <docker.build.disabled>false</docker.build.disabled>
+    <docker.image.name>oodt/filemgr:latest</docker.image.name>
+  </properties>
+  
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
      Once the dependency is in the core pom, it can then be used in other modules without the version tags.
      For example, within core/pom.xml:
@@ -327,6 +335,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.6</version>
         <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
             <descriptor>src/main/assembly/assembly.xml</descriptor>
           </descriptors>

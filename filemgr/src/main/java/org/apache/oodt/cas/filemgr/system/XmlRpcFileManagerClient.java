@@ -77,7 +77,7 @@ import java.util.logging.Logger;
 public class XmlRpcFileManagerClient implements FileManagerClient {
 
   /* our xml rpc client */
-  private XmlRpcClient client = null;
+  private transient XmlRpcClient client = null;
 
   /* our log stream */
   private static Logger LOG = Logger.getLogger(XmlRpcFileManagerClient.class

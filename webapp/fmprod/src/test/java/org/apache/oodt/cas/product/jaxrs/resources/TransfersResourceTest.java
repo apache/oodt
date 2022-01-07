@@ -22,13 +22,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -62,7 +60,7 @@ public class TransfersResourceTest
   {
     // Create a FileTransferStatus instance using Metadata, Reference,
     // ProductType and Product instances.
-    Hashtable metadataEntries1 = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries1 = new HashMap<>();
     metadataEntries1.put("CAS.ProductReceivedTime", "2013-09-12T16:25:50.662Z");
     Metadata metadata1 = new Metadata();
     metadata1.addMetadata(metadataEntries1);
@@ -85,7 +83,7 @@ public class TransfersResourceTest
 
     // Create another FileTransferStatus instance using Metadata, Reference,
     // ProductType and Product instances.
-    Hashtable metadataEntries2 = new Hashtable<String, Object>();
+    HashMap<String, Object> metadataEntries2 = new HashMap<>();
     metadataEntries2.put("CAS.ProductReceivedTime", "2011-04-11T11:59:59.662Z");
     Metadata metadata2 = new Metadata();
     metadata2.addMetadata(metadataEntries2);
@@ -108,7 +106,7 @@ public class TransfersResourceTest
 
     // Create a TransfersResource using the two FileTransferStatus instances to
     // generate TransferResource instances for the TransfersResource.
-    List<TransferResource> resources = new ArrayList<TransferResource>();
+    List<TransferResource> resources = new ArrayList<>();
     resources.add(new TransferResource(product1, metadata1, status1));
     resources.add(new TransferResource(product2, metadata2, status2));
     TransfersResource resource = new TransfersResource("ALL", resources);

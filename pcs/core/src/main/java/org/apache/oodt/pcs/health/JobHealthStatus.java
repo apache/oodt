@@ -18,6 +18,8 @@
 package org.apache.oodt.pcs.health;
 
 
+import java.io.Serializable;
+
 /**
  * 
  * A container representing Job health status in the PCS
@@ -25,7 +27,7 @@ package org.apache.oodt.pcs.health;
  * @author mattmann
  * @version $Revision$
  */
-public class JobHealthStatus {
+public class JobHealthStatus implements Serializable {
 
   private String status;
 

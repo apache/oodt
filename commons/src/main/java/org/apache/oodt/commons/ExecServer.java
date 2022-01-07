@@ -119,14 +119,9 @@ public class ExecServer {
 					objOut.flush();
 					System.out.println();
 				} else {
-                    Class<?> servantClass = Class.forName("org.omg.PortableServer.Servant");
-                    Class<?> orbClass = Class.forName("org.omg.CORBA.ORB");
-                    Class<?> corbaObjectClass = Class.forName("org.omg.CORBA.Object");
-
-                    Object servant = servantClass.cast(server.getServant());
-                    Object orb = orbClass.cast(servantClass.getDeclaredMethod("_orb").invoke(servant));
-                    Object object = corbaObjectClass.cast(servantClass.getDeclaredMethod("_this_object", orbClass).invoke(servant, orb));
-                    System.out.println(orbClass.getDeclaredMethod("object_to_string", corbaObjectClass).invoke(orb, object));
+					org.omg.PortableServer.Servant servant=(org.omg.PortableServer.Servant)server.getServant();
+					org.omg.CORBA.ORB orb = servant._orb();
+					System.out.println(orb.object_to_string(servant._this_object(orb)));
 				}
 				System.out.flush();
 			}

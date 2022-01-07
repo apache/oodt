@@ -1,0 +1,230 @@
+#
+#    Licensed to the Apache Software Foundation (ASF) under one or more
+#    contributor license agreements.  See the NOTICE file distributed with
+#    this work for additional information regarding copyright ownership.
+#    The ASF licenses this file to You under the Apache License, Version 2.0
+#    (the "License"); you may not use this file except in compliance with
+#     the License.  You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+#
+
+swagger: '2.0'
+info:
+  description: |
+    This is a sandbox for  Apache OODT Workflow Manager server. Find more on
+    [Apache OODT](https://oodt.apache.org/)
+  version: 1.0.0
+  title: Apache OODT Workflow Manager Server
+  contact:
+    email: dev@oodt.apache.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: 13.76.225.151:8080
+basePath: /workflow_services_war/jaxrs/v2
+tags:
+  - name: Workflows
+    description: Everything about your Workflows
+
+
+schemes:
+  - http
+paths:
+
+  /workflowInst:
+    get:
+      tags:
+        - Workflows
+      summary: Finds workflow instance by workflow Instance Id
+      description: Retrieve workflow Instance to a given workflow Instance Id
+      operationId: findWorkflowInstanceByWFInsId
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: workflowInstId
+          in: query
+          description: workflowInstance Id of the needed workflow Instance.(eg:8100ba38-c302-11e9-b3ab-3be3a154a1d1)
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful operation
+        404:
+          description: Workflow not Found
+
+  /workflow/firstpage:
+    get:
+      tags:
+        - Workflows
+      summary: Retrieves Workflows
+      description: Retrieve the first page of running/finished/paused Workflow Instances
+      operationId: findWorkflows
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: workflows not Found
+
+  /workflow/page:
+    get:
+      tags:
+        - Workflows
+      summary: get workflow instance page
+      description: Retrieve the specified page of running/finished/paused Workflow Instances
+      operationId: findWorkflows
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: workflowPage
+          schema:
+            type: integer
+          description: The page number of the desired workflow list page
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: workflows not Found
+
+  /workflow/event:
+    post:
+      tags:
+        - Workflows
+      summary: Trigger workflow by event
+      description: Trigger the tasks in a configured workflow by a registered event 
+      operationId: triggerEvent
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: eventName
+          schema:
+            type: string
+          description: The workflow event name to trigger workflow
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Error triggering the event
+
+  /workflow/events:
+    get:
+      tags:
+        - Workflows
+      summary: get events
+      description: Get all registered workflow events
+      operationId: findAllEvents
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: getting events failed
+
+  /stop/workflow:
+    post:
+      tags:
+        - Workflows
+      summary: Stop running Workflows.
+      description: Stop a running workflow Instance to a given workflow Instance Id
+      operationId: stopWorkflows
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: workflowInstanceId
+          type: string
+          description: workflowInstance Id of the needed workflow Instance.(eg:8100ba38-c302-11e9-b3ab-3be3a154a1d1)
+          required: true
+      responses:
+        200:
+          description: successful operation
+        500:
+          description: Internal Server Error
+
+  /pause/workflow:
+    post:
+      tags:
+        - Workflows
+      summary: Pause running Workflows.
+      description: Pause a running workflow Instance to a given workflow Instance Id
+      operationId: pauseWorkflows
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: workflowInstanceId
+          type: string
+          description: workflowInstance Id of the needed workflow Instance.(eg:8100ba38-c302-11e9-b3ab-3be3a154a1d1)
+          required: true
+      responses:
+        200:
+          description: successful operation
+        500:
+          description: Internal Server Error
+
+  /resume/workflow:
+    post:
+      tags:
+        - Workflows
+      summary: Resume paused Workflows.
+      description: Resume a paused workflow Instance to a given workflow Instance Id
+      operationId: resumeWorkflows
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: workflowInstanceId
+          type: string
+          description: workflowInstance Id of the needed workflow Instance.(eg:8100ba38-c302-11e9-b3ab-3be3a154a1d1)
+          required: true
+      responses:
+        200:
+          description: successful operation
+        500:
+          description: Internal Server Error
+
+  /updatestatus/workflow:
+    post:
+      tags:
+        - Workflows
+      summary: Update status Workflows.
+      description: Update the status of  workflow Instance to a given workflow Instance Id and given status
+      operationId: updateStautsWorkflows
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: workflowInstanceId
+          type: string
+          description: workflowInstance Id of the needed workflow Instance.(eg:8100ba38-c302-11e9-b3ab-3be3a154a1d1)
+          required: true
+        - in: query
+          name: status
+          type: string
+          description: Status of the Workflow to be set.(eg:Running/FINISHED/PAUSED...)
+          required: true
+      responses:
+        200:
+          description: successful operation
+        500:
+          description: Internal Server Error

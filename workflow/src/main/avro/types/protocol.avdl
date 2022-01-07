@@ -72,4 +72,6 @@ import schema "AvroWorkflowInstancePage.avsc";
     boolean updateWorkflowInstanceStatus(
             string workflowInstId, string status);
 
+    boolean isAlive();
+
 }

@@ -13,33 +13,30 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.apache.oodt.cas.product.jaxrs.exceptions;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
- * This type of exception returns an HTTP 'not found' response (status code 404)
- * with an additional message.
+ * This type of exception returns an HTTP 'not found' response (status code 404) with an additional
+ * message.
+ *
  * @author rlaidlaw
  * @version $Revision$
  */
-public class NotFoundException extends WebApplicationException
-{
-  // Auto-generated ID for serialization.
+public class NotFoundException extends WebApplicationException {
+
+  /** Auto-generated ID for serialization. */
   private static final long serialVersionUID = -3835077083758525919L;
 
   /**
-   * Constructor that adds a message to the 'not found' (status code 404)
-   * HTTP response.
+   * Constructor that adds a message to the 'not found' (status code 404) HTTP response.
+   *
    * @param message the message to add to the response
    */
-  public NotFoundException(String message)
-  {
-    super(Response.status(Response.Status.NOT_FOUND).entity(message)
-      .type(MediaType.TEXT_PLAIN).build());
+  public NotFoundException(String message) {
+    super(message);
   }
 }

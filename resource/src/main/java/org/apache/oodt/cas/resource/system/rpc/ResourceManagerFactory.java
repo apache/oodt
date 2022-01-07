@@ -17,10 +17,10 @@
 
 package org.apache.oodt.cas.resource.system.rpc;
 
+import org.apache.oodt.cas.resource.system.AvroRpcResourceManager;
+import org.apache.oodt.cas.resource.system.AvroRpcResourceManagerClient;
 import org.apache.oodt.cas.resource.system.ResourceManager;
 import org.apache.oodt.cas.resource.system.ResourceManagerClient;
-import org.apache.oodt.cas.resource.system.XmlRpcResourceManager;
-import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ public class ResourceManagerFactory {
     public static ResourceManager getResourceManager(int port) throws Exception {
         loadProperties();
         String resourceManagerClass = System.getProperty(ResourceManager.RESMGR_SYSTEM_PROPERTY,
-                XmlRpcResourceManager.class.getName());
+                AvroRpcResourceManager.class.getName());
 
         logger.info("Creating resource manager {} at port: {}", resourceManagerClass, port);
 
@@ -67,10 +67,10 @@ public class ResourceManagerFactory {
         return manager;
     }
 
-    public static ResourceManagerClient getResourceManagerClient(URL url) throws Exception {
+    public static ResourceManagerClient getResourceManagerClient(URL url) throws IllegalStateException {
         loadProperties();
         String resMgrClientClass = System.getProperty(ResourceManager.RESMGR_CLIENT_SYSTEM_PROPERTY,
-                XmlRpcResourceManagerClient.class.getName());
+                AvroRpcResourceManagerClient.class.getName());
 
         logger.info("Creating resource manager client {}", resMgrClientClass);
 
@@ -80,7 +80,7 @@ public class ResourceManagerFactory {
             client = (ResourceManagerClient) constructor.newInstance(url);
         } catch (Exception e) {
             logger.error("Unable to create resource manager", e);
-            throw e;
+            throw new IllegalStateException("Unable to create client", e);
         }
 
         return client;

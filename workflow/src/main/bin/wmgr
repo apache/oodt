@@ -34,27 +34,45 @@ else
 fi
 
 export JAVA_HOME
-CAS_WORKFLOW_HOME=..
+CAS_WORKFLOW_HOME=`cd ..; pwd`
 export CAS_WORKFLOW_HOME
-RUN_HOME=${CAS_WORKFLOW_HOME}/../run
+RUN_HOME=${CAS_WORKFLOW_HOME}/run
 export RUN_HOME
-CAS_WORKFLOW_PROPS=../etc/workflow.properties
+CAS_WORKFLOW_PROPS=${CAS_WORKFLOW_HOME}/etc/workflow.properties
 export CAS_WORKFLOW_PROPS
 
 PATH=${JAVA_HOME}/bin:${CAS_WORKFLOW_HOME}/bin:/usr/bin:/bin:/usr/sbin:/sbin
 export PATH
 
+if [ ! -z $DEBUG ]; then
+    echo "Running in debug mode on port: ${DEBUG}"
+    JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUG}"
+fi
+
 # See how we were called.
 case "$1" in
+  run)
+        echo -n "Starting cas workflow manager: "
+        $JAVA_HOME/bin/java ${JAVA_OPTS} \
+            -Djava.ext.dirs=${CAS_WORKFLOW_HOME}/lib \
+            -Dlog4j.configurationFile=${CAS_WORKFLOW_HOME}/etc/log4j2.xml \
+            -Djava.util.logging.config.file=${CAS_WORKFLOW_HOME}/etc/logging.properties \
+            -Dorg.apache.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \
+            -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
+            -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
+            org.apache.oodt.cas.workflow.system.WorkflowManagerStarter \
+            --portNum $SERVER_PORT
+        ;;
   start)
         echo -n "Starting cas workflow manager: "
-        $JAVA_HOME/bin/java -Djava.ext.dirs=${CAS_WORKFLOW_HOME}/lib \
-        -Dlog4j.configurationFile=${CAS_WORKFLOW_HOME}/etc/log4j2.xml \
-        -Djava.util.logging.config.file=${CAS_WORKFLOW_HOME}/etc/logging.properties \
-        -Dorg.apache.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \
-        -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
-        -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
-        org.apache.oodt.cas.workflow.system.WorkflowManagerStarter --portNum $SERVER_PORT &
+        $JAVA_HOME/bin/java ${JAVA_OPTS} -Djava.ext.dirs=${CAS_WORKFLOW_HOME}/lib \
+            -Dlog4j.configurationFile=${CAS_WORKFLOW_HOME}/etc/log4j2.xml \
+            -Djava.util.logging.config.file=${CAS_WORKFLOW_HOME}/etc/logging.properties \
+            -Dorg.apache.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \
+            -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
+            -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
+            org.apache.oodt.cas.workflow.system.WorkflowManagerStarter \
+            --portNum $SERVER_PORT &
         echo $! >${RUN_HOME}/cas.workflow.pid 
         echo "OK"
         sleep 5

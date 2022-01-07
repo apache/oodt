@@ -620,7 +620,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     NettyTransceiver client;
     AvroRpcBatchStub proxy;
     try {
-      client = new NettyTransceiver(new InetSocketAddress(node.getIpAddr().getPort()));
+      client = new NettyTransceiver(new InetSocketAddress(node.getIpAddr().getHost(), node.getIpAddr().getPort()));
       proxy = (AvroRpcBatchStub) SpecificRequestor.getClient(AvroRpcBatchStub.class, client);
       return proxy.isAlive();
     } catch (IOException e) {

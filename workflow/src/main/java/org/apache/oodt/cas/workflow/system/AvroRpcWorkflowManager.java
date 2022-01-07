@@ -102,7 +102,7 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
         }
 
         logger.debug("Setting workflow engine url: {}", workflowManagerUrl.toString());
-        engine.setWorkflowManagerUrl(safeGetUrlFromString("http://" + getHostname() + ":" + port));
+        engine.setWorkflowManagerUrl(safeGetUrlFromString("http://" + getHostname()  + ":" + port));
         repo = getWorkflowRepositoryFromProperty();
 
         logger.debug("Starting Http Server...");
@@ -634,6 +634,10 @@ public class AvroRpcWorkflowManager implements WorkflowManager,org.apache.oodt.c
         return doUpdateWorkflowInstance(wInst);
     }
 
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
 
     private static WorkflowEngine getWorkflowEngineFromProperty() {
         return getWorkflowEngineFromClassName(System.getProperty(

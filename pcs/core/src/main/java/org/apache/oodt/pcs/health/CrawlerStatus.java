@@ -17,13 +17,15 @@
 
 package org.apache.oodt.pcs.health;
 
+import java.io.Serializable;
+
 /**
  * Provides status about a Crawler to the {@link PCSHealthMonitor}.
  * 
  * @author mattmann
  * @version $Revision$
  */
-public class CrawlerStatus {
+public class CrawlerStatus implements Serializable {
 
     private CrawlInfo info;
 

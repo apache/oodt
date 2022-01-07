@@ -87,7 +87,11 @@
         org.apache.oodt.cas.product.jaxrs.writers.DatasetZipWriter,
         org.apache.oodt.cas.product.jaxrs.writers.DatasetRdfWriter,
         org.apache.oodt.cas.product.jaxrs.writers.DatasetRssWriter,
-        org.apache.oodt.cas.product.jaxrs.writers.TransfersRssWriter
+        org.apache.oodt.cas.product.jaxrs.writers.TransfersRssWriter,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.NotFoundExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.BadRequestExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.InternalServerErrorExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.CasProductExceptionMapper,
       </param-value>
     </init-param>
     <init-param>
@@ -112,6 +116,42 @@
       </param-value>
     </init-param>
   </servlet>
+
+
+  <servlet>
+    <servlet-name>CasProductJaxrsServletV2</servlet-name>
+    <servlet-class>
+      org.apache.oodt.cas.product.jaxrs.servlets.CasProductJaxrsServlet
+    </servlet-class>
+    <init-param>
+      <param-name>jaxrs.serviceClasses</param-name>
+      <param-value>
+        org.apache.oodt.cas.product.jaxrs.services.FileManagerJaxrsServiceV2
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jaxrs.providers</param-name>
+      <param-value>
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.NotFoundExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.BadRequestExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.InternalServerErrorExceptionMapper,
+        org.apache.oodt.cas.product.jaxrs.exceptionmappers.CasProductExceptionMapper,
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jaxrs.extensions</param-name>
+      <param-value>
+        file=application/octet-stream
+        json=application/json
+        rdf=application/rdf+xml
+        rss=application/rss+xml
+        xml=application/xml
+        zip=application/zip
+      </param-value>
+    </init-param>
+  </servlet>
+
+
 
 
   <servlet-mapping>
@@ -144,8 +184,27 @@
     <url-pattern>/dataset</url-pattern>
   </servlet-mapping>
 
+  <!--FM Product JAXRS V2 REST APIs mapping-->
+  <servlet-mapping>
+    <servlet-name>CasProductJaxrsServletV2</servlet-name>
+    <url-pattern>/jaxrs/v2/*</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>CasProductJaxrsServlet</servlet-name>
     <url-pattern>/jaxrs/*</url-pattern>
   </servlet-mapping>
+
+  <!-- CORS Header Filtering -->
+  <filter>
+    <filter-name>CorsFilter</filter-name>
+    <filter-class>org.apache.oodt.cas.product.jaxrs.filters.CORSFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>CorsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
 </web-app>
