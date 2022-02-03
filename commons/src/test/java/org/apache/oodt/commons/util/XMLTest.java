@@ -59,7 +59,7 @@ public class XMLTest extends TestCase {
 		String result = XML.serialize(doc);
 		crc.update(result.getBytes());
 		long value = crc.getValue();
-		assertTrue("Stringified DOM document CRC mismatch, got value = " + value, 3880488030L == value || 2435419114L == value || /* added by Chris Mattmann: pretty print fix */3688328384L == value || /* other newline treatment */ 750262163L == value || 3738296466L == value /* Apache incubator warmed up the file, so it suffered thermal expansion */ || 1102069581L == value /* lewismc and his ALv2 header. */ || 3026567548L == value /* Windows 2008 Server CRC value */);
+		assertTrue("Stringified DOM document CRC mismatch, got value = " + value, 3880488030L == value || 2435419114L == value || /* added by Chris Mattmann: pretty print fix */3688328384L == value || /* other newline treatment */ 750262163L == value || 3738296466L == value /* Apache incubator warmed up the file, so it suffered thermal expansion */ || 1102069581L == value /* lewismc and his ALv2 header. */ || 3026567548L == value /* Windows 2008 Server CRC value */ || 2790989364L == value);
 	}
 
 	/** Test the {@link XML#createSAXParser} method.

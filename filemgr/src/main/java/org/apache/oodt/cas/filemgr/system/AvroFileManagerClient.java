@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.filemgr.system;
 
 import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyTransceiver;
+import org.apache.avro.ipc.netty.NettyTransceiver;
 import org.apache.avro.ipc.Transceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
@@ -88,7 +88,7 @@ public class AvroFileManagerClient implements FileManagerClient {
         try {
             this.fileManagerUrl = url;
             InetSocketAddress inetSocketAddress = new InetSocketAddress(url.getHost(), this.fileManagerUrl.getPort());
-            this.client = new NettyTransceiver(inetSocketAddress, 40000L);
+            this.client = new NettyTransceiver(inetSocketAddress, 40000);
             proxy = (AvroFileManager) SpecificRequestor.getClient(AvroFileManager.class, client);
         } catch (IOException e) {
             logger.error("Error occurred when creating file manager: {}", url, e);

@@ -465,7 +465,7 @@ public class TestPGETaskInstance {
       pgeTask.pgeMetadata.replaceMetadata(ATTEMPT_INGEST_ALL, Boolean.toString(true));
       pgeTask.setWorkflowInstId("WorkflowInstanceId");
 
-      pgeTask.setWmClient(createMock(WorkflowManagerClient.class));
+      pgeTask.setWmClient((WorkflowManagerClient) createMock(WorkflowManagerClient.class));
       expect(pgeTask.getWorkflowManagerClient()
               .updateWorkflowInstanceStatus(pgeTask.getWorkflowInstId(), CRAWLING.getWorkflowStatusName())
       ).andReturn(true);
@@ -483,7 +483,7 @@ public class TestPGETaskInstance {
       verify(pc);
 
       // Case: UpdateStatus Fail
-      pgeTask.setWmClient(createMock(WorkflowManagerClient.class));
+      pgeTask.setWmClient((WorkflowManagerClient) createMock(WorkflowManagerClient.class));
       expect(pgeTask.getWorkflowManagerClient().updateWorkflowInstanceStatus(pgeTask.getWorkflowInstId(),
             CRAWLING.getWorkflowStatusName())).andReturn(false);
       replay(pgeTask.getWorkflowManagerClient());
@@ -500,7 +500,7 @@ public class TestPGETaskInstance {
       verify(pc);
 
       // Case: UpdateStatus Success, VerifyIngest Fail
-      pgeTask.setWmClient(createMock(WorkflowManagerClient.class));
+      pgeTask.setWmClient((WorkflowManagerClient) createMock(WorkflowManagerClient.class));
       expect(pgeTask.getWorkflowManagerClient().updateWorkflowInstanceStatus(pgeTask.getWorkflowInstId(),
             CRAWLING.getWorkflowStatusName())).andReturn(true);
       replay(pgeTask.getWorkflowManagerClient());
