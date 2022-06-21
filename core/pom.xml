@@ -216,7 +216,7 @@ the License.
       <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
-        <version>6.0.3</version>
+        <version>8.0.28</version>
       </dependency>
       <dependency>
         <groupId>net.sourceforge.nekohtml</groupId>
