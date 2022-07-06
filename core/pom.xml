@@ -542,7 +542,7 @@ the License.
       <dependency>
         <groupId>org.python</groupId>
         <artifactId>jython</artifactId>
-        <version>2.2-beta1</version>
+        <version>2.7.2b2</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
