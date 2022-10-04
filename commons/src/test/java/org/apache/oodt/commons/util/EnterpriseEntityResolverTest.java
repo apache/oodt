@@ -16,6 +16,7 @@
 package org.apache.oodt.commons.util;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.TestCase;
@@ -41,9 +42,7 @@ public class EnterpriseEntityResolverTest extends TestCase {
 	 */
 	public void setUp() throws Exception {
 		super.setUp();
-		testDir = File.createTempFile("eet", ".dir");
-		testDir.delete();
-		testDir.mkdir();
+		testDir = Files.createTempDirectory("eet" + ".dir").toFile();
 		testFile = new File(testDir, "test-entry-do-not-remove.dtd");
 		if (!testFile.createNewFile())
 			throw new Exception(testFile + " already exists, but shouldn't");

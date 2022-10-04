@@ -23,6 +23,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.io.IOException;
 
 // Junit Testing framework
@@ -51,11 +52,7 @@ public class MetadataTestCase extends TestCase {
      */
     public void setUp() throws Exception {
         super.setUp();                                                                      // Set up the framework test harness
-        tmpDir = File.createTempFile("metadata", ".tests");                                 // Get a temporary file
-        if (!tmpDir.delete())                                                               // File?! We don't want no stinkin' file
-            throw new IOException("Cannot delete temporary file " + tmpDir);                
-        if (!tmpDir.mkdirs())                                                               // Directory is what we want
-            throw new IOException("Cannot create temporary directory " + tmpDir);
+        tmpDir = Files.createTempDirectory("metadata" + ".tests").toFile();
         //tmpDir.deleteOnExit();
     }
 
