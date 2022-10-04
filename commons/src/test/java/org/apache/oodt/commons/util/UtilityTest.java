@@ -17,6 +17,8 @@ package org.apache.oodt.commons.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+
 import junit.framework.TestCase;
 
 public class UtilityTest extends TestCase {
@@ -25,18 +27,12 @@ public class UtilityTest extends TestCase {
 	}
 
 	public void testDelete() throws IOException {
-		File top = File.createTempFile("topdir", ".dir");
-		top.delete();
-		top.mkdir();
+		File top = Files.createTempDirectory("topdir" + ".dir").toFile();
 		File f1 = File.createTempFile("nesteddir", ".file", top);
 		File f2 = File.createTempFile("nesteddir", ".file", top);
-		File d1 = File.createTempFile("nesteddir", ".dir", top);
-		d1.delete();
-		d1.mkdir();
+		File d1 = Files.createTempDirectory(top.toPath(), "nesteddir" + ".dir").toFile();
 		File f3 = File.createTempFile("nesteddir", ".file", d1);
-		File d2 = File.createTempFile("nesteddir", ".dir", d1);
-		d2.delete();
-		d2.mkdir();
+		File d2 = Files.createTempDirectory(d1.toPath(), "nesteddir" + ".dir").toFile();
 		File f4 = File.createTempFile("nesteddir", ".file", d2);
 
 		assertTrue(Utility.delete(top));
