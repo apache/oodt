@@ -18,6 +18,7 @@ package org.apache.oodt.cas.crawl.typedetection;
 
 //JDK imports
 import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +48,7 @@ public class TestMimeExtractorConfigReader extends TestCase {
 
    @Override
    public void setUp() throws Exception {
-      File tmpFile = File.createTempFile("bogus", "bogus");
+      File tmpFile = Files.createTempFile("bogus", "bogus").toFile();
       tmpDir = new File(tmpFile.getParentFile(), UUID.randomUUID().toString());
       tmpFile.delete();
       if (!tmpDir.mkdirs()) {

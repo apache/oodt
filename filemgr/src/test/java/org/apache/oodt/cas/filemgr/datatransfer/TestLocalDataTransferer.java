@@ -28,6 +28,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.UUID;
 
 //Junit imports
@@ -55,7 +56,7 @@ public class TestLocalDataTransferer extends TestCase {
          .createDataTransfer();
       URL url = this.getClass().getResource("/test.txt");
       origFile = new File(url.getFile());
-      File testFile = File.createTempFile("test", ".txt");
+      File testFile = Files.createTempFile("test", ".txt").toFile();
       testDir = new File(testFile.getParentFile(), UUID.randomUUID().toString());
       repoDir = new File(testDir, "repo");
       if (!repoDir.mkdirs()) {

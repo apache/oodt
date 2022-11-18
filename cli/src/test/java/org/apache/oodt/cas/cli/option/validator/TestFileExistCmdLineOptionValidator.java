@@ -23,8 +23,8 @@ import static org.apache.oodt.cas.cli.test.util.TestUtils.createSimpleOption;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
-//JUnit imports
 import junit.framework.TestCase;
 
 //OODT imports
@@ -54,7 +54,7 @@ public class TestFileExistCmdLineOptionValidator extends TestCase {
             .validate(instance).getGrade());
 
       // Test pass case.
-      File tempFile = File.createTempFile("bogus", "bogus");
+      File tempFile = Files.createTempFile("bogus", "bogus").toFile();
       tempFile.deleteOnExit();
       instance = createOptionInstance(createSimpleOption("test", false),
             tempFile.getAbsolutePath());

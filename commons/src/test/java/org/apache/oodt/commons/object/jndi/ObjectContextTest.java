@@ -17,6 +17,7 @@ package org.apache.oodt.commons.object.jndi;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -46,7 +47,7 @@ public class ObjectContextTest extends TestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		aliasFile = File.createTempFile("test", ".properties");
+		aliasFile = Files.createTempFile("test", ".properties").toFile();
 		aliasFile.deleteOnExit();
 		Properties aliases = new Properties();
 		aliases.setProperty("urn:alias:x", "urn:a:x");

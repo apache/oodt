@@ -19,6 +19,7 @@ package org.apache.oodt.cas.wmservices.repository;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +84,7 @@ public class PackagedWorkflowManager {
     try {
       this.loadTasksToRepo(workflow);
       String workflowId = this.repo.addWorkflow(workflow);
-      File f = File.createTempFile("tempworkflow-", "-packaged");
+      File f = Files.createTempFile("tempworkflow-", "-packaged").toFile();
       this.saveWorkflow(workflowId, f.getAbsolutePath());
       String workflowXML = FileUtils.readFileToString(f);
       f.delete();
@@ -107,7 +108,7 @@ public class PackagedWorkflowManager {
   public Workflow parsePackagedWorkflow(String workflowID, String workflowXML)
       throws RepositoryException {
     try {
-      File tmpfile = File.createTempFile("tempworkflow-", "-packaged");
+      File tmpfile = Files.createTempFile("tempworkflow-", "-packaged").toFile();
       FileUtils.writeStringToFile(tmpfile, workflowXML);
       PackagedWorkflowRepository tmprepo = new PackagedWorkflowRepository(
           Collections.singletonList(tmpfile));

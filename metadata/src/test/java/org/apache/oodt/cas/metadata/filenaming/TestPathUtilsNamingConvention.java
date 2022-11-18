@@ -19,6 +19,7 @@ package org.apache.oodt.cas.metadata.filenaming;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.UUID;
 
 //Apache imports
@@ -39,7 +40,7 @@ import junit.framework.TestCase;
 public class TestPathUtilsNamingConvention extends TestCase {
 
    public void testRename() throws IOException, NamingConventionException {
-      File tmpFile = File.createTempFile("bogus", "bogus");
+      File tmpFile = Files.createTempFile("bogus", "bogus").toFile();
       File tmpDir = new File(tmpFile.getParentFile(),
             UUID.randomUUID().toString());
       if (!tmpDir.mkdirs()) {

@@ -16,6 +16,7 @@
 package org.apache.oodt.commons;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import junit.framework.*;
 
@@ -33,7 +34,7 @@ public class ConfigurationTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		// Create a temporary test configuration file.
-		tmpFile = File.createTempFile("conf", ".xml");
+		tmpFile = Files.createTempFile("conf", ".xml").toFile();
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(tmpFile));
 		byte[] doc = TEST_DOC.getBytes();
 		out.write(doc, 0, doc.length);

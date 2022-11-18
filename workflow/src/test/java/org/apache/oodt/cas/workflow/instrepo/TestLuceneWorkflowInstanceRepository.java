@@ -31,6 +31,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Vector;
 
@@ -114,7 +115,7 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         File tempFile;
 
         try {
-            tempFile = File.createTempFile("foo", "bar");
+            tempFile = Files.createTempFile("foo", "bar").toFile();
             tempFile.deleteOnExit();
             tempDir = tempFile.getParentFile();
         } catch (Exception e) {

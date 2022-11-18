@@ -55,6 +55,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+
 //JDK imports
 //JUnit imports
 //Apache imports
@@ -647,7 +649,7 @@ public class TestPGETaskInstance {
    }
 
    private File createTmpDir() throws Exception {
-      File tmpFile = File.createTempFile("bogus", "bogus");
+      File tmpFile = Files.createTempFile("bogus", "bogus").toFile();
       File tmpDir = new File(tmpFile.getParentFile(), UUID.randomUUID().toString());
       tmpFile.delete();
       tmpDir.mkdirs();
