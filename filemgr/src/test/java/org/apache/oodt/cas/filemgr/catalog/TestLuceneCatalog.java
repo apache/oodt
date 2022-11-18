@@ -37,6 +37,7 @@ import org.junit.Assert;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -93,7 +94,7 @@ public class TestLuceneCatalog extends TestCase {
         File tempFile;
 
         try {
-            tempFile = File.createTempFile("foo", "bar");
+            tempFile = Files.createTempFile("foo", "bar").toFile();
             tempFile.deleteOnExit();
             tempDir = tempFile.getParentFile();
         } catch (Exception e) {

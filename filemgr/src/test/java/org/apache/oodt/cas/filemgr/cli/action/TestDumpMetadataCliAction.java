@@ -24,8 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 
-//Apache imports
 import org.apache.commons.io.FileUtils;
 
 //OODT imports
@@ -53,7 +53,7 @@ public class TestDumpMetadataCliAction extends TestCase {
 
    @Override
    public void setUp() throws Exception {
-      File bogusFile = File.createTempFile("bogus", "bogus");
+      File bogusFile = Files.createTempFile("bogus", "bogus").toFile();
       tmpFile = new File(bogusFile.getParentFile(), "MetadataDump");
       tmpFile.mkdirs();
       bogusFile.delete();

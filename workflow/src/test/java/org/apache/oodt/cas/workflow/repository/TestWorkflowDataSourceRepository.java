@@ -37,6 +37,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,7 +83,7 @@ public class TestWorkflowDataSourceRepository {
         File tempFile;
 
         try {
-            tempFile = File.createTempFile("foo", "bar");
+            tempFile = Files.createTempFile("foo", "bar").toFile();
             tempFile.deleteOnExit();
             tempDir = tempFile.getParentFile();
         } catch (Exception e) {

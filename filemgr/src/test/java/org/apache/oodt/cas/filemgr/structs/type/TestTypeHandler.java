@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -99,7 +100,7 @@ public class TestTypeHandler extends TestCase {
         File tempFile;
 
         try {
-            tempFile = File.createTempFile("foo", "bar");
+            tempFile = Files.createTempFile("foo", "bar").toFile();
             tempFile.deleteOnExit();
             tempDir = tempFile.getParentFile();
         } catch (Exception e) {

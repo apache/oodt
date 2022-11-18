@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -237,7 +238,7 @@ public class TestIngestProductCliAction extends TestCase {
    }
 
    private File createTmpDir() throws IOException {
-      File bogusDir = File.createTempFile("bogus", "bogus");
+      File bogusDir = Files.createTempFile("bogus", "bogus").toFile();
       File tmpDir = bogusDir.getParentFile();
       bogusDir.delete();
       tmpDir = new File(tmpDir, "Metadata");

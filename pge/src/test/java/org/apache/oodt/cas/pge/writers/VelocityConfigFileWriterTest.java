@@ -23,6 +23,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +41,7 @@ public class VelocityConfigFileWriterTest extends TestCase {
     metadata.addMetadata("name", "Chris");
     metadata.addMetadata("name", "Paul");
     metadata.addMetadata("conference", "ApacheCon");
-    File config = File.createTempFile("config", ".out");
+    File config = Files.createTempFile("config", ".out").toFile();
     try {
       vcfw.generateFile(config.toString(), metadata, LOG, url.getFile());
     } catch (Exception e) {

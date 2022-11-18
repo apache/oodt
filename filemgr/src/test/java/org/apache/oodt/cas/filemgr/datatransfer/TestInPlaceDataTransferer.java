@@ -24,8 +24,8 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 
 //JDK imports
 import java.io.File;
+import java.nio.file.Files;
 
-//Junit imports
 import junit.framework.TestCase;
 
 /**
@@ -48,7 +48,7 @@ public class TestInPlaceDataTransferer extends TestCase {
         transfer = (InPlaceDataTransferer) new InPlaceDataTransferFactory()
                 .createDataTransfer();
         try {
-            File tempFileSrc = File.createTempFile("foo", ".txt");
+            File tempFileSrc = Files.createTempFile("foo", ".txt").toFile();
             tempFileSrc.deleteOnExit();
             productOrigLoc = tempFileSrc.getAbsolutePath();
             productExpectedLoc = tempFileSrc.getParent();

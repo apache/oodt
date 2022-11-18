@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Properties;
 //JUnit imports
 import junit.framework.TestCase;
@@ -323,7 +324,7 @@ public class TestFileManagerCli extends TestCase {
 
    public void testDumpMetadata() throws IOException {
       String productId = "TestProductId";
-      File bogusFile = File.createTempFile("bogus", "bogus");
+      File bogusFile = Files.createTempFile("bogus", "bogus").toFile();
       File tmpFile = new File(bogusFile.getParentFile(), "CliDumpMetadata");
       tmpFile.mkdirs();
       bogusFile.delete();
